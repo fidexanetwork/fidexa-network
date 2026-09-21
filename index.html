@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>FIDEXA NETWORK</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0b1020;
+      --card-bg: #151c33;
+      --card-border: #1e2d4a;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-glow: rgba(37, 99, 235, 0.35);
+      --text-main: #ffffff;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 390px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .card-title {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .balance-container {
+      margin: 16px 0 28px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .balance {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+    }
+
+    .currency {
+      font-size: 18px;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+
+    .action-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-mine {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .btn-mine:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
+
+    .secondary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-sub {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-sub:active {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <div class="logo">FIDEXA NETWORK</div>
+      <div class="subtitle">Your digital network starts here.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your Balance</div>
+
+      <div class="balance-container">
+        <span class="balance" id="balanceDisplay">0</span>
+        <span class="currency">FDX</span>
+      </div>
+
+      <div class="action-group">
+        <button class="btn-mine" id="mineBtn">Start Mining</button>
+        <div class="secondary-grid">
+          <button class="btn-sub">Earn</button>
+          <button class="btn-sub">Referral</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+
+      // Native Telegram dynamic styling
+      if (tg.themeParams?.bg_color) {
+        document.documentElement.style.setProperty('--bg-color', tg.themeParams.bg_color);
+      }
+    }
+
+    // Interactive Mining Feedback
+    const mineBtn = document.getElementById('mineBtn');
+    const balanceDisplay = document.getElementById('balanceDisplay');
+    let balance = 0;
+
+    mineBtn.addEventListener('click', () => {
+      balance += 1;
+      balanceDisplay.textContent = balance;
+
+      // Telegram Native Haptic Feedback
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+    });
+  </script>
+
+</body>
+</html>
