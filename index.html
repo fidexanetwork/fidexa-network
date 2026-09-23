@@ -2,75 +2,75 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#07111f">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>FIDEXA NETWORK</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 :root{
   --bg:#07111f;
-  --panel:#0b192a;
-  --border:#19334e;
-  --text:#fff;
-  --muted:#71869b;
-  --blue:#1185e5;
-  --cyan:#55c4ff;
-  --danger:#ef6b73;
+  --card:#0d1b2d;
+  --card2:#102238;
+  --blue:#20a9ff;
+  --cyan:#39e6ff;
+  --green:#35e38a;
+  --yellow:#ffd166;
+  --red:#ff5c7a;
+  --text:#f4f8ff;
+  --muted:#8294aa;
+  --border:rgba(255,255,255,.08);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
-
-html,body{
-  min-height:100%;
-  background:var(--bg);
-}
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  color:var(--text);
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
   -webkit-tap-highlight-color:transparent;
 }
 
-button{
-  font:inherit;
-  cursor:pointer;
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
 }
 
-button:active{
-  transform:scale(.98);
+button{
+  border:0;
+  cursor:pointer;
+  font:inherit;
 }
 
 .app{
+  width:100%;
   max-width:480px;
   min-height:100vh;
   margin:auto;
-  padding-bottom:88px;
+  padding-bottom:90px;
 }
+
+/* HEADER */
 
 .header{
-  padding:18px 17px 10px;
+  padding:18px 18px 12px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+  gap:12px;
 }
 
 .logo{
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#1677ff,#00b7ff);
+  width:44px;
+  height:44px;
+  border-radius:13px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:21px;
+  font-size:22px;
   font-weight:900;
-  box-shadow:0 8px 25px rgba(0,150,255,.22);
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#00111d;
+  box-shadow:0 0 25px rgba(32,169,255,.25);
 }
 
 .brand h1{
@@ -79,37 +79,17 @@ button:active{
 }
 
 .brand p{
-  font-size:9px;
+  font-size:10px;
   color:var(--muted);
   margin-top:3px;
+  letter-spacing:1px;
 }
 
-.avatar{
-  width:39px;
-  height:39px;
-  border-radius:50%;
-  background:#13243a;
-  border:1px solid #203b57;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--cyan);
-  font-weight:800;
-  overflow:hidden;
-}
-
-.avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.content{
-  padding:8px 16px;
-}
+/* PAGES */
 
 .page{
   display:none;
+  padding:10px 16px 20px;
 }
 
 .page.active{
@@ -117,593 +97,490 @@ button:active{
 }
 
 .section-title{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:24px 2px 12px;
-}
-
-.section-title h2{
-  font-size:17px;
-}
-
-.section-title span{
-  font-size:10px;
-  color:var(--cyan);
-}
-
-.balance-card{
-  position:relative;
-  overflow:hidden;
-  margin-top:10px;
-  padding:23px;
-  border-radius:23px;
-  background:linear-gradient(145deg,#102a48,#0b1d32);
-  border:1px solid #1d4268;
-}
-
-.balance-card:after{
-  content:"";
-  position:absolute;
-  width:170px;
-  height:170px;
-  border-radius:50%;
-  background:#008cff;
-  opacity:.08;
-  right:-70px;
-  top:-70px;
-}
-
-.balance-label{
-  font-size:11px;
-  color:#7f98b4;
-}
-
-.balance{
-  font-size:36px;
+  font-size:20px;
   font-weight:800;
-  margin-top:7px;
-}
-
-.balance span{
-  font-size:15px;
-  color:var(--cyan);
-}
-
-.balance-bottom{
-  margin-top:17px;
-  display:flex;
-  justify-content:space-between;
-  color:#7891aa;
-  font-size:10px;
+  margin:8px 0 15px;
 }
 
 .card{
-  background:var(--panel);
+  background:linear-gradient(145deg,var(--card),var(--card2));
   border:1px solid var(--border);
-  border-radius:22px;
-  padding:18px;
+  border-radius:18px;
+  padding:17px;
+  margin-bottom:14px;
+  box-shadow:0 10px 35px rgba(0,0,0,.15);
 }
 
-.mining-top{
+/* BALANCE */
+
+.balance-card{
+  text-align:center;
+  padding:25px 18px;
+}
+
+.balance-label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.balance{
+  font-size:39px;
+  font-weight:900;
+  margin:7px 0;
+  background:linear-gradient(90deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.coin{
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* MINING */
+
+.mining-head{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-}
-
-.mining-left{
-  display:flex;
   align-items:center;
-  gap:12px;
-}
-
-.mining-icon{
-  width:50px;
-  height:50px;
-  border-radius:16px;
-  background:#102e4c;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
 }
 
 .status{
-  font-size:10px;
-  color:#6f849b;
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:20px;
+  background:rgba(255,255,255,.06);
+  color:var(--muted);
 }
 
-.status strong{
-  display:block;
-  color:var(--cyan);
-  margin-top:4px;
-  font-size:11px;
+.status.mining{
+  color:var(--green);
+  background:rgba(53,227,138,.1);
 }
 
 .rate{
-  text-align:right;
+  font-size:30px;
+  font-weight:900;
+  margin-top:12px;
 }
 
-.rate-number{
-  font-size:22px;
-  font-weight:800;
-}
-
-.rate small{
-  font-size:9px;
-  color:#71869d;
-}
-
-.timer-box{
-  margin-top:19px;
-  padding:17px;
-  border-radius:17px;
-  background:#071321;
-  text-align:center;
-}
-
-.timer-label{
-  font-size:9px;
-  color:#6e8298;
-  text-transform:uppercase;
-  letter-spacing:1px;
+.rate span{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:normal;
 }
 
 .timer{
+  text-align:center;
   font-size:31px;
   font-weight:800;
-  margin-top:7px;
+  margin:18px 0;
   letter-spacing:2px;
 }
 
 .progress{
-  height:5px;
-  background:#15273a;
-  border-radius:10px;
-  margin-top:14px;
+  height:9px;
+  border-radius:20px;
   overflow:hidden;
+  background:#17283c;
 }
 
 .progress-bar{
   height:100%;
-  width:0;
-  background:linear-gradient(90deg,#087eff,#43c7ff);
-  border-radius:10px;
-  transition:width .4s;
+  width:0%;
+  border-radius:20px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:.3s;
 }
 
-.primary{
+.primary-btn{
   width:100%;
-  border:0;
-  margin-top:17px;
-  padding:15px;
-  border-radius:14px;
-  background:linear-gradient(90deg,#087eff,#00aef8);
-  color:white;
-  font-weight:800;
-  font-size:13px;
-}
-
-.secondary{
-  width:100%;
-  border:1px solid #22638e;
-  background:#0d263c;
-  color:var(--cyan);
-  margin-top:14px;
-  padding:13px;
+  margin-top:16px;
+  padding:14px;
   border-radius:13px;
-  font-weight:700;
-  font-size:12px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  color:#00111d;
+  font-weight:900;
 }
 
-.disabled{
-  opacity:.5;
-  pointer-events:none;
+.primary-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
 }
+
+.secondary-btn{
+  padding:11px 14px;
+  border-radius:11px;
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+}
+
+/* NOTICE */
 
 .notice{
-  margin-top:12px;
-  padding:11px 13px;
-  border-radius:12px;
-  background:#0c2034;
-  border:1px solid #183b59;
-  color:#7792aa;
-  font-size:10px;
-  line-height:1.5;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-top:13px;
 }
 
-.notice strong{
-  color:var(--cyan);
-}
-
-.boost-info{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.boost-rate{
-  font-size:25px;
-  font-weight:800;
-}
-
-.boost-rate span{
-  font-size:11px;
-  color:var(--cyan);
-}
-
-.boost-limit{
-  text-align:right;
-  color:#74899f;
-  font-size:9px;
-}
-
-.boost-limit strong{
-  display:block;
-  color:#fff;
-  font-size:15px;
-  margin-bottom:2px;
-}
-
-.booster-list{
-  display:flex;
-  gap:7px;
-  margin-top:17px;
-}
-
-.booster{
-  flex:1;
-  height:46px;
-  border-radius:11px;
-  background:#101f31;
-  border:1px solid #203950;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#50677f;
-  font-weight:800;
-  font-size:10px;
-}
-
-.booster.used{
-  background:#0c3650;
-  border-color:#168dd0;
-  color:#54c5ff;
-}
+/* STATS */
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-top:12px;
-}
-
-.stat{
-  background:var(--panel);
-  border:1px solid #172f48;
-  border-radius:16px;
-  padding:14px;
-}
-
-.stat-label{
-  color:#71869b;
-  font-size:9px;
-}
-
-.stat-value{
-  font-size:16px;
-  font-weight:800;
-  margin-top:7px;
-}
-
-.task,
-.row-card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  padding:14px;
-  border-radius:17px;
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.icon-box{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  background:#102b47;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex:none;
-}
-
-.task-info{
-  flex:1;
-}
-
-.task-info strong{
-  font-size:12px;
-}
-
-.task-info p{
-  color:#71869b;
-  font-size:9px;
-  margin-top:4px;
-  line-height:1.4;
-}
-
-.small-btn{
-  border:0;
-  border-radius:9px;
-  background:#117ed0;
-  color:#fff;
-  padding:9px 11px;
-  font-size:9px;
-  font-weight:800;
-}
-
-.referral-card{
-  background:linear-gradient(145deg,#102c48,#0b1b2d);
-  border:1px solid #1d476d;
-  padding:21px;
-  border-radius:22px;
-  text-align:center;
-}
-
-.referral-card h2{
-  font-size:21px;
-}
-
-.referral-card p{
-  color:#8095a9;
-  font-size:11px;
-  line-height:1.5;
-  margin-top:7px;
-}
-
-.referral-code{
-  margin-top:16px;
-  background:#071522;
-  padding:12px;
-  border-radius:12px;
-  color:var(--cyan);
-  font-size:10px;
-  word-break:break-all;
-}
-
-.copy-btn{
-  margin-top:9px;
-  width:100%;
-  padding:13px;
-  border:0;
-  border-radius:12px;
-  background:#117ed0;
-  color:#fff;
-  font-weight:800;
-  font-size:11px;
-}
-
-.profile-head{
-  background:linear-gradient(145deg,#102a48,#0b1d32);
-  border:1px solid #1d4268;
-  padding:22px;
-  border-radius:22px;
-  text-align:center;
-}
-
-.profile-avatar{
-  width:72px;
-  height:72px;
-  border-radius:50%;
-  margin:auto;
-  background:#132f4c;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--cyan);
-  font-size:25px;
-  font-weight:800;
-  border:2px solid #23628e;
-  overflow:hidden;
-}
-
-.profile-avatar img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.profile-name{
-  font-size:18px;
-  font-weight:800;
-  margin-top:10px;
-}
-
-.profile-username{
-  font-size:10px;
-  color:#7891aa;
-  margin-top:4px;
-}
-
-.member-pill{
-  display:inline-block;
-  margin-top:10px;
-  padding:6px 10px;
-  border-radius:20px;
-  background:#0b2a43;
-  color:var(--cyan);
-  font-size:9px;
-  font-weight:800;
-}
-
-.menu-group{
-  margin-top:22px;
-}
-
-.menu-label{
-  font-size:10px;
-  color:#71869b;
-  margin:0 4px 9px;
-}
-
-.menu-item{
-  width:100%;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  color:#fff;
-  text-align:left;
-  margin-bottom:8px;
-}
-
-.menu-item .mi{
-  width:34px;
-  height:34px;
-  border-radius:10px;
-  background:#102b47;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.menu-item .mt{
-  flex:1;
-}
-
-.menu-item .mt strong{
-  font-size:12px;
-}
-
-.menu-item .mt p{
-  font-size:9px;
-  color:#71869b;
-  margin-top:3px;
-}
-
-.menu-item .arrow{
-  color:#587087;
-}
-
-.danger{
-  border-color:#4a2830;
-}
-
-.danger .mi{
-  background:#332029;
-}
-
-.danger .mt strong{
-  color:var(--danger);
-}
-
-.wallet-card{
-  text-align:center;
-  padding:25px;
-}
-
-.wallet-balance{
-  font-size:34px;
-  font-weight:800;
-  margin-top:5px;
-}
-
-.wallet-balance span{
-  font-size:14px;
-  color:var(--cyan);
-}
-
-.wallet-status{
-  margin-top:8px;
-  color:#71869b;
-  font-size:10px;
-}
-
-.coming{
-  margin-top:18px;
-  padding:12px;
-  border-radius:12px;
-  background:#0c2034;
-  color:#7b91a7;
-  font-size:10px;
-  line-height:1.5;
-}
-
-.support{
-  background:#071321;
-  border:1px solid #19334e;
-  border-radius:18px;
-  padding:15px;
-}
-
-.messages{
-  min-height:230px;
-  max-height:48vh;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
+  grid-template-columns:repeat(3,1fr);
   gap:9px;
 }
 
-.bubble{
-  max-width:82%;
-  padding:10px 12px;
+.stat{
+  text-align:center;
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--border);
   border-radius:13px;
+  padding:13px 5px;
+}
+
+.stat strong{
+  display:block;
+  font-size:17px;
+}
+
+.stat span{
+  display:block;
+  color:var(--muted);
   font-size:10px;
-  line-height:1.4;
+  margin-top:4px;
 }
 
-.bubble.user{
-  align-self:flex-end;
-  background:#116fae;
-}
+/* BOOSTER */
 
-.bubble.admin{
-  align-self:flex-start;
-  background:#13283d;
-  color:#dce9f4;
-}
-
-.chat-input{
+.booster-row{
   display:flex;
-  gap:7px;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.booster-row:last-child{
+  border-bottom:0;
+}
+
+.booster-name{
+  font-size:13px;
+}
+
+.booster-name small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.boost-btn{
+  padding:9px 12px;
+  border-radius:10px;
+  background:rgba(32,169,255,.12);
+  color:var(--cyan);
+  font-size:12px;
+  font-weight:bold;
+}
+
+.boost-btn:disabled{
+  opacity:.35;
+}
+
+/* TASKS */
+
+.task{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.task:last-child{
+  border-bottom:0;
+}
+
+.task-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.task-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(32,169,255,.1);
+  font-size:19px;
+}
+
+.task-title{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.task-sub{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.task-btn{
+  padding:9px 12px;
+  border-radius:10px;
+  background:var(--blue);
+  color:white;
+  font-size:11px;
+  font-weight:bold;
+}
+
+/* SPIN */
+
+.spin-card{
+  text-align:center;
+}
+
+.spin-wheel{
+  width:150px;
+  height:150px;
+  margin:20px auto;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:43px;
+  background:conic-gradient(
+    var(--blue),
+    var(--cyan),
+    var(--green),
+    var(--yellow),
+    var(--blue)
+  );
+  box-shadow:0 0 35px rgba(32,169,255,.2);
+}
+
+/* FRIENDS */
+
+.referral-box{
+  display:flex;
+  gap:8px;
   margin-top:12px;
 }
 
-.chat-input input{
+.referral-box input{
   flex:1;
-  background:#0c1d2f;
-  border:1px solid #203a53;
-  border-radius:11px;
-  color:#fff;
+  min-width:0;
   padding:12px;
-  font-size:11px;
+  border-radius:10px;
+  border:1px solid var(--border);
   outline:none;
+  background:#071321;
+  color:white;
+  font-size:11px;
 }
 
-.chat-input button{
-  border:0;
-  border-radius:11px;
-  background:#117ed0;
-  color:#fff;
-  padding:0 14px;
-  font-weight:800;
+.copy-btn{
+  padding:0 13px;
+  border-radius:10px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
 }
+
+.friend-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+
+.friend-stat{
+  text-align:center;
+  padding:16px 8px;
+  border-radius:13px;
+  background:rgba(255,255,255,.035);
+}
+
+.friend-stat strong{
+  display:block;
+  font-size:24px;
+}
+
+.friend-stat span{
+  font-size:10px;
+  color:var(--muted);
+}
+
+.bonus-rate{
+  text-align:center;
+  margin-top:15px;
+  padding:15px;
+  border-radius:13px;
+  background:rgba(53,227,138,.06);
+  border:1px solid rgba(53,227,138,.12);
+}
+
+.bonus-rate strong{
+  color:var(--green);
+  font-size:21px;
+}
+
+.milestone{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.milestone:last-child{
+  border-bottom:0;
+}
+
+.milestone-info strong{
+  display:block;
+  font-size:13px;
+}
+
+.milestone-info span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.reward{
+  font-weight:bold;
+  color:var(--yellow);
+}
+
+.claimed{
+  color:var(--green);
+  font-size:11px;
+}
+
+/* WALLET */
+
+.wallet-address{
+  padding:13px;
+  background:#071321;
+  border:1px solid var(--border);
+  border-radius:11px;
+  color:var(--muted);
+  font-size:12px;
+  word-break:break-all;
+}
+
+.coming{
+  text-align:center;
+  padding:20px 5px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+/* PROFILE */
+
+.profile-head{
+  text-align:center;
+  padding:22px 10px;
+}
+
+.avatar{
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  color:#00111d;
+  font-size:30px;
+  font-weight:900;
+}
+
+.profile-name{
+  font-size:19px;
+  font-weight:bold;
+  margin-top:11px;
+}
+
+.profile-username{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.menu-btn{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:15px 0;
+  background:none;
+  color:white;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+
+.menu-btn:last-child{
+  border-bottom:0;
+}
+
+.danger{
+  color:var(--red);
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:480px;
+  height:70px;
+  background:rgba(7,17,31,.96);
+  backdrop-filter:blur(15px);
+  border-top:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:50;
+}
+
+.nav-btn{
+  background:none;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  font-size:10px;
+}
+
+.nav-btn span:first-child{
+  font-size:19px;
+}
+
+.nav-btn.active{
+  color:var(--cyan);
+}
+
+/* MODAL */
 
 .modal{
-  display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.72);
-  z-index:300;
+  display:none;
   align-items:flex-end;
   justify-content:center;
-  padding:14px;
+  z-index:100;
 }
 
 .modal.show{
@@ -711,98 +588,54 @@ button:active{
 }
 
 .modal-box{
-  width:min(480px,100%);
-  background:#0b192a;
-  border:1px solid #24435e;
-  border-radius:22px;
-  padding:20px;
+  width:100%;
+  max-width:480px;
+  background:#0d1b2d;
+  border-radius:22px 22px 0 0;
+  padding:22px;
+  border:1px solid var(--border);
 }
 
 .modal-box h3{
-  font-size:17px;
+  margin-bottom:10px;
 }
 
 .modal-box p{
-  color:#8095a9;
-  font-size:11px;
-  line-height:1.5;
-  margin-top:8px;
-  white-space:pre-line;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
 }
 
 .modal-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  display:flex;
   gap:9px;
-  margin-top:17px;
+  margin-top:18px;
 }
 
 .modal-actions button{
+  flex:1;
   padding:13px;
-  border-radius:12px;
-  border:0;
-  font-weight:800;
+  border-radius:11px;
 }
 
-.cancel{
-  background:#13283c;
-  color:#fff;
-}
-
-.delete{
-  background:#9d3440;
-  color:#fff;
-}
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(480px,100%);
-  background:rgba(7,17,31,.98);
-  border-top:1px solid #172b40;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  padding:9px 6px calc(9px + env(safe-area-inset-bottom));
-  z-index:100;
-}
-
-.nav-item{
-  background:none;
-  border:0;
-  color:#5e7187;
-  font-size:8px;
-  padding:4px 2px;
-}
-
-.nav-icon{
-  display:block;
-  font-size:18px;
-  margin-bottom:3px;
-}
-
-.nav-item.active{
-  color:#4dbbff;
-}
+/* TOAST */
 
 .toast{
   position:fixed;
   left:50%;
-  bottom:92px;
-  transform:translateX(-50%) translateY(15px);
-  background:#102a40;
-  border:1px solid #285576;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:10px;
+  bottom:84px;
+  transform:translateX(-50%) translateY(20px);
+  background:#15283d;
+  color:white;
+  border:1px solid var(--border);
+  padding:11px 17px;
+  border-radius:11px;
+  font-size:12px;
   opacity:0;
   pointer-events:none;
   transition:.25s;
-  z-index:500;
-  max-width:90%;
-  text-align:center;
+  z-index:200;
+  white-space:nowrap;
 }
 
 .toast.show{
@@ -810,9 +643,20 @@ button:active{
   transform:translateX(-50%) translateY(0);
 }
 
-a{
-  text-decoration:none;
-  color:inherit;
+/* SMALL */
+
+.small-note{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+
+.green{
+  color:var(--green);
+}
+
+.yellow{
+  color:var(--yellow);
 }
 </style>
 </head>
@@ -821,1475 +665,184 @@ a{
 
 <div class="app">
 
+<!-- HEADER -->
 <header class="header">
-
+  <div class="logo">F</div>
   <div class="brand">
-
-    <div class="logo">F</div>
-
-    <div>
-      <h1>FIDEXA NETWORK</h1>
-      <p>DECENTRALIZED DIGITAL NETWORK</p>
-    </div>
-
+    <h1>FIDEXA NETWORK</h1>
+    <p>DECENTRALIZED DIGITAL NETWORK</p>
   </div>
-
-  <div class="avatar" id="topAvatar">F</div>
-
 </header>
 
 
-<main class="content">
+<!-- ================= HOME ================= -->
 
-<!-- HOME -->
-<section id="home" class="page active">
+<section class="page active" id="homePage">
 
-  <div class="balance-card">
-
-    <div class="balance-label">
-      TOTAL FIDEXA BALANCE
-    </div>
-
-    <div class="balance">
-      <span id="balanceValue">0.00</span>
-      <span>FDX</span>
-    </div>
-
-    <div class="balance-bottom">
-      <span>Available Balance</span>
-      <span>FIDEXA Network</span>
-    </div>
-
-  </div>
-
-
-  <div class="section-title">
-    <h2>Mining Status</h2>
-    <span>8 HOUR CYCLE</span>
+  <div class="card balance-card">
+    <div class="balance-label">TOTAL FDX BALANCE</div>
+    <div class="balance" id="balanceValue">0.0000</div>
+    <div class="coin">FDX Points</div>
   </div>
 
 
   <div class="card">
 
-    <div class="mining-top">
-
-      <div class="mining-left">
-
-        <div class="mining-icon">
-          ⛏
-        </div>
-
-        <div class="status">
-          STATUS
-          <strong id="miningStatus">
-            READY TO MINE
-          </strong>
-        </div>
-
-      </div>
-
-
-      <div class="rate">
-
-        <div class="rate-number" id="rateValue">
-          1.0
-        </div>
-
-        <small>
-          FDX / HOUR
-        </small>
-
-      </div>
-
+    <div class="mining-head">
+      <strong>Mining Session</strong>
+      <span class="status" id="miningStatus">Inactive</span>
     </div>
 
-
-    <div class="timer-box">
-
-      <div class="timer-label" id="timerLabel">
-        Mining Countdown
-      </div>
-
-      <div class="timer" id="timer">
-        08:00:00
-      </div>
-
-      <div class="progress">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-
+    <div class="rate">
+      <span id="rateValue">1.0</span>
+      <span>FDX / hour</span>
     </div>
 
+    <div class="timer" id="timer">08:00:00</div>
 
-    <button class="primary" id="mineButton">
-      START 8-HOUR MINING
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <button
+      class="primary-btn"
+      id="mineButton"
+      onclick="startMining()">
+      START MINING
     </button>
 
-  </div>
+    <div class="notice">
+      Base mining rate is <b>1.0 FDX/hour</b>.
+      Booster ads can temporarily increase your mining rate.
+      One mining session lasts <b>8 hours</b>.
+    </div>
 
-
-  <div class="notice">
-
-    <strong>Mining:</strong>
-    Base rate is 1 FDX/hour.
-    Booster ads can increase the rate by +0.5 FDX/hour,
-    up to 3.5 FDX/hour.
-
-  </div>
-
-
-  <div class="section-title">
-    <h2>Boost Mining</h2>
-    <span>MAX +2.5 FDX/H</span>
   </div>
 
 
   <div class="card">
 
-    <div class="boost-info">
+    <strong>Mining Statistics</strong>
 
-      <div>
+    <div class="stats" style="margin-top:13px">
 
-        <div class="boost-rate">
-          <span id="boostRate">1.0</span>
-          <span>FDX/H</span>
-        </div>
-
-        <div style="color:#71869b;font-size:9px;margin-top:4px">
-          Current Mining Rate
-        </div>
-
+      <div class="stat">
+        <strong id="sessionReward">0.0000</strong>
+        <span>SESSION</span>
       </div>
 
-
-      <div class="boost-limit">
-
-        <strong id="boosterCount">
-          0 / 5
-        </strong>
-
-        ADS USED
-        <br>
-        LAST 24 HOURS
-
+      <div class="stat">
+        <strong id="maxSessionReward">8.0000</strong>
+        <span>8H MAX</span>
       </div>
 
-    </div>
-
-
-    <div class="booster-list" id="boosterList">
-
-      <div class="booster">+0.5</div>
-      <div class="booster">+0.5</div>
-      <div class="booster">+0.5</div>
-      <div class="booster">+0.5</div>
-      <div class="booster">+0.5</div>
-
-    </div>
-
-
-    <button class="secondary" id="boostButton">
-      WATCH AD TO BOOST +0.5 FDX/H
-    </button>
-
-  </div>
-
-
-  <div class="stats">
-
-    <div class="stat">
-
-      <div class="stat-label">
-        CURRENT SESSION REWARD
-      </div>
-
-      <div class="stat-value" id="sessionReward">
-        8 FDX
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div class="stat-label">
-        MAX SESSION REWARD
-      </div>
-
-      <div class="stat-value">
-        28 FDX
+      <div class="stat">
+        <strong id="totalMined">0.0000</strong>
+        <span>TOTAL MINED</span>
       </div>
 
     </div>
 
   </div>
 
-</section>
 
+  <div class="card">
 
-<!-- TASK -->
-<section id="tasks" class="page">
-
-  <div class="section-title">
-    <h2>Tasks</h2>
-    <span>FIDEXA COMMUNITY</span>
-  </div>
-
-
-  <div class="task">
-
-    <div class="icon-box">
-      ✈️
-    </div>
-
-    <div class="task-info">
-
-      <strong>
-        Join FIDEXA Telegram
-      </strong>
-
-      <p>
-        Join the official FIDEXA Network channel.
-      </p>
-
-    </div>
-
-    <a
-      class="small-btn"
-      href="https://t.me/fidexa_Network"
-      target="_blank"
-      rel="noopener"
-    >
-      OPEN
-    </a>
-
-  </div>
-
-
-  <div class="task">
-
-    <div class="icon-box">
-      𝕏
-    </div>
-
-    <div class="task-info">
-
-      <strong>
-        Follow FIDEXA on X
-      </strong>
-
-      <p>
-        Follow @Fidexa_Network for official updates.
-      </p>
-
-    </div>
-
-    <a
-      class="small-btn"
-      href="https://x.com/Fidexa_Network"
-      target="_blank"
-      rel="noopener"
-    >
-      OPEN
-    </a>
-
-  </div>
-
-
-  <div class="notice">
-
-    <strong>More tasks:</strong>
-    Additional verified tasks and rewards can be connected after their rules are defined.
-
-  </div>
-
-</section>
-
-
-<!-- FRIENDS -->
-<section id="friends" class="page">
-
-  <div class="section-title">
-    <h2>Friends</h2>
-    <span>REFERRALS</span>
-  </div>
-
-
-  <div class="referral-card">
-
-    <h2>
-      Invite & Earn
-    </h2>
-
-    <p>
-      Invite friends to FIDEXA and grow the network together.
-    </p>
-
-    <div class="referral-code" id="referralLink">
-      t.me/FIDEXANetworkBot?start=ref_loading
-    </div>
-
-    <button class="copy-btn" id="copyReferral">
-      COPY INVITE LINK
-    </button>
-
-  </div>
-
-
-  <div class="stats">
-
-    <div class="stat">
-
-      <div class="stat-label">
-        TOTAL FRIENDS
-      </div>
-
-      <div class="stat-value" id="friendCount">
-        0
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div class="stat-label">
-        REFERRAL REWARDS
-      </div>
-
-      <div class="stat-value">
-        0 FDX
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- WALLET -->
-<section id="wallet" class="page">
-
-  <div class="section-title">
-    <h2>Wallet</h2>
-    <span>FIDEXA ASSET</span>
-  </div>
-
-
-  <div class="card wallet-card">
-
-    <div class="balance-label">
-      FDX BALANCE
-    </div>
-
-    <div class="wallet-balance">
-
-      <span id="walletBalance">
-        0.00
+    <div class="mining-head">
+      <strong>Mining Boosters</strong>
+      <span class="small-note">
+        <span id="boosterCount">0</span>/5 today
       </span>
-
-      <span>
-        FDX
-      </span>
-
     </div>
 
-    <div class="wallet-status">
-      Wallet connection is not active yet.
-    </div>
-
-
-    <div class="coming">
-
-      <strong style="color:#55c4ff">
-        Wallet development is reserved for a later stage.
-      </strong>
-
-      <br>
-
-      Your FDX account balance can be displayed here without pretending that blockchain transfers are currently live.
-
-    </div>
-
-
-    <button class="secondary disabled">
-      CONNECT WALLET
-    </button>
-
-  </div>
-
-
-  <div class="notice">
-
-    When wallet functionality is officially implemented,
-    this page can contain the connected address and transaction history.
-
-  </div>
-
-</section>
-
-
-<!-- PROFILE -->
-<section id="profile" class="page">
-
-  <div class="profile-head">
-
-    <div class="profile-avatar" id="profileAvatar">
-      F
-    </div>
-
-    <div class="profile-name" id="profileName">
-      Telegram User
-    </div>
-
-    <div class="profile-username" id="profileUsername">
-      Telegram account
-    </div>
-
-    <div class="member-pill">
-      FIDEXA MEMBER
-    </div>
-
-  </div>
-
-
-  <div class="menu-group">
-
-    <div class="menu-label">
-      ACCOUNT
-    </div>
-
-
-    <button class="menu-item" onclick="showProfileInfo()">
-
-      <div class="mi">
-        👤
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Account Information
-        </strong>
-
-        <p>
-          View your FIDEXA account details
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </button>
-
-
-    <button class="menu-item" onclick="openSupport()">
-
-      <div class="mi">
-        💬
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Chat Support
-        </strong>
-
-        <p>
-          Send a message directly to FIDEXA support
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </button>
-
-  </div>
-
-
-  <div class="menu-group">
-
-    <div class="menu-label">
-      INFORMATION
-    </div>
-
-
-    <button
-      class="menu-item"
-      onclick="showInfo(
-      'Privacy Policy',
-      'The official FIDEXA Privacy Policy will be displayed here before the production release.'
-      )"
-    >
-
-      <div class="mi">
-        📄
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Privacy Policy
-        </strong>
-
-        <p>
-          How FIDEXA handles account information
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </button>
-
-
-    <button
-      class="menu-item"
-      onclick="showInfo(
-      'FIDEXA Whitepaper',
-      'The official FIDEXA Whitepaper will be linked here once its public document is ready.'
-      )"
-    >
-
-      <div class="mi">
-        📘
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          FIDEXA Whitepaper
-        </strong>
-
-        <p>
-          Project overview and network documentation
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </button>
-
-
-    <a
-      class="menu-item"
-      href="https://t.me/fidexa_Network"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <div class="mi">
-        ✈️
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Official Telegram
-        </strong>
-
-        <p>
-          @fidexa_Network
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </a>
-
-
-    <a
-      class="menu-item"
-      href="https://x.com/Fidexa_Network"
-      target="_blank"
-      rel="noopener"
-    >
-
-      <div class="mi">
-        𝕏
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Official X
-        </strong>
-
-        <p>
-          @Fidexa_Network
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </a>
-
-  </div>
-
-
-  <div class="menu-group">
-
-    <div class="menu-label">
-      ACCOUNT SETTINGS
-    </div>
-
-
-    <button
-      class="menu-item danger"
-      onclick="openDeleteModal()"
-    >
-
-      <div class="mi">
-        ⚠️
-      </div>
-
-      <div class="mt">
-
-        <strong>
-          Delete Account
-        </strong>
-
-        <p>
-          Permanently request deletion of your FIDEXA account
-        </p>
-
-      </div>
-
-      <div class="arrow">
-        ›
-      </div>
-
-    </button>
-
-  </div>
-
-</section>
-
-</main>
-
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-
-  <button
-    class="nav-item active"
-    onclick="showPage('home',this)"
-  >
-    <span class="nav-icon">⌂</span>
-    HOME
-  </button>
-
-
-  <button
-    class="nav-item"
-    onclick="showPage('tasks',this)"
-  >
-    <span class="nav-icon">✓</span>
-    TASK
-  </button>
-
-
-  <button
-    class="nav-item"
-    onclick="showPage('friends',this)"
-  >
-    <span class="nav-icon">👥</span>
-    FRIENDS
-  </button>
-
-
-  <button
-    class="nav-item"
-    onclick="showPage('wallet',this)"
-  >
-    <span class="nav-icon">◈</span>
-    WALLET
-  </button>
-
-
-  <button
-    class="nav-item"
-    onclick="showPage('profile',this)"
-  >
-    <span class="nav-icon">👤</span>
-    PROFILE
-  </button>
-
-</nav>
-
-</div>
-
-
-<!-- INFO MODAL -->
-<div class="modal" id="infoModal">
-
-  <div class="modal-box">
-
-    <h3 id="infoTitle">
-      Information
-    </h3>
-
-    <p id="infoText"></p>
-
-    <div class="modal-actions">
-
-      <button
-        class="cancel"
-        onclick="closeModal('infoModal')"
-      >
-        CLOSE
-      </button>
-
-      <button class="delete disabled">
-        OK
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- DELETE MODAL -->
-<div class="modal" id="deleteModal">
-
-  <div class="modal-box">
-
-    <h3>
-      Delete your FIDEXA account?
-    </h3>
-
-    <p>
-      This is a confirmation interface only at this stage.
-      The production version will permanently process account deletion through the secure backend.
-    </p>
-
-    <div class="modal-actions">
-
-      <button
-        class="cancel"
-        onclick="closeModal('deleteModal')"
-      >
-        CANCEL
-      </button>
-
-      <button
-        class="delete"
-        onclick="requestDelete()"
-      >
-        DELETE ACCOUNT
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- SUPPORT MODAL -->
-<div class="modal" id="supportModal">
-
-  <div class="modal-box">
-
-    <h3>
-      FIDEXA Support
-    </h3>
-
-    <p>
-      Send a message to the FIDEXA support team.
-    </p>
-
-
-    <div class="support" style="margin-top:14px">
-
-      <div class="messages" id="messages">
-
-        <div class="bubble admin">
-          Welcome to FIDEXA Support. How can we help you?
+    <div id="boosterList">
+
+      <div class="booster-row">
+        <div class="booster-name">
+          Watch Ad
+          <small>+0.5 FDX/hour</small>
         </div>
 
-      </div>
-
-
-      <div class="chat-input">
-
-        <input
-          id="supportInput"
-          type="text"
-          maxlength="500"
-          placeholder="Type your message..."
-        >
-
-        <button onclick="sendSupportMessage()">
-          SEND
+        <button
+          class="boost-btn"
+          id="boostButton"
+          onclick="useBooster()">
+          WATCH
         </button>
-
       </div>
 
     </div>
 
-
-    <button
-      class="secondary"
-      onclick="closeModal('supportModal')"
-    >
-      CLOSE
-    </button>
+    <div class="notice">
+      Maximum 5 booster activations per 24 hours.
+    </div>
 
   </div>
 
-</div>
+</section>
 
 
-<div class="toast" id="toast"></div>
+<!-- ================= TASKS ================= -->
 
+<section class="page" id="tasksPage">
 
-<!-- TELEGRAM WEB APP -->
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <div class="section-title">Tasks & Earn</div>
 
+  <div class="card">
 
-<script>
+    <div class="task">
 
-const state = {
+      <div class="task-left">
 
-  balance:0,
+        <div class="task-icon">✈️</div>
 
-  rate:1.0,
+        <div>
+          <div class="task-title">Join Telegram</div>
+          <div class="task-sub">Join the official FIDEXA community</div>
+        </div>
 
-  boosters:0,
+      </div>
 
-  miningStart:null,
+      <button
+        class="task-btn"
+        onclick="openTelegram()">
+        OPEN
+      </button>
 
-  miningEnd:null
+    </div>
 
-};
 
+    <div class="task">
 
-const EIGHT_HOURS =
-  8 * 60 * 60 * 1000;
+      <div class="task-left">
 
+        <div class="task-icon">𝕏</div>
 
-function showPage(page,button){
+        <div>
+          <div class="task-title">Follow on X</div>
+          <div class="task-sub">Follow FIDEXA on X</div>
+        </div>
 
-  document
-    .querySelectorAll('.page')
-    .forEach(p =>
-      p.classList.remove('active')
-    );
+      </div>
 
-  document
-    .getElementById(page)
-    .classList.add('active');
+      <button
+        class="task-btn"
+        onclick="openX()">
+        OPEN
+      </button>
 
+    </div>
 
-  document
-    .querySelectorAll('.nav-item')
-    .forEach(n =>
-      n.classList.remove('active')
-    );
+  </div>
 
-  button.classList.add('active');
 
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
+  <div class="section-title">Spin & Ads</div>
 
-}
+  <div class="card spin-card">
 
+    <div class="spin-wheel">🎁</div>
 
-function showToast(message){
+    <h3>Daily Free Spin</h3>
 
-  const t =
-    document.getElementById('toast');
-
-  t.textContent = message;
-
-  t.classList.add('show');
-
-  clearTimeout(window.toastTimer);
-
-  window.toastTimer =
-    setTimeout(
-      () => t.classList.remove('show'),
-      2600
-    );
-
-}
-
-
-function openModal(id){
-
-  document
-    .getElementById(id)
-    .classList.add('show');
-
-}
-
-
-function closeModal(id){
-
-  document
-    .getElementById(id)
-    .classList.remove('show');
-
-}
-
-
-function showInfo(title,text){
-
-  document.getElementById('infoTitle')
-    .textContent = title;
-
-  document.getElementById('infoText')
-    .textContent = text;
-
-  openModal('infoModal');
-
-}
-
-
-function showProfileInfo(){
-
-  const name =
-    document.getElementById('profileName')
-      .textContent;
-
-  const username =
-    document.getElementById('profileUsername')
-      .textContent;
-
-  showInfo(
-    'Account Information',
-    `Name: ${name}\n${username}\n\nYour real account data will be loaded from Telegram and Firebase in the production connection.`
-  );
-
-}
-
-
-function openSupport(){
-
-  openModal('supportModal');
-
-}
-
-
-function sendSupportMessage(){
-
-  const input =
-    document.getElementById('supportInput');
-
-  const text =
-    input.value.trim();
-
-  if(!text)return;
-
-
-  const bubble =
-    document.createElement('div');
-
-  bubble.className =
-    'bubble user';
-
-  bubble.textContent =
-    text;
-
-
-  document
-    .getElementById('messages')
-    .appendChild(bubble);
-
-
-  input.value='';
-
-
-  document
-    .getElementById('messages')
-    .scrollTop =
-      document.getElementById('messages')
-        .scrollHeight;
-
-
-  showToast(
-    'Message prepared. Firebase support storage will be connected next.'
-  );
-
-}
-
-
-function openDeleteModal(){
-
-  openModal('deleteModal');
-
-}
-
-
-function requestDelete(){
-
-  closeModal('deleteModal');
-
-  showToast(
-    'Account deletion backend will be connected securely before production.'
-  );
-
-}
-
-
-function updateUI(){
-
-  document.getElementById('balanceValue')
-    .textContent =
-      state.balance.toFixed(2);
-
-
-  document.getElementById('walletBalance')
-    .textContent =
-      state.balance.toFixed(2);
-
-
-  document.getElementById('rateValue')
-    .textContent =
-      state.rate.toFixed(1);
-
-
-  document.getElementById('boostRate')
-    .textContent =
-      state.rate.toFixed(1);
-
-
-  document.getElementById('boosterCount')
-    .textContent =
-      `${state.boosters} / 5`;
-
-
-  document.getElementById('sessionReward')
-    .textContent =
-      `${(state.rate * 8).toFixed(0)} FDX`;
-
-
-  const slots =
-    document.querySelectorAll(
-      '#boosterList .booster'
-    );
-
-
-  slots.forEach((slot,i)=>{
-
-    slot.classList.toggle(
-      'used',
-      i < state.boosters
-    );
-
-    slot.textContent =
-      i < state.boosters
-      ? '✓ +0.5'
-      : '+0.5';
-
-  });
-
-}
-
-
-function updateMiningTimer(){
-
-  const timer =
-    document.getElementById('timer');
-
-  const status =
-    document.getElementById('miningStatus');
-
-  const button =
-    document.getElementById('mineButton');
-
-  const bar =
-    document.getElementById('progressBar');
-
-
-  if(
-    !state.miningStart ||
-    !state.miningEnd
-  ){
-
-    timer.textContent =
-      '08:00:00';
-
-    status.textContent =
-      'READY TO MINE';
-
-    button.textContent =
-      'START 8-HOUR MINING';
-
-    button.disabled=false;
-
-    bar.style.width='0%';
-
-    return;
-
-  }
-
-
-  const now =
-    Date.now();
-
-
-  const remaining =
-    Math.max(
-      0,
-      state.miningEnd - now
-    );
-
-
-  const elapsed =
-    Math.min(
-      EIGHT_HOURS,
-      Math.max(
-        0,
-        now - state.miningStart
-      )
-    );
-
-
-  const percent =
-    (elapsed / EIGHT_HOURS) * 100;
-
-
-  if(remaining <= 0){
-
-    timer.textContent =
-      '00:00:00';
-
-    status.textContent =
-      'MINING COMPLETE';
-
-    button.textContent =
-      'MINING COMPLETE';
-
-    button.disabled=true;
-
-    bar.style.width='100%';
-
-    return;
-
-  }
-
-
-  const totalSeconds =
-    Math.floor(
-      remaining / 1000
-    );
-
-
-  const h =
-    Math.floor(
-      totalSeconds / 3600
-    );
-
-
-  const m =
-    Math.floor(
-      (totalSeconds % 3600) / 60
-    );
-
-
-  const s =
-    totalSeconds % 60;
-
-
-  timer.textContent =
-    `${String(h).padStart(2,'0')}:` +
-    `${String(m).padStart(2,'0')}:` +
-    `${String(s).padStart(2,'0')}`;
-
-
-  status.textContent =
-    'MINING ACTIVE';
-
-
-  button.textContent =
-    'MINING IN PROGRESS';
-
-  button.disabled=true;
-
-
-  bar.style.width =
-    `${percent}%`;
-
-}
-
-
-document
-  .getElementById('mineButton')
-  .addEventListener(
-    'click',
-    ()=>{
-
-      if(state.miningStart)
-        return;
-
-
-      state.miningStart =
-        Date.now();
-
-
-      state.miningEnd =
-        state.miningStart +
-        EIGHT_HOURS;
-
-
-      localStorage.setItem(
-        'fidexa_preview_mining',
-        JSON.stringify({
-          start:state.miningStart,
-          end:state.miningEnd
-        })
-      );
-
-
-      updateMiningTimer();
-
-
-      showToast(
-        'Mining interface started.'
-      );
-
-    }
-  );
-
-
-document
-  .getElementById('boostButton')
-  .addEventListener(
-    'click',
-    ()=>{
-
-      if(state.boosters >= 5){
-
-        showToast(
-          'You have reached the 5 booster ads limit for the rolling 24-hour period.'
-        );
-
-        return;
-
-      }
-
-
-      showToast(
-        'AdsGram reward connection will be activated in the backend integration step.'
-      );
-
-    }
-  );
-
-
-document
-  .getElementById('copyReferral')
-  .addEventListener(
-    'click',
-    async ()=>{
-
-      const value =
-        document.getElementById(
-          'referralLink'
-        ).textContent;
-
-
-      try{
-
-        await navigator.clipboard
-          .writeText(value);
-
-        showToast(
-          'Referral link copied.'
-        );
-
-      }catch(e){
-
-        showToast(
-          'Copy is not available on this browser.'
-        );
-
-      }
-
-    }
-  );
-
-
-function loadPreviewState(){
-
-  try{
-
-    const saved =
-      JSON.parse(
-        localStorage.getItem(
-          'fidexa_preview_mining'
-        ) || 'null'
-      );
-
-
-    if(
-      saved &&
-      saved.start &&
-      saved.end
-    ){
-
-      if(Date.now() < saved.end){
-
-        state.miningStart =
-          saved.start;
-
-        state.miningEnd =
-          saved.end;
-
-      }else{
-
-        localStorage.removeItem(
-          'fidexa_preview_mining'
-        );
-
-      }
-
-    }
-
-  }catch(e){}
-
-}
-
-
-function loadTelegramProfile(){
-
-  const tg =
-    window.Telegram?.WebApp;
-
-
-  if(!tg)return;
-
-
-  try{
-
-    tg.ready();
-
-    tg.expand();
-
-
-    const user =
-      tg.initDataUnsafe?.user;
-
-
-    if(!user)return;
-
-
-    const full =
-      [
-        user.first_name,
-        user.last_name
-      ]
-      .filter(Boolean)
-      .join(' ')
-      || 'Telegram User';
-
-
-    const username =
-      user.username
-      ? `@${user.username}`
-      : 'Telegram account';
-
-
-    document
-      .getElementById('profileName')
-      .textContent =
-        full;
-
-
-    document
-      .getElementById('profileUsername')
-      .textContent =
-        username;
-
-
-    const initials =
-      (
-        user.first_name?.[0] || 'F'
-      ) +
-      (
-        user.last_name?.[0] || ''
-      );
-
-
-    document
-      .getElementById('topAvatar')
-      .textContent =
-        initials.toUpperCase();
-
-
-    document
-      .getElementById('profileAvatar')
-      .textContent =
-        initials.toUpperCase();
-
-
-    if(user.photo_url){
-
-      document
-        .getElementById('topAvatar')
-        .innerHTML =
-          `<img src="${user.photo_url}" alt="">`;
-
-
-      document
-        .getElementById('profileAvatar')
-        .innerHTML =
-          `<img src="${user.photo_url}" alt="">`;
-
-    }
-
-
-    if(user.id){
-
-      document
-        .getElementById('referralLink')
-        .textContent =
-          `https://t.me/FIDEXANetworkBot/fidexa?startapp=ref_${user.id}`;
-
-    }
-
-  }catch(e){}
-
-}
-
-
-loadPreviewState();
-
-loadTelegramProfile();
-
-updateUI();
-
-updateMiningTimer();
-
-setInterval(
-  updateMiningTimer,
-  1000
-);
-
-</script>
-
-</body>
-</html>
+    <p class="notice">
+      Spin once every day for a chance to receive FDX Points
