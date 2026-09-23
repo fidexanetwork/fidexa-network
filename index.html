@@ -1,763 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
+  <title>FIDEXA Network</title>
 
-    <title>FIDEXA Network</title>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Telegram Mini App -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Telegram Mini App -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore-compat.js"></script>
+  <!-- AdsGram -->
+  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
-    <!-- AdsGram -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+    body {
+      margin: 0;
+      background: #07111f;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: #07111f;
-            color: #ffffff;
-        }
+    .app {
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
 
-        .app {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            margin: auto;
-            padding: 20px 16px 90px;
-        }
+    .card {
+      background: #0d1b2d;
+      border: 1px solid #18304a;
+      border-radius: 18px;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+    .blue-card {
+      background: linear-gradient(145deg, #0d3154, #092238);
+      border: 1px solid #15558a;
+    }
 
-        .logo {
-            font-size: 25px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: #081522;
+      border-top: 1px solid #18304a;
+      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    }
 
-        .network {
-            font-size: 11px;
-            padding: 7px 10px;
-            border-radius: 20px;
-            background: #10243a;
-            color: #55e6a5;
-        }
+    .nav-grid {
+      max-width: 520px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
 
-        .welcome {
-            font-size: 17px;
-            margin-bottom: 15px;
-        }
+    .nav-btn {
+      border: 0;
+      background: transparent;
+      color: #71849a;
+      padding: 7px 2px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
 
-        .balance-card {
-            background: linear-gradient(145deg, #102943, #0b1b2e);
-            border: 1px solid #1c3c5b;
-            border-radius: 22px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 10px 35px rgba(0,0,0,.25);
-        }
+    .nav-btn.active {
+      color: #35a9ff;
+      background: #0d263d;
+    }
 
-        .balance-label {
-            color: #8fa8bd;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
+    .page {
+      display: none;
+    }
 
-        .balance {
-            font-size: 38px;
-            font-weight: 800;
-            word-break: break-word;
-        }
+    .page.active {
+      display: block;
+    }
 
-        .currency {
-            font-size: 16px;
-            color: #55e6a5;
-            margin-left: 5px;
-        }
+    .primary-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 14px;
+      background: #148de2;
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+    }
 
-        .mine-card {
-            margin-top: 18px;
-            background: #0d1c2d;
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid #18344e;
-            text-align: center;
-        }
+    .primary-btn:disabled {
+      opacity: 0.45;
+    }
 
-        .mine-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 7px;
-        }
+    .secondary-btn {
+      border: 1px solid #245274;
+      background: #0b2033;
+      color: #d9edff;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-weight: 600;
+    }
 
-        .mine-info {
-            color: #8fa8bd;
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 18px;
-        }
+    .timer {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
 
-        .mine-btn {
-            width: 100%;
-            border: none;
-            border-radius: 15px;
-            padding: 16px;
-            font-size: 17px;
-            font-weight: 700;
-            color: #061018;
-            background: #55e6a5;
-            cursor: pointer;
-        }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: #12263b;
+      border-radius: 20px;
+      overflow: hidden;
+    }
 
-        .mine-btn:disabled {
-            opacity: .55;
-            cursor: not-allowed;
-        }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #22a7ff;
+      transition: width 0.5s linear;
+    }
 
-        .status {
-            min-height: 20px;
-            margin-top: 14px;
-            font-size: 13px;
-            color: #9eb3c5;
-        }
+    .ad-box {
+      min-height: 130px;
+      border: 1px dashed #31536f;
+      background: #091827;
+      border-radius: 16px;
+      padding: 15px;
+    }
 
-        .section {
-            margin-top: 22px;
-        }
+    .small {
+      color: #7890a8;
+      font-size: 12px;
+    }
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
+    .section-title {
+      font-size: 19px;
+      font-weight: 800;
+    }
 
-        .task {
-            background: #0d1c2d;
-            border: 1px solid #18344e;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 10px;
-        }
+    .balance {
+      font-size: 34px;
+      font-weight: 800;
+    }
 
-        .task-title {
-            font-weight: 700;
-        }
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #25d366;
+      display: inline-block;
+      margin-right: 5px;
+    }
 
-        .task-text {
-            color: #8fa8bd;
-            font-size: 12px;
-            margin-top: 5px;
-        }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 88px;
+      transform: translateX(-50%);
+      z-index: 100;
+      width: calc(100% - 40px);
+      max-width: 420px;
+      background: #102338;
+      border: 1px solid #27506f;
+      border-radius: 13px;
+      padding: 13px 15px;
+      text-align: center;
+      font-size: 13px;
+      display: none;
+    }
 
-        .loading {
-            text-align: center;
-            padding: 30px 10px;
-            color: #8fa8bd;
-        }
-
-        .error {
-            color: #ff7777;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 35px;
-            color: #60798d;
-            font-size: 11px;
-        }
-    </style>
+    .toast.show {
+      display: block;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <div class="header">
-        <div class="logo">FIDEXA</div>
-        <div class="network">NETWORK</div>
+  <!-- HEADER -->
+  <header class="px-4 pt-5 pb-3">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <div>
+        <div class="text-xl font-extrabold tracking-wide">FIDEXA</div>
+        <div class="small">Decentralized digital ecosystem</div>
+      </div>
+
+      <div class="text-right">
+        <div class="text-xs text-slate-400">Network</div>
+        <div class="text-sm font-bold">
+          <span class="status-dot"></span>Online
+        </div>
+      </div>
     </div>
+  </header>
 
-    <div class="welcome" id="userName">
-        Welcome to FIDEXA
-    </div>
+  <main class="max-w-xl mx-auto px-4">
 
-    <div class="balance-card">
+    <!-- ================= HOME ================= -->
+    <section id="homePage" class="page active">
 
-        <div class="balance-label">
-            Your Balance
+      <div class="blue-card rounded-2xl p-5">
+        <div class="text-sm text-sky-200">Your FIDEXA Balance</div>
+
+        <div class="balance mt-1">
+          <span id="homeBalance">0.00</span>
+          <span class="text-lg text-sky-200">FDX</span>
         </div>
 
-        <div class="balance">
-            <span id="balanceDisplay">0.00</span>
-            <span class="currency">FDX</span>
+        <div class="mt-4 flex justify-between text-xs text-sky-200">
+          <span id="userName">Loading...</span>
+          <span id="authStatus">Connecting...</span>
         </div>
+      </div>
 
-    </div>
+      <div class="mt-5">
+        <div class="section-title mb-3">Mining</div>
 
-
-    <div class="mine-card">
-
-        <div class="mine-title">
-            Mine FDX
-        </div>
-
-        <div class="mine-info">
-            Watch an available advertisement to earn
-            <strong>10 FDX</strong>.
-        </div>
-
-        <button
-            class="mine-btn"
-            id="miningBtn"
-            onclick="handleMining()"
-            disabled
-        >
-            Loading...
-        </button>
-
-        <div
-            class="status"
-            id="miningStatus"
-        >
-            Connecting to FIDEXA...
-        </div>
-
-    </div>
-
-
-    <div class="section">
-
-        <div class="section-title">
-            Tasks
-        </div>
-
-        <div class="task">
-            <div class="task-title">
-                Watch Ads
+        <div class="card p-5">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-bold">8-Hour Mining</div>
+              <div class="small mt-1">
+                Start a mining session every 8 hours.
+              </div>
             </div>
 
-            <div class="task-text">
-                Complete available AdsGram advertisements
-                to earn FDX.
-            </div>
-        </div>
-
-        <div class="task">
-            <div class="task-title">
-                FIDEXA Network
-            </div>
-
-            <div class="task-text">
-                More FIDEXA activities will be added
-                as development continues.
-            </div>
-        </div>
-
-    </div>
-
-
-    <div class="footer">
-        FIDEXA Network • Development Version
-    </div>
-
-</div>
-
-
-<script>
-
-    // ==================================================
-    // FIREBASE CONFIGURATION
-    // ==================================================
-
-    const firebaseConfig = {
-
-        apiKey:
-            "AIzaSyBArAsuRYbo96jA2ZH3s96bCT-9wBiDM34",
-
-        authDomain:
-            "fidexa-network.firebaseapp.com",
-
-        projectId:
-            "fidexa-network",
-
-        storageBucket:
-            "fidexa-network.firebasestorage.app",
-
-        messagingSenderId:
-            "4773222206",
-
-        appId:
-            "1:4773222206:web:c1069abc803d64dfbfbe6f",
-
-        measurementId:
-            "G-X8PPWR5SJD"
-    };
-
-
-    // ==================================================
-    // INITIALIZE FIREBASE
-    // ==================================================
-
-    firebase.initializeApp(firebaseConfig);
-
-    const auth =
-        firebase.auth();
-
-    const db =
-        firebase.firestore();
-
-
-    // ==================================================
-    // TELEGRAM
-    // ==================================================
-
-    const tg =
-        window.Telegram?.WebApp;
-
-    if (tg) {
-
-        tg.ready();
-        tg.expand();
-
-    }
-
-
-    // ==================================================
-    // ADSGRAM
-    // ==================================================
-
-    let AdController = null;
-
-    try {
-
-        if (window.Adsgram) {
-
-            AdController =
-                window.Adsgram.init({
-                    blockId: "49196"
-                });
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "AdsGram initialization error:",
-            error
-        );
-
-    }
-
-
-    // ==================================================
-    // USER VARIABLES
-    // ==================================================
-
-    let currentUser = null;
-    let userRef = null;
-
-
-    // ==================================================
-    // TELEGRAM USER
-    // ==================================================
-
-    function getTelegramUser() {
-
-        return (
-            tg?.initDataUnsafe?.user ||
-            null
-        );
-
-    }
-
-
-    // ==================================================
-    // INITIALIZE FIDEXA
-    // ==================================================
-
-    async function initializeFIDEXA() {
-
-        const status =
-            document.getElementById(
-                "miningStatus"
-            );
-
-        try {
-
-            status.innerText =
-                "Connecting to Firebase...";
-
-
-            // Anonymous Firebase login
-            const credential =
-                await auth.signInAnonymously();
-
-
-            currentUser =
-                credential.user;
-
-
-            console.log(
-                "Firebase UID:",
-                currentUser.uid
-            );
-
-
-            // Firestore document
-            userRef =
-                db
-                    .collection("users")
-                    .doc(currentUser.uid);
-
-
-            // Telegram information
-            const telegramUser =
-                getTelegramUser();
-
-
-            const telegramId =
-                telegramUser?.id
-                    ? String(telegramUser.id)
-                    : "";
-
-
-            const firstName =
-                telegramUser?.first_name ||
-                "User";
-
-
-            // Greeting
-            document.getElementById(
-                "userName"
-            ).innerText =
-                "Hey " + firstName + "!";
-
-
-            // Check account
-            const snapshot =
-                await userRef.get();
-
-
-            if (!snapshot.exists) {
-
-                await userRef.set({
-
-                    balance: 0,
-
-                    telegramId:
-                        telegramId,
-
-                    firstName:
-                        firstName,
-
-                    createdAt:
-                        firebase.firestore
-                            .FieldValue
-                            .serverTimestamp(),
-
-                    lastClaim: null
-
-                });
-
-            }
-
-
-            // Load balance
-            await loadBalance();
-
-
-            // Enable mining
-            const miningButton =
-                document.getElementById(
-                    "miningBtn"
-                );
-
-
-            miningButton.disabled =
-                false;
-
-            miningButton.innerText =
-                "WATCH AD & EARN 10 FDX";
-
-
-            status.innerText =
-                "Ready";
-
-
-        } catch (error) {
-
-            console.error(
-                "FIDEXA initialization error:",
-                error
-            );
-
-
-            status.innerText =
-                "Firebase connection failed.";
-
-
-            status.classList.add(
-                "error"
-            );
-
-        }
-
-    }
-
-
-    // ==================================================
-    // LOAD BALANCE
-    // ==================================================
-
-    async function loadBalance() {
-
-        if (!userRef) {
-            return;
-        }
-
-
-        const snapshot =
-            await userRef.get();
-
-
-        if (!snapshot.exists) {
-            return;
-        }
-
-
-        const data =
-            snapshot.data();
-
-
-        const balance =
-            Number(
-                data.balance || 0
-            );
-
-
-        updateBalanceDisplay(
-            balance
-        );
-
-    }
-
-
-    // ==================================================
-    // DISPLAY BALANCE
-    // ==================================================
-
-    function updateBalanceDisplay(
-        balance
-    ) {
-
-        const balanceElement =
-            document.getElementById(
-                "balanceDisplay"
-            );
-
-
-        balanceElement.innerText =
-            Number(balance)
-                .toLocaleString(
-                    "en-US",
-                    {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }
-                );
-
-    }
-
-
-    // ==================================================
-    // MINING
-    // ==================================================
-
-    async function handleMining() {
-
-        const button =
-            document.getElementById(
-                "miningBtn"
-            );
-
-
-        const status =
-            document.getElementById(
-                "miningStatus"
-            );
-
-
-        if (!currentUser || !userRef) {
-
-            status.innerText =
-                "Firebase is still connecting.";
-
-            return;
-
-        }
-
-
-        if (!AdController) {
-
-            status.innerText =
-                "AdsGram is not ready.";
-
-            return;
-
-        }
-
-
-        try {
-
-            button.disabled =
-                true;
-
-
-            status.innerText =
-                "Opening advertisement...";
-
-
-            // Show AdsGram
-            const adResult =
-                await AdController.show();
-
-
-            if (
-                !adResult ||
-                !adResult.done
-            ) {
-
-                status.innerText =
-                    "Advertisement was not completed.";
-
-                button.disabled =
-                    false;
-
-                return;
-
-            }
-
-
-            status.innerText =
-                "Ad completed. Processing reward...";
-
-
-            // ==================================================
-            // IMPORTANT:
-            // This is the client-side reward stage.
-            // Firestore Security Rules must enforce the
-            // actual reward restrictions.
-            // ==================================================
-
-            const userSnapshot =
-                await userRef.get();
-
-
-            if (!userSnapshot.exists) {
-
-                throw new Error(
-                    "FIDEXA account not found."
-                );
-
-            }
-
-
-            const data =
-                userSnapshot.data();
-
-
-            const oldBalance =
-                Number(
-                    data.balance || 0
-                );
-
-
-            const newBalance =
-                oldBalance + 10;
-
-
-            await userRef.update({
-
-                balance:
-                    newBalance,
-
-                lastClaim:
-                    firebase.firestore
-                        .FieldValue
-                        .serverTimestamp()
-
-            });
-
-
-            updateBalanceDisplay(
-                newBalance
-            );
-
-
-            status.innerText =
-                "Reward added: +10 FDX";
-
-
-        } catch (error) {
-
-            console.error(
-                "Mining error:",
-                error
-            );
-
-
-            if (
-                error.code ===
-                "permission-denied"
-            ) {
-
-                status.innerText =
-                    "Firebase blocked this claim.";
-
-            } else {
-
-                status.innerText =
-                    "Claim failed. Please try again.";
-
-            }
-
-        }
-
-
-        button.disabled =
-            false;
-
-    }
-
-
-    // ==================================================
-    // START FIDEXA
-    // ==================================================
-
-    initializeFIDEXA();
-
-</script>
-
-</body>
-</html>
+            <div class="text-sky-400 text-2xl">⛏</div>
+          </div>
+
+          <div class="mt-5 timer" id="homeMiningTimer">
+            08:00:00
+          </div>
+
+          <div class="mt-4 progress-track">
+            <div id="homeMiningProgress" class="progress-bar"></div>
+          </div>
+
+          <button
+            id="homeMiningButton"
+            class="primary-btn mt-4"
+            onclick="startMining()"
+          >
+            START MINING
+          </button>
+
+          <div
+            id="homeMiningStatus"
+            class="small text-center mt-3"
+          >
+            Ready to start
+          </div>
