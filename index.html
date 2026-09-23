@@ -845,4 +845,2249 @@ button{
     <h3>Daily Free Spin</h3>
 
     <p class="notice">
-      Spin once every day for a chance to receive FDX Points
+      Spin once every day for a chance to receive FDX Points.
+      Additional opportunities may become available through ads
+      and activities.
+    </p>
+
+    <button
+      class="primary-btn"
+      onclick="openSpinPreview()">
+      SPIN NOW
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================= FRIENDS ================= -->
+
+<section class="page" id="friendsPage">
+
+  <div class="section-title">Invite & Earn</div>
+
+  <div class="card">
+
+    <h3>Invite friends to FIDEXA</h3>
+
+    <p class="notice">
+      When a friend joins through your referral and starts an
+      active mining session, you receive <b>+0.1 FDX/hour</b>.
+    </p>
+
+    <div class="referral-box">
+
+      <input
+        id="referralLink"
+        readonly
+        value="Generating referral link...">
+
+      <button
+        class="copy-btn"
+        id="copyReferral"
+        onclick="copyReferralLink()">
+        COPY
+      </button>
+
+    </div>
+
+
+    <div class="friend-stats">
+
+      <div class="friend-stat">
+        <strong id="friendCount">0</strong>
+        <span>TOTAL FRIENDS</span>
+      </div>
+
+      <div class="friend-stat">
+        <strong id="activeFriendCount">0</strong>
+        <span>ACTIVE FRIENDS</span>
+      </div>
+
+    </div>
+
+
+    <div class="bonus-rate">
+
+      <div class="small-note">
+        CURRENT REFERRAL MINING BONUS
+      </div>
+
+      <strong id="referralMiningBonus">
+        +0.0 FDX/hour
+      </strong>
+
+      <div class="small-note" style="margin-top:5px">
+        Current mining rate:
+        <b id="friendRatePreview">1.0 FDX/hour</b>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <strong>Referral Rewards</strong>
+
+    <div class="milestone">
+
+      <div class="milestone-info">
+        <strong>1 Friend</strong>
+        <span>First referral milestone</span>
+      </div>
+
+      <div>
+        <span class="reward">+5 FDX</span>
+        <div id="reward1" class="claimed"></div>
+      </div>
+
+    </div>
+
+
+    <div class="milestone">
+
+      <div class="milestone-info">
+        <strong>5 Friends</strong>
+        <span>Referral milestone</span>
+      </div>
+
+      <div>
+        <span class="reward">+20 FDX</span>
+        <div id="reward5" class="claimed"></div>
+      </div>
+
+    </div>
+
+
+    <div class="milestone">
+
+      <div class="milestone-info">
+        <strong>10 Friends</strong>
+        <span>Referral milestone</span>
+      </div>
+
+      <div>
+        <span class="reward">+30 FDX</span>
+        <div id="reward10" class="claimed"></div>
+      </div>
+
+    </div>
+
+
+    <div class="milestone">
+
+      <div class="milestone-info">
+        <strong>50 Friends</strong>
+        <span>Referral milestone</span>
+      </div>
+
+      <div>
+        <span class="reward">+50 FDX</span>
+        <div id="reward50" class="claimed"></div>
+      </div>
+
+    </div>
+
+
+    <div class="milestone">
+
+      <div class="milestone-info">
+        <strong>100 Friends</strong>
+        <span>Referral milestone</span>
+      </div>
+
+      <div>
+        <span class="reward">+100 FDX</span>
+        <div id="reward100" class="claimed"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- LOCAL TESTING ONLY -->
+
+  <div class="card">
+
+    <strong>Developer Preview</strong>
+
+    <p class="notice">
+      These buttons only simulate referrals while testing the
+      frontend. They will be removed when the real backend is
+      connected.
+    </p>
+
+    <button
+      class="secondary-btn"
+      onclick="simulateReferral()">
+      + Simulate Friend
+    </button>
+
+    <button
+      class="secondary-btn"
+      onclick="toggleLastReferralActivity()"
+      style="margin-left:5px">
+      Toggle Activity
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================= WALLET ================= -->
+
+<section class="page" id="walletPage">
+
+  <div class="section-title">Wallet</div>
+
+  <div class="card balance-card">
+
+    <div class="balance-label">
+      AVAILABLE BALANCE
+    </div>
+
+    <div class="balance" id="walletBalance">
+      0.0000
+    </div>
+
+    <div class="coin">
+      FDX Points
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>Wallet Connection</h3>
+
+    <p class="notice">
+      Wallet functionality is reserved for the next development
+      stage. FDX is currently an internal points/credits system
+      inside the FIDEXA application.
+    </p>
+
+    <div class="wallet-address" style="margin-top:15px">
+      Wallet not connected
+    </div>
+
+    <button
+      class="primary-btn"
+      onclick="walletComingSoon()">
+      CONNECT WALLET
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROFILE ================= -->
+
+<section class="page" id="profilePage">
+
+  <div class="card profile-head">
+
+    <div class="avatar" id="avatar">
+      F
+    </div>
+
+    <div class="profile-name" id="profileName">
+      FIDEXA User
+    </div>
+
+    <div class="profile-username" id="profileUsername">
+      @username
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <button class="menu-btn" onclick="showProfileInfo()">
+      <span>👤 Account Information</span>
+      <span>›</span>
+    </button>
+
+    <button class="menu-btn" onclick="openSupport()">
+      <span>💬 Support</span>
+      <span>›</span>
+    </button>
+
+    <button class="menu-btn" onclick="showInfo()">
+      <span>ℹ️ About FIDEXA</span>
+      <span>›</span>
+    </button>
+
+    <button class="menu-btn" onclick="openTelegram()">
+      <span>✈️ Telegram</span>
+      <span>›</span>
+    </button>
+
+    <button class="menu-btn" onclick="openX()">
+      <span>𝕏 X / Twitter</span>
+      <span>›</span>
+    </button>
+
+    <button
+      class="menu-btn danger"
+      onclick="openDeleteModal()">
+      <span>🗑 Delete Account</span>
+      <span>›</span>
+    </button>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<nav class="bottom-nav">
+
+  <button
+    class="nav-btn active"
+    id="navHome"
+    onclick="showPage('home')">
+    <span>⌂</span>
+    <span>HOME</span>
+  </button>
+
+  <button
+    class="nav-btn"
+    id="navTasks"
+    onclick="showPage('tasks')">
+    <span>✓</span>
+    <span>TASKS</span>
+  </button>
+
+  <button
+    class="nav-btn"
+    id="navFriends"
+    onclick="showPage('friends')">
+    <span>👥</span>
+    <span>FRIENDS</span>
+  </button>
+
+  <button
+    class="nav-btn"
+    id="navWallet"
+    onclick="showPage('wallet')">
+    <span>▣</span>
+    <span>WALLET</span>
+  </button>
+
+  <button
+    class="nav-btn"
+    id="navProfile"
+    onclick="showPage('profile')">
+    <span>●</span>
+    <span>PROFILE</span>
+  </button>
+
+</nav>
+
+
+<!-- ================= INFO MODAL ================= -->
+
+<div class="modal" id="infoModal">
+
+  <div class="modal-box">
+
+    <h3>FIDEXA NETWORK</h3>
+
+    <p>
+      FIDEXA NETWORK is a digital mining and rewards application.
+      The current version uses FDX as internal points/credits.
+      Blockchain/token functionality can be added in a later
+      development stage.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('infoModal')">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= DELETE MODAL ================= -->
+
+<div class="modal" id="deleteModal">
+
+  <div class="modal-box">
+
+    <h3>Delete Account?</h3>
+
+    <p>
+      This is only a frontend preview. Account deletion will be
+      connected to the backend when Firebase/authentication is
+      integrated.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('deleteModal')">
+        CANCEL
+      </button>
+
+      <button
+        style="background:var(--red);color:white"
+        onclick="requestDelete()">
+        DELETE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SUPPORT MODAL ================= -->
+
+<div class="modal" id="supportModal">
+
+  <div class="modal-box">
+
+    <h3>FIDEXA Support</h3>
+
+    <p>
+      For support, please contact the official FIDEXA support
+      team through Telegram.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('supportModal')">
+        CLOSE
+      </button>
+
+      <button
+        class="primary-btn"
+        style="margin-top:0"
+        onclick="openTelegram()">
+        TELEGRAM
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SPIN MODAL ================= -->
+
+<div class="modal" id="spinModal">
+
+  <div class="modal-box">
+
+    <h3>🎁 Daily Spin</h3>
+
+    <p id="spinText">
+      Your daily free spin is ready.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('spinModal')">
+        CLOSE
+      </button>
+
+      <button
+        class="primary-btn"
+        style="margin-top:0"
+        onclick="spinNow()">
+        SPIN
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div class="toast" id="toast">
+  Done
+</div>
+
+
+<!-- =========================================================
+     COMPLETE JAVASCRIPT
+========================================================= -->
+
+<script>
+
+/* =========================================================
+   TELEGRAM
+========================================================= */
+
+const tg =
+  window.Telegram &&
+  window.Telegram.WebApp
+    ? window.Telegram.WebApp
+    : null;
+
+if(tg){
+  try{
+    tg.ready();
+    tg.expand();
+  }catch(e){}
+}
+
+
+/* =========================================================
+   APP CONSTANTS
+========================================================= */
+
+const MINING_DURATION =
+  8 * 60 * 60 * 1000;
+
+const BASE_RATE =
+  1.0;
+
+const BOOST_RATE =
+  0.5;
+
+const MAX_BOOSTERS =
+  5;
+
+const REFERRAL_RATE =
+  0.1;
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const STORAGE_KEY =
+  "fidexa_network_state_v3";
+
+
+/* =========================================================
+   DEFAULT STATE
+========================================================= */
+
+const defaultState = {
+
+  balance: 0,
+
+  totalMined: 0,
+
+  miningStart: null,
+
+  miningEnd: null,
+
+  miningRateAtStart: BASE_RATE,
+
+  boosters: 0,
+
+  boosterWindowStart: null,
+
+  referrals: [],
+
+  claimedMilestones: [],
+
+  spinLastDate: null
+
+};
+
+
+/* =========================================================
+   LOAD STATE
+========================================================= */
+
+function loadState(){
+
+  try{
+
+    const saved =
+      localStorage.getItem(STORAGE_KEY);
+
+    if(saved){
+
+      const parsed =
+        JSON.parse(saved);
+
+      return {
+        ...defaultState,
+        ...parsed
+      };
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "State loading error:",
+      error
+    );
+
+  }
+
+  return {
+    ...defaultState
+  };
+
+}
+
+
+let state =
+  loadState();
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function saveState(){
+
+  try{
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(state)
+    );
+
+  }catch(error){
+
+    console.error(
+      "State saving error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   NUMBER HELPERS
+========================================================= */
+
+function number(value){
+
+  return Number(value) || 0;
+
+}
+
+
+function formatFDX(value){
+
+  return number(value).toFixed(4);
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function toast(message){
+
+  const el =
+    document.getElementById("toast");
+
+  if(!el) return;
+
+  el.textContent =
+    message;
+
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      el.classList.remove("show");
+
+    }, 2200);
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+  const pages = {
+
+    home:
+      document.getElementById("homePage"),
+
+    tasks:
+      document.getElementById("tasksPage"),
+
+    friends:
+      document.getElementById("friendsPage"),
+
+    wallet:
+      document.getElementById("walletPage"),
+
+    profile:
+      document.getElementById("profilePage")
+
+  };
+
+
+  Object.values(pages)
+    .forEach(el => {
+
+      if(el)
+        el.classList.remove("active");
+
+    });
+
+
+  if(pages[page])
+    pages[page].classList.add("active");
+
+
+  const navIds = {
+
+    home:"navHome",
+    tasks:"navTasks",
+    friends:"navFriends",
+    wallet:"navWallet",
+    profile:"navProfile"
+
+  };
+
+
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(btn => {
+
+      btn.classList.remove("active");
+
+    });
+
+
+  const nav =
+    document.getElementById(navIds[page]);
+
+  if(nav)
+    nav.classList.add("active");
+
+}
+
+
+/* =========================================================
+   TELEGRAM USER
+========================================================= */
+
+function loadTelegramUser(){
+
+  let user = null;
+
+  try{
+
+    user =
+      tg &&
+      tg.initDataUnsafe &&
+      tg.initDataUnsafe.user
+        ? tg.initDataUnsafe.user
+        : null;
+
+  }catch(e){}
+
+
+  if(!user){
+
+    setProfile(
+      "FIDEXA User",
+      "@username",
+      "F"
+    );
+
+    return;
+
+  }
+
+
+  const first =
+    user.first_name || "";
+
+  const last =
+    user.last_name || "";
+
+  const fullName =
+    `${first} ${last}`.trim()
+    || "FIDEXA User";
+
+  const username =
+    user.username
+      ? "@" + user.username
+      : "Telegram User";
+
+
+  const initials =
+    (
+      first.charAt(0) +
+      (last.charAt(0) || "")
+    ).toUpperCase()
+    || "F";
+
+
+  setProfile(
+    fullName,
+    username,
+    initials
+  );
+
+}
+
+
+function setProfile(
+  name,
+  username,
+  initials
+){
+
+  document.getElementById(
+    "profileName"
+  ).textContent = name;
+
+  document.getElementById(
+    "profileUsername"
+  ).textContent = username;
+
+  document.getElementById(
+    "avatar"
+  ).textContent = initials;
+
+}
+
+
+/* =========================================================
+   REFERRAL LINK
+========================================================= */
+
+function createReferralLink(){
+
+  let userId =
+    "preview";
+
+  try{
+
+    if(
+      tg &&
+      tg.initDataUnsafe &&
+      tg.initDataUnsafe.user
+    ){
+
+      userId =
+        tg.initDataUnsafe.user.id;
+
+    }
+
+  }catch(e){}
+
+
+  const link =
+    "https://t.me/FIDEXANetworkBot/fidexa?startapp=ref_" +
+    userId;
+
+
+  const input =
+    document.getElementById(
+      "referralLink"
+    );
+
+  if(input)
+    input.value = link;
+
+}
+
+
+/* =========================================================
+   COPY REFERRAL
+========================================================= */
+
+async function copyReferralLink(){
+
+  const input =
+    document.getElementById(
+      "referralLink"
+    );
+
+  if(!input)
+    return;
+
+
+  try{
+
+    await navigator.clipboard.writeText(
+      input.value
+    );
+
+    toast(
+      "Referral link copied!"
+    );
+
+  }catch(error){
+
+    input.select();
+
+    document.execCommand("copy");
+
+    toast(
+      "Referral link copied!"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ACTIVE REFERRALS
+========================================================= */
+
+/*
+  A referral is active while that friend's
+  simulated mining session is active.
+
+  In the real Firebase version this status
+  must come from the backend.
+*/
+
+function isReferralActive(friend){
+
+  if(!friend)
+    return false;
+
+
+  if(!friend.registered)
+    return false;
+
+
+  if(!friend.miningStart ||
+     !friend.miningEnd)
+    return false;
+
+
+  return Date.now() <
+    Number(friend.miningEnd);
+
+}
+
+
+/* =========================================================
+   CLEAN EXPIRED REFERRALS
+========================================================= */
+
+function refreshReferralActivity(){
+
+  let changed = false;
+
+
+  state.referrals.forEach(friend => {
+
+    const active =
+      isReferralActive(friend);
+
+
+    if(friend.active !== active){
+
+      friend.active =
+        active;
+
+      changed = true;
+
+    }
+
+  });
+
+
+  if(changed)
+    saveState();
+
+}
+
+
+/* =========================================================
+   ACTIVE FRIEND COUNT
+========================================================= */
+
+function getActiveFriendCount(){
+
+  refreshReferralActivity();
+
+  return state.referrals
+    .filter(friend =>
+      isReferralActive(friend)
+    )
+    .length;
+
+}
+
+
+/* =========================================================
+   REFERRAL MINING BONUS
+========================================================= */
+
+function getReferralBonus(){
+
+  return (
+    getActiveFriendCount() *
+    REFERRAL_RATE
+  );
+
+}
+
+
+/* =========================================================
+   CURRENT MINING RATE
+========================================================= */
+
+function getCurrentRate(){
+
+  return (
+    BASE_RATE +
+    (state.boosters * BOOST_RATE) +
+    getReferralBonus()
+  );
+
+}
+
+
+/* =========================================================
+   RATE AT START
+========================================================= */
+
+function getSessionRate(){
+
+  if(state.miningRateAtStart){
+
+    return number(
+      state.miningRateAtStart
+    );
+
+  }
+
+  return getCurrentRate();
+
+}
+
+
+/* =========================================================
+   START MINING
+========================================================= */
+
+function startMining(){
+
+  if(
+    state.miningStart &&
+    state.miningEnd &&
+    Date.now() <
+    state.miningEnd
+  ){
+
+    toast(
+      "Mining is already active."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Refresh referral status first.
+  */
+
+  refreshReferralActivity();
+
+
+  const now =
+    Date.now();
+
+  const rate =
+    getCurrentRate();
+
+
+  state.miningStart =
+    now;
+
+  state.miningEnd =
+    now + MINING_DURATION;
+
+  /*
+    The rate is locked for this
+    8-hour session.
+
+    The next session uses the
+    updated rate.
+  */
+
+  state.miningRateAtStart =
+    rate;
+
+
+  saveState();
+
+  updateUI();
+
+  toast(
+    "Mining started!"
+  );
+
+}
+
+
+/* =========================================================
+   FINISH MINING
+========================================================= */
+
+function finishMining(){
+
+  if(
+    !state.miningStart ||
+    !state.miningEnd
+  ){
+
+    return;
+
+  }
+
+
+  const elapsed =
+    state.miningEnd -
+    state.miningStart;
+
+
+  const hours =
+    elapsed /
+    (60 * 60 * 1000);
+
+
+  const reward =
+    hours *
+    getSessionRate();
+
+
+  if(reward > 0){
+
+    state.balance +=
+      reward;
+
+    state.totalMined +=
+      reward;
+
+  }
+
+
+  state.miningStart =
+    null;
+
+  state.miningEnd =
+    null;
+
+  state.miningRateAtStart =
+    getCurrentRate();
+
+
+  saveState();
+
+  checkReferralMilestones();
+
+  updateUI();
+
+  toast(
+    "Mining session completed!"
+  );
+
+}
+
+
+/* =========================================================
+   CURRENT SESSION REWARD
+========================================================= */
+
+function getCurrentSessionReward(){
+
+  if(
+    !state.miningStart ||
+    !state.miningEnd
+  ){
+
+    return 0;
+
+  }
+
+
+  const elapsed =
+    Math.max(
+      0,
+      Math.min(
+        Date.now() -
+        state.miningStart,
+
+        MINING_DURATION
+      )
+    );
+
+
+  const hours =
+    elapsed /
+    (60 * 60 * 1000);
+
+
+  return (
+    hours *
+    getSessionRate()
+  );
+
+}
+
+
+/* =========================================================
+   BOOSTER WINDOW
+========================================================= */
+
+function refreshBoosterWindow(){
+
+  if(!state.boosterWindowStart)
+    return;
+
+
+  const elapsed =
+    Date.now() -
+    Number(
+      state.boosterWindowStart
+    );
+
+
+  if(
+    elapsed >=
+    24 * 60 * 60 * 1000
+  ){
+
+    state.boosters = 0;
+
+    state.boosterWindowStart =
+      null;
+
+    saveState();
+
+  }
+
+}
+
+
+/* =========================================================
+   USE BOOSTER
+========================================================= */
+
+function useBooster(){
+
+  refreshBoosterWindow();
+
+
+  if(
+    state.boosters >=
+    MAX_BOOSTERS
+  ){
+
+    toast(
+      "Daily booster limit reached."
+    );
+
+    return;
+
+  }
+
+
+  if(!state.boosterWindowStart){
+
+    state.boosterWindowStart =
+      Date.now();
+
+  }
+
+
+  /*
+    Preview version:
+    watching the ad is simulated.
+
+    Later this button will connect
+    to the real ad provider.
+  */
+
+  state.boosters += 1;
+
+
+  saveState();
+
+  updateUI();
+
+  toast(
+    "+0.5 FDX/hour booster activated!"
+  );
+
+}
+
+
+/* =========================================================
+   REFERRAL MILESTONES
+========================================================= */
+
+const milestones = [
+
+  {
+    friends:1,
+    reward:5,
+    id:"reward1"
+  },
+
+  {
+    friends:5,
+    reward:20,
+    id:"reward5"
+  },
+
+  {
+    friends:10,
+    reward:30,
+    id:"reward10"
+  },
+
+  {
+    friends:50,
+    reward:50,
+    id:"reward50"
+  },
+
+  {
+    friends:100,
+    reward:100,
+    id:"reward100"
+  }
+
+];
+
+
+function checkReferralMilestones(){
+
+  const total =
+    state.referrals.length;
+
+
+  milestones.forEach(
+    milestone => {
+
+      if(
+        total >= milestone.friends &&
+        !state.claimedMilestones
+          .includes(milestone.friends)
+      ){
+
+        state.balance +=
+          milestone.reward;
+
+
+        state.claimedMilestones
+          .push(milestone.friends);
+
+
+        toast(
+          `Referral reward +${milestone.reward} FDX!`
+        );
+
+      }
+
+    }
+  );
+
+
+  saveState();
+
+}
+
+
+/* =========================================================
+   SIMULATE REFERRAL
+========================================================= */
+
+function simulateReferral(){
+
+  const id =
+    "friend_" +
+    Date.now();
+
+
+  /*
+    For preview purposes the
+    simulated friend immediately
+    starts an 8-hour mining session.
+  */
+
+  const start =
+    Date.now();
+
+
+  const friend = {
+
+    id:id,
+
+    registered:true,
+
+    active:true,
+
+    miningStart:start,
+
+    miningEnd:
+      start + MINING_DURATION
+
+  };
+
+
+  state.referrals.push(
+    friend
+  );
+
+
+  checkReferralMilestones();
+
+  saveState();
+
+  updateUI();
+
+  toast(
+    "Simulated active friend added!"
+  );
+
+}
+
+
+/* =========================================================
+   TOGGLE LAST REFERRAL
+========================================================= */
+
+function toggleLastReferralActivity(){
+
+  if(
+    !state.referrals.length
+  ){
+
+    toast(
+      "No referral to test."
+    );
+
+    return;
+
+  }
+
+
+  const friend =
+    state.referrals[
+      state.referrals.length - 1
+    ];
+
+
+  if(
+    isReferralActive(friend)
+  ){
+
+    /*
+      Force the friend inactive
+      by ending their session.
+    */
+
+    friend.miningEnd =
+      Date.now() - 1000;
+
+    friend.active =
+      false;
+
+    toast(
+      "Last friend is now inactive."
+    );
+
+  }else{
+
+    /*
+      Reactivate for another 8h.
+    */
+
+    const now =
+      Date.now();
+
+    friend.miningStart =
+      now;
+
+    friend.miningEnd =
+      now + MINING_DURATION;
+
+    friend.active =
+      true;
+
+    toast(
+      "Last friend is active again."
+    );
+
+  }
+
+
+  saveState();
+
+  updateUI();
+
+}
+
+
+/* =========================================================
+   SPIN
+========================================================= */
+
+function todayKey(){
+
+  const d =
+    new Date();
+
+  return [
+    d.getFullYear(),
+    String(
+      d.getMonth()+1
+    ).padStart(2,"0"),
+    String(
+      d.getDate()
+    ).padStart(2,"0")
+  ].join("-");
+
+}
+
+
+function openSpinPreview(){
+
+  const modal =
+    document.getElementById(
+      "spinModal"
+    );
+
+  const text =
+    document.getElementById(
+      "spinText"
+    );
+
+
+  const today =
+    todayKey();
+
+
+  if(
+    state.spinLastDate ===
+    today
+  ){
+
+    text.textContent =
+      "You have already used today's free spin.";
+
+  }else{
+
+    text.textContent =
+      "Your daily free spin is ready.";
+
+  }
+
+
+  modal.classList.add("show");
+
+}
+
+
+function spinNow(){
+
+  const today =
+    todayKey();
+
+
+  if(
+    state.spinLastDate ===
+    today
+  ){
+
+    toast(
+      "Today's spin has already been used."
+    );
+
+    closeModal(
+      "spinModal"
+    );
+
+    return;
+
+  }
+
+
+  const rewards = [
+    1,
+    2,
+    5,
+    10,
+    20
+  ];
+
+
+  const reward =
+    rewards[
+      Math.floor(
+        Math.random() *
+        rewards.length
+      )
+    ];
+
+
+  state.balance +=
+    reward;
+
+
+  state.spinLastDate =
+    today;
+
+
+  saveState();
+
+  updateUI();
+
+  closeModal(
+    "spinModal"
+  );
+
+
+  toast(
+    `🎉 You won ${reward} FDX!`
+  );
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function showProfileInfo(){
+
+  const name =
+    document.getElementById(
+      "profileName"
+    ).textContent;
+
+
+  alert(
+    "Account: " +
+    name +
+    "\n\nFIDEXA account information will be connected to Firebase later."
+  );
+
+}
+
+
+function openSupport(){
+
+  document
+    .getElementById(
+      "supportModal"
+    )
+    .classList.add("show");
+
+}
+
+
+function showInfo(){
+
+  document
+    .getElementById(
+      "infoModal"
+    )
+    .classList.add("show");
+
+}
+
+
+function openDeleteModal(){
+
+  document
+    .getElementById(
+      "deleteModal"
+    )
+    .classList.add("show");
+
+}
+
+
+function requestDelete(){
+
+  closeModal(
+    "deleteModal"
+  );
+
+  toast(
+    "Account deletion will be connected to the backend."
+  );
+
+}
+
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function closeModal(id){
+
+  const modal =
+    document.getElementById(id);
+
+  if(modal)
+    modal.classList.remove("show");
+
+}
+
+
+/* =========================================================
+   EXTERNAL LINKS
+========================================================= */
+
+function openTelegram(){
+
+  const url =
+    "https://t.me/FIDEXANetwork";
+
+  if(tg){
+
+    try{
+
+      tg.openTelegramLink(url);
+      return;
+
+    }catch(e){}
+
+  }
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}
+
+
+function openX(){
+
+  const url =
+    "https://x.com/FIDEXANetwork";
+
+  if(tg){
+
+    try{
+
+      tg.openLink(url);
+      return;
+
+    }catch(e){}
+
+  }
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}
+
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+function walletComingSoon(){
+
+  toast(
+    "Wallet connection is coming in the next stage."
+  );
+
+}
+
+
+/* =========================================================
+   TIME FORMAT
+========================================================= */
+
+function formatTime(ms){
+
+  ms =
+    Math.max(
+      0,
+      ms
+    );
+
+
+  const totalSeconds =
+    Math.floor(
+      ms / 1000
+    );
+
+
+  const hours =
+    Math.floor(
+      totalSeconds / 3600
+    );
+
+
+  const minutes =
+    Math.floor(
+      (totalSeconds % 3600) /
+      60
+    );
+
+
+  const seconds =
+    totalSeconds % 60;
+
+
+  return [
+
+    String(hours)
+      .padStart(2,"0"),
+
+    String(minutes)
+      .padStart(2,"0"),
+
+    String(seconds)
+      .padStart(2,"0")
+
+  ].join(":");
+
+}
+
+
+/* =========================================================
+   UPDATE MINING UI
+========================================================= */
+
+function updateMiningUI(){
+
+  refreshBoosterWindow();
+  refreshReferralActivity();
+
+
+  const balance =
+    document.getElementById(
+      "balanceValue"
+    );
+
+  const walletBalance =
+    document.getElementById(
+      "walletBalance"
+    );
+
+  const rateValue =
+    document.getElementById(
+      "rateValue"
+    );
+
+  const timer =
+    document.getElementById(
+      "timer"
+    );
+
+  const status =
+    document.getElementById(
+      "miningStatus"
+    );
+
+  const button =
+    document.getElementById(
+      "mineButton"
+    );
+
+  const progress =
+    document.getElementById(
+      "progressBar"
+    );
+
+  const sessionReward =
+    document.getElementById(
+      "sessionReward"
+    );
+
+  const maxReward =
+    document.getElementById(
+      "maxSessionReward"
+    );
+
+  const totalMined =
+    document.getElementById(
+      "totalMined"
+    );
+
+
+  balance.textContent =
+    formatFDX(
+      state.balance
+    );
+
+
+  walletBalance.textContent =
+    formatFDX(
+      state.balance
+    );
+
+
+  const currentRate =
+    getCurrentRate();
+
+
+  rateValue.textContent =
+    currentRate.toFixed(1);
+
+
+  const maxSession =
+    currentRate * 8;
+
+
+  maxReward.textContent =
+    formatFDX(maxSession);
+
+
+  totalMined.textContent =
+    formatFDX(
+      state.totalMined
+    );
+
+
+  if(
+    state.miningStart &&
+    state.miningEnd &&
+    Date.now() <
+    state.miningEnd
+  ){
+
+    const remaining =
+      state.miningEnd -
+      Date.now();
+
+
+    timer.textContent =
+      formatTime(remaining);
+
+
+    status.textContent =
+      "Mining";
+
+    status.classList.add(
+      "mining"
+    );
+
+
+    button.textContent =
+      "MINING IN PROGRESS";
+
+    button.disabled =
+      true;
+
+
+    const elapsed =
+      Date.now() -
+      state.miningStart;
+
+
+    const percent =
+      Math.min(
+        100,
+        Math.max(
+          0,
+          (elapsed /
+            MINING_DURATION) *
+            100
+        )
+      );
+
+
+    progress.style.width =
+      percent + "%";
+
+
+    sessionReward.textContent =
+      formatFDX(
+        getCurrentSessionReward()
+      );
+
+  }else{
+
+    if(
+      state.miningEnd &&
+      Date.now() >=
+      state.miningEnd
+    ){
+
+      /*
+        Do not settle repeatedly.
+      */
+
+      finishMining();
+
+      return;
+
+    }
+
+
+    timer.textContent =
+      "08:00:00";
+
+
+    status.textContent =
+      "Inactive";
+
+    status.classList.remove(
+      "mining"
+    );
+
+
+    button.textContent =
+      "START MINING";
+
+    button.disabled =
+      false;
+
+
+    progress.style.width =
+      "0%";
+
+
+    sessionReward.textContent =
+      "0.0000";
+
+  }
+
+}
+
+
+/* =========================================================
+   UPDATE FRIEND UI
+========================================================= */
+
+function updateFriendsUI(){
+
+  const total =
+    state.referrals.length;
+
+
+  const active =
+    getActiveFriendCount();
+
+
+  const bonus =
+    active *
+    REFERRAL_RATE;
+
+
+  document.getElementById(
+    "friendCount"
+  ).textContent =
+    total;
+
+
+  document.getElementById(
+    "activeFriendCount"
+  ).textContent =
+    active;
+
+
+  document.getElementById(
+    "referralMiningBonus"
+  ).textContent =
+    "+" +
+    bonus.toFixed(1) +
+    " FDX/hour";
+
+
+  document.getElementById(
+    "friendRatePreview"
+  ).textContent =
+    getCurrentRate()
+      .toFixed(1) +
+    " FDX/hour";
+
+
+  milestones.forEach(
+    milestone => {
+
+      const el =
+        document.getElementById(
+          milestone.id
+        );
+
+      if(!el)
+        return;
+
+
+      if(
+        state.claimedMilestones
+          .includes(
+            milestone.friends
+          )
+      ){
+
+        el.textContent =
+          "✓ Claimed";
+
+      }else if(
+        total >=
+        milestone.friends
+      ){
+
+        el.textContent =
+          "✓ Reward added";
+
+      }else{
+
+        el.textContent =
+          "";
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE BOOSTER UI
+========================================================= */
+
+function updateBoosterUI(){
+
+  const count =
+    document.getElementById(
+      "boosterCount"
+    );
+
+
+  const button =
+    document.getElementById(
+      "boostButton"
+    );
+
+
+  count.textContent =
+    state.boosters;
+
+
+  if(
+    state.boosters >=
+    MAX_BOOSTERS
+  ){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "LIMIT";
+
+  }else{
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "WATCH";
+
+  }
+
+}
+
+
+/* =========================================================
+   MASTER UI UPDATE
+========================================================= */
+
+function updateUI(){
+
+  updateMiningUI();
+
+  updateFriendsUI();
+
+  updateBoosterUI();
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+function initialize(){
+
+  loadTelegramUser();
+
+  createReferralLink();
+
+  refreshBoosterWindow();
+
+  refreshReferralActivity();
+
+  checkReferralMilestones();
+
+  updateUI();
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+setInterval(
+  () => {
+
+    updateUI();
+
+  },
+  1000
+);
+
+
+/* =========================================================
+   START APP
+========================================================= */
+
+initialize();
+
+
+</script>
+
+</body>
+</html>
