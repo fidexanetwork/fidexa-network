@@ -340,6 +340,97 @@ button{
   font-weight:bold;
 }
 
+/* LUCKY BOXES */
+
+.lucky-box{
+  position:relative;
+  overflow:hidden;
+  padding:18px;
+  border-radius:17px;
+  margin-top:12px;
+  background:linear-gradient(145deg,#132b45,#0c1b2e);
+  border:1px solid rgba(57,230,255,.12);
+}
+
+.lucky-box:first-child{
+  margin-top:15px;
+}
+
+.lucky-box-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.lucky-icon{
+  width:50px;
+  height:50px;
+  flex-shrink:0;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  background:rgba(255,209,102,.1);
+  border:1px solid rgba(255,209,102,.14);
+}
+
+.lucky-info{
+  min-width:0;
+}
+
+.lucky-title{
+  font-size:16px;
+  font-weight:900;
+}
+
+.lucky-sub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.4;
+}
+
+.lucky-chances{
+  margin-top:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.lucky-chances span{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.lucky-chances strong{
+  color:var(--yellow);
+}
+
+.lucky-open-btn{
+  width:100%;
+  margin-top:13px;
+  padding:12px;
+  border-radius:11px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  color:#00111d;
+  font-size:12px;
+  font-weight:900;
+}
+
+.lucky-open-btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.lucky-rewards{
+  margin-top:10px;
+  font-size:10px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
 /* FRIENDS */
 
 .referral-box{
@@ -659,6 +750,68 @@ button{
   border-radius:11px;
 }
 
+/* LUCKY BOX MODAL */
+
+.lucky-modal-icon{
+  width:70px;
+  height:70px;
+  margin:4px auto 15px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  background:rgba(255,209,102,.1);
+  border:1px solid rgba(255,209,102,.15);
+}
+
+.lucky-modal-title{
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+}
+
+.lucky-modal-text{
+  text-align:center;
+  margin-top:8px;
+}
+
+.ad-status{
+  text-align:center;
+  margin-top:15px;
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  font-size:12px;
+}
+
+.lucky-result{
+  display:none;
+  text-align:center;
+  margin-top:17px;
+  padding:18px;
+  border-radius:15px;
+  background:rgba(53,227,138,.06);
+  border:1px solid rgba(53,227,138,.14);
+}
+
+.lucky-result.show{
+  display:block;
+}
+
+.lucky-result-label{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.lucky-result-value{
+  margin-top:5px;
+  font-size:32px;
+  font-weight:900;
+  color:var(--yellow);
+}
+
 /* POLICY */
 
 .policy-section{
@@ -698,8 +851,6 @@ button{
   opacity:1;
   transform:translateX(-50%) translateY(0);
 }
-
-/* SMALL */
 
 .small-note{
   color:var(--muted);
@@ -758,9 +909,7 @@ button{
     <div class="mining-head">
       <strong>Mining Session</strong>
 
-      <span
-        class="status"
-        id="miningStatus">
+      <span class="status" id="miningStatus">
         Inactive
       </span>
     </div>
@@ -779,9 +928,7 @@ button{
     </div>
 
 
-    <div
-      class="timer"
-      id="timer">
+    <div class="timer" id="timer">
       08:00:00
     </div>
 
@@ -938,9 +1085,7 @@ button{
 
 <!-- ================= TASKS ================= -->
 
-<section
-  class="page"
-  id="tasksPage">
+<section class="page" id="tasksPage">
 
   <div class="section-title">
     Tasks
@@ -1016,6 +1161,128 @@ button{
 
     </div>
 
+
+    <!-- ================= LUCKY BOX 1 ================= -->
+
+    <div class="lucky-box">
+
+      <div class="lucky-box-head">
+
+        <div class="lucky-icon">
+          🎁
+        </div>
+
+        <div class="lucky-info">
+
+          <div class="lucky-title">
+            Lucky Box 1
+          </div>
+
+          <div class="lucky-sub">
+            Watch an ad and discover your random $FDX reward.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="lucky-chances">
+
+        <span>
+          Chances left:
+          <strong id="luckyBox1Count">
+            3/3
+          </strong>
+        </span>
+
+        <span>
+          Resets every 24h
+        </span>
+
+      </div>
+
+
+      <button
+        class="lucky-open-btn"
+        id="luckyBox1Button"
+        onclick="openLuckyBox(1)">
+
+        OPEN LUCKY BOX
+
+      </button>
+
+
+      <div class="lucky-rewards">
+
+        Possible rewards:
+        0 $FDX · 5 $FDX · 20 $FDX · 50 $FDX
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= LUCKY BOX 2 ================= -->
+
+    <div class="lucky-box">
+
+      <div class="lucky-box-head">
+
+        <div class="lucky-icon">
+          🎁
+        </div>
+
+        <div class="lucky-info">
+
+          <div class="lucky-title">
+            Lucky Box 2
+          </div>
+
+          <div class="lucky-sub">
+            Watch an ad for a chance at a bigger $FDX reward.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="lucky-chances">
+
+        <span>
+          Chances left:
+          <strong id="luckyBox2Count">
+            3/3
+          </strong>
+        </span>
+
+        <span>
+          Resets every 24h
+        </span>
+
+      </div>
+
+
+      <button
+        class="lucky-open-btn"
+        id="luckyBox2Button"
+        onclick="openLuckyBox(2)">
+
+        OPEN LUCKY BOX
+
+      </button>
+
+
+      <div class="lucky-rewards">
+
+        Possible rewards:
+        0 $FDX · 20 $FDX · 50 $FDX · 100 $FDX
+
+      </div>
+
+    </div>
+
   </div>
 
 </section>
@@ -1023,9 +1290,7 @@ button{
 
 <!-- ================= FRIENDS ================= -->
 
-<section
-  class="page"
-  id="friendsPage">
+<section class="page" id="friendsPage">
 
   <div class="section-title">
     Invite & Earn
@@ -1156,10 +1421,7 @@ button{
           +5 $FDX
         </span>
 
-        <div
-          id="reward1"
-          class="claimed">
-        </div>
+        <div id="reward1" class="claimed"></div>
 
       </div>
 
@@ -1187,10 +1449,7 @@ button{
           +20 $FDX
         </span>
 
-        <div
-          id="reward5"
-          class="claimed">
-        </div>
+        <div id="reward5" class="claimed"></div>
 
       </div>
 
@@ -1218,10 +1477,7 @@ button{
           +30 $FDX
         </span>
 
-        <div
-          id="reward10"
-          class="claimed">
-        </div>
+        <div id="reward10" class="claimed"></div>
 
       </div>
 
@@ -1249,10 +1505,7 @@ button{
           +50 $FDX
         </span>
 
-        <div
-          id="reward50"
-          class="claimed">
-        </div>
+        <div id="reward50" class="claimed"></div>
 
       </div>
 
@@ -1280,10 +1533,7 @@ button{
           +100 $FDX
         </span>
 
-        <div
-          id="reward100"
-          class="claimed">
-        </div>
+        <div id="reward100" class="claimed"></div>
 
       </div>
 
@@ -1337,9 +1587,7 @@ button{
 
 <!-- ================= WALLET ================= -->
 
-<section
-  class="page"
-  id="walletPage">
+<section class="page" id="walletPage">
 
   <div class="section-title">
     Wallet
@@ -1353,12 +1601,8 @@ button{
     </div>
 
 
-    <div
-      class="balance"
-      id="walletBalance">
-
+    <div class="balance" id="walletBalance">
       0.0000
-
     </div>
 
 
@@ -1418,36 +1662,22 @@ button{
 
 <!-- ================= PROFILE ================= -->
 
-<section
-  class="page"
-  id="profilePage">
+<section class="page" id="profilePage">
 
   <div class="card profile-head">
 
-    <div
-      class="avatar"
-      id="avatar">
-
+    <div class="avatar" id="avatar">
       F
-
     </div>
 
 
-    <div
-      class="profile-name"
-      id="profileName">
-
+    <div class="profile-name" id="profileName">
       FIDEXA User
-
     </div>
 
 
-    <div
-      class="profile-username"
-      id="profileUsername">
-
+    <div class="profile-username" id="profileUsername">
       @username
-
     </div>
 
   </div>
@@ -1575,13 +1805,8 @@ button{
     id="navHome"
     onclick="showPage('home')">
 
-    <span>
-      ⌂
-    </span>
-
-    <span>
-      HOME
-    </span>
+    <span>⌂</span>
+    <span>HOME</span>
 
   </button>
 
@@ -1591,13 +1816,8 @@ button{
     id="navTasks"
     onclick="showPage('tasks')">
 
-    <span>
-      ✓
-    </span>
-
-    <span>
-      TASKS
-    </span>
+    <span>✓</span>
+    <span>TASKS</span>
 
   </button>
 
@@ -1607,13 +1827,8 @@ button{
     id="navFriends"
     onclick="showPage('friends')">
 
-    <span>
-      👥
-    </span>
-
-    <span>
-      FRIENDS
-    </span>
+    <span>👥</span>
+    <span>FRIENDS</span>
 
   </button>
 
@@ -1623,13 +1838,8 @@ button{
     id="navWallet"
     onclick="showPage('wallet')">
 
-    <span>
-      ▣
-    </span>
-
-    <span>
-      WALLET
-    </span>
+    <span>▣</span>
+    <span>WALLET</span>
 
   </button>
 
@@ -1639,13 +1849,8 @@ button{
     id="navProfile"
     onclick="showPage('profile')">
 
-    <span>
-      ●
-    </span>
-
-    <span>
-      PROFILE
-    </span>
+    <span>●</span>
+    <span>PROFILE</span>
 
   </button>
 
@@ -1654,9 +1859,7 @@ button{
 
 <!-- ================= INFO MODAL ================= -->
 
-<div
-  class="modal"
-  id="infoModal">
+<div class="modal" id="infoModal">
 
   <div class="modal-box">
 
@@ -1699,9 +1902,7 @@ button{
 
 <!-- ================= POLICY MODAL ================= -->
 
-<div
-  class="modal"
-  id="policyModal">
+<div class="modal" id="policyModal">
 
   <div class="modal-box">
 
@@ -1790,9 +1991,7 @@ button{
 
 <!-- ================= DELETE MODAL ================= -->
 
-<div
-  class="modal"
-  id="deleteModal">
+<div class="modal" id="deleteModal">
 
   <div class="modal-box">
 
@@ -1840,9 +2039,7 @@ button{
 
 <!-- ================= SUPPORT MODAL ================= -->
 
-<div
-  class="modal"
-  id="supportModal">
+<div class="modal" id="supportModal">
 
   <div class="modal-box">
 
@@ -1909,9 +2106,7 @@ button{
 
 <!-- ================= SPIN MODAL ================= -->
 
-<div
-  class="modal"
-  id="spinModal">
+<div class="modal" id="spinModal">
 
   <div class="modal-box">
 
@@ -1952,20 +2147,96 @@ button{
 </div>
 
 
-<!-- ================= TOAST ================= -->
+<!-- ================= LUCKY BOX MODAL ================= -->
 
-<div
-  class="toast"
-  id="toast">
+<div class="modal" id="luckyBoxModal">
 
-  Done
+  <div class="modal-box">
+
+    <div class="lucky-modal-icon">
+      🎁
+    </div>
+
+
+    <div
+      class="lucky-modal-title"
+      id="luckyModalTitle">
+
+      Lucky Box
+
+    </div>
+
+
+    <p class="lucky-modal-text" id="luckyModalText">
+
+      Watch the ad before opening your Lucky Box.
+
+    </p>
+
+
+    <div
+      class="ad-status"
+      id="luckyAdStatus">
+
+      📺 Watch the ad to continue.
+
+    </div>
+
+
+    <div
+      class="lucky-result"
+      id="luckyResult">
+
+      <div class="lucky-result-label">
+        YOUR RANDOM REWARD
+      </div>
+
+
+      <div
+        class="lucky-result-value"
+        id="luckyRewardValue">
+
+        0 $FDX
+
+      </div>
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('luckyBoxModal')">
+
+        CLOSE
+
+      </button>
+
+
+      <button
+        class="primary-btn"
+        id="luckyWatchAdButton"
+        style="margin-top:0"
+        onclick="watchLuckyAd()">
+
+        WATCH AD
+
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
 
-<!-- =========================================================
-     COMPLETE JAVASCRIPT
-========================================================= -->
+<!-- ================= TOAST ================= -->
+
+<div class="toast" id="toast">
+  Done
+</div>
+
 
 <script>
 
@@ -2011,6 +2282,59 @@ const MAX_BOOSTERS =
 const REFERRAL_RATE =
   0.1;
 
+const LUCKY_BOX_LIMIT =
+  3;
+
+const LUCKY_BOX_WINDOW =
+  24 * 60 * 60 * 1000;
+
+
+/* =========================================================
+   LUCKY BOX REWARD CONFIGURATION
+========================================================= */
+
+const luckyBoxRewards = {
+
+  1:[
+    {
+      amount:0,
+      chance:45
+    },
+    {
+      amount:5,
+      chance:35
+    },
+    {
+      amount:20,
+      chance:15
+    },
+    {
+      amount:50,
+      chance:5
+    }
+  ],
+
+  2:[
+    {
+      amount:0,
+      chance:60
+    },
+    {
+      amount:20,
+      chance:25
+    },
+    {
+      amount:50,
+      chance:10
+    },
+    {
+      amount:100,
+      chance:5
+    }
+  ]
+
+};
+
 
 /* =========================================================
    STORAGE
@@ -2018,7 +2342,6 @@ const REFERRAL_RATE =
 
 const STORAGE_KEY =
   "fidexa_network_state_v3";
-
 
 const SUPPORT_STORAGE_KEY =
   "fidexa_support_messages_preview_v1";
@@ -2030,25 +2353,39 @@ const SUPPORT_STORAGE_KEY =
 
 const defaultState = {
 
-  balance: 0,
+  balance:0,
 
-  totalMined: 0,
+  totalMined:0,
 
-  miningStart: null,
+  miningStart:null,
 
-  miningEnd: null,
+  miningEnd:null,
 
-  miningRateAtStart: BASE_RATE,
+  miningRateAtStart:BASE_RATE,
 
-  boosters: 0,
+  boosters:0,
 
-  boosterWindowStart: null,
+  boosterWindowStart:null,
 
-  referrals: [],
+  referrals:[],
 
-  claimedMilestones: [],
+  claimedMilestones:[],
 
-  spinLastDate: null
+  spinLastDate:null,
+
+  luckyBoxes:{
+
+    1:{
+      count:0,
+      windowStart:null
+    },
+
+    2:{
+      count:0,
+      windowStart:null
+    }
+
+  }
 
 };
 
@@ -2073,13 +2410,54 @@ function loadState(){
         JSON.parse(saved);
 
 
-      return {
+      const loaded = {
 
         ...defaultState,
 
         ...parsed
 
       };
+
+
+      if(
+        !loaded.luckyBoxes ||
+        typeof loaded.luckyBoxes !== "object"
+      ){
+
+        loaded.luckyBoxes = {
+          1:{
+            count:0,
+            windowStart:null
+          },
+          2:{
+            count:0,
+            windowStart:null
+          }
+        };
+
+      }else{
+
+        loaded.luckyBoxes[1] = {
+
+          ...defaultState.luckyBoxes[1],
+
+          ...(loaded.luckyBoxes[1] || {})
+
+        };
+
+
+        loaded.luckyBoxes[2] = {
+
+          ...defaultState.luckyBoxes[2],
+
+          ...(loaded.luckyBoxes[2] || {})
+
+        };
+
+      }
+
+
+      return loaded;
 
     }
 
@@ -2197,9 +2575,13 @@ function toast(message){
 
 /* =========================================================
    NAVIGATION
+   FIX: CLOSE ANY OPEN MODAL WHEN CHANGING PAGE
 ========================================================= */
 
 function showPage(page){
+
+  closeAllModals();
+
 
   const pages = {
 
@@ -2567,8 +2949,7 @@ function getActiveFriendCount(){
         isReferralActive(
           friend
         )
-    )
-    .length;
+    ).length;
 
 }
 
@@ -3105,6 +3486,571 @@ function toggleLastReferralActivity(){
 
 
 /* =========================================================
+   LUCKY BOX SYSTEM
+========================================================= */
+
+function refreshLuckyBoxWindow(boxId){
+
+  const box =
+    state.luckyBoxes[boxId];
+
+
+  if(!box)
+    return;
+
+
+  if(!box.windowStart)
+    return;
+
+
+  const elapsed =
+    Date.now() -
+    Number(
+      box.windowStart
+    );
+
+
+  if(
+    elapsed >=
+    LUCKY_BOX_WINDOW
+  ){
+
+    box.count =
+      0;
+
+
+    box.windowStart =
+      null;
+
+
+    saveState();
+
+  }
+
+}
+
+
+function getLuckyBoxRemaining(boxId){
+
+  refreshLuckyBoxWindow(
+    boxId
+  );
+
+
+  const box =
+    state.luckyBoxes[boxId];
+
+
+  if(!box)
+    return 0;
+
+
+  return Math.max(
+    0,
+    LUCKY_BOX_LIMIT -
+    number(box.count)
+  );
+
+}
+
+
+/*
+  Weighted random selection.
+
+  The total chance for each box equals 100%.
+*/
+
+function getLuckyReward(boxId){
+
+  const rewards =
+    luckyBoxRewards[boxId];
+
+
+  if(!rewards)
+    return 0;
+
+
+  const random =
+    Math.random() *
+    100;
+
+
+  let cumulative =
+    0;
+
+
+  for(
+    const reward of rewards
+  ){
+
+    cumulative +=
+      reward.chance;
+
+
+    if(
+      random <
+      cumulative
+    ){
+
+      return reward.amount;
+
+    }
+
+  }
+
+
+  return rewards[
+    rewards.length - 1
+  ].amount;
+
+}
+
+
+/*
+  Opens the ad/reward modal.
+
+  The reward is NOT selected here.
+  It is selected only after the ad step.
+*/
+
+let activeLuckyBox =
+  null;
+
+let luckyAdRunning =
+  false;
+
+
+function openLuckyBox(boxId){
+
+  refreshLuckyBoxWindow(
+    boxId
+  );
+
+
+  const remaining =
+    getLuckyBoxRemaining(
+      boxId
+    );
+
+
+  if(remaining <= 0){
+
+    toast(
+      "No Lucky Box chances left. Try again after 24 hours."
+    );
+
+    return;
+
+  }
+
+
+  activeLuckyBox =
+    boxId;
+
+
+  luckyAdRunning =
+    false;
+
+
+  const modal =
+    document.getElementById(
+      "luckyBoxModal"
+    );
+
+
+  const title =
+    document.getElementById(
+      "luckyModalTitle"
+    );
+
+
+  const text =
+    document.getElementById(
+      "luckyModalText"
+    );
+
+
+  const status =
+    document.getElementById(
+      "luckyAdStatus"
+    );
+
+
+  const result =
+    document.getElementById(
+      "luckyResult"
+    );
+
+
+  const button =
+    document.getElementById(
+      "luckyWatchAdButton"
+    );
+
+
+  if(title){
+
+    title.textContent =
+      "Lucky Box " +
+      boxId;
+
+  }
+
+
+  if(text){
+
+    text.textContent =
+      "Watch the ad before your reward is revealed.";
+
+  }
+
+
+  if(status){
+
+    status.textContent =
+      "📺 Watch the ad to continue.";
+
+  }
+
+
+  if(result){
+
+    result.classList.remove(
+      "show"
+    );
+
+  }
+
+
+  if(button){
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "WATCH AD";
+
+  }
+
+
+  if(modal){
+
+    closeAllModals();
+
+    modal.classList.add(
+      "show"
+    );
+
+  }
+
+}
+
+
+/*
+  Frontend ad simulation.
+
+  In production this function should be replaced
+  by the actual rewarded-ad provider callback.
+*/
+
+function watchLuckyAd(){
+
+  if(!activeLuckyBox)
+    return;
+
+
+  if(luckyAdRunning)
+    return;
+
+
+  luckyAdRunning =
+    true;
+
+
+  const button =
+    document.getElementById(
+      "luckyWatchAdButton"
+    );
+
+
+  const status =
+    document.getElementById(
+      "luckyAdStatus"
+    );
+
+
+  if(button){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "WATCHING AD...";
+
+  }
+
+
+  if(status){
+
+    status.textContent =
+      "📺 Advertisement in progress...";
+
+  }
+
+
+  /*
+    Simulated ad duration.
+    Reward is selected only after this completes.
+  */
+
+  setTimeout(
+    () => {
+
+      completeLuckyAd();
+
+    },
+    2500
+  );
+
+}
+
+
+function completeLuckyAd(){
+
+  if(!activeLuckyBox)
+    return;
+
+
+  const boxId =
+    activeLuckyBox;
+
+
+  refreshLuckyBoxWindow(
+    boxId
+  );
+
+
+  const remaining =
+    getLuckyBoxRemaining(
+      boxId
+    );
+
+
+  if(remaining <= 0){
+
+    luckyAdRunning =
+      false;
+
+    closeModal(
+      "luckyBoxModal"
+    );
+
+
+    toast(
+      "No Lucky Box chance remains."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Consume one chance only after
+    the ad has completed.
+  */
+
+  const box =
+    state.luckyBoxes[boxId];
+
+
+  if(!box.windowStart){
+
+    box.windowStart =
+      Date.now();
+
+  }
+
+
+  box.count =
+    number(box.count) +
+    1;
+
+
+  /*
+    NOW the random reward is selected.
+  */
+
+  const reward =
+    getLuckyReward(
+      boxId
+    );
+
+
+  state.balance +=
+    reward;
+
+
+  saveState();
+
+
+  luckyAdRunning =
+    false;
+
+
+  const status =
+    document.getElementById(
+      "luckyAdStatus"
+    );
+
+
+  const result =
+    document.getElementById(
+      "luckyResult"
+    );
+
+
+  const rewardValue =
+    document.getElementById(
+      "luckyRewardValue"
+    );
+
+
+  const button =
+    document.getElementById(
+      "luckyWatchAdButton"
+    );
+
+
+  if(status){
+
+    status.textContent =
+      "✅ Ad completed. Your Lucky Box has opened!";
+
+  }
+
+
+  if(rewardValue){
+
+    rewardValue.textContent =
+      reward +
+      " $FDX";
+
+  }
+
+
+  if(result){
+
+    result.classList.add(
+      "show"
+    );
+
+  }
+
+
+  if(button){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "REWARD REVEALED";
+
+  }
+
+
+  updateLuckyBoxUI();
+
+  updateUI();
+
+
+  if(reward > 0){
+
+    toast(
+      `🎉 You won ${reward} $FDX!`
+    );
+
+  }else{
+
+    toast(
+      "Lucky Box opened. Better luck next time!"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   UPDATE LUCKY BOX UI
+========================================================= */
+
+function updateLuckyBoxUI(){
+
+  [1,2].forEach(
+    boxId => {
+
+      const remaining =
+        getLuckyBoxRemaining(
+          boxId
+        );
+
+
+      const count =
+        document.getElementById(
+          "luckyBox" +
+          boxId +
+          "Count"
+        );
+
+
+      const button =
+        document.getElementById(
+          "luckyBox" +
+          boxId +
+          "Button"
+        );
+
+
+      if(count){
+
+        count.textContent =
+          remaining +
+          "/" +
+          LUCKY_BOX_LIMIT;
+
+      }
+
+
+      if(button){
+
+        if(remaining <= 0){
+
+          button.disabled =
+            true;
+
+          button.textContent =
+            "24H LIMIT REACHED";
+
+        }else{
+
+          button.disabled =
+            false;
+
+          button.textContent =
+            "OPEN LUCKY BOX";
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
    DAILY SPIN
    KEPT IN JAVASCRIPT FOR FUTURE EARN FEATURE.
    IT IS NOT DISPLAYED INSIDE TASKS.
@@ -3171,6 +4117,9 @@ function openSpinPreview(){
       "Your daily free spin is ready.";
 
   }
+
+
+  closeAllModals();
 
 
   modal.classList.add(
@@ -3306,6 +4255,9 @@ function openSupport(){
       "Write your message and send it to FIDEXA Support.";
 
 
+  closeAllModals();
+
+
   if(modal)
     modal.classList.add(
       "show"
@@ -3313,18 +4265,6 @@ function openSupport(){
 
 }
 
-
-/*
-  FRONTEND PREVIEW ONLY.
-
-  Messages are stored locally in this browser
-  until Firebase/backend is connected.
-
-  The production version should replace this
-  localStorage operation with a secure backend
-  request so the Admin Panel can receive and
-  manage the user's support message.
-*/
 
 function sendSupportMessage(){
 
@@ -3475,6 +4415,9 @@ function showPolicy(){
     );
 
 
+  closeAllModals();
+
+
   if(modal)
     modal.classList.add(
       "show"
@@ -3495,6 +4438,9 @@ function showInfo(){
     );
 
 
+  closeAllModals();
+
+
   if(modal)
     modal.classList.add(
       "show"
@@ -3513,6 +4459,9 @@ function openDeleteModal(){
     document.getElementById(
       "deleteModal"
     );
+
+
+  closeAllModals();
 
 
   if(modal)
@@ -3539,6 +4488,10 @@ function requestDelete(){
 
 /* =========================================================
    MODALS
+   FIXED:
+   - CLOSE SPECIFIC MODAL
+   - CLOSE ALL MODALS
+   - TAP OUTSIDE MODAL TO CLOSE
 ========================================================= */
 
 function closeModal(id){
@@ -3554,7 +4507,81 @@ function closeModal(id){
       "show"
     );
 
+
+  if(id === "luckyBoxModal"){
+
+    activeLuckyBox =
+      null;
+
+    luckyAdRunning =
+      false;
+
+  }
+
 }
+
+
+function closeAllModals(){
+
+  document
+    .querySelectorAll(
+      ".modal"
+    )
+    .forEach(
+      modal => {
+
+        modal.classList.remove(
+          "show"
+        );
+
+      }
+    );
+
+
+  activeLuckyBox =
+    null;
+
+
+  luckyAdRunning =
+    false;
+
+}
+
+
+/*
+  IMPORTANT:
+  The modal background itself is clickable.
+  The modal-box is not closed when the user
+  taps inside it.
+*/
+
+document
+  .querySelectorAll(
+    ".modal"
+  )
+  .forEach(
+    modal => {
+
+      modal.addEventListener(
+        "click",
+        function(event){
+
+          if(
+            event.target ===
+            modal
+          ){
+
+            closeModal(
+              modal.id
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================================================
@@ -3562,6 +4589,9 @@ function closeModal(id){
 ========================================================= */
 
 function openTelegram(){
+
+  closeAllModals();
+
 
   const url =
     "https://t.me/fidexa_Network";
@@ -3591,6 +4621,9 @@ function openTelegram(){
 
 
 function openX(){
+
+  closeAllModals();
+
 
   const url =
     "https://x.com/Fidexa_Network";
@@ -4085,6 +5118,8 @@ function updateUI(){
   updateFriendsUI();
 
   updateBoosterUI();
+
+  updateLuckyBoxUI();
 
 }
 
