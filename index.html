@@ -1,270 +1,923 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>FIDEXA Network</title>
+<title>FIDEXA Network</title>
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-  <!-- Telegram Mini App -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #07111f;
+    color: #ffffff;
+    min-height: 100vh;
+}
 
-  <!-- AdsGram -->
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+button {
+    font-family: inherit;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+.app {
+    max-width: 480px;
+    margin: auto;
+    min-height: 100vh;
+    padding-bottom: 90px;
+}
 
-    body {
-      margin: 0;
-      background: #07111f;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-      overflow-x: hidden;
-    }
+/* HEADER */
 
-    .app {
-      min-height: 100vh;
-      padding-bottom: 90px;
-    }
+.header {
+    padding: 20px 18px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .card {
-      background: #0d1b2d;
-      border: 1px solid #18304a;
-      border-radius: 18px;
-    }
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .blue-card {
-      background: linear-gradient(145deg, #0d3154, #092238);
-      border: 1px solid #15558a;
-    }
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1677ff, #00b7ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 900;
+    box-shadow: 0 8px 25px rgba(0, 150, 255, .25);
+}
 
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      background: #081522;
-      border-top: 1px solid #18304a;
-      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-    }
+.brand-text h1 {
+    font-size: 19px;
+    letter-spacing: .5px;
+}
 
-    .nav-grid {
-      max-width: 520px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-    }
+.brand-text p {
+    color: #71839a;
+    font-size: 11px;
+    margin-top: 3px;
+}
 
-    .nav-btn {
-      border: 0;
-      background: transparent;
-      color: #71849a;
-      padding: 7px 2px;
-      border-radius: 12px;
-      font-size: 11px;
-    }
+.telegram-user {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #13243a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #58b8ff;
+    font-weight: bold;
+}
 
-    .nav-btn.active {
-      color: #35a9ff;
-      background: #0d263d;
-    }
+/* CONTENT */
 
-    .page {
-      display: none;
-    }
+.content {
+    padding: 8px 16px;
+}
 
-    .page.active {
-      display: block;
-    }
+.page {
+    display: none;
+}
 
-    .primary-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 14px;
-      background: #148de2;
-      color: white;
-      font-weight: 700;
-      font-size: 15px;
-    }
+.page.active {
+    display: block;
+}
 
-    .primary-btn:disabled {
-      opacity: 0.45;
-    }
+/* BALANCE */
 
-    .secondary-btn {
-      border: 1px solid #245274;
-      background: #0b2033;
-      color: #d9edff;
-      border-radius: 12px;
-      padding: 11px 14px;
-      font-weight: 600;
-    }
+.balance-card {
+    position: relative;
+    overflow: hidden;
+    margin-top: 12px;
+    padding: 23px;
+    border-radius: 23px;
+    background:
+        linear-gradient(145deg, #102a48, #0b1d32);
+    border: 1px solid #1d4268;
+}
 
-    .timer {
-      font-size: 42px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-    }
+.balance-card::after {
+    content: "";
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: #008cff;
+    opacity: .08;
+    right: -70px;
+    top: -70px;
+}
 
-    .progress-track {
-      width: 100%;
-      height: 8px;
-      background: #12263b;
-      border-radius: 20px;
-      overflow: hidden;
-    }
+.balance-label {
+    color: #7f98b4;
+    font-size: 12px;
+}
 
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #22a7ff;
-      transition: width 0.5s linear;
-    }
+.balance {
+    font-size: 36px;
+    font-weight: 800;
+    margin-top: 7px;
+    letter-spacing: -.8px;
+}
 
-    .ad-box {
-      min-height: 130px;
-      border: 1px dashed #31536f;
-      background: #091827;
-      border-radius: 16px;
-      padding: 15px;
-    }
+.balance span {
+    font-size: 15px;
+    color: #56b7ff;
+}
 
-    .small {
-      color: #7890a8;
-      font-size: 12px;
-    }
+.balance-bottom {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    color: #7891aa;
+    font-size: 11px;
+}
 
-    .section-title {
-      font-size: 19px;
-      font-weight: 800;
-    }
+/* MINING */
 
-    .balance {
-      font-size: 34px;
-      font-weight: 800;
-    }
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 25px 2px 12px;
+}
 
-    .status-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #25d366;
-      display: inline-block;
-      margin-right: 5px;
-    }
+.section-title h2 {
+    font-size: 17px;
+}
 
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 88px;
-      transform: translateX(-50%);
-      z-index: 100;
-      width: calc(100% - 40px);
-      max-width: 420px;
-      background: #102338;
-      border: 1px solid #27506f;
-      border-radius: 13px;
-      padding: 13px 15px;
-      text-align: center;
-      font-size: 13px;
-      display: none;
-    }
+.section-title span {
+    color: #5dbbff;
+    font-size: 11px;
+}
 
-    .toast.show {
-      display: block;
-    }
-  </style>
+.mining-card {
+    background: #0b192a;
+    border: 1px solid #19334e;
+    border-radius: 22px;
+    padding: 20px;
+}
+
+.mining-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mining-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    background: #102e4c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.status {
+    font-size: 11px;
+    color: #6f849b;
+}
+
+.status strong {
+    display: block;
+    color: #5bc0ff;
+    margin-top: 4px;
+}
+
+.rate {
+    text-align: right;
+}
+
+.rate-number {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.rate small {
+    color: #71869d;
+    font-size: 10px;
+}
+
+.timer-box {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 17px;
+    background: #071321;
+    text-align: center;
+}
+
+.timer-label {
+    color: #6e8298;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.timer {
+    margin-top: 7px;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.progress {
+    height: 5px;
+    background: #15273a;
+    border-radius: 10px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 18%;
+    background: linear-gradient(90deg, #087eff, #43c7ff);
+    border-radius: 10px;
+}
+
+.mine-button {
+    width: 100%;
+    border: none;
+    margin-top: 18px;
+    padding: 15px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #087eff, #00aef8);
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.mine-button:active {
+    transform: scale(.98);
+}
+
+/* BOOST */
+
+.boost-card {
+    background: #0b192a;
+    border: 1px solid #19334e;
+    border-radius: 22px;
+    padding: 18px;
+}
+
+.boost-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.boost-rate {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.boost-rate span {
+    color: #55bcff;
+    font-size: 12px;
+}
+
+.boost-limit {
+    text-align: right;
+    color: #74899f;
+    font-size: 10px;
+}
+
+.boost-limit strong {
+    color: white;
+    display: block;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.booster-list {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.booster {
+    flex: 1;
+    height: 48px;
+    border-radius: 12px;
+    background: #101f31;
+    border: 1px solid #203950;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #50677f;
+    font-weight: bold;
+}
+
+.booster.used {
+    background: #0c3650;
+    border-color: #168dd0;
+    color: #54c5ff;
+}
+
+.boost-button {
+    width: 100%;
+    border: 1px solid #22638e;
+    background: #0d263c;
+    color: #63c6ff;
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 13px;
+    font-weight: bold;
+}
+
+/* QUICK STATS */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 13px;
+}
+
+.stat {
+    background: #0b192a;
+    border: 1px solid #172f48;
+    border-radius: 16px;
+    padding: 15px;
+}
+
+.stat-label {
+    color: #71869b;
+    font-size: 10px;
+}
+
+.stat-value {
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 7px;
+}
+
+/* TASKS */
+
+.task {
+    background: #0b192a;
+    border: 1px solid #19334e;
+    padding: 15px;
+    border-radius: 17px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.task-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: #102b47;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-info {
+    flex: 1;
+}
+
+.task-info strong {
+    font-size: 13px;
+}
+
+.task-info p {
+    color: #71869b;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.task-button {
+    border: none;
+    border-radius: 9px;
+    background: #117ed0;
+    color: white;
+    padding: 9px 12px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* FRIENDS */
+
+.referral-card {
+    background: linear-gradient(145deg, #102c48, #0b1b2d);
+    border: 1px solid #1d476d;
+    padding: 22px;
+    border-radius: 22px;
+    text-align: center;
+}
+
+.referral-card h2 {
+    font-size: 21px;
+}
+
+.referral-card p {
+    color: #8095a9;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+.referral-code {
+    margin-top: 18px;
+    background: #071522;
+    padding: 13px;
+    border-radius: 12px;
+    color: #61c3ff;
+    font-size: 12px;
+}
+
+.copy-button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: #117ed0;
+    color: white;
+    font-weight: bold;
+}
+
+/* SPIN */
+
+.spin-card {
+    text-align: center;
+    padding: 25px 18px;
+    background: #0b192a;
+    border: 1px solid #19334e;
+    border-radius: 22px;
+}
+
+.wheel {
+    width: 190px;
+    height: 190px;
+    margin: 15px auto 25px;
+    border-radius: 50%;
+    border: 8px solid #12304b;
+    background: conic-gradient(
+        #117ed0 0deg 60deg,
+        #0b2137 60deg 120deg,
+        #117ed0 120deg 180deg,
+        #0b2137 180deg 240deg,
+        #117ed0 240deg 300deg,
+        #0b2137 300deg 360deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 40px rgba(0, 137, 255, .12);
+}
+
+.wheel-inner {
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: #091625;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(480px, 100%);
+    background: rgba(7, 17, 31, .97);
+    border-top: 1px solid #172b40;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 10px 7px calc(10px + env(safe-area-inset-bottom));
+    z-index: 100;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: #5e7187;
+    font-size: 9px;
+    padding: 5px 2px;
+}
+
+.nav-icon {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.nav-item.active {
+    color: #4dbbff;
+}
+
+/* SMALL */
+
+.notice {
+    margin-top: 12px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: #0c2034;
+    border: 1px solid #183b59;
+    color: #7792aa;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.notice strong {
+    color: #5bbfff;
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- HEADER -->
-  <header class="px-4 pt-5 pb-3">
-    <div class="max-w-xl mx-auto flex items-center justify-between">
-      <div>
-        <div class="text-xl font-extrabold tracking-wide">FIDEXA</div>
-        <div class="small">Decentralized digital ecosystem</div>
-      </div>
-
-      <div class="text-right">
-        <div class="text-xs text-slate-400">Network</div>
-        <div class="text-sm font-bold">
-          <span class="status-dot"></span>Online
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-xl mx-auto px-4">
-
-    <!-- ================= HOME ================= -->
-    <section id="homePage" class="page active">
-
-      <div class="blue-card rounded-2xl p-5">
-        <div class="text-sm text-sky-200">Your FIDEXA Balance</div>
-
-        <div class="balance mt-1">
-          <span id="homeBalance">0.00</span>
-          <span class="text-lg text-sky-200">FDX</span>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="brand">
+            <div class="logo">F</div>
+            <div class="brand-text">
+                <h1>FIDEXA</h1>
+                <p>DECENTRALIZED DIGITAL NETWORK</p>
+            </div>
         </div>
 
-        <div class="mt-4 flex justify-between text-xs text-sky-200">
-          <span id="userName">Loading...</span>
-          <span id="authStatus">Connecting...</span>
+        <div class="telegram-user">
+            FS
         </div>
-      </div>
+    </header>
 
-      <div class="mt-5">
-        <div class="section-title mb-3">Mining</div>
+    <main class="content">
 
-        <div class="card p-5">
-          <div class="flex justify-between items-center">
-            <div>
-              <div class="font-bold">8-Hour Mining</div>
-              <div class="small mt-1">
-                Start a mining session every 8 hours.
-              </div>
+        <!-- HOME -->
+        <section id="home" class="page active">
+
+            <div class="balance-card">
+                <div class="balance-label">TOTAL FIDEXA BALANCE</div>
+
+                <div class="balance">
+                    0.00 <span>FDX</span>
+                </div>
+
+                <div class="balance-bottom">
+                    <span>Available Balance</span>
+                    <span>FIDEXA Network</span>
+                </div>
             </div>
 
-            <div class="text-sky-400 text-2xl">⛏</div>
-          </div>
+            <div class="section-title">
+                <h2>Mining Status</h2>
+                <span>8 HOUR CYCLE</span>
+            </div>
 
-          <div class="mt-5 timer" id="homeMiningTimer">
-            08:00:00
-          </div>
+            <div class="mining-card">
 
-          <div class="mt-4 progress-track">
-            <div id="homeMiningProgress" class="progress-bar"></div>
-          </div>
+                <div class="mining-top">
 
-          <button
-            id="homeMiningButton"
-            class="primary-btn mt-4"
-            onclick="startMining()"
-          >
-            START MINING
-          </button>
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <div class="mining-icon">⛏</div>
 
-          <div
-            id="homeMiningStatus"
-            class="small text-center mt-3"
-          >
-            Ready to start
-          </div>
+                        <div class="status">
+                            STATUS
+                            <strong>READY TO MINE</strong>
+                        </div>
+                    </div>
+
+                    <div class="rate">
+                        <div class="rate-number">1.0</div>
+                        <small>FDX / HOUR</small>
+                    </div>
+
+                </div>
+
+                <div class="timer-box">
+                    <div class="timer-label">Mining Countdown</div>
+                    <div class="timer">08:00:00</div>
+
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <button class="mine-button">
+                    START MINING
+                </button>
+
+            </div>
+
+            <div class="notice">
+                <strong>Mining reward:</strong>
+                Your base mining rate is 1 FDX per hour.
+                Complete booster ads to increase your mining rate.
+            </div>
+
+            <div class="section-title">
+                <h2>Boost Mining</h2>
+                <span>MAX +2.5 FDX/H</span>
+            </div>
+
+            <div class="boost-card">
+
+                <div class="boost-info">
+
+                    <div>
+                        <div class="boost-rate">1.0 FDX/H</div>
+                        <div style="color:#71869b;font-size:10px;margin-top:4px;">
+                            Current Mining Rate
+                        </div>
+                    </div>
+
+                    <div class="boost-limit">
+                        <strong>0 / 5</strong>
+                        ADS USED
+                        <br>
+                        LAST 24 HOURS
+                    </div>
+
+                </div>
+
+                <div class="booster-list">
+                    <div class="booster">+0.5</div>
+                    <div class="booster">+0.5</div>
+                    <div class="booster">+0.5</div>
+                    <div class="booster">+0.5</div>
+                    <div class="booster">+0.5</div>
+                </div>
+
+                <button class="boost-button">
+                    WATCH AD TO BOOST +0.5 FDX/H
+                </button>
+
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <div class="stat-label">8H SESSION REWARD</div>
+                    <div class="stat-value">8 FDX</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">MAX SESSION REWARD</div>
+                    <div class="stat-value">28 FDX</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MINING -->
+        <section id="mining" class="page">
+
+            <div class="section-title">
+                <h2>FIDEXA Mining</h2>
+                <span>8 HOURS</span>
+            </div>
+
+            <div class="mining-card">
+
+                <div style="text-align:center;">
+                    <div class="mining-icon" style="margin:auto;">⛏</div>
+
+                    <div style="margin-top:15px;color:#71869b;font-size:11px;">
+                        CURRENT MINING RATE
+                    </div>
+
+                    <div style="font-size:35px;font-weight:800;margin-top:5px;">
+                        1.0
+                        <span style="font-size:13px;color:#56b7ff;">
+                            FDX/H
+                        </span>
+                    </div>
+                </div>
+
+                <div class="timer-box">
+                    <div class="timer-label">Next Mining Completion</div>
+                    <div class="timer">08:00:00</div>
+
+                    <div class="progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <button class="mine-button">
+                    START 8-HOUR MINING
+                </button>
+
+            </div>
+
+            <div class="notice">
+                Mining runs for exactly <strong>8 hours</strong>.
+                Your reward depends on your mining rate at the applicable time.
+            </div>
+
+        </section>
+
+
+        <!-- TASKS -->
+        <section id="tasks" class="page">
+
+            <div class="section-title">
+                <h2>Tasks</h2>
+                <span>REWARDS</span>
+            </div>
+
+            <div class="task">
+                <div class="task-icon">✈️</div>
+
+                <div class="task-info">
+                    <strong>Join FIDEXA Telegram</strong>
+                    <p>Join the official community</p>
+                </div>
+
+                <button class="task-button">OPEN</button>
+            </div>
+
+            <div class="task">
+                <div class="task-icon">𝕏</div>
+
+                <div class="task-info">
+                    <strong>Follow FIDEXA</strong>
+                    <p>Follow the official account</p>
+                </div>
+
+                <button class="task-button">OPEN</button>
+            </div>
+
+            <div class="task">
+                <div class="task-icon">▶</div>
+
+                <div class="task-info">
+                    <strong>Watch FIDEXA Update</strong>
+                    <p>Watch and complete the task</p>
+                </div>
+
+                <button class="task-button">OPEN</button>
+            </div>
+
+        </section>
+
+
+        <!-- FRIENDS -->
+        <section id="friends" class="page">
+
+            <div class="section-title">
+                <h2>Friends</h2>
+                <span>REFERRALS</span>
+            </div>
+
+            <div class="referral-card">
+
+                <h2>Invite & Earn</h2>
+
+                <p>
+                    Invite friends to FIDEXA and grow the network together.
+                </p>
+
+                <div class="referral-code">
+                    t.me/FIDEXANetworkBot?start=ref123
+                </div>
+
+                <button class="copy-button">
+                    COPY INVITE LINK
+                </button>
+
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <div class="stat-label">TOTAL FRIENDS</div>
+                    <div class="stat-value">0</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-label">REFERRAL REWARDS</div>
+                    <div class="stat-value">0 FDX</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SPIN -->
+        <section id="spin" class="page">
+
+            <div class="section-title">
+                <h2>Daily Spin</h2>
+                <span>COMING SOON</span>
+            </div>
+
+            <div class="spin-card">
+
+                <div class="wheel">
+                    <div class="wheel-inner">F</div>
+                </div>
+
+                <h2>Daily Reward Spin</h2>
+
+                <p style="
+                    color:#71869b;
+                    font-size:11px;
+                    margin-top:8px;
+                    line-height:1.5;
+                ">
+                    Spin the wheel and discover your daily FDX reward.
+                </p>
+
+                <button class="mine-button" style="opacity:.5;">
+                    SPIN
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- NAVIGATION -->
+    <nav class="bottom-nav">
+
+        <button class="nav-item active" onclick="showPage('home',this)">
+            <span class="nav-icon">⌂</span>
+            HOME
+        </button>
+
+        <button class="nav-item" onclick="showPage('mining',this)">
+            <span class="nav-icon">⛏</span>
+            MINING
+        </button>
+
+        <button class="nav-item" onclick="showPage('tasks',this)">
+            <span class="nav-icon">✓</span>
+            TASKS
+        </button>
+
+        <button class="nav-item" onclick="showPage('friends',this)">
+            <span class="nav-icon">👥</span>
+            FRIENDS
+        </button>
+
+        <button class="nav-item" onclick="showPage('spin',this)">
+            <span class="nav-icon">◉</span>
+            SPIN
+        </button>
+
+    </nav>
+
+</div>
+
+
+<script>
+
+function showPage(page, button) {
+
+    document.querySelectorAll('.page').forEach(function(item) {
+        item.classList.remove('active');
+    });
+
+    document.getElementById(page).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+        item.classList.remove('active');
+    });
+
+    button.classList.add('active');
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+</script>
+
+</body>
+</html>
