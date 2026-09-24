@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>FIDEXA NETWORK</title>
+<title>Fidexa Network</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -29,6 +29,10 @@
   -webkit-tap-highlight-color:transparent;
 }
 
+html{
+  min-height:100%;
+}
+
 body{
   background:var(--bg);
   color:var(--text);
@@ -40,6 +44,10 @@ button{
   border:0;
   cursor:pointer;
   font:inherit;
+}
+
+button:disabled{
+  cursor:not-allowed;
 }
 
 .app{
@@ -289,6 +297,22 @@ button{
   opacity:.35;
 }
 
+.booster-bonus{
+  margin-top:12px;
+  padding:11px;
+  border-radius:11px;
+  background:rgba(32,169,255,.05);
+  border:1px solid rgba(32,169,255,.1);
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.booster-bonus strong{
+  color:var(--cyan);
+  font-size:14px;
+}
+
 /* TASKS */
 
 .task{
@@ -297,6 +321,7 @@ button{
   justify-content:space-between;
   padding:14px 0;
   border-bottom:1px solid var(--border);
+  gap:10px;
 }
 
 .task:last-child{
@@ -307,6 +332,7 @@ button{
   display:flex;
   align-items:center;
   gap:12px;
+  min-width:0;
 }
 
 .task-icon{
@@ -318,6 +344,7 @@ button{
   align-items:center;
   background:rgba(32,169,255,.1);
   font-size:19px;
+  flex-shrink:0;
 }
 
 .task-title{
@@ -329,6 +356,7 @@ button{
   font-size:11px;
   color:var(--muted);
   margin-top:3px;
+  line-height:1.4;
 }
 
 .task-btn{
@@ -338,6 +366,17 @@ button{
   color:white;
   font-size:11px;
   font-weight:bold;
+  flex-shrink:0;
+}
+
+.task-btn.verify{
+  background:var(--green);
+  color:#001a0d;
+}
+
+.task-btn.claimed{
+  background:rgba(53,227,138,.12);
+  color:var(--green);
 }
 
 /* LUCKY BOXES */
@@ -711,6 +750,7 @@ button{
   align-items:flex-end;
   justify-content:center;
   z-index:100000;
+  padding:0;
 }
 
 .modal.show{
@@ -720,11 +760,14 @@ button{
 .modal-box{
   width:100%;
   max-width:480px;
-  max-height:90vh;
+  max-height:min(90dvh,760px);
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
   background:#0d1b2d;
   border-radius:22px 22px 0 0;
   padding:22px;
+  padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));
   border:1px solid var(--border);
 }
 
@@ -748,6 +791,51 @@ button{
   flex:1;
   padding:13px;
   border-radius:11px;
+}
+
+/* SUPPORT MOBILE FIX */
+
+#supportModal .modal-box{
+  max-height:min(88dvh,720px);
+}
+
+#supportModal .modal-actions{
+  position:sticky;
+  bottom:0;
+  background:#0d1b2d;
+  padding-top:10px;
+  padding-bottom:2px;
+}
+
+/* DOCUMENT MODALS */
+
+.document-box{
+  max-height:min(92dvh,800px);
+}
+
+.document-content{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+}
+
+.document-content h4{
+  color:var(--text);
+  font-size:14px;
+  margin:18px 0 7px;
+}
+
+.document-content p{
+  margin-bottom:10px;
+}
+
+.document-content ul{
+  padding-left:19px;
+  margin-bottom:10px;
+}
+
+.document-content li{
+  margin-bottom:6px;
 }
 
 /* LUCKY BOX MODAL */
@@ -845,6 +933,9 @@ button{
   transition:.25s;
   z-index:200000;
   white-space:nowrap;
+  max-width:90vw;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .toast.show{
@@ -865,6 +956,21 @@ button{
 .yellow{
   color:var(--yellow);
 }
+
+@media(max-width:360px){
+  .task-sub{
+    max-width:150px;
+  }
+
+  .task-btn{
+    padding:8px 9px;
+  }
+
+  .modal-box{
+    padding-left:17px;
+    padding-right:17px;
+  }
+}
 </style>
 </head>
 
@@ -877,7 +983,7 @@ button{
   <div class="logo">F</div>
 
   <div class="brand">
-    <h1>FIDEXA NETWORK</h1>
+    <h1>Fidexa Network</h1>
     <p>DECENTRALIZED DIGITAL NETWORK</p>
   </div>
 </header>
@@ -914,9 +1020,7 @@ button{
       </span>
     </div>
 
-
     <div class="rate">
-
       <span id="rateValue">
         1.0
       </span>
@@ -924,46 +1028,29 @@ button{
       <span>
         $FDX / hour
       </span>
-
     </div>
-
 
     <div class="timer" id="timer">
       08:00:00
     </div>
 
-
     <div class="progress">
-
-      <div
-        class="progress-bar"
-        id="progressBar">
-      </div>
-
+      <div class="progress-bar" id="progressBar"></div>
     </div>
-
 
     <button
       class="primary-btn"
       id="mineButton"
       onclick="startMining()">
-
       START MINING
-
     </button>
 
-
     <div class="notice">
-
-      Base mining rate is
-      <b>1.0 $FDX/hour</b>.
-
-      Booster ads can temporarily increase
-      your mining rate.
-
-      One mining session lasts
-      <b>8 hours</b>.
-
+      Base mining rate is <b>1.0 $FDX/hour</b>.
+      Each completed Booster ad adds <b>+0.5 $FDX/hour</b>.
+      Active referrals add <b>+0.1 $FDX/hour</b> each.
+      Rate increases apply immediately to active mining.
+      One mining session lasts <b>8 hours</b>.
     </div>
 
   </div>
@@ -975,47 +1062,27 @@ button{
       Mining Statistics
     </strong>
 
-
-    <div
-      class="stats"
-      style="margin-top:13px">
+    <div class="stats" style="margin-top:13px">
 
       <div class="stat">
-
         <strong id="sessionReward">
           0.0000
         </strong>
-
-        <span>
-          SESSION
-        </span>
-
+        <span>SESSION</span>
       </div>
 
-
       <div class="stat">
-
         <strong id="maxSessionReward">
           8.0000
         </strong>
-
-        <span>
-          8H MAX
-        </span>
-
+        <span>8H MAX</span>
       </div>
 
-
       <div class="stat">
-
         <strong id="totalMined">
           0.0000
         </strong>
-
-        <span>
-          TOTAL MINED
-        </span>
-
+        <span>TOTAL MINED</span>
       </div>
 
     </div>
@@ -1032,50 +1099,43 @@ button{
       </strong>
 
       <span class="small-note">
-
-        <span id="boosterCount">
-          0
-        </span>/5 today
-
+        <span id="boosterCount">0</span>/5 today
       </span>
 
     </div>
-
 
     <div id="boosterList">
 
       <div class="booster-row">
 
         <div class="booster-name">
-
           Watch Ad
-
           <small>
-            +0.5 $FDX/hour
+            +0.5 $FDX/hour after completed ad
           </small>
-
         </div>
-
 
         <button
           class="boost-btn"
           id="boostButton"
           onclick="useBooster()">
-
           WATCH
-
         </button>
 
       </div>
 
     </div>
 
+    <div class="booster-bonus">
+      Current Booster bonus:
+      <strong id="boosterBonus">
+        +0.0 $FDX/hour
+      </strong>
+    </div>
 
     <div class="notice">
-
-      Maximum 5 booster activations per
-      24 hours.
-
+      Maximum 5 completed Booster ads per 24 hours.
+      The reward is granted only after the rewarded ad is successfully completed.
     </div>
 
   </div>
@@ -1094,39 +1154,41 @@ button{
 
   <div class="card">
 
+    <!-- OFFICIAL CHANNEL TASK -->
+
     <div class="task">
 
       <div class="task-left">
 
         <div class="task-icon">
-          ✈️
+          📢
         </div>
 
         <div>
 
           <div class="task-title">
-            Join Telegram
+            Join Official Channel
           </div>
 
           <div class="task-sub">
-            Join the official FIDEXA community
+            Join the official Fidexa channel and receive +15 $FDX after verification.
           </div>
 
         </div>
 
       </div>
 
-
       <button
         class="task-btn"
-        onclick="openTelegram()">
-
-        OPEN
-
+        id="channelTaskButton"
+        onclick="handleChannelTask()">
+        JOIN
       </button>
 
     </div>
 
+
+    <!-- X TASK -->
 
     <div class="task">
 
@@ -1143,26 +1205,34 @@ button{
           </div>
 
           <div class="task-sub">
-            Follow FIDEXA on X
+            Follow Fidexa on X
           </div>
 
         </div>
 
       </div>
 
-
       <button
         class="task-btn"
         onclick="openX()">
-
         OPEN
-
       </button>
 
     </div>
 
 
-    <!-- ================= LUCKY BOX 1 ================= -->
+    <div class="notice" style="margin-top:0">
+
+      <b>Channel reward:</b>
+      +15 $FDX.
+
+      Joining the channel is required.
+      The reward is credited only after Telegram membership is verified.
+
+    </div>
+
+
+    <!-- LUCKY BOX 1 -->
 
     <div class="lucky-box">
 
@@ -1186,7 +1256,6 @@ button{
 
       </div>
 
-
       <div class="lucky-chances">
 
         <span>
@@ -1202,28 +1271,22 @@ button{
 
       </div>
 
-
       <button
         class="lucky-open-btn"
         id="luckyBox1Button"
         onclick="openLuckyBox(1)">
-
         OPEN LUCKY BOX
-
       </button>
 
-
       <div class="lucky-rewards">
-
         Possible rewards:
         0 $FDX · 5 $FDX · 20 $FDX · 50 $FDX
-
       </div>
 
     </div>
 
 
-    <!-- ================= LUCKY BOX 2 ================= -->
+    <!-- LUCKY BOX 2 -->
 
     <div class="lucky-box">
 
@@ -1247,7 +1310,6 @@ button{
 
       </div>
 
-
       <div class="lucky-chances">
 
         <span>
@@ -1263,22 +1325,16 @@ button{
 
       </div>
 
-
       <button
         class="lucky-open-btn"
         id="luckyBox2Button"
         onclick="openLuckyBox(2)">
-
         OPEN LUCKY BOX
-
       </button>
 
-
       <div class="lucky-rewards">
-
         Possible rewards:
         0 $FDX · 20 $FDX · 50 $FDX · 100 $FDX
-
       </div>
 
     </div>
@@ -1296,13 +1352,11 @@ button{
     Invite & Earn
   </div>
 
-
   <div class="card">
 
     <h3>
-      Invite friends to FIDEXA
+      Invite friends to Fidexa
     </h3>
-
 
     <p class="notice">
 
@@ -1311,8 +1365,10 @@ button{
       session, you receive
       <b>+0.1 $FDX/hour</b>.
 
-    </p>
+      The referral rate applies immediately
+      while your mining session is active.
 
+    </p>
 
     <div class="referral-box">
 
@@ -1321,18 +1377,14 @@ button{
         readonly
         value="Generating referral link...">
 
-
       <button
         class="copy-btn"
         id="copyReferral"
         onclick="copyReferralLink()">
-
         COPY
-
       </button>
 
     </div>
-
 
     <div class="friend-stats">
 
@@ -1348,7 +1400,6 @@ button{
 
       </div>
 
-
       <div class="friend-stat">
 
         <strong id="activeFriendCount">
@@ -1363,18 +1414,15 @@ button{
 
     </div>
 
-
     <div class="bonus-rate">
 
       <div class="small-note">
         CURRENT REFERRAL MINING BONUS
       </div>
 
-
       <strong id="referralMiningBonus">
         +0.0 $FDX/hour
       </strong>
-
 
       <div
         class="small-note"
@@ -1399,142 +1447,82 @@ button{
       Referral Rewards
     </strong>
 
-
     <div class="milestone">
 
       <div class="milestone-info">
-
-        <strong>
-          1 Friend
-        </strong>
-
-        <span>
-          First referral milestone
-        </span>
-
+        <strong>1 Friend</strong>
+        <span>First referral milestone</span>
       </div>
 
-
       <div>
-
         <span class="reward">
           +5 $FDX
         </span>
-
         <div id="reward1" class="claimed"></div>
-
       </div>
 
     </div>
 
-
     <div class="milestone">
 
       <div class="milestone-info">
-
-        <strong>
-          5 Friends
-        </strong>
-
-        <span>
-          Referral milestone
-        </span>
-
+        <strong>5 Friends</strong>
+        <span>Referral milestone</span>
       </div>
 
-
       <div>
-
         <span class="reward">
           +20 $FDX
         </span>
-
         <div id="reward5" class="claimed"></div>
-
       </div>
 
     </div>
 
-
     <div class="milestone">
 
       <div class="milestone-info">
-
-        <strong>
-          10 Friends
-        </strong>
-
-        <span>
-          Referral milestone
-        </span>
-
+        <strong>10 Friends</strong>
+        <span>Referral milestone</span>
       </div>
 
-
       <div>
-
         <span class="reward">
           +30 $FDX
         </span>
-
         <div id="reward10" class="claimed"></div>
-
       </div>
 
     </div>
 
-
     <div class="milestone">
 
       <div class="milestone-info">
-
-        <strong>
-          50 Friends
-        </strong>
-
-        <span>
-          Referral milestone
-        </span>
-
+        <strong>50 Friends</strong>
+        <span>Referral milestone</span>
       </div>
 
-
       <div>
-
         <span class="reward">
           +50 $FDX
         </span>
-
         <div id="reward50" class="claimed"></div>
-
       </div>
 
     </div>
 
-
     <div class="milestone">
 
       <div class="milestone-info">
-
-        <strong>
-          100 Friends
-        </strong>
-
-        <span>
-          Referral milestone
-        </span>
-
+        <strong>100 Friends</strong>
+        <span>Referral milestone</span>
       </div>
 
-
       <div>
-
         <span class="reward">
           +100 $FDX
         </span>
-
         <div id="reward100" class="claimed"></div>
-
       </div>
 
     </div>
@@ -1550,34 +1538,27 @@ button{
       Developer Preview
     </strong>
 
-
     <p class="notice">
 
       These buttons only simulate referrals
       while testing the frontend.
 
-      They will be removed when the real
+      They should be removed when the real
       backend is connected.
 
     </p>
 
-
     <button
       class="secondary-btn"
       onclick="simulateReferral()">
-
       + Simulate Friend
-
     </button>
-
 
     <button
       class="secondary-btn"
       onclick="toggleLastReferralActivity()"
       style="margin-left:5px">
-
       Toggle Activity
-
     </button>
 
   </div>
@@ -1593,18 +1574,15 @@ button{
     Wallet
   </div>
 
-
   <div class="card balance-card">
 
     <div class="balance-label">
       AVAILABLE $FDX BALANCE
     </div>
 
-
     <div class="balance" id="walletBalance">
       0.0000
     </div>
-
 
     <div class="coin">
       $FDX
@@ -1612,13 +1590,11 @@ button{
 
   </div>
 
-
   <div class="card">
 
     <h3>
       $FDX Wallet
     </h3>
-
 
     <p class="notice">
 
@@ -1628,29 +1604,22 @@ button{
 
     </p>
 
-
     <div class="wallet-address">
       Wallet functionality coming soon.
     </div>
-
 
     <div class="wallet-actions">
 
       <button
         class="wallet-btn"
         onclick="sendComingSoon()">
-
         SEND
-
       </button>
-
 
       <button
         class="wallet-btn"
         onclick="receiveComingSoon()">
-
         RECEIVE
-
       </button>
 
     </div>
@@ -1670,11 +1639,9 @@ button{
       F
     </div>
 
-
     <div class="profile-name" id="profileName">
-      FIDEXA User
+      Fidexa User
     </div>
-
 
     <div class="profile-username" id="profileUsername">
       @username
@@ -1688,105 +1655,90 @@ button{
     <button
       class="menu-btn"
       onclick="showProfileInfo()">
-
       <span>
         👤 Account Information
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn"
       onclick="openSupport()">
-
       <span>
         💬 Support
       </span>
+      <span>›</span>
+    </button>
 
+
+    <button
+      class="menu-btn"
+      onclick="showPrivacyPolicy()">
       <span>
-        ›
+        🔒 Privacy Policy
       </span>
+      <span>›</span>
+    </button>
 
+
+    <button
+      class="menu-btn"
+      onclick="showWhitePaper()">
+      <span>
+        📘 White Paper
+      </span>
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn"
       onclick="showPolicy()">
-
       <span>
-        📄 Policy
+        📄 Reward Policy
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn"
       onclick="showInfo()">
-
       <span>
-        ℹ️ About FIDEXA
+        ℹ️ About Fidexa
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn"
       onclick="openTelegram()">
-
       <span>
         ✈️ Telegram
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn"
       onclick="openX()">
-
       <span>
         𝕏 X / Twitter
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
 
     <button
       class="menu-btn danger"
       onclick="openDeleteModal()">
-
       <span>
         🗑 Delete Account
       </span>
-
-      <span>
-        ›
-      </span>
-
+      <span>›</span>
     </button>
 
   </div>
@@ -1804,54 +1756,40 @@ button{
     class="nav-btn active"
     id="navHome"
     onclick="showPage('home')">
-
     <span>⌂</span>
     <span>HOME</span>
-
   </button>
-
 
   <button
     class="nav-btn"
     id="navTasks"
     onclick="showPage('tasks')">
-
     <span>✓</span>
     <span>TASKS</span>
-
   </button>
-
 
   <button
     class="nav-btn"
     id="navFriends"
     onclick="showPage('friends')">
-
     <span>👥</span>
     <span>FRIENDS</span>
-
   </button>
-
 
   <button
     class="nav-btn"
     id="navWallet"
     onclick="showPage('wallet')">
-
     <span>▣</span>
     <span>WALLET</span>
-
   </button>
-
 
   <button
     class="nav-btn"
     id="navProfile"
     onclick="showPage('profile')">
-
     <span>●</span>
     <span>PROFILE</span>
-
   </button>
 
 </nav>
@@ -1864,33 +1802,29 @@ button{
   <div class="modal-box">
 
     <h3>
-      FIDEXA NETWORK
+      Fidexa Network
     </h3>
-
 
     <p>
 
-      FIDEXA NETWORK is a digital mining
+      Fidexa Network is a digital mining
       and rewards application.
 
       The current version uses $FDX as
       the internal reward/credit unit.
 
       Blockchain and token functionality
-      can be added in a later development
-      stage.
+      may be introduced during a later
+      development stage.
 
     </p>
-
 
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('infoModal')">
-
         CLOSE
-
       </button>
 
     </div>
@@ -1900,86 +1834,324 @@ button{
 </div>
 
 
-<!-- ================= POLICY MODAL ================= -->
+<!-- ================= REWARD POLICY MODAL ================= -->
 
 <div class="modal" id="policyModal">
 
-  <div class="modal-box">
+  <div class="modal-box document-box">
 
     <h3>
-      FIDEXA Policy
+      Fidexa Reward Policy
     </h3>
 
+    <div class="document-content">
 
-    <div class="policy-section">
-
-      <h4>
-        $FDX & Rewards
-      </h4>
+      <h4>$FDX</h4>
 
       <p>
-        $FDX is used as the internal reward
-        and credit unit in the current
-        FIDEXA application version.
+        $FDX is the internal reward and credit
+        unit used by the current Fidexa Network
+        application.
+      </p>
+
+      <h4>Mining</h4>
+
+      <p>
+        The base mining rate is 1.0 $FDX/hour.
+        A normal mining session lasts 8 hours.
+      </p>
+
+      <h4>Mining Boosters</h4>
+
+      <p>
+        Each successfully completed rewarded
+        advertisement can provide a
+        +0.5 $FDX/hour mining-rate increase.
+        A maximum of 5 Booster ads can be
+        completed within a 24-hour Booster window.
+      </p>
+
+      <h4>Referral Rate</h4>
+
+      <p>
+        Each qualifying active referral can
+        provide +0.1 $FDX/hour.
+        The referral mining-rate change is
+        applied from the point the referral
+        becomes qualifying and active.
+      </p>
+
+      <h4>Official Channel Task</h4>
+
+      <p>
+        The official-channel task provides a
+        one-time +15 $FDX reward after the
+        user's Telegram membership has been
+        successfully verified.
+      </p>
+
+      <h4>Reward Verification</h4>
+
+      <p>
+        Tasks that require external actions,
+        such as joining the official channel,
+        must be verified before their reward
+        is credited.
+      </p>
+
+      <h4>Future Development</h4>
+
+      <p>
+        Wallet, blockchain and other advanced
+        functionality may be connected during
+        future development. Future functionality
+        is not a guarantee of launch or availability.
       </p>
 
     </div>
-
-
-    <div class="policy-section">
-
-      <h4>
-        Mining
-      </h4>
-
-      <p>
-        Mining operates through the
-        configured FIDEXA mining sessions
-        and reward rules.
-      </p>
-
-    </div>
-
-
-    <div class="policy-section">
-
-      <h4>
-        Referrals
-      </h4>
-
-      <p>
-        Referral rewards are subject to
-        successful registration and the
-        activity rules configured by FIDEXA.
-      </p>
-
-    </div>
-
-
-    <div class="policy-section">
-
-      <h4>
-        Future Features
-      </h4>
-
-      <p>
-        Wallet, blockchain and other
-        advanced functionality may be
-        connected during later development
-        stages.
-      </p>
-
-    </div>
-
 
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('policyModal')">
-
         CLOSE
+      </button>
 
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= PRIVACY POLICY ================= -->
+
+<div class="modal" id="privacyModal">
+
+  <div class="modal-box document-box">
+
+    <h3>
+      Fidexa Privacy Policy
+    </h3>
+
+    <div class="document-content">
+
+      <p>
+        This Privacy Policy describes the general
+        way Fidexa Network may handle information
+        used by the application.
+      </p>
+
+      <h4>Telegram Information</h4>
+
+      <p>
+        When the Mini App is opened through
+        Telegram, the application may receive
+        basic Telegram-provided account information
+        such as Telegram user ID, first name,
+        last name and username.
+      </p>
+
+      <h4>Application Data</h4>
+
+      <p>
+        The current frontend version may store
+        application state locally on the user's
+        device. This can include mining progress,
+        reward balances, Booster counts and
+        referral-preview information.
+      </p>
+
+      <h4>Support Messages</h4>
+
+      <p>
+        Support messages entered into the current
+        frontend preview are stored locally until
+        backend support delivery is implemented.
+        A production backend may process support
+        messages for customer assistance.
+      </p>
+
+      <h4>Advertising</h4>
+
+      <p>
+        Rewarded advertisements may be used for
+        eligible reward features. A production
+        advertising provider may process information
+        according to its own privacy policy and
+        applicable requirements.
+      </p>
+
+      <h4>Channel Verification</h4>
+
+      <p>
+        For the official-channel task, Telegram
+        membership information may be checked by
+        the Fidexa backend through the Telegram
+        platform to determine whether the user is
+        eligible for the task reward.
+      </p>
+
+      <h4>Security</h4>
+
+      <p>
+        Production account balances and rewards
+        should be validated by a secure backend.
+        Sensitive credentials such as Telegram bot
+        tokens should never be placed in the
+        Mini App frontend.
+      </p>
+
+      <h4>Future Changes</h4>
+
+      <p>
+        This policy may be updated as Fidexa
+        Network develops additional functionality,
+        services and integrations.
+      </p>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('privacyModal')">
+        CLOSE
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= WHITE PAPER ================= -->
+
+<div class="modal" id="whitePaperModal">
+
+  <div class="modal-box document-box">
+
+    <h3>
+      Fidexa Network White Paper
+    </h3>
+
+    <div class="document-content">
+
+      <h4>1. Overview</h4>
+
+      <p>
+        Fidexa Network is designed as a digital
+        participation and rewards platform built
+        around mining sessions, tasks, referrals
+        and community participation.
+      </p>
+
+      <h4>2. $FDX Reward Unit</h4>
+
+      <p>
+        In the current development stage, $FDX
+        represents an internal reward and credit
+        unit inside the Fidexa application.
+        It should not be represented as a live
+        blockchain token or publicly tradable asset
+        unless and until such functionality is
+        actually implemented.
+      </p>
+
+      <h4>3. Mining System</h4>
+
+      <p>
+        Users can start an 8-hour mining session.
+        The base rate is 1.0 $FDX/hour.
+      </p>
+
+      <h4>4. Mining Boosters</h4>
+
+      <p>
+        Users can increase their mining rate by
+        completing eligible rewarded advertisements.
+        Each successfully completed Booster ad adds
+        +0.5 $FDX/hour, with a maximum of 5 Booster
+        activations per 24-hour window.
+      </p>
+
+      <h4>5. Referral System</h4>
+
+      <p>
+        Qualifying active referrals can increase
+        a user's mining rate by +0.1 $FDX/hour
+        per active referral. The increase applies
+        to eligible active mining from the point
+        the referral becomes active.
+      </p>
+
+      <h4>6. Community Task</h4>
+
+      <p>
+        Fidexa includes an official-channel task.
+        A user must actually join the official
+        Telegram channel and pass membership
+        verification before the one-time +15 $FDX
+        reward is credited.
+      </p>
+
+      <h4>7. Rewarded Advertising</h4>
+
+      <p>
+        Rewarded advertising is intended to connect
+        advertising participation with selected
+        Fidexa rewards. Production rewards should
+        only be issued from verified ad-completion
+        callbacks supplied by the advertising provider.
+      </p>
+
+      <h4>8. Security Architecture</h4>
+
+      <p>
+        A production version should keep balances,
+        reward validation, referral validation and
+        task verification on a secure backend.
+        Client-side values should not be treated as
+        authoritative financial or reward records.
+      </p>
+
+      <h4>9. Wallet Development</h4>
+
+      <p>
+        Wallet functionality is currently presented
+        as coming soon. Future wallet functionality
+        may include additional account and transfer
+        infrastructure if implemented.
+      </p>
+
+      <h4>10. Future Roadmap</h4>
+
+      <ul>
+        <li>Secure backend account system</li>
+        <li>Production reward verification</li>
+        <li>Real rewarded-ad integration</li>
+        <li>Server-side referral tracking</li>
+        <li>Wallet infrastructure</li>
+        <li>Potential blockchain integration</li>
+      </ul>
+
+      <p>
+        These roadmap items describe possible future
+        development and are not guarantees that every
+        feature will launch.
+      </p>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('whitePaperModal')">
+        CLOSE
       </button>
 
     </div>
@@ -1999,35 +2171,29 @@ button{
       Delete Account?
     </h3>
 
-
     <p>
 
       This is currently a frontend preview.
 
       Account deletion will be connected
-      to the backend when Firebase/
-      authentication is integrated.
+      to the backend when authentication
+      and server-side account management
+      are integrated.
 
     </p>
-
 
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('deleteModal')">
-
         CANCEL
-
       </button>
-
 
       <button
         style="background:var(--red);color:white"
         onclick="requestDelete()">
-
         DELETE
-
       </button>
 
     </div>
@@ -2044,28 +2210,25 @@ button{
   <div class="modal-box">
 
     <h3>
-      FIDEXA Support
+      Fidexa Support
     </h3>
-
 
     <p>
 
       Send your message directly to
-      FIDEXA Support.
+      Fidexa Support.
 
       In the production version, this
-      message will be delivered to the
-      FIDEXA Admin Panel through the
+      message can be delivered to the
+      Fidexa Admin Panel through the
       backend.
 
     </p>
-
 
     <textarea
       id="supportMessage"
       class="support-input"
       placeholder="Write your message here..."></textarea>
-
 
     <div
       id="supportStatus"
@@ -2076,25 +2239,19 @@ button{
 
     </div>
 
-
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('supportModal')">
-
         CLOSE
-
       </button>
-
 
       <button
         class="primary-btn"
         style="margin-top:0"
         onclick="sendSupportMessage()">
-
         SEND MESSAGE
-
       </button>
 
     </div>
@@ -2114,30 +2271,23 @@ button{
       🎁 Daily Spin
     </h3>
 
-
     <p id="spinText">
       Your daily free spin is ready.
     </p>
-
 
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('spinModal')">
-
         CLOSE
-
       </button>
-
 
       <button
         class="primary-btn"
         style="margin-top:0"
         onclick="spinNow()">
-
         SPIN
-
       </button>
 
     </div>
@@ -2157,31 +2307,21 @@ button{
       🎁
     </div>
 
-
     <div
       class="lucky-modal-title"
       id="luckyModalTitle">
-
       Lucky Box
-
     </div>
 
-
     <p class="lucky-modal-text" id="luckyModalText">
-
       Watch the ad before opening your Lucky Box.
-
     </p>
-
 
     <div
       class="ad-status"
       id="luckyAdStatus">
-
       📺 Watch the ad to continue.
-
     </div>
-
 
     <div
       class="lucky-result"
@@ -2191,37 +2331,76 @@ button{
         YOUR RANDOM REWARD
       </div>
 
-
       <div
         class="lucky-result-value"
         id="luckyRewardValue">
-
         0 $FDX
-
       </div>
 
     </div>
-
 
     <div class="modal-actions">
 
       <button
         class="secondary-btn"
         onclick="closeModal('luckyBoxModal')">
-
         CLOSE
-
       </button>
-
 
       <button
         class="primary-btn"
         id="luckyWatchAdButton"
         style="margin-top:0"
         onclick="watchLuckyAd()">
-
         WATCH AD
+      </button>
 
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CHANNEL VERIFY MODAL ================= -->
+
+<div class="modal" id="channelVerifyModal">
+
+  <div class="modal-box">
+
+    <h3>
+      📢 Verify Official Channel
+    </h3>
+
+    <p id="channelVerifyText">
+
+      First join the official Fidexa channel.
+      Then return here and verify your membership.
+
+    </p>
+
+    <div
+      class="ad-status"
+      id="channelVerifyStatus">
+
+      Membership has not been verified yet.
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        class="secondary-btn"
+        onclick="closeModal('channelVerifyModal')">
+        CLOSE
+      </button>
+
+      <button
+        class="primary-btn"
+        id="channelVerifyButton"
+        style="margin-top:0"
+        onclick="verifyOfficialChannel()">
+        VERIFY JOIN
       </button>
 
     </div>
@@ -2250,17 +2429,71 @@ const tg =
     ? window.Telegram.WebApp
     : null;
 
-
 if(tg){
 
   try{
-
     tg.ready();
     tg.expand();
-
   }catch(e){}
 
 }
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+/*
+  IMPORTANT:
+
+  Do NOT put your Telegram bot token in this HTML.
+
+  The channel membership check must happen on your
+  secure backend/server.
+
+  Your backend should accept Telegram WebApp initData
+  and verify the user's membership using your bot.
+
+  Expected successful response:
+
+  {
+    "verified": true
+  }
+
+  If the user has not joined:
+
+  {
+    "verified": false
+  }
+
+  Example endpoint:
+
+  https://your-domain.com/api/verify-channel
+
+  Replace the empty string below with YOUR secure
+  backend endpoint when the backend is ready.
+*/
+
+const CHANNEL_VERIFY_ENDPOINT = "";
+
+
+/*
+  Official Fidexa channel.
+
+  Keep this synchronized with the actual channel
+  where your bot has permission to check membership.
+*/
+
+const OFFICIAL_CHANNEL_URL =
+  "https://t.me/fidexa_Network";
+
+
+const OFFICIAL_CHANNEL_USERNAME =
+  "@fidexa_Network";
+
+
+const OFFICIAL_CHANNEL_REWARD =
+  15;
 
 
 /* =========================================================
@@ -2279,6 +2512,9 @@ const BOOST_RATE =
 const MAX_BOOSTERS =
   5;
 
+const BOOSTER_WINDOW =
+  24 * 60 * 60 * 1000;
+
 const REFERRAL_RATE =
   0.1;
 
@@ -2296,41 +2532,17 @@ const LUCKY_BOX_WINDOW =
 const luckyBoxRewards = {
 
   1:[
-    {
-      amount:0,
-      chance:45
-    },
-    {
-      amount:5,
-      chance:35
-    },
-    {
-      amount:20,
-      chance:15
-    },
-    {
-      amount:50,
-      chance:5
-    }
+    {amount:0,chance:45},
+    {amount:5,chance:35},
+    {amount:20,chance:15},
+    {amount:50,chance:5}
   ],
 
   2:[
-    {
-      amount:0,
-      chance:60
-    },
-    {
-      amount:20,
-      chance:25
-    },
-    {
-      amount:50,
-      chance:10
-    },
-    {
-      amount:100,
-      chance:5
-    }
+    {amount:0,chance:60},
+    {amount:20,chance:25},
+    {amount:50,chance:10},
+    {amount:100,chance:5}
   ]
 
 };
@@ -2341,7 +2553,7 @@ const luckyBoxRewards = {
 ========================================================= */
 
 const STORAGE_KEY =
-  "fidexa_network_state_v3";
+  "fidexa_network_state_v4";
 
 const SUPPORT_STORAGE_KEY =
   "fidexa_support_messages_preview_v1";
@@ -2363,6 +2575,21 @@ const defaultState = {
 
   miningRateAtStart:BASE_RATE,
 
+  /*
+    Each completed Booster ad creates one timestamp.
+
+    Example:
+
+    [
+      1727000000000,
+      1727005000000
+    ]
+
+    This lets the mining calculator know exactly
+    when each +0.5 $FDX/hour increase began.
+  */
+  boosterEvents:[],
+
   boosters:0,
 
   boosterWindowStart:null,
@@ -2370,6 +2597,10 @@ const defaultState = {
   referrals:[],
 
   claimedMilestones:[],
+
+  channelJoinedRewardClaimed:false,
+
+  channelVerificationPending:false,
 
   spinLastDate:null,
 
@@ -2403,20 +2634,111 @@ function loadState(){
         STORAGE_KEY
       );
 
-
     if(saved){
 
       const parsed =
         JSON.parse(saved);
 
-
       const loaded = {
 
         ...defaultState,
-
         ...parsed
 
       };
+
+
+      if(!Array.isArray(
+        loaded.boosterEvents
+      )){
+
+        loaded.boosterEvents = [];
+
+      }
+
+
+      if(!Array.isArray(
+        loaded.referrals
+      )){
+
+        loaded.referrals = [];
+
+      }
+
+
+      if(!Array.isArray(
+        loaded.claimedMilestones
+      )){
+
+        loaded.claimedMilestones = [];
+
+      }
+
+
+      if(typeof loaded.channelJoinedRewardClaimed !== "boolean"){
+
+        loaded.channelJoinedRewardClaimed =
+          false;
+
+      }
+
+
+      /*
+        Backward compatibility:
+
+        If an older version of the app had
+        Booster counts but no event timestamps,
+        we keep the count for display.
+
+        New Booster completions are stored
+        properly in boosterEvents.
+      */
+
+      if(
+        loaded.boosterEvents.length === 0 &&
+        number(loaded.boosters) > 0 &&
+        loaded.boosterWindowStart
+      ){
+
+        const count =
+          Math.min(
+            MAX_BOOSTERS,
+            number(
+              loaded.boosters
+            )
+          );
+
+        const start =
+          Number(
+            loaded.boosterWindowStart
+          );
+
+        /*
+          We do not invent exact historical
+          completion times. The old boosters
+          remain represented by the count.
+        */
+
+        loaded.legacyBoosterCount =
+          count;
+
+        loaded.legacyBoosterWindowStart =
+          start;
+
+      }else{
+
+        loaded.legacyBoosterCount =
+          number(
+            loaded.legacyBoosterCount
+          );
+
+        loaded.legacyBoosterWindowStart =
+          loaded.legacyBoosterWindowStart
+            ? Number(
+                loaded.legacyBoosterWindowStart
+              )
+            : null;
+
+      }
 
 
       if(
@@ -2438,20 +2760,13 @@ function loadState(){
       }else{
 
         loaded.luckyBoxes[1] = {
-
           ...defaultState.luckyBoxes[1],
-
           ...(loaded.luckyBoxes[1] || {})
-
         };
 
-
         loaded.luckyBoxes[2] = {
-
           ...defaultState.luckyBoxes[2],
-
           ...(loaded.luckyBoxes[2] || {})
-
         };
 
       }
@@ -2539,24 +2854,19 @@ function toast(message){
       "toast"
     );
 
-
   if(!el)
     return;
 
-
   el.textContent =
     message;
-
 
   el.classList.add(
     "show"
   );
 
-
   clearTimeout(
     toastTimer
   );
-
 
   toastTimer =
     setTimeout(
@@ -2567,7 +2877,7 @@ function toast(message){
         );
 
       },
-      2200
+      2500
     );
 
 }
@@ -2575,7 +2885,6 @@ function toast(message){
 
 /* =========================================================
    NAVIGATION
-   FIX: CLOSE ANY OPEN MODAL WHEN CHANGING PAGE
 ========================================================= */
 
 function showPage(page){
@@ -2635,13 +2944,9 @@ function showPage(page){
   const navIds = {
 
     home:"navHome",
-
     tasks:"navTasks",
-
     friends:"navFriends",
-
     wallet:"navWallet",
-
     profile:"navProfile"
 
   };
@@ -2680,27 +2985,37 @@ function showPage(page){
    TELEGRAM USER
 ========================================================= */
 
-function loadTelegramUser(){
-
-  let user = null;
-
+function getTelegramUser(){
 
   try{
 
-    user =
+    if(
       tg &&
       tg.initDataUnsafe &&
       tg.initDataUnsafe.user
-        ? tg.initDataUnsafe.user
-        : null;
+    ){
+
+      return tg.initDataUnsafe.user;
+
+    }
 
   }catch(e){}
+
+  return null;
+
+}
+
+
+function loadTelegramUser(){
+
+  const user =
+    getTelegramUser();
 
 
   if(!user){
 
     setProfile(
-      "FIDEXA User",
+      "Fidexa User",
       "@username",
       "F"
     );
@@ -2713,21 +3028,17 @@ function loadTelegramUser(){
   const first =
     user.first_name || "";
 
-
   const last =
     user.last_name || "";
 
-
   const fullName =
     `${first} ${last}`.trim()
-    || "FIDEXA User";
-
+    || "Fidexa User";
 
   const username =
     user.username
       ? "@" + user.username
       : "Telegram User";
-
 
   const initials =
     (
@@ -2752,22 +3063,33 @@ function setProfile(
   initials
 ){
 
-  document.getElementById(
-    "profileName"
-  ).textContent =
-    name;
+  const nameEl =
+    document.getElementById(
+      "profileName"
+    );
+
+  const usernameEl =
+    document.getElementById(
+      "profileUsername"
+    );
+
+  const avatarEl =
+    document.getElementById(
+      "avatar"
+    );
 
 
-  document.getElementById(
-    "profileUsername"
-  ).textContent =
-    username;
+  if(nameEl)
+    nameEl.textContent =
+      name;
 
+  if(usernameEl)
+    usernameEl.textContent =
+      username;
 
-  document.getElementById(
-    "avatar"
-  ).textContent =
-    initials;
+  if(avatarEl)
+    avatarEl.textContent =
+      initials;
 
 }
 
@@ -2778,24 +3100,14 @@ function setProfile(
 
 function createReferralLink(){
 
-  let userId =
-    "preview";
+  const user =
+    getTelegramUser();
 
 
-  try{
-
-    if(
-      tg &&
-      tg.initDataUnsafe &&
-      tg.initDataUnsafe.user
-    ){
-
-      userId =
-        tg.initDataUnsafe.user.id;
-
-    }
-
-  }catch(e){}
+  const userId =
+    user
+      ? user.id
+      : "preview";
 
 
   const link =
@@ -2838,7 +3150,6 @@ async function copyReferralLink(){
       input.value
     );
 
-
     toast(
       "Referral link copied!"
     );
@@ -2851,7 +3162,6 @@ async function copyReferralLink(){
       "copy"
     );
 
-
     toast(
       "Referral link copied!"
     );
@@ -2862,27 +3172,22 @@ async function copyReferralLink(){
 
 
 /* =========================================================
-   ACTIVE REFERRALS
+   REFERRALS
 ========================================================= */
 
-function isReferralActive(
-  friend
-){
+function isReferralActive(friend){
 
   if(!friend)
     return false;
 
-
   if(!friend.registered)
     return false;
-
 
   if(
     !friend.miningStart ||
     !friend.miningEnd
   )
     return false;
-
 
   return Date.now() <
     Number(
@@ -2891,10 +3196,6 @@ function isReferralActive(
 
 }
 
-
-/* =========================================================
-   CLEAN EXPIRED REFERRALS
-========================================================= */
 
 function refreshReferralActivity(){
 
@@ -2934,10 +3235,6 @@ function refreshReferralActivity(){
 }
 
 
-/* =========================================================
-   ACTIVE FRIEND COUNT
-========================================================= */
-
 function getActiveFriendCount(){
 
   refreshReferralActivity();
@@ -2954,9 +3251,47 @@ function getActiveFriendCount(){
 }
 
 
-/* =========================================================
-   REFERRAL MINING BONUS
-========================================================= */
+/*
+  Referral count at an exact moment.
+
+  This is important because it allows the
+  mining reward to increase exactly when a
+  referral becomes active instead of changing
+  the reward for previous hours.
+*/
+
+function getReferralCountAt(time){
+
+  return state.referrals
+    .filter(
+      friend => {
+
+        if(!friend)
+          return false;
+
+        if(!friend.registered)
+          return false;
+
+        const start =
+          Number(
+            friend.miningStart
+          ) || 0;
+
+        const end =
+          Number(
+            friend.miningEnd
+          ) || 0;
+
+        return (
+          start <= time &&
+          time < end
+        );
+
+      }
+    ).length;
+
+}
+
 
 function getReferralBonus(){
 
@@ -2969,41 +3304,446 @@ function getReferralBonus(){
 
 
 /* =========================================================
-   CURRENT MINING RATE
+   BOOSTER WINDOW
 ========================================================= */
 
-function getCurrentRate(){
+function refreshBoosterWindow(){
 
-  return (
-    BASE_RATE +
-    (
-      state.boosters *
-      BOOST_RATE
-    ) +
-    getReferralBonus()
+  if(
+    !state.boosterWindowStart
+  )
+    return;
+
+
+  const elapsed =
+    Date.now() -
+    Number(
+      state.boosterWindowStart
+    );
+
+
+  if(
+    elapsed >=
+    BOOSTER_WINDOW
+  ){
+
+    state.boosters =
+      0;
+
+    state.boosterWindowStart =
+      null;
+
+    state.boosterEvents = [];
+
+    state.legacyBoosterCount =
+      0;
+
+    state.legacyBoosterWindowStart =
+      null;
+
+    saveState();
+
+  }
+
+}
+
+
+/*
+  Number of completed Booster ads that are
+  still active at an exact timestamp.
+
+  A Booster contributes for 24 hours.
+*/
+
+function getBoosterCountAt(time){
+
+  let count = 0;
+
+
+  /*
+    New event-based Booster records.
+  */
+
+  if(
+    Array.isArray(
+      state.boosterEvents
+    )
+  ){
+
+    state.boosterEvents.forEach(
+      eventTime => {
+
+        const t =
+          Number(
+            eventTime
+          );
+
+        if(
+          t > 0 &&
+          t <= time &&
+          time <
+            t +
+            BOOSTER_WINDOW
+        ){
+
+          count += 1;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /*
+    Backward compatibility for old
+    frontend Booster records.
+  */
+
+  const legacyCount =
+    number(
+      state.legacyBoosterCount
+    );
+
+  const legacyStart =
+    Number(
+      state.legacyBoosterWindowStart
+    ) || 0;
+
+
+  if(
+    legacyCount > 0 &&
+    legacyStart > 0 &&
+    time >= legacyStart &&
+    time <
+      legacyStart +
+      BOOSTER_WINDOW
+  ){
+
+    count += legacyCount;
+
+  }
+
+
+  return Math.min(
+    MAX_BOOSTERS,
+    count
   );
 
 }
 
 
 /* =========================================================
-   RATE AT START
+   CURRENT MINING RATE
 ========================================================= */
 
-function getSessionRate(){
+function getCurrentRate(){
+
+  refreshBoosterWindow();
+
+  const now =
+    Date.now();
+
+
+  const boosterCount =
+    getBoosterCountAt(
+      now
+    );
+
+
+  const referralCount =
+    getReferralCountAt(
+      now
+    );
+
+
+  return (
+    BASE_RATE +
+    (
+      boosterCount *
+      BOOST_RATE
+    ) +
+    (
+      referralCount *
+      REFERRAL_RATE
+    )
+  );
+
+}
+
+
+/* =========================================================
+   RATE AT EXACT TIME
+========================================================= */
+
+function getRateAt(time){
+
+  const boosterCount =
+    getBoosterCountAt(
+      time
+    );
+
+
+  const referralCount =
+    getReferralCountAt(
+      time
+    );
+
+
+  return (
+    BASE_RATE +
+    (
+      boosterCount *
+      BOOST_RATE
+    ) +
+    (
+      referralCount *
+      REFERRAL_RATE
+    )
+  );
+
+}
+
+
+/* =========================================================
+   MINING RATE SEGMENT CALCULATOR
+========================================================= */
+
+/*
+  This is the important part of the new mining system.
+
+  Example:
+
+  00:00 -> user starts at 1.0/hour
+  02:00 -> completes Booster
+  04:00 -> referral becomes active
+
+  The calculation becomes:
+
+  2 hours at 1.0
+  2 hours at 1.5
+  remaining time at 1.6
+
+  Therefore the Booster/referral reward is NOT
+  applied retroactively to the hours before activation.
+*/
+
+function calculateMiningReward(
+  start,
+  end
+){
+
+  start =
+    Number(start);
+
+  end =
+    Number(end);
+
 
   if(
-    state.miningRateAtStart
+    !start ||
+    !end ||
+    end <= start
   ){
 
-    return number(
-      state.miningRateAtStart
+    return 0;
+
+  }
+
+
+  const boundaries = [
+    start,
+    end
+  ];
+
+
+  /*
+    Booster activation boundaries.
+  */
+
+  if(
+    Array.isArray(
+      state.boosterEvents
+    )
+  ){
+
+    state.boosterEvents.forEach(
+      eventTime => {
+
+        const t =
+          Number(
+            eventTime
+          );
+
+
+        if(
+          t > start &&
+          t < end
+        ){
+
+          boundaries.push(t);
+
+        }
+
+
+        /*
+          Booster expiration is also a
+          rate-change boundary.
+        */
+
+        const expiration =
+          t +
+          BOOSTER_WINDOW;
+
+
+        if(
+          expiration > start &&
+          expiration < end
+        ){
+
+          boundaries.push(
+            expiration
+          );
+
+        }
+
+      }
     );
 
   }
 
 
-  return getCurrentRate();
+  /*
+    Referral activation and expiration
+    boundaries.
+  */
+
+  state.referrals.forEach(
+    friend => {
+
+      const referralStart =
+        Number(
+          friend.miningStart
+        ) || 0;
+
+      const referralEnd =
+        Number(
+          friend.miningEnd
+        ) || 0;
+
+
+      if(
+        referralStart > start &&
+        referralStart < end
+      ){
+
+        boundaries.push(
+          referralStart
+        );
+
+      }
+
+
+      if(
+        referralEnd > start &&
+        referralEnd < end
+      ){
+
+        boundaries.push(
+          referralEnd
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+    Sort and remove duplicates.
+  */
+
+  const sorted =
+    [...new Set(
+      boundaries
+        .map(
+          value =>
+            Number(value)
+        )
+        .sort(
+          (a,b) =>
+            a - b
+        )
+    )];
+
+
+  let reward = 0;
+
+
+  for(
+    let i = 0;
+    i < sorted.length - 1;
+    i++
+  ){
+
+    const segmentStart =
+      sorted[i];
+
+    const segmentEnd =
+      sorted[i + 1];
+
+
+    if(
+      segmentEnd <=
+      segmentStart
+    )
+      continue;
+
+
+    /*
+      Use the midpoint of the segment.
+      The rate is constant throughout the
+      segment because all rate-change
+      boundaries were included above.
+    */
+
+    const midpoint =
+      segmentStart +
+      (
+        (
+          segmentEnd -
+          segmentStart
+        ) / 2
+      );
+
+
+    const rate =
+      getRateAt(
+        midpoint
+      );
+
+
+    const hours =
+      (
+        segmentEnd -
+        segmentStart
+      ) /
+      (
+        60 *
+        60 *
+        1000
+      );
+
+
+    reward +=
+      hours *
+      rate;
+
+  }
+
+
+  return reward;
 
 }
 
@@ -3030,15 +3770,12 @@ function startMining(){
   }
 
 
+  refreshBoosterWindow();
   refreshReferralActivity();
 
 
   const now =
     Date.now();
-
-
-  const rate =
-    getCurrentRate();
 
 
   state.miningStart =
@@ -3050,8 +3787,14 @@ function startMining(){
     MINING_DURATION;
 
 
+  /*
+    Kept for compatibility/display.
+    The actual reward calculation now uses
+    exact Booster/referral activation times.
+  */
+
   state.miningRateAtStart =
-    rate;
+    getCurrentRate();
 
 
   saveState();
@@ -3082,30 +3825,29 @@ function finishMining(){
   }
 
 
-  const elapsed =
-    state.miningEnd -
-    state.miningStart;
+  const start =
+    Number(
+      state.miningStart
+    );
 
 
-  const hours =
-    elapsed /
-    (
-      60 *
-      60 *
-      1000
+  const end =
+    Number(
+      state.miningEnd
     );
 
 
   const reward =
-    hours *
-    getSessionRate();
+    calculateMiningReward(
+      start,
+      end
+    );
 
 
   if(reward > 0){
 
     state.balance +=
       reward;
-
 
     state.totalMined +=
       reward;
@@ -3116,10 +3858,8 @@ function finishMining(){
   state.miningStart =
     null;
 
-
   state.miningEnd =
     null;
-
 
   state.miningRateAtStart =
     getCurrentRate();
@@ -3155,73 +3895,29 @@ function getCurrentSessionReward(){
   }
 
 
-  const elapsed =
-    Math.max(
-      0,
-      Math.min(
-        Date.now() -
-        state.miningStart,
+  const start =
+    Number(
+      state.miningStart
+    );
 
-        MINING_DURATION
+
+  const end =
+    Math.min(
+      Date.now(),
+      Number(
+        state.miningEnd
       )
     );
 
 
-  const hours =
-    elapsed /
-    (
-      60 *
-      60 *
-      1000
-    );
+  if(end <= start)
+    return 0;
 
 
-  return (
-    hours *
-    getSessionRate()
+  return calculateMiningReward(
+    start,
+    end
   );
-
-}
-
-
-/* =========================================================
-   BOOSTER WINDOW
-========================================================= */
-
-function refreshBoosterWindow(){
-
-  if(
-    !state.boosterWindowStart
-  )
-    return;
-
-
-  const elapsed =
-    Date.now() -
-    Number(
-      state.boosterWindowStart
-    );
-
-
-  if(
-    elapsed >=
-    24 *
-    60 *
-    60 *
-    1000
-  ){
-
-    state.boosters =
-      0;
-
-
-    state.boosterWindowStart =
-      null;
-
-
-    saveState();
-
-  }
 
 }
 
@@ -3230,18 +3926,165 @@ function refreshBoosterWindow(){
    USE BOOSTER
 ========================================================= */
 
+let boosterAdRunning =
+  false;
+
+
 function useBooster(){
 
   refreshBoosterWindow();
 
 
+  const currentCount =
+    getBoosterCountAt(
+      Date.now()
+    );
+
+
   if(
-    state.boosters >=
+    currentCount >=
     MAX_BOOSTERS
   ){
 
     toast(
-      "Daily booster limit reached."
+      "Daily Booster limit reached."
+    );
+
+    return;
+
+  }
+
+
+  if(boosterAdRunning)
+    return;
+
+
+  boosterAdRunning =
+    true;
+
+
+  const button =
+    document.getElementById(
+      "boostButton"
+    );
+
+
+  if(button){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "WATCHING...";
+
+  }
+
+
+  /*
+    DEVELOPMENT FALLBACK ONLY.
+
+    Replace showBoosterRewardedAd()
+    with your real rewarded-ad provider.
+
+    The Booster is granted ONLY from
+    completeBoosterAd(), which represents
+    the provider's successful reward callback.
+  */
+
+  showBoosterRewardedAd(
+    () => {
+
+      completeBoosterAd();
+
+    }
+  );
+
+}
+
+
+/*
+  DEVELOPMENT AD SIMULATION.
+
+  This is NOT a real advertisement.
+
+  It exists only so the frontend can be
+  tested before a real rewarded-ad provider
+  is connected.
+*/
+
+function showBoosterRewardedAd(
+  onReward
+){
+
+  const button =
+    document.getElementById(
+      "boostButton"
+    );
+
+
+  if(button){
+
+    button.textContent =
+      "WATCHING...";
+
+  }
+
+
+  setTimeout(
+    () => {
+
+      if(
+        typeof onReward ===
+        "function"
+      ){
+
+        onReward();
+
+      }
+
+    },
+    2500
+  );
+
+}
+
+
+/*
+  This function is the ONLY place where
+  the Booster is actually granted.
+
+  A production rewarded-ad provider should
+  call this function only after its official
+  reward callback confirms completion.
+*/
+
+function completeBoosterAd(){
+
+  refreshBoosterWindow();
+
+
+  const now =
+    Date.now();
+
+
+  const currentCount =
+    getBoosterCountAt(
+      now
+    );
+
+
+  if(
+    currentCount >=
+    MAX_BOOSTERS
+  ){
+
+    boosterAdRunning =
+      false;
+
+    updateBoosterUI();
+
+    toast(
+      "Daily Booster limit reached."
     );
 
     return;
@@ -3254,22 +4097,53 @@ function useBooster(){
   ){
 
     state.boosterWindowStart =
-      Date.now();
+      now;
 
   }
 
 
-  state.boosters +=
-    1;
+  if(
+    !Array.isArray(
+      state.boosterEvents
+    )
+  ){
+
+    state.boosterEvents =
+      [];
+
+  }
+
+
+  /*
+    Record exact completion time.
+
+    This makes the +0.5 $FDX/hour increase
+    start NOW rather than at the beginning
+    of the mining session.
+  */
+
+  state.boosterEvents.push(
+    now
+  );
+
+
+  state.boosters =
+    getBoosterCountAt(
+      now
+    );
 
 
   saveState();
+
+  boosterAdRunning =
+    false;
+
 
   updateUI();
 
 
   toast(
-    "+0.5 $FDX/hour booster activated!"
+    "+0.5 $FDX/hour Booster activated!"
   );
 
 }
@@ -3441,8 +4315,7 @@ function toggleLastReferralActivity(){
   ){
 
     friend.miningEnd =
-      Date.now() - 1000;
-
+      Date.now() - 1;
 
     friend.active =
       false;
@@ -3486,6 +4359,544 @@ function toggleLastReferralActivity(){
 
 
 /* =========================================================
+   OFFICIAL CHANNEL TASK
+========================================================= */
+
+function handleChannelTask(){
+
+  if(
+    state.channelJoinedRewardClaimed
+  ){
+
+    toast(
+      "Official channel reward already claimed."
+    );
+
+    updateChannelTaskUI();
+
+    return;
+
+  }
+
+
+  openTelegramChannel();
+
+}
+
+
+/* =========================================================
+   OPEN OFFICIAL CHANNEL
+========================================================= */
+
+function openTelegramChannel(){
+
+  closeAllModals();
+
+
+  if(tg){
+
+    try{
+
+      tg.openTelegramLink(
+        OFFICIAL_CHANNEL_URL
+      );
+
+    }catch(e){
+
+      window.open(
+        OFFICIAL_CHANNEL_URL,
+        "_blank"
+      );
+
+    }
+
+  }else{
+
+    window.open(
+      OFFICIAL_CHANNEL_URL,
+      "_blank"
+    );
+
+  }
+
+
+  /*
+    After the user visits the channel,
+    they can return to the Mini App and
+    tap the task again.
+
+    We show verification immediately after
+    opening because the user can return to
+    the Mini App without needing another
+    navigation step.
+  */
+
+  setTimeout(
+    () => {
+
+      if(
+        !state.channelJoinedRewardClaimed
+      ){
+
+        openChannelVerifyModal();
+
+      }
+
+    },
+    700
+  );
+
+}
+
+
+/* =========================================================
+   OPEN CHANNEL VERIFY MODAL
+========================================================= */
+
+function openChannelVerifyModal(){
+
+  const modal =
+    document.getElementById(
+      "channelVerifyModal"
+    );
+
+
+  const status =
+    document.getElementById(
+      "channelVerifyStatus"
+    );
+
+
+  const button =
+    document.getElementById(
+      "channelVerifyButton"
+    );
+
+
+  if(status){
+
+    status.textContent =
+      "Membership has not been verified yet.";
+
+  }
+
+
+  if(button){
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "VERIFY JOIN";
+
+  }
+
+
+  closeAllModals();
+
+
+  if(modal)
+    modal.classList.add(
+      "show"
+    );
+
+}
+
+
+/* =========================================================
+   GET TELEGRAM INIT DATA
+========================================================= */
+
+function getTelegramInitData(){
+
+  try{
+
+    if(
+      tg &&
+      typeof tg.initData ===
+      "string"
+    ){
+
+      return tg.initData;
+
+    }
+
+  }catch(e){}
+
+  return "";
+
+}
+
+
+/* =========================================================
+   VERIFY OFFICIAL CHANNEL
+========================================================= */
+
+/*
+  SECURITY:
+
+  The browser cannot safely call Telegram's Bot API
+  with the bot token.
+
+  The secure flow is:
+
+  Mini App
+       ↓
+  Your backend
+       ↓
+  Telegram Bot API
+       ↓
+  Check getChatMember()
+       ↓
+  Backend returns verified=true/false
+       ↓
+  Mini App credits the one-time reward
+
+  Your backend should also validate Telegram WebApp
+  initData before trusting the Telegram user ID.
+*/
+
+async function verifyOfficialChannel(){
+
+  if(
+    state.channelJoinedRewardClaimed
+  ){
+
+    toast(
+      "Channel reward already claimed."
+    );
+
+    updateChannelTaskUI();
+
+    closeModal(
+      "channelVerifyModal"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    state.channelVerificationPending
+  ){
+
+    return;
+
+  }
+
+
+  const user =
+    getTelegramUser();
+
+
+  if(!user){
+
+    toast(
+      "Open Fidexa through Telegram to verify membership."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !CHANNEL_VERIFY_ENDPOINT
+  ){
+
+    toast(
+      "Channel verification backend is not connected yet."
+    );
+
+    const status =
+      document.getElementById(
+        "channelVerifyStatus"
+      );
+
+
+    if(status){
+
+      status.textContent =
+        "Backend verification is not connected. Add your secure verification endpoint before enabling the $15 reward.";
+
+    }
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "channelVerifyButton"
+    );
+
+
+  const status =
+    document.getElementById(
+      "channelVerifyStatus"
+    );
+
+
+  state.channelVerificationPending =
+    true;
+
+
+  if(button){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "VERIFYING...";
+
+  }
+
+
+  if(status){
+
+    status.textContent =
+      "Checking your Telegram channel membership...";
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        CHANNEL_VERIFY_ENDPOINT,
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            initData:
+              getTelegramInitData(),
+
+            telegramUserId:
+              user.id,
+
+            channel:
+              OFFICIAL_CHANNEL_USERNAME
+
+          })
+
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Verification request failed."
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if(
+      result &&
+      result.verified === true
+    ){
+
+      /*
+        ONLY successful backend verification
+        can reach this section.
+      */
+
+      if(
+        !state.channelJoinedRewardClaimed
+      ){
+
+        state.balance +=
+          OFFICIAL_CHANNEL_REWARD;
+
+
+        state.channelJoinedRewardClaimed =
+          true;
+
+
+        state.channelVerificationPending =
+          false;
+
+
+        saveState();
+
+        updateUI();
+
+        updateChannelTaskUI();
+
+
+        if(status){
+
+          status.textContent =
+            "✅ Telegram confirmed that you joined the official channel.";
+
+        }
+
+
+        if(button){
+
+          button.textContent =
+            "REWARDED";
+
+          button.classList.add(
+            "claimed"
+          );
+
+        }
+
+
+        toast(
+          "+15 $FDX channel reward added!"
+        );
+
+
+        setTimeout(
+          () => {
+
+            closeModal(
+              "channelVerifyModal"
+            );
+
+          },
+          1200
+        );
+
+      }
+
+    }else{
+
+      state.channelVerificationPending =
+        false;
+
+
+      if(status){
+
+        status.textContent =
+          "❌ Telegram did not confirm your membership. Please join the official channel first.";
+
+      }
+
+
+      if(button){
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "VERIFY JOIN";
+
+      }
+
+
+      toast(
+        "Please join the official channel first."
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Channel verification error:",
+      error
+    );
+
+
+    state.channelVerificationPending =
+      false;
+
+
+    if(button){
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "VERIFY JOIN";
+
+    }
+
+
+    if(status){
+
+      status.textContent =
+        "Verification could not be completed. Please try again.";
+
+    }
+
+
+    toast(
+      "Channel verification failed. Try again."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   UPDATE CHANNEL TASK UI
+========================================================= */
+
+function updateChannelTaskUI(){
+
+  const button =
+    document.getElementById(
+      "channelTaskButton"
+    );
+
+
+  if(!button)
+    return;
+
+
+  if(
+    state.channelJoinedRewardClaimed
+  ){
+
+    button.textContent =
+      "CLAIMED";
+
+    button.disabled =
+      true;
+
+    button.classList.add(
+      "claimed"
+    );
+
+    return;
+
+  }
+
+
+  button.disabled =
+    false;
+
+  button.classList.remove(
+    "claimed"
+  );
+
+  button.textContent =
+    "JOIN";
+
+}
+
+
+/* =========================================================
    LUCKY BOX SYSTEM
 ========================================================= */
 
@@ -3518,10 +4929,8 @@ function refreshLuckyBoxWindow(boxId){
     box.count =
       0;
 
-
     box.windowStart =
       null;
-
 
     saveState();
 
@@ -3553,12 +4962,6 @@ function getLuckyBoxRemaining(boxId){
 
 }
 
-
-/*
-  Weighted random selection.
-
-  The total chance for each box equals 100%.
-*/
 
 function getLuckyReward(boxId){
 
@@ -3606,13 +5009,6 @@ function getLuckyReward(boxId){
 }
 
 
-/*
-  Opens the ad/reward modal.
-
-  The reward is NOT selected here.
-  It is selected only after the ad step.
-*/
-
 let activeLuckyBox =
   null;
 
@@ -3647,7 +5043,6 @@ function openLuckyBox(boxId){
   activeLuckyBox =
     boxId;
 
-
   luckyAdRunning =
     false;
 
@@ -3657,30 +5052,25 @@ function openLuckyBox(boxId){
       "luckyBoxModal"
     );
 
-
   const title =
     document.getElementById(
       "luckyModalTitle"
     );
-
 
   const text =
     document.getElementById(
       "luckyModalText"
     );
 
-
   const status =
     document.getElementById(
       "luckyAdStatus"
     );
 
-
   const result =
     document.getElementById(
       "luckyResult"
     );
-
 
   const button =
     document.getElementById(
@@ -3746,18 +5136,10 @@ function openLuckyBox(boxId){
 }
 
 
-/*
-  Frontend ad simulation.
-
-  In production this function should be replaced
-  by the actual rewarded-ad provider callback.
-*/
-
 function watchLuckyAd(){
 
   if(!activeLuckyBox)
     return;
-
 
   if(luckyAdRunning)
     return;
@@ -3771,7 +5153,6 @@ function watchLuckyAd(){
     document.getElementById(
       "luckyWatchAdButton"
     );
-
 
   const status =
     document.getElementById(
@@ -3799,8 +5180,9 @@ function watchLuckyAd(){
 
 
   /*
-    Simulated ad duration.
-    Reward is selected only after this completes.
+    Development simulation only.
+    Connect your real rewarded-ad provider
+    here for production.
   */
 
   setTimeout(
@@ -3845,7 +5227,6 @@ function completeLuckyAd(){
       "luckyBoxModal"
     );
 
-
     toast(
       "No Lucky Box chance remains."
     );
@@ -3854,11 +5235,6 @@ function completeLuckyAd(){
 
   }
 
-
-  /*
-    Consume one chance only after
-    the ad has completed.
-  */
 
   const box =
     state.luckyBoxes[boxId];
@@ -3876,10 +5252,6 @@ function completeLuckyAd(){
     number(box.count) +
     1;
 
-
-  /*
-    NOW the random reward is selected.
-  */
 
   const reward =
     getLuckyReward(
@@ -3903,18 +5275,15 @@ function completeLuckyAd(){
       "luckyAdStatus"
     );
 
-
   const result =
     document.getElementById(
       "luckyResult"
     );
 
-
   const rewardValue =
     document.getElementById(
       "luckyRewardValue"
     );
-
 
   const button =
     document.getElementById(
@@ -3960,7 +5329,6 @@ function completeLuckyAd(){
 
 
   updateLuckyBoxUI();
-
   updateUI();
 
 
@@ -4052,8 +5420,6 @@ function updateLuckyBoxUI(){
 
 /* =========================================================
    DAILY SPIN
-   KEPT IN JAVASCRIPT FOR FUTURE EARN FEATURE.
-   IT IS NOT DISPLAYED INSIDE TASKS.
 ========================================================= */
 
 function todayKey(){
@@ -4092,12 +5458,10 @@ function openSpinPreview(){
       "spinModal"
     );
 
-
   const text =
     document.getElementById(
       "spinText"
     );
-
 
   const today =
     todayKey();
@@ -4120,7 +5484,6 @@ function openSpinPreview(){
 
 
   closeAllModals();
-
 
   modal.classList.add(
     "show"
@@ -4156,13 +5519,11 @@ function spinNow(){
 
 
   const rewards = [
-
     1,
     2,
     5,
     10,
     20
-
   ];
 
 
@@ -4215,7 +5576,7 @@ function showProfileInfo(){
   alert(
     "Account: " +
     name +
-    "\n\nFIDEXA account information will be connected to Firebase later."
+    "\n\nFidexa account information will be connected to the secure backend later."
   );
 
 }
@@ -4232,12 +5593,10 @@ function openSupport(){
       "supportModal"
     );
 
-
   const message =
     document.getElementById(
       "supportMessage"
     );
-
 
   const status =
     document.getElementById(
@@ -4252,7 +5611,7 @@ function openSupport(){
 
   if(status)
     status.textContent =
-      "Write your message and send it to FIDEXA Support.";
+      "Write your message and send it to Fidexa Support.";
 
 
   closeAllModals();
@@ -4272,7 +5631,6 @@ function sendSupportMessage(){
     document.getElementById(
       "supportMessage"
     );
-
 
   const status =
     document.getElementById(
@@ -4321,20 +5679,8 @@ function sendSupportMessage(){
   }
 
 
-  let telegramUser =
-    null;
-
-
-  try{
-
-    telegramUser =
-      tg &&
-      tg.initDataUnsafe &&
-      tg.initDataUnsafe.user
-        ? tg.initDataUnsafe.user
-        : null;
-
-  }catch(e){}
+  const telegramUser =
+    getTelegramUser();
 
 
   const supportMessage = {
@@ -4391,7 +5737,7 @@ function sendSupportMessage(){
   if(status){
 
     status.textContent =
-      "Message saved in the frontend preview. Firebase/Admin Panel delivery will be connected in the backend stage.";
+      "Message saved in the frontend preview. Backend/Admin Panel delivery will be connected later.";
 
   }
 
@@ -4404,7 +5750,53 @@ function sendSupportMessage(){
 
 
 /* =========================================================
-   POLICY
+   PRIVACY POLICY
+========================================================= */
+
+function showPrivacyPolicy(){
+
+  const modal =
+    document.getElementById(
+      "privacyModal"
+    );
+
+
+  closeAllModals();
+
+
+  if(modal)
+    modal.classList.add(
+      "show"
+    );
+
+}
+
+
+/* =========================================================
+   WHITE PAPER
+========================================================= */
+
+function showWhitePaper(){
+
+  const modal =
+    document.getElementById(
+      "whitePaperModal"
+    );
+
+
+  closeAllModals();
+
+
+  if(modal)
+    modal.classList.add(
+      "show"
+    );
+
+}
+
+
+/* =========================================================
+   REWARD POLICY
 ========================================================= */
 
 function showPolicy(){
@@ -4488,10 +5880,6 @@ function requestDelete(){
 
 /* =========================================================
    MODALS
-   FIXED:
-   - CLOSE SPECIFIC MODAL
-   - CLOSE ALL MODALS
-   - TAP OUTSIDE MODAL TO CLOSE
 ========================================================= */
 
 function closeModal(id){
@@ -4514,6 +5902,14 @@ function closeModal(id){
       null;
 
     luckyAdRunning =
+      false;
+
+  }
+
+
+  if(id === "channelVerifyModal"){
+
+    state.channelVerificationPending =
       false;
 
   }
@@ -4541,19 +5937,11 @@ function closeAllModals(){
   activeLuckyBox =
     null;
 
-
   luckyAdRunning =
     false;
 
 }
 
-
-/*
-  IMPORTANT:
-  The modal background itself is clickable.
-  The modal-box is not closed when the user
-  taps inside it.
-*/
 
 document
   .querySelectorAll(
@@ -4594,7 +5982,7 @@ function openTelegram(){
 
 
   const url =
-    "https://t.me/fidexa_Network";
+    OFFICIAL_CHANNEL_URL;
 
 
   if(tg){
@@ -4746,7 +6134,6 @@ function formatTime(ms){
 function updateMiningUI(){
 
   refreshBoosterWindow();
-
   refreshReferralActivity();
 
 
@@ -4755,54 +6142,45 @@ function updateMiningUI(){
       "balanceValue"
     );
 
-
   const walletBalance =
     document.getElementById(
       "walletBalance"
     );
-
 
   const rateValue =
     document.getElementById(
       "rateValue"
     );
 
-
   const timer =
     document.getElementById(
       "timer"
     );
-
 
   const status =
     document.getElementById(
       "miningStatus"
     );
 
-
   const button =
     document.getElementById(
       "mineButton"
     );
-
 
   const progress =
     document.getElementById(
       "progressBar"
     );
 
-
   const sessionReward =
     document.getElementById(
       "sessionReward"
     );
 
-
   const maxReward =
     document.getElementById(
       "maxSessionReward"
     );
-
 
   const totalMined =
     document.getElementById(
@@ -4831,6 +6209,12 @@ function updateMiningUI(){
       1
     );
 
+
+  /*
+    This is the maximum amount if the
+    current rate remained constant for
+    the whole next 8-hour session.
+  */
 
   const maxSession =
     currentRate *
@@ -5069,35 +6453,74 @@ function updateBoosterUI(){
       "boosterCount"
     );
 
-
   const button =
     document.getElementById(
       "boostButton"
     );
 
+  const bonus =
+    document.getElementById(
+      "boosterBonus"
+    );
 
-  count.textContent =
-    state.boosters;
+
+  const currentCount =
+    getBoosterCountAt(
+      Date.now()
+    );
+
+
+  const currentBonus =
+    currentCount *
+    BOOST_RATE;
+
+
+  if(count)
+    count.textContent =
+      currentCount;
+
+
+  if(bonus){
+
+    bonus.textContent =
+      "+" +
+      currentBonus.toFixed(
+        1
+      ) +
+      " $FDX/hour";
+
+  }
+
+
+  if(!button)
+    return;
 
 
   if(
-    state.boosters >=
+    currentCount >=
     MAX_BOOSTERS
   ){
 
     button.disabled =
       true;
 
-
     button.textContent =
       "LIMIT";
 
+  }else if(
+    boosterAdRunning
+  ){
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "WATCHING...";
 
   }else{
 
     button.disabled =
       false;
-
 
     button.textContent =
       "WATCH";
@@ -5120,6 +6543,8 @@ function updateUI(){
   updateBoosterUI();
 
   updateLuckyBoxUI();
+
+  updateChannelTaskUI();
 
 }
 
