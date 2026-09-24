@@ -204,7 +204,7 @@ a{text-decoration:none;color:inherit}
 
 <div class="section-title">
   <h2>Mining Status</h2>
-  <span>8 HOUR CYCLE</span>
+  <span>4 HOUR CYCLE</span>
 </div>
 
 <div class="card">
@@ -226,7 +226,7 @@ a{text-decoration:none;color:inherit}
 
   <div class="timer-box">
     <div class="timer-label">Mining Countdown</div>
-    <div class="timer" id="timer">08:00:00</div>
+    <div class="timer" id="timer">04:00:00</div>
     <div class="progress">
       <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -296,7 +296,7 @@ a{text-decoration:none;color:inherit}
 <div class="stats">
   <div class="stat">
     <div class="stat-label">CURRENT SESSION REWARD</div>
-    <div class="stat-value" id="sessionReward">8.0 $FDX</div>
+    <div class="stat-value" id="sessionReward">4.0 $FDX</div>
   </div>
   <div class="stat">
     <div class="stat-label">MAX BOOSTER BONUS</div>
@@ -728,14 +728,14 @@ const state = {
   telegramUserId: null
 };
 
-const EIGHT_HOURS = 8*60*60*1000;
+const FOUR_HOURS = 4*60*60*1000;
 const BOOST_AMOUNT = .5;
 const REFERRAL_AMOUNT = .1;
 const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 12*60*60*1000;
 const MAX_LUCKY_CHANCES = 3;
-const KEY = 'fidexa_final_state_v6';
+const KEY = 'fidexa_final_state_v7';
 
 const $ = id => document.getElementById(id);
 
@@ -773,7 +773,7 @@ function showPrivacyPolicy() {
 }
 
 function showWhitepaper() {
-  showInfo('FIDEXA Whitepaper v1.0', `1. VISION & MISSION\nDecentralized gamified web3 rewards.\n2. MINING\n8-hour continuous cycles starting with START.`);
+  showInfo('FIDEXA Whitepaper v1.0', `1. VISION & MISSION\nDecentralized gamified web3 rewards.\n2. MINING\n4-hour continuous cycles starting with START.`);
 }
 
 function showRoadmap() {
@@ -851,7 +851,7 @@ function updateUI() {
   $('unverifiedBalance').textContent = "0.00";
   $('rateValue').textContent = rate.toFixed(1);
   $('boostRate').textContent = rate.toFixed(1);$('boosterCount').textContent = `${state.boosterEvents.length} / ${BOOSTER_LIMIT}`;
-  $('sessionReward').textContent = `${(rate*8).toFixed(1)} $FDX`;
+  $('sessionReward').textContent = `${(rate*4).toFixed(1)} $FDX`;
   $('friendCount').textContent = state.friends.length;
   $('activeFriendCount').textContent = state.friends.filter(f => f.active).length;
   $('referralMiningBonus').textContent = `+${referralBonusAt(Date.now()).toFixed(1)}`;
@@ -883,7 +883,7 @@ function updateMiningTimer() {
   const timer = $('timer');
 
   if(!state.miningStart || !state.miningEnd) {
-    timer.textContent = '08:00:00';
+    timer.textContent = '04:00:00';
     s.textContent = 'READY TO MINE';
     b.textContent = 'START';
     b.disabled = false;
@@ -894,7 +894,7 @@ function updateMiningTimer() {
 
   const now = Date.now();
   const left = Math.max(0, state.miningEnd - now);
-  const elapsed = Math.min(EIGHT_HOURS, now - state.miningStart);
+  const elapsed = Math.min(FOUR_HOURS, now - state.miningStart);
 
   if(left <= 0) {
     state.pendingReward = sessionRewardAt(state.miningEnd);
@@ -917,23 +917,20 @@ function updateMiningTimer() {
   s.textContent = 'MINING ACTIVE';
   b.textContent = 'ACTIVE MINING';
   b.disabled = true;
-  bar.style.width = `${(elapsed / EIGHT_HOURS) * 100}%`;
+  bar.style.width = `${(elapsed / FOUR_HOURS) * 100}%`;
   $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
 }
 
-// Main button handler driving START -> ACTIVE MINING -> CLAIM flow
 function handleMainButton() {
   if(!state.miningStart) {
-    // Start session
     state.miningStart = Date.now();
-    state.miningEnd = state.miningStart + EIGHT_HOURS;
+    state.miningEnd = state.miningStart + FOUR_HOURS;
     state.pendingReward = 0;
     save();
     updateUI();
     updateMiningTimer();
-    toast('Mining session started!');
+    toast('Mining session started (4 Hours)!');
   } else if(state.miningEnd && Date.now() >= state.miningEnd) {
-    // Trigger Claim Ad flow
     window.isClaimAd = true;
     $('adText').textContent = 'Watch the rewarded ad to claim your accumulated mining rewards to your Total Balance.';
     openModal('adModal');
@@ -959,7 +956,6 @@ function completeRewardedAd() {
     const amount = sessionRewardAt(state.miningEnd);
     state.homeBalance += amount;
     
-    // Log transaction
     state.transactions.unshift({
       label: 'Mining Rewards Claimed',
       amount: amount,
@@ -977,7 +973,6 @@ function completeRewardedAd() {
     return;
   }
 
-  // Normal booster ad completion
   cleanBoosterEvents();
   if(state.boosterEvents.length >= BOOSTER_LIMIT) {
     toast('The 5-ad limit has been reached.');
@@ -1071,7 +1066,7 @@ function watchLuckyBoxAd() {
 
 function simulateReferral() {
   const n = Date.now();
-  state.friends.push({ id: 'preview_' + n, active: true, miningStart: n, miningEnd: n + EIGHT_HOURS });
+  state.friends.push({ id: 'preview_' + n, active: true, miningStart: n, miningEnd: n + FOUR_HOURS });
   checkMilestones();
   save();
   updateUI();
@@ -1082,7 +1077,7 @@ function toggleLastReferralActivity() {
   if(!state.friends.length) { toast('Add a friend first.'); return; }
   const f = state.friends[state.friends.length - 1];
   f.active = !f.active;
-  f.miningEnd = f.active ? Date.now() + EIGHT_HOURS : Date.now();
+  f.miningEnd = f.active ? Date.now() + FOUR_HOURS : Date.now();
   save();
   updateUI();
 }
