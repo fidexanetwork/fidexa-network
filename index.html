@@ -159,7 +159,12 @@ a{text-decoration:none;color:inherit}
 .modal.show{display:flex}
 .modal-box{width:min(480px,100%);max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#0b192a;border:1px solid #24435e;border-radius:22px;padding:20px 20px 26px}
 .modal-box h3{font-size:17px}
-.modal-box p{color:#8095a9;font-size:11px;line-height:1.5;margin-top:8px;white-space:pre-line}
+.modal-box p{color:#8095a9;font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
+
+/* Scrollable container for Whitepaper, Privacy Policy, and Roadmap docs */
+.scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid #18334d;border-bottom:1px solid #18334d;padding-top:10px;padding-bottom:10px;text-align:left}
+.scrollable-doc::-webkit-scrollbar{width:4px}
+.scrollable-doc::-webkit-scrollbar-thumb{background:#204363;border-radius:4px}
 
 .support{background:#071321;border:1px solid #19334e;border-radius:18px;padding:15px;margin-top:14px}
 .messages{min-height:160px;max-height:34vh;overflow:auto;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
@@ -731,17 +736,17 @@ a{text-decoration:none;color:inherit}
 <div class="menu-group">
 
   <div class="menu-label">
-    INFORMATION
+    DOCUMENTATION & POLICIES
   </div>
 
   <button class="menu-item"
-          onclick="showInfo('Privacy Policy','The official FIDEXA Privacy Policy will be displayed here before production.')">
+          onclick="showPrivacyPolicy()">
 
     <div class="mi">📄</div>
 
     <div class="mt">
       <strong>Privacy Policy</strong>
-      <p>How FIDEXA handles account information</p>
+      <p>How FIDEXA handles user data and security</p>
     </div>
 
     <div class="arrow">›</div>
@@ -749,13 +754,27 @@ a{text-decoration:none;color:inherit}
   </button>
 
   <button class="menu-item"
-          onclick="showInfo('FIDEXA Whitepaper','The official FIDEXA Whitepaper will be linked here when ready.')">
+          onclick="showWhitepaper()">
 
     <div class="mi">📘</div>
 
     <div class="mt">
       <strong>FIDEXA Whitepaper</strong>
-      <p>Project overview and network documentation</p>
+      <p>Tokenomics, mining mechanics & vision</p>
+    </div>
+
+    <div class="arrow">›</div>
+
+  </button>
+
+  <button class="menu-item"
+          onclick="showRoadmap()">
+
+    <div class="mi">🗺️</div>
+
+    <div class="mt">
+      <strong>Project Roadmap</strong>
+      <p>Development milestones and mainnet goals</p>
     </div>
 
     <div class="arrow">›</div>
@@ -844,10 +863,13 @@ a{text-decoration:none;color:inherit}
 
 <h3 id="infoTitle">Information</h3>
 
-<p id="infoText"></p>
+<div class="scrollable-doc">
+  <p id="infoText"></p>
+</div>
 
 <button class="secondary"
-        onclick="closeModal('infoModal')">
+        onclick="closeModal('infoModal')"
+        style="margin-top:14px">
   CLOSE
 </button>
 
@@ -1173,10 +1195,32 @@ function showProfileInfo(){
 
   showInfo(
     'Account Information',
-    `Name: ${$('profileName').textContent}
-${$('profileUsername').textContent}`
+    `Name: ${$('profileName').textContent}\n${$('profileUsername').textContent}\n\nAccount Status: Verified Member\nNetwork ID: ${ownID()}`
   );
 
+}
+
+
+/* Professional Content Builders for Profile Docs */
+function showPrivacyPolicy(){
+  showInfo(
+    'Privacy Policy',
+    `1. INTRODUCTION\nWelcome to FIDEXA Network ("we", "our", or "us"). We respect your privacy and are committed to protecting your personal information collected via our Telegram WebApp.\n\n2. INFORMATION WE COLLECT\n- Telegram User ID, First Name, and Username for account syncing.\n- App activity, mining progress, and referral connections stored securely via local device cache and secure backend infrastructure.\n\n3. USE OF DATA\nYour data is used strictly to maintain your $FDX balance records, calculate hourly mining rates, process lucky box draws, and secure network distribution.\n\n4. DATA SECURITY\nWe implement standard protective measures to ensure your accumulated $FDX rewards remain safe throughout the pre-migration phase.\n\n5. CONTACT US\nReach out via our official Telegram community channel for any data privacy inquiries.`
+  );
+}
+
+function showWhitepaper(){
+  showInfo(
+    'FIDEXA Whitepaper v1.0',
+    `1. VISION & MISSION\nFIDEXA Network is a decentralized digital ecosystem designed to bring gamified web3 rewards, active mining utility, and seamless community engagement directly to mobile users through Telegram.\n\n2. THE $FDX TOKEN\n$FDX is the native utility asset powering the FIDEXA ecosystem. It enables decentralized participation, reward distributions, and future on-chain transactional utility.\n\n3. MINING MECHANICS\nUsers activate 8-hour mining cycles with a base rate of 1.0 $FDX/h. Rates can be scaled using ad boosters (up to +2.5 $FDX/h) and active referral community contributions (+0.1 $FDX/h per active friend).\n\n4. COMMUNITY REWARDS & LUCKY BOXES\nEcosystem participation is rewarded via milestones and dual 12-hour Lucky Box draws, offering randomized asset rewards to active network participants.\n\n5. MIGRATION & FUTURE OUTLOOK\nUpon reaching mainnet integration goals, eligible $FDX balances will transition securely to supported on-chain protocols.`
+  );
+}
+
+function showRoadmap(){
+  showInfo(
+    'FIDEXA Project Roadmap',
+    `PHASE 1: FOUNDATION & LAUNCH (Q1 - Q2)\n- Release of Telegram WebApp interface.\n- Deployment of 8-hour continuous mining loop.\n- Integration of referral milestone reward tracks.\n\nPHASE 2: ECOSYSTEM EXPANSION (Q3)\n- Launch of Dual Lucky Box systems with ad-gated mechanics.\n- Wallet interface scaffolding with secure transaction history logs.\n- Community growth campaigns across Telegram and X (Twitter).\n\nPHASE 3: MAINNET & MIGRATION (Q4 & Beyond)\n- Smart contract deployment on supported networks.\n- Implementation of official wallet linking and migration eligibility validation.\n- Peer-to-peer asset transfer utility activation.`
+  );
 }
 
 
