@@ -195,7 +195,7 @@ a{text-decoration:none;color:inherit}
 
 <div class="balance-card">
   <div class="balance-label">TOTAL FIDEXA BALANCE</div>
-  <div class="balance"><span id="balanceValue">0.00</span> <span>FDX</span></div>
+  <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
   <div class="balance-bottom">
     <span>Available Balance</span>
     <span>FIDEXA Network</span>
@@ -220,7 +220,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="rate">
       <div class="rate-number" id="rateValue">1.0</div>
-      <small>FDX / HOUR</small>
+      <small>$FDX / HOUR</small>
     </div>
   </div>
 
@@ -237,7 +237,7 @@ a{text-decoration:none;color:inherit}
   </button>
 
   <button class="secondary" id="claimButton" style="display:none">
-    CLAIM 0.00 FDX
+    CLAIM 0.00 $FDX
   </button>
 
 </div>
@@ -255,7 +255,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <div class="pending-value" id="pendingReward">
-      0.00 FDX
+      0.00 $FDX
     </div>
 
   </div>
@@ -269,12 +269,12 @@ a{text-decoration:none;color:inherit}
 
 <div class="notice">
   <strong>Mining:</strong>
-  Base rate is 1 FDX/hour. Referral bonuses and rewarded-ad boosters affect the current mining rate.
+  Base rate is 1 $FDX/hour. Referral bonuses and rewarded-ad boosters affect the current mining rate.
 </div>
 
 <div class="section-title">
   <h2>Boost Mining</h2>
-  <span>MAX +2.5 FDX/H</span>
+  <span>MAX +2.5 $FDX/H</span>
 </div>
 
 <div class="card">
@@ -284,7 +284,7 @@ a{text-decoration:none;color:inherit}
     <div>
       <div class="boost-rate">
         <span id="boostRate">1.0</span>
-        <span>FDX/H</span>
+        <span>$FDX/H</span>
       </div>
 
       <div style="color:#71869b;font-size:9px;margin-top:4px">
@@ -309,7 +309,7 @@ a{text-decoration:none;color:inherit}
   </div>
 
   <button class="secondary" id="boostButton">
-    WATCH REWARDED AD → +0.5 FDX/H
+    WATCH REWARDED AD → +0.5 $FDX/H
   </button>
 
 </div>
@@ -318,12 +318,12 @@ a{text-decoration:none;color:inherit}
 
   <div class="stat">
     <div class="stat-label">CURRENT SESSION REWARD</div>
-    <div class="stat-value" id="sessionReward">8.0 FDX</div>
+    <div class="stat-value" id="sessionReward">8.0 $FDX</div>
   </div>
 
   <div class="stat">
     <div class="stat-label">MAX BOOSTER BONUS</div>
-    <div class="stat-value">+2.5 FDX/H</div>
+    <div class="stat-value">+2.5 $FDX/H</div>
   </div>
 
 </div>
@@ -369,19 +369,32 @@ a{text-decoration:none;color:inherit}
 <div class="task">
   <div class="icon-box">📦</div>
   <div class="task-info">
-    <strong>Lucky Box</strong>
-    <p>Watch a rewarded ad to open a Lucky Box every 12 hours.</p>
+    <strong>Lucky Box 1</strong>
+    <p>3 chances per 12 hours. Watch ads to win rewards (0, 10, 20, 30, 50 $FDX).</p>
   </div>
   <button class="small-btn"
-          id="luckyBoxButton"
-          onclick="openLuckyBox()">
+          id="luckyBox1Button"
+          onclick="openLuckyBox(1)">
+    OPEN
+  </button>
+</div>
+
+<div class="task">
+  <div class="icon-box">🎁</div>
+  <div class="task-info">
+    <strong>Lucky Box 2</strong>
+    <p>3 chances per 12 hours. Watch ads to win rewards (0, 20, 1, 5, 100 $FDX).</p>
+  </div>
+  <button class="small-btn"
+          id="luckyBox2Button"
+          onclick="openLuckyBox(2)">
     OPEN
   </button>
 </div>
 
 <div class="notice">
-  <strong>Lucky Box rule:</strong>
-  cooldown is <strong>12 hours</strong> after each claim.
+  <strong>Lucky Boxes rule:</strong>
+  Each box has 3 chances and resets every <strong>12 hours</strong>. Watching an ad is required per chance.
 </div>
 
 </section>
@@ -436,7 +449,7 @@ a{text-decoration:none;color:inherit}
       </div>
 
       <strong id="referralMiningBonus">+0.0</strong>
-      <span>FDX/H</span>
+      <span>$FDX/H</span>
     </div>
 
     <div style="text-align:right">
@@ -445,7 +458,7 @@ a{text-decoration:none;color:inherit}
       </div>
 
       <strong id="friendRatePreview">
-        1.0 FDX/H
+        1.0 $FDX/H
       </strong>
     </div>
 
@@ -453,7 +466,7 @@ a{text-decoration:none;color:inherit}
 
   <div class="notice">
     <strong>Active referral:</strong>
-    each qualified friend actively mining contributes +0.1 FDX/H.
+    each qualified friend actively mining contributes +0.1 $FDX/H.
   </div>
 
 </div>
@@ -471,7 +484,7 @@ a{text-decoration:none;color:inherit}
       <strong>1 qualified friend</strong>
       <p>First referral milestone</p>
     </div>
-    <div class="reward-value">+5 FDX</div>
+    <div class="reward-value">+5 $FDX</div>
   </div>
 
   <div class="reward-row" id="reward5">
@@ -480,7 +493,7 @@ a{text-decoration:none;color:inherit}
       <strong>5 qualified friends</strong>
       <p>Network milestone</p>
     </div>
-    <div class="reward-value">+20 FDX</div>
+    <div class="reward-value">+20 $FDX</div>
   </div>
 
   <div class="reward-row" id="reward10">
@@ -489,7 +502,7 @@ a{text-decoration:none;color:inherit}
       <strong>10 qualified friends</strong>
       <p>Network milestone</p>
     </div>
-    <div class="reward-value">+30 FDX</div>
+    <div class="reward-value">+30 $FDX</div>
   </div>
 
   <div class="reward-row" id="reward50">
@@ -498,7 +511,7 @@ a{text-decoration:none;color:inherit}
       <strong>50 qualified friends</strong>
       <p>Network milestone</p>
     </div>
-    <div class="reward-value">+50 FDX</div>
+    <div class="reward-value">+50 $FDX</div>
   </div>
 
   <div class="reward-row" id="reward100">
@@ -507,7 +520,7 @@ a{text-decoration:none;color:inherit}
       <strong>100 qualified friends</strong>
       <p>Network milestone</p>
     </div>
-    <div class="reward-value">+100 FDX</div>
+    <div class="reward-value">+100 $FDX</div>
   </div>
 
 </div>
@@ -533,12 +546,12 @@ a{text-decoration:none;color:inherit}
 <div class="wallet-hero">
 
   <div class="wallet-label">
-    TOTAL FDX BALANCE
+    TOTAL $FDX BALANCE
   </div>
 
   <div class="wallet-total">
     <span id="walletBalance">0.00</span>
-    <span>FDX</span>
+    <span>$FDX</span>
   </div>
 
   <div class="wallet-value">
@@ -552,13 +565,13 @@ a{text-decoration:none;color:inherit}
   <button class="wallet-action send"
           onclick="openSendModal()">
     <span class="wa-icon">↗</span>
-    SEND FDX
+    SEND $FDX
   </button>
 
   <button class="wallet-action receive"
           onclick="openReceiveModal()">
     <span class="wa-icon">⇩</span>
-    RECEIVE FDX
+    RECEIVE $FDX
   </button>
 
   <button class="wallet-action migrate"
@@ -590,7 +603,7 @@ a{text-decoration:none;color:inherit}
       </div>
 
       <div class="migration-copy">
-        Your FDX can become eligible for migration when the official migration phase begins.
+        Your $FDX can become eligible for migration when the official migration phase begins.
       </div>
     </div>
 
@@ -631,7 +644,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <div class="wr-value">
-      0.00 FDX
+      0.00 $FDX
     </div>
   </div>
 
@@ -918,16 +931,15 @@ CANCEL
 
 <div class="modal-box">
 
-<h3>🎁 Lucky Box</h3>
+<h3 id="luckyModalTitle">🎁 Lucky Box</h3>
 
-<p>
-Watch the rewarded ad to open your Lucky Box.
-A new box is available every 12 hours.
+<p id="luckyModalDesc">
+Watch the rewarded ad to use a chance.
 </p>
 
 <button class="primary"
         onclick="watchLuckyBoxAd()">
-WATCH AD & OPEN
+WATCH AD & OPEN CHANCE
 </button>
 
 <button class="secondary"
@@ -945,7 +957,7 @@ CANCEL
 
 <div class="modal-box">
 
-<h3>Send FDX</h3>
+<h3>Send $FDX</h3>
 
 <p>
 Enter another user's FIDEX ID/username and amount.
@@ -962,7 +974,7 @@ Enter another user's FIDEX ID/username and amount.
        type="number"
        min="0.01"
        step="0.01"
-       placeholder="Amount in FDX">
+       placeholder="Amount in $FDX">
 
 <button class="primary"
         onclick="sendFDX()">
@@ -984,7 +996,7 @@ CANCEL
 
 <div class="modal-box">
 
-<h3>Receive FDX</h3>
+<h3>Receive $FDX</h3>
 
 <p>
 Share your FIDEX receiving ID with another user.
@@ -1015,7 +1027,7 @@ CLOSE
 
 <div class="modal-box">
 
-<h3>FDX Migration</h3>
+<h3>$FDX Migration</h3>
 
 <p>
 Migration is planned for the official on-chain phase.
@@ -1079,7 +1091,11 @@ const state={
   friends:[],
   referralRewards:0,
   claimedMilestones:{},
-  luckyBoxLastClaim:0,
+  lucky1Chances:3,
+  lucky1LastReset:0,
+  lucky2Chances:3,
+  lucky2LastReset:0,
+  activeLuckyBox:1,
   transactions:[],
   telegramUserId:null
 };
@@ -1091,9 +1107,10 @@ const REFERRAL_AMOUNT=.1;
 const BOOSTER_LIMIT=5;
 const BOOSTER_WINDOW=24*60*60*1000;
 
-const LUCKY_BOX_COOLDOWN=12*60*60*1000;
+const LUCKY_COOLDOWN=12*60*60*1000;
+const MAX_LUCKY_CHANCES=3;
 
-const KEY='fidexa_final_state_v2';
+const KEY='fidexa_final_state_v3';
 
 const $=id=>document.getElementById(id);
 
@@ -1208,14 +1225,6 @@ function cleanBoosterEvents(){
 }
 
 
-function boosterCount(){
-
-  cleanBoosterEvents();
-
-  return state.boosterEvents.length;
-}
-
-
 function boosterCountAt(t){
 
   return (state.boosterEvents||[])
@@ -1323,18 +1332,10 @@ function sessionRewardAt(endTime){
 }
 
 
-function getSessionRewardNow(){
-
-  return sessionRewardAt(
-    Date.now()
-  );
-
-}
-
-
 function updateUI(){
 
   cleanBoosterEvents();
+  checkLuckyResets();
 
   const rate=
     rateAt(Date.now());
@@ -1355,7 +1356,7 @@ function updateUI(){
     `${state.boosterEvents.length} / ${BOOSTER_LIMIT}`;
 
   $('sessionReward').textContent=
-    `${(rate*8).toFixed(1)} FDX`;
+    `${(rate*8).toFixed(1)} $FDX`;
 
   $('friendCount').textContent=
     state.friends.length;
@@ -1369,10 +1370,10 @@ function updateUI(){
     `+${referralBonusAt(Date.now()).toFixed(1)}`;
 
   $('friendRatePreview').textContent=
-    `${rate.toFixed(1)} FDX/H`;
+    `${rate.toFixed(1)} $FDX/H`;
 
   $('pendingReward').textContent=
-    `${state.pendingReward.toFixed(2)} FDX`;
+    `${state.pendingReward.toFixed(2)} $FDX`;
 
   $('pendingStatusText').textContent=
     state.miningStart
@@ -1430,14 +1431,13 @@ function updateUI(){
         : reached
           ? 'CLAIM'
           : n===1
-            ? '+5 FDX'
+            ? '+5 $FDX'
             : n===5
-              ? '+20 FDX'
+              ? '+20 $FDX'
               : n===10
-                ? '+30 FDX'
+                ? '+30 $FDX'
                 : n===50
-                  ? '+50 FDX'
-                  : '+100 FDX';
+                  ? '+50 $FDX'                   : '+100$FDX';
 
   });
 
@@ -1446,8 +1446,7 @@ function updateUI(){
     `${state.transactions.length} ACTIVITY`;
 
   renderTransactions();
-
-  updateLuckyBoxUI();
+  updateLuckyBoxesUI();
 
 }
 
@@ -1485,7 +1484,7 @@ function updateMiningTimer(){
 
     $('pendingReward').textContent=
       state.pendingReward.toFixed(2)
-      +' FDX';
+      +' $FDX';
 
     return;
 
@@ -1529,7 +1528,7 @@ function updateMiningTimer(){
       'block';
 
     c.textContent=
-      `CLAIM ${state.pendingReward.toFixed(2)} FDX`;
+      `CLAIM ${state.pendingReward.toFixed(2)} $FDX`;
 
     bar.style.width=
       '100%';
@@ -1580,7 +1579,7 @@ function updateMiningTimer(){
 
   $('pendingReward').textContent=
     state.pendingReward.toFixed(2)
-    +' FDX';
+    +' $FDX';
 
 }
 
@@ -1667,7 +1666,7 @@ function claimMining(){
   updateMiningTimer();
 
   toast(
-    `Claimed ${amount.toFixed(2)} FDX. Start mining again.`
+    `Claimed ${amount.toFixed(2)} $FDX. Start mining again.`
   );
 
 }
@@ -1705,7 +1704,7 @@ function requestBooster(){
 
 
   $('adText').textContent=
-    'Complete the rewarded ad to receive +0.5 FDX/hour. This demo gate will be replaced by the real Adsgram completion callback.';
+    'Complete the rewarded ad to receive +0.5 $FDX/hour. This demo gate will be replaced by the real Adsgram completion callback.';
 
   openModal('adModal');
 
@@ -1741,7 +1740,7 @@ function completeRewardedAd(){
   updateUI();
 
   toast(
-    '+0.5 FDX/hour booster earned.'
+    '+0.5 $FDX/hour booster earned.'
   );
 
 }
@@ -1754,180 +1753,117 @@ $('boostButton')
   );
 
 
-function luckyAvailable(){
+function checkLuckyResets(){
+  const now = Date.now();
 
-  return(
-    !state.luckyBoxLastClaim ||
-    Date.now()-
-      state.luckyBoxLastClaim
-      >=LUCKY_BOX_COOLDOWN
-  );
+  if(!state.lucky1LastReset || now - state.lucky1LastReset >= LUCKY_COOLDOWN){
+    state.lucky1Chances = MAX_LUCKY_CHANCES;
+    state.lucky1LastReset = now;
+  }
 
+  if(!state.lucky2LastReset || now - state.lucky2LastReset >= LUCKY_COOLDOWN){
+    state.lucky2Chances = MAX_LUCKY_CHANCES;
+    state.lucky2LastReset = now;
+  }
 }
 
 
 function formatDuration(ms){
-
-  const q=
-    Math.ceil(ms/1000);
-
-  const h=
-    Math.floor(q/3600);
-
-  const m=
-    Math.floor(
-      q%3600/60
-    );
-
-  return(
-    `${h}h ${String(m).padStart(2,'0')}m`
-  );
-
+  const q = Math.ceil(ms/1000);
+  const h = Math.floor(q/3600);
+  const m = Math.floor((q%3600)/60);
+  return `${h}h ${String(m).padStart(2,'0')}m`;
 }
 
 
-function updateLuckyBoxUI(){
+function updateLuckyBoxesUI(){
+  checkLuckyResets();
 
-  const b=
-    $('luckyBoxButton');
+  const b1 = $('luckyBox1Button');
+  const b2 = $('luckyBox2Button');
 
-  if(
-    luckyAvailable()
-  ){
-
-    b.textContent=
-      'OPEN';
-
-    b.disabled=false;
-
-  }else{
-
-    b.textContent=
-      formatDuration(
-        LUCKY_BOX_COOLDOWN-
-        (
-          Date.now()-
-          state.luckyBoxLastClaim
-        )
-      );
-
-    b.disabled=true;
-
+  if(state.lucky1Chances > 0){
+    b1.textContent = `OPEN (${state.lucky1Chances}/3)`;
+    b1.disabled = false;
+  } else {
+    const leftTime = LUCKY_COOLDOWN - (Date.now() - state.lucky1LastReset);
+    b1.textContent = formatDuration(leftTime > 0 ? leftTime : 0);
+    b1.disabled = true;
   }
 
+  if(state.lucky2Chances > 0){
+    b2.textContent = `OPEN (${state.lucky2Chances}/3)`;
+    b2.disabled = false;
+  } else {
+    const leftTime = LUCKY_COOLDOWN - (Date.now() - state.lucky2LastReset);
+    b2.textContent = formatDuration(leftTime > 0 ? leftTime : 0);
+    b2.disabled = true;
+  }
 }
 
 
-function openLuckyBox(){
+function openLuckyBox(boxNum){
+  checkLuckyResets();
 
-  if(
-    !luckyAvailable()
-  ){
-
-    toast(
-      `Lucky Box available again in ${formatDuration(
-        LUCKY_BOX_COOLDOWN-
-        (
-          Date.now()-
-          state.luckyBoxLastClaim
-        )
-      )}.`
-    );
-
+  if(boxNum === 1 && state.lucky1Chances <= 0){
+    toast('Lucky Box 1 chances exhausted. Wait for cooldown.');
     return;
-
+  }
+  if(boxNum === 2 && state.lucky2Chances <= 0){
+    toast('Lucky Box 2 chances exhausted. Wait for cooldown.');
+    return;
   }
 
-  openModal(
-    'luckyModal'
-  );
+  state.activeLuckyBox = boxNum;
+  $('luckyModalTitle').textContent = `🎁 Lucky Box ${boxNum}`;
+  $('luckyModalDesc').textContent = `Watch the rewarded ad to use 1 chance for Lucky Box ${boxNum}.`;
 
+  openModal('luckyModal');
 }
 
 
 function watchLuckyBoxAd(){
-
-  if(
-    !luckyAvailable()
-  ){
-
-    closeModal('luckyModal');
-
-    toast(
-      'Lucky Box is still on cooldown.'
-    );
-
-    return;
-
-  }
-
-
   closeModal('luckyModal');
+  checkLuckyResets();
 
+  let reward = 0;
 
-  const rewards=[
-    0,
-    5,
-    20,
-    50
-  ];
-
-  const weights=[
-    45,
-    35,
-    15,
-    5
-  ];
-
-
-  let r=
-    Math.random()*100;
-
-  let reward=0;
-
-
-  for(
-    let i=0;
-    i<rewards.length;
-    i++
-  ){
-
-    if(
-      r<weights[i]
-    ){
-
-      reward=
-        rewards[i];
-
-      break;
-
+  if(state.activeLuckyBox === 1){
+    if(state.lucky1Chances <= 0){
+      toast('No chances left for Lucky Box 1.');
+      return;
     }
+    state.lucky1Chances--;
 
-    r-=weights[i];
+    // Box 1: 0, 10, 20, 30, 50
+    const pool1 = [0, 10, 20, 30, 50];
+    reward = pool1[Math.floor(Math.random() * pool1.length)];
 
+  } else {
+    if(state.lucky2Chances <= 0){
+      toast('No chances left for Lucky Box 2.');
+      return;
+    }
+    state.lucky2Chances--;
+
+    // Box 2: 0, 20, 1, 5, 100
+    const pool2 = [0, 20, 1, 5, 100];
+    reward = pool2[Math.floor(Math.random() * pool2.length)];
   }
 
-
-  state.luckyBoxLastClaim=
-    Date.now();
-
-  state.balance+=reward;
+  state.balance += reward;
 
   state.transactions.unshift({
     type:'lucky',
-    label:'Lucky Box Reward',
+    label:`Lucky Box ${state.activeLuckyBox} Reward`,
     amount:reward,
     time:Date.now()
   });
 
   save();
-
   updateUI();
 
-  toast(
-    `Lucky Box reward: +${reward} FDX. Next box in 12 hours.`
-  );
-
+  toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX!`);
 }
 
 
@@ -1950,7 +1886,7 @@ function simulateReferral(){
   updateUI();
 
   toast(
-    'Preview friend added: +0.1 FDX/H'
+    'Preview friend added: +0.1 $FDX/H'
   );
 
 }
@@ -2086,7 +2022,7 @@ function renderTransactions(){
     }
 
     ${Number(t.amount).toFixed(2)}
-    FDX
+    $FDX
 
   </div>
 
@@ -2178,7 +2114,7 @@ function sendFDX(){
   ){
 
     toast(
-      'Insufficient FDX balance.'
+      'Insufficient $FDX balance.'
     );
 
     return;
@@ -2204,7 +2140,7 @@ function sendFDX(){
   );
 
   toast(
-    `Preview transfer: ${a.toFixed(2)} FDX sent.`
+    `Preview transfer: ${a.toFixed(2)} $FDX sent.`
   );
 
 }
@@ -2222,7 +2158,7 @@ function ownID(){
 function openReceiveModal(){
 
   $('receiveIdBox').textContent=
-    'FIDEXA ID: '+ownID();
+    'FIDEX ID: '+ownID();
 
   openModal(
     'receiveModal'
