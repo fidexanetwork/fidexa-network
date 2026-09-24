@@ -56,6 +56,7 @@ a{text-decoration:none;color:inherit}
 
 .primary,.secondary,.small-btn,.copy-btn,.wallet-action{border-radius:13px;font-weight:800}
 .primary{width:100%;border:0;margin-top:17px;padding:15px;background:linear-gradient(90deg,#087eff,#00aef8);color:#fff;font-size:13px}
+.primary:disabled{opacity:.6;cursor:not-allowed}
 .secondary{width:100%;border:1px solid #22638e;background:#0d263c;color:var(--cyan);margin-top:14px;padding:13px;font-size:12px}
 .notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:#0c2034;border:1px solid #183b59;color:#7792aa;font-size:10px;line-height:1.5}
 .notice strong{color:var(--cyan)}
@@ -231,30 +232,22 @@ a{text-decoration:none;color:inherit}
     </div>
   </div>
 
-  <button class="primary" id="mineButton">
-    START 8-HOUR MINING
-  </button>
-
-  <button class="secondary" id="claimButton" style="display:none">
-    CLAIM 0.00 $FDX
+  <!-- Single Dynamic Mining Action Button -->
+  <button class="primary" id="mineButton" onclick="handleMainButton()">
+    START
   </button>
 
 </div>
 
 <div class="pending-card">
-
   <div class="pending-row">
-
     <div>
       <div class="pending-label">MINING STATISTICS</div>
     </div>
-
     <div class="pending-value" id="pendingReward">
       0.00 $FDX
     </div>
-
   </div>
-
 </div>
 
 <div class="notice">
@@ -270,24 +263,20 @@ a{text-decoration:none;color:inherit}
 <div class="card">
 
   <div class="boost-info">
-
     <div>
       <div class="boost-rate">
         <span id="boostRate">1.0</span>
         <span>$FDX/H</span>
       </div>
-
       <div style="color:#71869b;font-size:9px;margin-top:4px">
         Current Mining Rate
       </div>
     </div>
-
     <div class="boost-limit">
       <strong id="boosterCount">0 / 5</strong>
       ADS USED<br>
       LAST 24 HOURS
     </div>
-
   </div>
 
   <div class="booster-list" id="boosterList">
@@ -305,24 +294,20 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <div class="stats">
-
   <div class="stat">
     <div class="stat-label">CURRENT SESSION REWARD</div>
     <div class="stat-value" id="sessionReward">8.0 $FDX</div>
   </div>
-
   <div class="stat">
     <div class="stat-label">MAX BOOSTER BONUS</div>
     <div class="stat-value">+2.5 $FDX/H</div>
   </div>
-
 </div>
 
 </section>
 
 
 <section id="tasks" class="page">
-
 <div class="section-title">
   <h2>Tasks</h2>
   <span>FIDEXA COMMUNITY</span>
@@ -334,12 +319,7 @@ a{text-decoration:none;color:inherit}
     <strong>Join FIDEXA Telegram</strong>
     <p>Join the official FIDEXA Network channel.</p>
   </div>
-  <a class="small-btn"
-     href="https://t.me/fidexa_Network"
-     target="_blank"
-     rel="noopener">
-     OPEN
-  </a>
+  <a class="small-btn" href="https://t.me/fidexa_Network" target="_blank" rel="noopener">OPEN</a>
 </div>
 
 <div class="task">
@@ -348,12 +328,7 @@ a{text-decoration:none;color:inherit}
     <strong>Follow FIDEXA on X</strong>
     <p>Follow @Fidexa_Network for official updates.</p>
   </div>
-  <a class="small-btn"
-     href="https://x.com/Fidexa_Network"
-     target="_blank"
-     rel="noopener">
-     OPEN
-  </a>
+  <a class="small-btn" href="https://x.com/Fidexa_Network" target="_blank" rel="noopener">OPEN</a>
 </div>
 
 <div class="task">
@@ -362,11 +337,7 @@ a{text-decoration:none;color:inherit}
     <strong>Lucky Box 1</strong>
     <p>3 chances per 12 hours. Watch ads to win rewards (0, 10, 20, 30, 50 $FDX).</p>
   </div>
-  <button class="small-btn"
-          id="luckyBox1Button"
-          onclick="openLuckyBox(1)">
-    OPEN
-  </button>
+  <button class="small-btn" id="luckyBox1Button" onclick="openLuckyBox(1)">OPEN</button>
 </div>
 
 <div class="task">
@@ -375,90 +346,55 @@ a{text-decoration:none;color:inherit}
     <strong>Lucky Box 2</strong>
     <p>3 chances per 12 hours. Watch ads to win rewards (0, 20, 1, 5, 100 $FDX).</p>
   </div>
-  <button class="small-btn"
-          id="luckyBox2Button"
-          onclick="openLuckyBox(2)">
-    OPEN
-  </button>
+  <button class="small-btn" id="luckyBox2Button" onclick="openLuckyBox(2)">OPEN</button>
 </div>
 
 <div class="notice">
   <strong>Lucky Boxes rule:</strong>
   Each box has 3 chances and resets every <strong>12 hours</strong>. Watching an ad is required per chance.
 </div>
-
 </section>
 
 
 <section id="friends" class="page">
-
 <div class="section-title">
   <h2>Friends</h2>
   <span>REFERRALS</span>
 </div>
 
 <div class="referral-card">
-
   <h2>Invite & Earn</h2>
-
-  <p>
-    Invite friends to FIDEXA and grow the network together.
-  </p>
-
-  <div class="referral-code" id="referralLink">
-    t.me/FIDEXANetworkBot/fidexa?startapp=ref_loading
-  </div>
-
-  <button class="copy-btn" id="copyReferral">
-    COPY INVITE LINK
-  </button>
-
+  <p>Invite friends to FIDEXA and grow the network together.</p>
+  <div class="referral-code" id="referralLink">t.me/FIDEXANetworkBot/fidexa?startapp=ref_loading</div>
+  <button class="copy-btn" id="copyReferral">COPY INVITE LINK</button>
 </div>
 
 <div class="stats">
-
   <div class="stat">
     <div class="stat-label">TOTAL FRIENDS</div>
     <div class="stat-value" id="friendCount">0</div>
   </div>
-
   <div class="stat">
     <div class="stat-label">ACTIVE FRIENDS</div>
     <div class="stat-value" id="activeFriendCount">0</div>
   </div>
-
 </div>
 
 <div class="card" style="margin-top:12px">
-
   <div class="active-referrals">
-
     <div>
-      <div style="font-size:10px;color:#71869b">
-        REFERRAL MINING BONUS
-      </div>
-
+      <div style="font-size:10px;color:#71869b">REFERRAL MINING BONUS</div>
       <strong id="referralMiningBonus">+0.0</strong>
       <span>$FDX/H</span>
     </div>
-
     <div style="text-align:right">
-      <div style="font-size:10px;color:#71869b">
-        CURRENT TOTAL RATE
-      </div>
-
-      <strong id="friendRatePreview">
-        1.0 $FDX/H
-      </strong>
+      <div style="font-size:10px;color:#71869b">CURRENT TOTAL RATE</div>
+      <strong id="friendRatePreview">1.0 $FDX/H</strong>
     </div>
-
   </div>
-
   <div class="notice">
-    <strong>Active referral:</strong>
-    each qualified friend actively mining contributes +0.1 $FDX/H.
+    <strong>Active referral:</strong> each qualified friend actively mining contributes +0.1 $FDX/H.
   </div>
-
 </div>
 
 <div class="section-title">
@@ -467,7 +403,6 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <div class="reward-list">
-
   <div class="reward-row" id="reward1">
     <div class="icon-box">1</div>
     <div class="reward-main">
@@ -476,7 +411,6 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+5 $FDX</div>
   </div>
-
   <div class="reward-row" id="reward5">
     <div class="icon-box">5</div>
     <div class="reward-main">
@@ -485,7 +419,6 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+20 $FDX</div>
   </div>
-
   <div class="reward-row" id="reward10">
     <div class="icon-box">10</div>
     <div class="reward-main">
@@ -494,7 +427,6 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+30 $FDX</div>
   </div>
-
   <div class="reward-row" id="reward50">
     <div class="icon-box">50</div>
     <div class="reward-main">
@@ -503,7 +435,6 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+50 $FDX</div>
   </div>
-
   <div class="reward-row" id="reward100">
     <div class="icon-box">100</div>
     <div class="reward-main">
@@ -512,40 +443,26 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+100 $FDX</div>
   </div>
-
 </div>
 
-<button class="secondary" onclick="simulateReferral()">
-  SIMULATE 1 QUALIFIED FRIEND
-</button>
-
-<button class="secondary" onclick="toggleLastReferralActivity()">
-  TOGGLE LAST FRIEND ACTIVE / INACTIVE
-</button>
-
+<button class="secondary" onclick="simulateReferral()">SIMULATE 1 QUALIFIED FRIEND</button>
+<button class="secondary" onclick="toggleLastReferralActivity()">TOGGLE LAST FRIEND ACTIVE / INACTIVE</button>
 </section>
 
 
 <section id="wallet" class="page">
-
 <div class="section-title">
   <h2>Wallet</h2>
 </div>
 
 <div class="wallet-hero">
-
-  <div class="wallet-label">
-    TOTAL $FDX BALANCE
-  </div>
-
+  <div class="wallet-label">TOTAL $FDX BALANCE</div>
   <div class="wallet-total">
     <span id="walletBalance">0.00</span>
     <span>$FDX</span>
   </div>
-
 </div>
 
-<!-- Balance Breakdown Cards -->
 <div class="pi-balance-grid">
   <div class="pi-card">
     <div class="pi-label">Transferable Balance</div>
@@ -560,31 +477,10 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <div class="wallet-actions">
-
-  <button class="wallet-action send"
-          onclick="openSendModal()">
-    <span class="wa-icon">↗</span>
-    SEND $FDX
-  </button>
-
-  <button class="wallet-action receive"
-          onclick="openReceiveModal()">
-    <span class="wa-icon">⇩</span>
-    RECEIVE $FDX
-  </button>
-
-  <button class="wallet-action migrate"
-          onclick="openMigrationModal()">
-    <span class="wa-icon">⟳</span>
-    MIGRATION
-  </button>
-
-  <button class="wallet-action history"
-          onclick="showTransactionHistory()">
-    <span class="wa-icon">▤</span>
-    HISTORY
-  </button>
-
+  <button class="wallet-action send" onclick="openSendModal()"><span class="wa-icon">↗</span>SEND $FDX</button>
+  <button class="wallet-action receive" onclick="openReceiveModal()"><span class="wa-icon">⇩</span>RECEIVE $FDX</button>
+  <button class="wallet-action migrate" onclick="openMigrationModal()"><span class="wa-icon">⟳</span>MIGRATION</button>
+  <button class="wallet-action history" onclick="showTransactionHistory()"><span class="wa-icon">▤</span>HISTORY</button>
 </div>
 
 <div class="section-title">
@@ -592,379 +488,173 @@ a{text-decoration:none;color:inherit}
   <span id="walletTxCount">0 ACTIVITY</span>
 </div>
 
-<div class="wallet-card"
-     id="transactionList">
+<div class="wallet-card" id="transactionList">
   <div class="notice" style="margin-top:0">
     No wallet transactions yet. Mining and task activities remain isolated on your Home dashboard until distribution day.
   </div>
 </div>
-
 </section>
 
 
 <section id="profile" class="page">
-
 <div class="profile-head">
-
-  <div class="profile-avatar" id="profileAvatar">
-    F
-  </div>
-
-  <div class="profile-name" id="profileName">
-    Telegram User
-  </div>
-
-  <div class="profile-username" id="profileUsername">
-    Telegram account
-  </div>
-
-  <div class="member-pill">
-    FIDEXA MEMBER
-  </div>
-
+  <div class="profile-avatar" id="profileAvatar">F</div>
+  <div class="profile-name" id="profileName">Telegram User</div>
+  <div class="profile-username" id="profileUsername">Telegram account</div>
+  <div class="member-pill">FIDEXA MEMBER</div>
 </div>
 
 <div class="menu-group">
-
-  <div class="menu-label">
-    ACCOUNT
-  </div>
-
-  <button class="menu-item"
-          onclick="showProfileInfo()">
-
+  <div class="menu-label">ACCOUNT</div>
+  <button class="menu-item" onclick="showProfileInfo()">
     <div class="mi">👤</div>
-
     <div class="mt">
       <strong>Account Information</strong>
       <p>View your FIDEXA account details</p>
     </div>
-
     <div class="arrow">›</div>
-
   </button>
-
-  <button class="menu-item"
-          onclick="openSupport()">
-
+  <button class="menu-item" onclick="openSupport()">
     <div class="mi">💬</div>
-
     <div class="mt">
       <strong>Chat Support</strong>
       <p>Send a message directly to FIDEXA support</p>
     </div>
-
     <div class="arrow">›</div>
-
   </button>
-
 </div>
 
 <div class="menu-group">
-
-  <div class="menu-label">
-    DOCUMENTATION & POLICIES
-  </div>
-
-  <button class="menu-item"
-          onclick="showPrivacyPolicy()">
-
+  <div class="menu-label">DOCUMENTATION & POLICIES</div>
+  <button class="menu-item" onclick="showPrivacyPolicy()">
     <div class="mi">📄</div>
-
     <div class="mt">
       <strong>Privacy Policy</strong>
       <p>How FIDEXA handles user data and security</p>
     </div>
-
     <div class="arrow">›</div>
-
   </button>
-
-  <button class="menu-item"
-          onclick="showWhitepaper()">
-
+  <button class="menu-item" onclick="showWhitepaper()">
     <div class="mi">📘</div>
-
     <div class="mt">
       <strong>FIDEXA Whitepaper</strong>
       <p>Tokenomics, mining mechanics & vision</p>
     </div>
-
     <div class="arrow">›</div>
-
   </button>
-
-  <button class="menu-item"
-          onclick="showRoadmap()">
-
+  <button class="menu-item" onclick="showRoadmap()">
     <div class="mi">🗺️</div>
-
     <div class="mt">
       <strong>Project Roadmap</strong>
       <p>Development milestones and mainnet goals</p>
     </div>
-
     <div class="arrow">›</div>
-
   </button>
-
-  <a class="menu-item"
-     href="https://t.me/fidexa_Network"
-     target="_blank"
-     rel="noopener">
-
+  <a class="menu-item" href="https://t.me/fidexa_Network" target="_blank" rel="noopener">
     <div class="mi">✈️</div>
-
     <div class="mt">
       <strong>Official Telegram</strong>
       <p>@fidexa_Network</p>
     </div>
-
     <div class="arrow">›</div>
-
   </a>
-
-  <a class="menu-item"
-     href="https://x.com/Fidexa_Network"
-     target="_blank"
-     rel="noopener">
-
+  <a class="menu-item" href="https://x.com/Fidexa_Network" target="_blank" rel="noopener">
     <div class="mi">𝕏</div>
-
     <div class="mt">
       <strong>Official X</strong>
       <p>@Fidexa_Network</p>
     </div>
-
     <div class="arrow">›</div>
-
   </a>
-
 </div>
-
 </section>
 
 </main>
 
-
 <nav class="bottom-nav">
-
-<button class="nav-item active"
-        onclick="showPage('home',this)">
-  <span class="nav-icon">⌂</span>
-  HOME
-</button>
-
-<button class="nav-item"
-        onclick="showPage('tasks',this)">
-  <span class="nav-icon">✓</span>
-  TASKS
-</button>
-
-<button class="nav-item"
-        onclick="showPage('friends',this)">
-  <span class="nav-icon">👥</span>
-  FRIENDS
-</button>
-
-<button class="nav-item"
-        onclick="showPage('wallet',this)">
-  <span class="nav-icon">◈</span>
-  WALLET
-</button>
-
-<button class="nav-item"
-        onclick="showPage('profile',this)">
-  <span class="nav-icon">👤</span>
-  PROFILE
-</button>
-
+<button class="nav-item active" onclick="showPage('home',this)"><span class="nav-icon">⌂</span>HOME</button>
+<button class="nav-item" onclick="showPage('tasks',this)"><span class="nav-icon">✓</span>TASKS</button>
+<button class="nav-item" onclick="showPage('friends',this)"><span class="nav-icon">👥</span>FRIENDS</button>
+<button class="nav-item" onclick="showPage('wallet',this)"><span class="nav-icon">◈</span>WALLET</button>
+<button class="nav-item" onclick="showPage('profile',this)"><span class="nav-icon">👤</span>PROFILE</button>
 </nav>
 
 </div>
 
-
 <!-- INFORMATION MODAL -->
 <div class="modal" id="infoModal">
 <div class="modal-box">
-
 <h3 id="infoTitle">Information</h3>
-
 <div class="scrollable-doc">
   <p id="infoText"></p>
 </div>
-
-<button class="secondary"
-        onclick="closeModal('infoModal')"
-        style="margin-top:14px">
-  CLOSE
-</button>
-
+<button class="secondary" onclick="closeModal('infoModal')" style="margin-top:14px">CLOSE</button>
 </div>
 </div>
-
 
 <!-- SUPPORT MODAL -->
 <div class="modal" id="supportModal">
-
 <div class="modal-box">
-
 <h3>FIDEXA Support</h3>
-
-<p>
-Send your message directly to FIDEXA Support.
-</p>
-
+<p>Send your message directly to FIDEXA Support.</p>
 <div class="support">
-
 <div class="messages" id="messages">
-
-<div class="bubble admin">
-Welcome to FIDEXA Support. How can we help you?
+<div class="bubble admin">Welcome to FIDEXA Support. How can we help you?</div>
 </div>
-
-</div>
-
 <div class="chat-input">
-
-<input id="supportInput"
-       maxlength="500"
-       placeholder="Write your message here...">
-
-<button onclick="sendSupportMessage()">
-SEND
-</button>
-
+<input id="supportInput" maxlength="500" placeholder="Write your message here...">
+<button onclick="sendSupportMessage()">SEND</button>
 </div>
-
 </div>
-
-<button class="secondary"
-        onclick="closeModal('supportModal')">
-CLOSE
-</button>
-
+<button class="secondary" onclick="closeModal('supportModal')">CLOSE</button>
 </div>
-
 </div>
-
 
 <!-- REWARDED AD MODAL -->
 <div class="modal" id="adModal">
-
 <div class="modal-box">
-
 <h3>Rewarded Ad</h3>
-
-<p id="adText">
-Complete the rewarded ad to receive your booster.
-</p>
-
-<button class="primary"
-        onclick="completeRewardedAd()">
-WATCH AD
-</button>
-
-<button class="secondary"
-        onclick="closeModal('adModal')">
-CANCEL
-</button>
-
+<p id="adText">Complete the rewarded ad to receive your booster.</p>
+<button class="primary" onclick="completeRewardedAd()">WATCH AD</button>
+<button class="secondary" onclick="closeModal('adModal')">CANCEL</button>
 </div>
-
 </div>
-
 
 <!-- LUCKY BOX MODAL -->
 <div class="modal" id="luckyModal">
-
 <div class="modal-box">
-
 <h3 id="luckyModalTitle">🎁 Lucky Box</h3>
-
-<p id="luckyModalDesc">
-Watch the rewarded ad to use a chance.
-</p>
-
-<button class="primary"
-        onclick="watchLuckyBoxAd()">
-WATCH AD & OPEN CHANCE
-</button>
-
-<button class="secondary"
-        onclick="closeModal('luckyModal')">
-CANCEL
-</button>
-
+<p id="luckyModalDesc">Watch the rewarded ad to use a chance.</p>
+<button class="primary" onclick="watchLuckyBoxAd()">WATCH AD & OPEN CHANCE</button>
+<button class="secondary" onclick="closeModal('luckyModal')">CANCEL</button>
 </div>
-
 </div>
-
 
 <!-- SEND MODAL -->
 <div class="modal" id="sendModal">
-
 <div class="modal-box">
-
 <h3>Send $FDX</h3>
-
-<p>
-Enter another user's FIDEX ID/username and amount.
-</p>
-
-<input class="wallet-input"
-       id="sendRecipient"
-       style="width:100%;margin-top:14px"
-       placeholder="Recipient FIDEX ID or username">
-
-<input class="wallet-input"
-       id="sendAmount"
-       style="width:100%;margin-top:9px"
-       type="number"
-       min="0.01"
-       step="0.01"
-       placeholder="Amount in $FDX">
-
-<button class="primary"
-        onclick="sendFDX()">
-CONFIRM SEND
-</button>
-
-<button class="secondary"
-        onclick="closeModal('sendModal')">
-CANCEL
-</button>
-
+<p>Enter another user's FIDEX ID/username and amount.</p>
+<input class="wallet-input" id="sendRecipient" style="width:100%;margin-top:14px" placeholder="Recipient FIDEX ID or username">
+<input class="wallet-input" id="sendAmount" style="width:100%;margin-top:9px" type="number" min="0.01" step="0.01" placeholder="Amount in $FDX">
+<button class="primary" onclick="sendFDX()">CONFIRM SEND</button>
+<button class="secondary" onclick="closeModal('sendModal')">CANCEL</button>
 </div>
-
 </div>
-
 
 <!-- RECEIVE MODAL -->
 <div class="modal" id="receiveModal">
-
 <div class="modal-box">
-
 <h3>Receive $FDX</h3>
-
-<p>
-Choose whether to scan a QR code or use your ID for sending the token.
-</p>
-
+<p>Choose whether to scan a QR code or use your ID for sending the token.</p>
 <div class="receive-tabs">
   <button class="receive-tab-btn active" id="tabIdBtn" onclick="switchReceiveTab('id')">USE ID</button>
   <button class="receive-tab-btn" id="tabQrBtn" onclick="switchReceiveTab('qr')">SCAN QR CODE</button>
 </div>
-
 <div class="receive-pane active" id="paneId">
-  <div class="notice" id="receiveIdBox" style="margin-top:8px">
-    FIDEX ID: loading...
-  </div>
-  <button class="primary" onclick="copyReceiveId()">
-    COPY FIDEX ID
-  </button>
+  <div class="notice" id="receiveIdBox" style="margin-top:8px">FIDEX ID: loading...</div>
+  <button class="primary" onclick="copyReceiveId()">COPY FIDEX ID</button>
 </div>
-
 <div class="receive-pane" id="paneQr">
   <div class="qr-container">
     <svg width="140" height="140" viewBox="0 0 100 100" fill="#07111f">
@@ -986,792 +676,346 @@ Choose whether to scan a QR code or use your ID for sending the token.
       <rect x="45" y="70" width="10" height="15" fill="#07111f"/>
     </svg>
   </div>
-  <div class="notice" style="text-align:center;margin-top:0">
-    Scan this QR code to receive $FDX directly.
-  </div>
+  <div class="notice" style="text-align:center;margin-top:0">Scan this QR code to receive $FDX directly.</div>
 </div>
-
-<button class="secondary"
-        onclick="closeModal('receiveModal')" style="margin-top:12px">
-CLOSE
-</button>
-
+<button class="secondary" onclick="closeModal('receiveModal')" style="margin-top:12px">CLOSE</button>
 </div>
-
 </div>
-
 
 <!-- MIGRATION MODAL -->
 <div class="modal" id="migrationModal">
-
 <div class="modal-box">
-
 <h3>$FDX Migration</h3>
-
-<p>
-Migration is planned for the official on-chain phase.
-</p>
-
+<p>Migration is planned for the official on-chain phase.</p>
 <div class="notice">
-
 <strong>STATUS: NOT AVAILABLE YET</strong>
-
-<br>
-
-Eligibility, wallet connection and final token distribution will be activated on mainnet day.
-
+<br>Eligibility, wallet connection and final token distribution will be activated on mainnet day.
 </div>
-
-<button class="secondary"
-        onclick="closeModal('migrationModal')">
-CLOSE
-</button>
-
+<button class="secondary" onclick="closeModal('migrationModal')">CLOSE</button>
 </div>
-
 </div>
-
 
 <!-- HISTORY MODAL -->
 <div class="modal" id="historyModal">
-
 <div class="modal-box">
-
 <h3>Transaction History</h3>
-
-<div id="historyModalList"
-     class="transaction-list">
+<div id="historyModalList" class="transaction-list"></div>
+<button class="secondary" onclick="closeModal('historyModal')">CLOSE</button>
 </div>
-
-<button class="secondary"
-        onclick="closeModal('historyModal')">
-CLOSE
-</button>
-
 </div>
-
-</div>
-
 
 <div class="toast" id="toast"></div>
-
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <script>
-
-const state={
-  homeBalance:0,
-  baseRate:1,
-  boosterEvents:[],
-  miningStart:null,
-  miningEnd:null,
-  pendingReward:0,
-  friends:[],
-  referralRewards:0,
-  claimedMilestones:{},
-  lucky1Chances:3,
-  lucky1LastReset:0,
-  lucky2Chances:3,
-  lucky2LastReset:0,
-  activeLuckyBox:1,
-  transactions:[],
-  telegramUserId:null
+const state = {
+  homeBalance: 0,
+  baseRate: 1,
+  boosterEvents: [],
+  miningStart: null,
+  miningEnd: null,
+  pendingReward: 0,
+  friends: [],
+  referralRewards: 0,
+  claimedMilestones: {},
+  lucky1Chances: 3,
+  lucky1LastReset: 0,
+  lucky2Chances: 3,
+  lucky2LastReset: 0,
+  activeLuckyBox: 1,
+  transactions: [],
+  telegramUserId: null
 };
 
-const EIGHT_HOURS=8*60*60*1000;
-const BOOST_AMOUNT=.5;
-const REFERRAL_AMOUNT=.1;
+const EIGHT_HOURS = 8*60*60*1000;
+const BOOST_AMOUNT = .5;
+const REFERRAL_AMOUNT = .1;
+const BOOSTER_LIMIT = 5;
+const BOOSTER_WINDOW = 24*60*60*1000;
+const LUCKY_COOLDOWN = 12*60*60*1000;
+const MAX_LUCKY_CHANCES = 3;
+const KEY = 'fidexa_final_state_v6';
 
-const BOOSTER_LIMIT=5;
-const BOOSTER_WINDOW=24*60*60*1000;
+const $ = id => document.getElementById(id);
 
-const LUCKY_COOLDOWN=12*60*60*1000;
-const MAX_LUCKY_CHANCES=3;
-
-const KEY='fidexa_final_state_v5';
-
-const $=id=>document.getElementById(id);
-
-
-function showPage(id,b){
-
-  document.querySelectorAll('.page')
-    .forEach(x=>x.classList.remove('active'));
-
+function showPage(id, b) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
   $(id).classList.add('active');
-
-  document.querySelectorAll('.nav-item')
-    .forEach(x=>x.classList.remove('active'));
-
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
   b.classList.add('active');
-
-  scrollTo({
-    top:0,
-    behavior:'smooth'
-  });
+  scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
-function toast(m){
-
-  const t=$('toast');
-
-  t.textContent=m;
+function toast(m) {
+  const t = $('toast');
+  t.textContent = m;
   t.classList.add('show');
-
   clearTimeout(window.tt);
-
-  window.tt=setTimeout(
-    ()=>t.classList.remove('show'),
-    2600
-  );
+  window.tt = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
+function openModal(id) { $(id).classList.add('show'); }
+function closeModal(id) { $(id).classList.remove('show'); }
 
-function openModal(id){
-  $(id).classList.add('show');
-}
-
-
-function closeModal(id){
-  $(id).classList.remove('show');
-}
-
-
-function showInfo(t,x){
-
-  $('infoTitle').textContent=t;
-  $('infoText').textContent=x;
-
+function showInfo(t, x) {
+  $('infoTitle').textContent = t;
+  $('infoText').textContent = x;
   openModal('infoModal');
 }
 
-
-function showProfileInfo(){
-
-  showInfo(
-    'Account Information',
-    `Name: ${$('profileName').textContent}\n${$('profileUsername').textContent}\n\nAccount Status: Verified Member\nNetwork ID: ${ownID()}`
-  );
-
+function showProfileInfo() {
+  showInfo('Account Information', `Name: ${$('profileName').textContent}\n${$('profileUsername').textContent}\n\nAccount Status: Verified Member\nNetwork ID: ${ownID()}`);
 }
 
-
-function showPrivacyPolicy(){
-  showInfo(
-    'Privacy Policy',
-    `1. INTRODUCTION\nWelcome to FIDEXA Network ("we", "our", or "us"). We respect your privacy and are committed to protecting your personal information collected via our Telegram WebApp.\n\n2. INFORMATION WE COLLECT\n- Telegram User ID, First Name, and Username for account syncing.\n- App activity, mining progress, and referral connections stored securely via local device cache and secure backend infrastructure.\n\n3. USE OF DATA\nYour data is used strictly to maintain your mining records, calculate hourly mining rates, process lucky box draws, and secure network distribution.\n\n4. DATA SECURITY\nWe implement standard protective measures to ensure your accumulated $FDX rewards remain safe throughout the pre-migration phase.\n\n5. CONTACT US\nReach out via our official Telegram community channel for any data privacy inquiries.`
-  );
+function showPrivacyPolicy() {
+  showInfo('Privacy Policy', `1. INTRODUCTION\nWelcome to FIDEXA Network.\n2. DATA COLLECTION\n- Telegram User ID and username for account syncing.\n3. SECURITY\nRewards are protected pre-migration.`);
 }
 
-function showWhitepaper(){
-  showInfo(
-    'FIDEXA Whitepaper v1.0',
-    `1. VISION & MISSION\nFIDEXA Network is a decentralized digital ecosystem designed to bring gamified web3 rewards, active mining utility, and seamless community engagement directly to mobile users through Telegram.\n\n2. THE $FDX TOKEN\n$FDX is the native utility asset powering the FIDEXA ecosystem. It enables decentralized participation, reward distributions, and future on-chain transactional utility.\n\n3. MINING MECHANICS\nUsers activate 8-hour mining cycles with a base rate of 1.0 $FDX/h. Rates can be scaled using ad boosters (up to +2.5 $FDX/h) and active referral community contributions (+0.1 $FDX/h per active friend).\n\n4. COMMUNITY REWARDS & LUCKY BOXES\nEcosystem participation is rewarded via milestones and dual 12-hour Lucky Box draws, offering randomized asset rewards to active network participants.\n\n5. MIGRATION & FUTURE OUTLOOK\nUpon reaching mainnet integration goals, eligible $FDX balances will transition securely to supported on-chain protocols.`
-  );
+function showWhitepaper() {
+  showInfo('FIDEXA Whitepaper v1.0', `1. VISION & MISSION\nDecentralized gamified web3 rewards.\n2. MINING\n8-hour continuous cycles starting with START.`);
 }
 
-function showRoadmap(){
-  showInfo(
-    'FIDEXA Project Roadmap',
-    `PHASE 1: FOUNDATION & LAUNCH (Q1 - Q2)\n- Release of Telegram WebApp interface.\n- Deployment of 8-hour continuous mining loop.\n- Integration of referral milestone reward tracks.\n\nPHASE 2: ECOSYSTEM EXPANSION (Q3)\n- Launch of Dual Lucky Box systems with ad-gated mechanics.\n- Wallet interface scaffolding with secure transaction history logs.\n- Community growth campaigns across Telegram and X (Twitter).\n\nPHASE 3: MAINNET & MIGRATION (Q4 & Beyond)\n- Smart contract deployment on supported networks.\n- Implementation of official wallet linking and migration eligibility validation.\n- Peer-to-peer asset transfer utility activation.`
-  );
+function showRoadmap() {
+  showInfo('Project Roadmap', `PHASE 1: WebApp Launch\nPHASE 2: Lucky Boxes & Boosters\nPHASE 3: Mainnet Migration`);
 }
 
-
-function openSupport(){
-
+function openSupport() {
   openModal('supportModal');
-
-  setTimeout(
-    ()=>$('supportInput').focus(),
-    150
-  );
-
+  setTimeout(() => $('supportInput').focus(), 150);
 }
 
-
-function sendSupportMessage(){
-
-  const i=$('supportInput');
-  const v=i.value.trim();
-
-  if(!v)return;
-
-  const b=document.createElement('div');
-
-  b.className='bubble user';
-  b.textContent=v;
-
+function sendSupportMessage() {
+  const i = $('supportInput');
+  const v = i.value.trim();
+  if(!v) return;
+  const b = document.createElement('div');
+  b.className = 'bubble user';
+  b.textContent = v;
   $('messages').appendChild(b);
-
-  i.value='';
-
-  $('messages').scrollTop=$('messages').scrollHeight;
-
-  toast(
-    'Message prepared. Support backend will be connected later.'
-  );
+  i.value = '';
+  $('messages').scrollTop =$('messages').scrollHeight;
+  toast('Message prepared.');
 }
 
-
-function cleanBoosterEvents(){
-
-  state.boosterEvents=
-    (state.boosterEvents||[])
-    .filter(t=>Date.now()-t<BOOSTER_WINDOW);
-
+function cleanBoosterEvents() {
+  state.boosterEvents = (state.boosterEvents || []).filter(t => Date.now() - t < BOOSTER_WINDOW);
 }
 
-
-function boosterCountAt(t){
-
-  return (state.boosterEvents||[])
-    .filter(
-      x=>x<=t && t-x<BOOSTER_WINDOW
-    )
-    .length;
+function boosterCountAt(t) {
+  return (state.boosterEvents || []).filter(x => x <= t && t - x < BOOSTER_WINDOW).length;
 }
 
-
-function referralBonusAt(t){
-
-  return state.friends
-    .filter(
-      f=>
-        f.active &&
-        f.miningStart<=t &&
-        t<f.miningEnd
-    )
-    .length*REFERRAL_AMOUNT;
+function referralBonusAt(t) {
+  return state.friends.filter(f => f.active && f.miningStart <= t && t < f.miningEnd).length * REFERRAL_AMOUNT;
 }
 
-
-function rateAt(t){
-
-  return state.baseRate+
-    boosterCountAt(t)*BOOST_AMOUNT+
-    referralBonusAt(t);
-
+function rateAt(t) {
+  return state.baseRate + boosterCountAt(t) * BOOST_AMOUNT + referralBonusAt(t);
 }
 
+function sessionRewardAt(endTime) {
+  if(!state.miningStart || !state.miningEnd) return 0;
+  const end = Math.min(endTime, state.miningEnd);
+  const start = state.miningStart;
+  if(end <= start) return 0;
 
-function sessionRewardAt(endTime){
-
-  if(!state.miningStart ||
-     !state.miningEnd)
-    return 0;
-
-  const end=
-    Math.min(
-      endTime,
-      state.miningEnd
-    );
-
-  const start=
-    state.miningStart;
-
-  if(end<=start)return 0;
-
-  const points=[
-    start,
-    end
-  ];
-
-  state.boosterEvents.forEach(t=>{
-
-    if(t>start&&t<end)
-      points.push(t);
-
-    const expiry = t+BOOSTER_WINDOW;
-    if(expiry>start&&expiry<end)
-      points.push(expiry);
-
+  const points = [start, end];
+  state.boosterEvents.forEach(t => {
+    if(t > start && t < end) points.push(t);
+    const expiry = t + BOOSTER_WINDOW;
+    if(expiry > start && expiry < end) points.push(expiry);
+  });
+  state.friends.forEach(f => {
+    if(f.miningStart > start && f.miningStart < end) points.push(f.miningStart);
+    if(f.miningEnd > start && f.miningEnd < end) points.push(f.miningEnd);
   });
 
-  state.friends.forEach(f=>{
-
-    if(
-      f.miningStart>start &&
-      f.miningStart<end
-    )
-      points.push(f.miningStart);
-
-    if(
-      f.miningEnd>start &&
-      f.miningEnd<end
-    )
-      points.push(f.miningEnd);
-
-  });
-
-  const uniquePoints = [...new Set(points)].sort(
-    (a,b)=>a-b
-  );
-
-  let total=0;
-
-  for(
-    let i=0;
-    i<uniquePoints.length-1;
-    i++
-  ){
-
-    const a=uniquePoints[i];
-    const b=uniquePoints[i+1];
-    const mid=(a+b)/2;
-
-    total+=
-      (b-a)/3600000*
-      rateAt(mid);
-
+  const uniquePoints = [...new Set(points)].sort((a,b) => a-b);
+  let total = 0;
+  for(let i=0; i<uniquePoints.length-1; i++) {
+    const a = uniquePoints[i];
+    const b = uniquePoints[i+1];
+    total += (b - a)/3600000 * rateAt((a+b)/2);
   }
-
   return total;
 }
 
-
-function updateUI(){
-
+function updateUI() {
   cleanBoosterEvents();
   checkLuckyResets();
 
-  const rate=
-    rateAt(Date.now());
-
-  $('balanceValue').textContent=
-    state.homeBalance.toFixed(2);
-
-  $('walletBalance').textContent = "0.00";
+  const rate = rateAt(Date.now());
+  $('balanceValue').textContent = state.homeBalance.toFixed(2);$('walletBalance').textContent = "0.00";
   $('transferableBalance').textContent = "0.00";
   $('unverifiedBalance').textContent = "0.00";
+  $('rateValue').textContent = rate.toFixed(1);
+  $('boostRate').textContent = rate.toFixed(1);$('boosterCount').textContent = `${state.boosterEvents.length} / ${BOOSTER_LIMIT}`;
+  $('sessionReward').textContent = `${(rate*8).toFixed(1)} $FDX`;
+  $('friendCount').textContent = state.friends.length;
+  $('activeFriendCount').textContent = state.friends.filter(f => f.active).length;
+  $('referralMiningBonus').textContent = `+${referralBonusAt(Date.now()).toFixed(1)}`;
+  $('friendRatePreview').textContent = `${rate.toFixed(1)} $FDX/H`;
+  $('pendingReward').textContent = `${state.pendingReward.toFixed(2)} $FDX`;
 
-  $('rateValue').textContent=
-    rate.toFixed(1);
-
-  $('boostRate').textContent=
-    rate.toFixed(1);
-
-  $('boosterCount').textContent=
-    `${state.boosterEvents.length} / ${BOOSTER_LIMIT}`;
-
-  $('sessionReward').textContent=
-    `${(rate*8).toFixed(1)} $FDX`;
-
-  $('friendCount').textContent=
-    state.friends.length;
-
-  $('activeFriendCount').textContent=
-    state.friends.filter(
-      f=>f.active
-    ).length;
-
-  $('referralMiningBonus').textContent=
-    `+${referralBonusAt(Date.now()).toFixed(1)}`;
-
-  $('friendRatePreview').textContent=
-    `${rate.toFixed(1)} $FDX/H`;
-
-  $('pendingReward').textContent=
-    `${state.pendingReward.toFixed(2)} $FDX`;
-
-
-  document
-    .querySelectorAll(
-      '#boosterList .booster'
-    )
-    .forEach(
-      (x,i)=>{
-
-        x.classList.toggle(
-          'used',
-          i<state.boosterEvents.length
-        );
-
-        x.textContent=
-          i<state.boosterEvents.length
-            ? '✓ +0.5'
-            : '+0.5';
-
-      }
-    );
-
-
-  [
-    1,
-    5,
-    10,
-    50,
-    100
-  ].forEach(n=>{
-
-    const r=$('reward'+n);
-
-    const claimed=
-      !!state.claimedMilestones[n];
-
-    const reached=
-      state.friends.length>=n;
-
-    r.classList.toggle(
-      'claimed',
-      claimed
-    );
-
-    r.querySelector(
-      '.reward-value'
-    ).textContent=
-      claimed
-        ? '✓ CLAIMED'
-        : reached
-          ? 'CLAIM'
-          : n===1
-            ? '+5 $FDX'
-            : n===5
-              ? '+20 $FDX'
-              : n===10
-                ? '+30 $FDX'
-                : n===50
-                  ? '+50 $FDX'                   : '+100$FDX';
-
+  document.querySelectorAll('#boosterList .booster').forEach((x,i) => {
+    x.classList.toggle('used', i < state.boosterEvents.length);
+    x.textContent = i < state.boosterEvents.length ? '✓ +0.5' : '+0.5';
   });
 
+  [1,5,10,50,100].forEach(n => {
+    const r = $('reward'+n);
+    const claimed = !!state.claimedMilestones[n];
+    const reached = state.friends.length >= n;
+    r.classList.toggle('claimed', claimed);
+    r.querySelector('.reward-value').textContent = claimed ? '✓ CLAIMED' : reached ? 'CLAIM' : `+${n===1?5:n===5?20:n===10?30:n===50?50:100} $FDX`;
+  });
 
-  $('walletTxCount').textContent=
-    `${state.transactions.length} ACTIVITY`;
-
+  $('walletTxCount').textContent = `${state.transactions.length} ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
-
 }
 
+function updateMiningTimer() {
+  const b = $('mineButton');
+  const s = $('miningStatus');
+  const bar = $('progressBar');
+  const timer = $('timer');
 
-function updateMiningTimer(){
-
-  const b=$('mineButton');
-  const c=$('claimButton');
-  const s=$('miningStatus');
-  const bar=$('progressBar');
-  const timer=$('timer');
-
-
-  if(
-    !state.miningStart ||
-    !state.miningEnd
-  ){
-
-    timer.textContent=
-      '08:00:00';
-
-    s.textContent=
-      'READY TO MINE';
-
-    b.textContent=
-      'START 8-HOUR MINING';
-
-    b.disabled=false;
-
-    c.style.display=
-      'none';
-
-    bar.style.width=
-      '0%';
-
-    $('pendingReward').textContent=
-      state.pendingReward.toFixed(2)
-      +' $FDX';
-
+  if(!state.miningStart || !state.miningEnd) {
+    timer.textContent = '08:00:00';
+    s.textContent = 'READY TO MINE';
+    b.textContent = 'START';
+    b.disabled = false;
+    bar.style.width = '0%';
+    $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
     return;
-
   }
 
+  const now = Date.now();
+  const left = Math.max(0, state.miningEnd - now);
+  const elapsed = Math.min(EIGHT_HOURS, now - state.miningStart);
 
-  const now=Date.now();
+  if(left <= 0) {
+    state.pendingReward = sessionRewardAt(state.miningEnd);
+    timer.textContent = '00:00:00';
+    s.textContent = 'MINING COMPLETE';
+    b.textContent = 'CLAIM';
+    b.disabled = false;
+    bar.style.width = '100%';
+    $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
+    return;
+  }
 
-  const left=
-    Math.max(
-      0,
-      state.miningEnd-now
-    );
+  state.pendingReward = sessionRewardAt(now);
+  const q = Math.floor(left / 1000);
+  const h = Math.floor(q / 3600);
+  const m = Math.floor((q % 3600) / 60);
+  const sec = q % 60;
 
-  const elapsed=
-    Math.min(
-      EIGHT_HOURS,
-      now-state.miningStart
-    );
+  timer.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  s.textContent = 'MINING ACTIVE';
+  b.textContent = 'ACTIVE MINING';
+  b.disabled = true;
+  bar.style.width = `${(elapsed / EIGHT_HOURS) * 100}%`;
+  $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
+}
 
-
-  if(left<=0){
-
-    state.pendingReward=
-      sessionRewardAt(
-        state.miningEnd
-      );
-
-    timer.textContent=
-      '00:00:00';
-
-    s.textContent=
-      'MINING COMPLETE';
-
-    b.textContent=
-      'MINING COMPLETE';
-
-    b.disabled=true;
-
-    c.style.display=
-      'block';
-
-    c.textContent=
-      `CLAIM ${state.pendingReward.toFixed(2)} $FDX`;
-
-    bar.style.width=
-      '100%';
-
+// Main button handler driving START -> ACTIVE MINING -> CLAIM flow
+function handleMainButton() {
+  if(!state.miningStart) {
+    // Start session
+    state.miningStart = Date.now();
+    state.miningEnd = state.miningStart + EIGHT_HOURS;
+    state.pendingReward = 0;
     save();
-
-    return;
-
+    updateUI();
+    updateMiningTimer();
+    toast('Mining session started!');
+  } else if(state.miningEnd && Date.now() >= state.miningEnd) {
+    // Trigger Claim Ad flow
+    window.isClaimAd = true;
+    $('adText').textContent = 'Watch the rewarded ad to claim your accumulated mining rewards to your Total Balance.';
+    openModal('adModal');
   }
-
-
-  state.pendingReward=
-    sessionRewardAt(now);
-
-  const q=
-    Math.floor(left/1000);
-
-  const h=
-    Math.floor(q/3600);
-
-  const m=
-    Math.floor(
-      q%3600/60
-    );
-
-  const sec=
-    q%60;
-
-
-  timer.textContent=
-    `${String(h).padStart(2,'0')}:`+
-    `${String(m).padStart(2,'0')}:`+
-    `${String(sec).padStart(2,'0')}`;
-
-  s.textContent=
-    'MINING ACTIVE';
-
-  b.textContent=
-    'MINING IN PROGRESS';
-
-  b.disabled=true;
-
-  c.style.display=
-    'none';
-
-  bar.style.width=
-    `${elapsed/EIGHT_HOURS*100}%`;
-
-  $('pendingReward').textContent=
-    state.pendingReward.toFixed(2)
-    +' $FDX';
-
 }
 
-
-function startMining(){
-
-  if(
-    state.pendingReward>0 &&
-    !state.miningStart
-  ){
-
-    toast(
-      'Claim your completed reward first.'
-    );
-
-    return;
-
-  }
-
-  if(state.miningStart)
-    return;
-
-
-  state.miningStart=
-    Date.now();
-
-  state.miningEnd=
-    state.miningStart+
-    EIGHT_HOURS;
-
-  state.pendingReward=0;
-
-  save();
-
-  updateUI();
-  updateMiningTimer();
-
-  toast(
-    'Mining started for 8 hours.'
-  );
-
-}
-
-
-function claimMining(){
-
-  if(
-    !state.miningStart ||
-    Date.now()<state.miningEnd
-  ){
-
-    toast(
-      'Your 8-hour mining session is not complete yet.'
-    );
-
-    return;
-
-  }
-
-
-  const amount=
-    sessionRewardAt(
-      state.miningEnd
-    );
-
-
-  state.homeBalance+=amount;
-
-  state.pendingReward=0;
-
-  state.miningStart=null;
-  state.miningEnd=null;
-
-  save();
-
-  updateUI();
-  updateMiningTimer();
-
-  toast(
-    `Claimed ${amount.toFixed(2)} $FDX to Home Dashboard.`
-  );
-
-}
-
-
-$('mineButton')
-  .addEventListener(
-    'click',
-    startMining
-  );
-
-$('claimButton')
-  .addEventListener(
-    'click',
-    claimMining
-  );
-
-
-function requestBooster(){
-
+function requestBooster() {
   cleanBoosterEvents();
-
-  if(
-    state.boosterEvents.length>=
-    BOOSTER_LIMIT
-  ){
-
-    toast(
-      '5 rewarded ads have been used in the last 24 hours.'
-    );
-
+  if(state.boosterEvents.length >= BOOSTER_LIMIT) {
+    toast('5 rewarded ads have been used in the last 24 hours.');
     return;
-
   }
-
-
-  $('adText').textContent=
-    'Complete the rewarded ad to receive +0.5 $FDX/hour.';
-
+  window.isClaimAd = false;
+  $('adText').textContent = 'Complete the rewarded ad to receive +0.5$FDX/hour.';
   openModal('adModal');
-
 }
 
-
-function completeRewardedAd(){
-
+function completeRewardedAd() {
   closeModal('adModal');
 
-  cleanBoosterEvents();
+  if(window.isClaimAd) {
+    window.isClaimAd = false;
+    const amount = sessionRewardAt(state.miningEnd);
+    state.homeBalance += amount;
+    
+    // Log transaction
+    state.transactions.unshift({
+      label: 'Mining Rewards Claimed',
+      amount: amount,
+      time: Date.now()
+    });
 
-  if(
-    state.boosterEvents.length>=
-    BOOSTER_LIMIT
-  ){
+    state.pendingReward = 0;
+    state.miningStart = null;
+    state.miningEnd = null;
 
-    toast(
-      'The 5-ad limit has been reached.'
-    );
-
+    save();
+    updateUI();
+    updateMiningTimer();
+    toast(`Claimed ${amount.toFixed(2)} $FDX added to Total Balance!`);
     return;
-
   }
 
-
-  state.boosterEvents.push(
-    Date.now()
-  );
-
+  // Normal booster ad completion
+  cleanBoosterEvents();
+  if(state.boosterEvents.length >= BOOSTER_LIMIT) {
+    toast('The 5-ad limit has been reached.');
+    return;
+  }
+  state.boosterEvents.push(Date.now());
   save();
-
   updateUI();
-
-  toast(
-    '+0.5 $FDX/hour booster earned.'
-  );
-
+  toast('+0.5 $FDX/hour booster earned.');
 }
 
+$('boostButton').addEventListener('click', requestBooster);
 
-$('boostButton')
-  .addEventListener(
-    'click',
-    requestBooster
-  );
-
-
-function checkLuckyResets(){
+function checkLuckyResets() {
   const now = Date.now();
-
-  if(!state.lucky1LastReset || now - state.lucky1LastReset >= LUCKY_COOLDOWN){
+  if(!state.lucky1LastReset || now - state.lucky1LastReset >= LUCKY_COOLDOWN) {
     state.lucky1Chances = MAX_LUCKY_CHANCES;
     state.lucky1LastReset = now;
   }
-
-  if(!state.lucky2LastReset || now - state.lucky2LastReset >= LUCKY_COOLDOWN){
+  if(!state.lucky2LastReset || now - state.lucky2LastReset >= LUCKY_COOLDOWN) {
     state.lucky2Chances = MAX_LUCKY_CHANCES;
     state.lucky2LastReset = now;
   }
 }
 
-
-function formatDuration(ms){
-  const q = Math.ceil(ms/1000);
-  const h = Math.floor(q/3600);
-  const m = Math.floor((q%3600)/60);
+function formatDuration(ms) {
+  const q = Math.ceil(ms / 1000);
+  const h = Math.floor(q / 3600);
+  const m = Math.floor((q % 3600) / 60);
   return `${h}h ${String(m).padStart(2,'0')}m`;
 }
 
-
-function updateLuckyBoxesUI(){
+function updateLuckyBoxesUI() {
   checkLuckyResets();
-
   const b1 = $('luckyBox1Button');
   const b2 = $('luckyBox2Button');
 
-  if(state.lucky1Chances > 0){
+  if(state.lucky1Chances > 0) {
     b1.textContent = `OPEN (${state.lucky1Chances}/3)`;
     b1.disabled = false;
   } else {
@@ -1780,7 +1024,7 @@ function updateLuckyBoxesUI(){
     b1.disabled = true;
   }
 
-  if(state.lucky2Chances > 0){
+  if(state.lucky2Chances > 0) {
     b2.textContent = `OPEN (${state.lucky2Chances}/3)`;
     b2.disabled = false;
   } else {
@@ -1790,318 +1034,112 @@ function updateLuckyBoxesUI(){
   }
 }
 
-
-function openLuckyBox(boxNum){
+function openLuckyBox(boxNum) {
   checkLuckyResets();
-
-  if(boxNum === 1 && state.lucky1Chances <= 0){
-    toast('Lucky Box 1 chances exhausted. Wait for cooldown.');
-    return;
-  }
-  if(boxNum === 2 && state.lucky2Chances <= 0){
-    toast('Lucky Box 2 chances exhausted. Wait for cooldown.');
-    return;
-  }
-
+  if(boxNum === 1 && state.lucky1Chances <= 0) { toast('Chances exhausted.'); return; }
+  if(boxNum === 2 && state.lucky2Chances <= 0) { toast('Chances exhausted.'); return; }
   state.activeLuckyBox = boxNum;
   $('luckyModalTitle').textContent = `🎁 Lucky Box ${boxNum}`;
-  $('luckyModalDesc').textContent = `Watch the rewarded ad to use 1 chance for Lucky Box ${boxNum}.`;
-
+  $('luckyModalDesc').textContent = `Watch the rewarded ad to open Lucky Box ${boxNum}.`;
   openModal('luckyModal');
 }
 
-
-function watchLuckyBoxAd(){
+function watchLuckyBoxAd() {
   closeModal('luckyModal');
   checkLuckyResets();
-
   let reward = 0;
-
-  if(state.activeLuckyBox === 1){
-    if(state.lucky1Chances <= 0){
-      toast('No chances left for Lucky Box 1.');
-      return;
-    }
+  if(state.activeLuckyBox === 1) {
+    if(state.lucky1Chances <= 0) return;
     state.lucky1Chances--;
-
     const pool1 = [0, 10, 20, 30, 50];
     reward = pool1[Math.floor(Math.random() * pool1.length)];
-
   } else {
-    if(state.lucky2Chances <= 0){
-      toast('No chances left for Lucky Box 2.');
-      return;
-    }
+    if(state.lucky2Chances <= 0) return;
     state.lucky2Chances--;
-
     const pool2 = [0, 20, 1, 5, 100];
     reward = pool2[Math.floor(Math.random() * pool2.length)];
   }
 
   state.homeBalance += reward;
-
+  if(reward > 0) {
+    state.transactions.unshift({ label: `Lucky Box ${state.activeLuckyBox} Reward`, amount: reward, time: Date.now() });
+  }
   save();
   updateUI();
-
-  if(reward > 0){
-    toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX added to Home dashboard!`);
-  } else {
-    toast(`Lucky Box ${state.activeLuckyBox}: Better luck next time! (0 $FDX)`);
-  }
+  toast(reward > 0 ? `Lucky Box reward: +${reward} $FDX added!` : 'Better luck next time! (0 $FDX)');
 }
 
-
-function simulateReferral(){
-
-  const n=
-    Date.now();
-
-  state.friends.push({
-    id:'preview_'+n,
-    active:true,
-    miningStart:n,
-    miningEnd:n+EIGHT_HOURS
-  });
-
+function simulateReferral() {
+  const n = Date.now();
+  state.friends.push({ id: 'preview_' + n, active: true, miningStart: n, miningEnd: n + EIGHT_HOURS });
   checkMilestones();
-
   save();
-
   updateUI();
-
-  toast(
-    'Preview friend added: +0.1 $FDX/H'
-  );
-
+  toast('Preview friend added: +0.1 $FDX/H');
 }
 
-
-function toggleLastReferralActivity(){
-
-  if(
-    !state.friends.length
-  ){
-
-    toast(
-      'Add a qualified friend first.'
-    );
-
-    return;
-
-  }
-
-
-  const f=
-    state.friends[
-      state.friends.length-1
-    ];
-
-
-  if(f.active){
-
-    f.active=false;
-    f.miningEnd=
-      Date.now();
-
-  }else{
-
-    f.active=true;
-    f.miningStart=
-      Date.now();
-
-    f.miningEnd=
-      Date.now()+
-      EIGHT_HOURS;
-
-  }
-
-
+function toggleLastReferralActivity() {
+  if(!state.friends.length) { toast('Add a friend first.'); return; }
+  const f = state.friends[state.friends.length - 1];
+  f.active = !f.active;
+  f.miningEnd = f.active ? Date.now() + EIGHT_HOURS : Date.now();
   save();
-
   updateUI();
-
 }
 
-
-function checkMilestones(){
-
-  const rewards={
-    1:5,
-    5:20,
-    10:30,
-    50:50,
-    100:100
-  };
-
-
-  Object.keys(rewards)
-    .forEach(k=>{
-
-      const n=+k;
-
-      if(
-        state.friends.length>=n &&
-        !state.claimedMilestones[n]
-      ){
-
-        state.claimedMilestones[n]=true;
-        state.homeBalance+= rewards[n];
-
-      }
-
-    });
-
+function checkMilestones() {
+  const rewards = { 1: 5, 5: 20, 10: 30, 50: 50, 100: 100 };
+  Object.keys(rewards).forEach(k => {
+    const n = +k;
+    if(state.friends.length >= n && !state.claimedMilestones[n]) {
+      state.claimedMilestones[n] = true;
+      state.homeBalance += rewards[n];
+      state.transactions.unshift({ label: `Referral Milestone (${n} Friends)`, amount: rewards[n], time: Date.now() });
+    }
+  });
 }
 
+function renderTransactions() {
+  const html = state.transactions.length ? state.transactions.slice(0,20).map(t => `
+    <div class="transaction">
+      <div class="tx-icon">${t.amount < 0 ? '↗' : '★'}</div>
+      <div class="tx-main">
+        <strong>${esc(t.label)}</strong>
+        <p>${new Date(t.time).toLocaleString()}</p>
+      </div>
+      <div class="tx-amount ${t.amount < 0 ? 'tx-negative' : 'tx-positive'}">
+        ${t.amount > 0 ? '+' : ''}${Number(t.amount).toFixed(2)} $FDX
+      </div>
+    </div>
+  `).join('') : '<div class="notice" style="margin-top:0">No wallet transactions yet.</div>';
 
-function renderTransactions(){
-
-  const html=
-    state.transactions.length
-
-      ?
-
-    state.transactions
-      .slice(0,20)
-      .map(t=>`
-
-<div class="transaction">
-
-  <div class="tx-icon">
-    ${t.amount<0 ? '↗' : '★'}
-  </div>
-
-  <div class="tx-main">
-
-    <strong>
-      ${esc(t.label)}
-    </strong>
-
-    <p>
-      ${new Date(t.time).toLocaleString()}
-    </p>
-
-  </div>
-
-  <div class="tx-amount ${t.amount<0 ? 'tx-negative' : 'tx-positive'}">
-    ${t.amount>0 ? '+' : ''}${Number(t.amount).toFixed(2)} $FDX
-  </div>
-
-</div>
-
-`)
-      .join('')
-
-      :
-
-    '<div class="notice" style="margin-top:0">No wallet transactions yet. Mining and task activities remain isolated on your Home dashboard until distribution day.</div>';
-
-
-  $('transactionList').innerHTML=
-    html;
-
-  if(
-    $('historyModalList')
-  ){
-
-    $('historyModalList').innerHTML=
-      html;
-
-  }
-
+  $('transactionList').innerHTML = html;
+  if($('historyModalList'))$('historyModalList').innerHTML = html;
 }
 
-
-function esc(v){
-
-  return String(v)
-    .replace(
-      /[&<>"']/g,
-      c=>({
-
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
-
-      }[c])
-    );
-
+function esc(v) {
+  return String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-
-function openSendModal(){
-
-  $('sendRecipient').value='';$('sendAmount').value='';
-
-  openModal(
-    'sendModal'
-  );
-
-}
-
-
-function sendFDX(){
-
-  const to=
-    $('sendRecipient')
-      .value
-      .trim();
-
-  const a=
-    Number(
-      $('sendAmount').value
-    );
-
-
-  if(
-    !to ||
-    !a ||
-    a<=0
-  ){
-
-    toast(
-      'Enter recipient and valid amount.'
-    );
-
-    return;
-
-  }
-
-  toast(
-    'Wallet transfers will be unlocked on distribution day.'
-  );
-
+function openSendModal() { $('sendRecipient').value = '';$('sendAmount').value = ''; openModal('sendModal'); }
+function sendFDX() {
+  const to = $('sendRecipient').value.trim();
+  const a = Number($('sendAmount').value);
+  if(!to || !a || a <= 0) { toast('Enter recipient and valid amount.'); return; }
+  toast('Wallet transfers unlocked on distribution day.');
   closeModal('sendModal');
 }
 
+function ownID() { return state.telegramUserId ? 'FDX-' + state.telegramUserId : 'FDX-PREVIEW-USER'; }
 
-function ownID(){
-
-  return state.telegramUserId
-    ? 'FDX-'+state.telegramUserId
-    : 'FDX-PREVIEW-USER';
-
-}
-
-
-function openReceiveModal(){
-
-  $('receiveIdBox').textContent=
-    'FIDEX ID: '+ownID();
-
+function openReceiveModal() {
+  $('receiveIdBox').textContent = 'FIDEX ID: ' + ownID();
   switchReceiveTab('id');
-
-  openModal(
-    'receiveModal'
-  );
-
+  openModal('receiveModal');
 }
 
-
-function switchReceiveTab(tab){
-  if(tab === 'id'){
+function switchReceiveTab(tab) {
+  if(tab === 'id') {
     $('tabIdBtn').classList.add('active');$('tabQrBtn').classList.remove('active');
     $('paneId').classList.add('active');$('paneQr').classList.remove('active');
   } else {
@@ -2110,248 +1148,76 @@ function switchReceiveTab(tab){
   }
 }
 
-
-async function copyReceiveId(){
-
-  try{
-
-    await navigator.clipboard
-      .writeText(
-        ownID()
-      );
-
-    toast(
-      'FIDEXA receiving ID copied.'
-    );
-
-  }catch(e){
-
-    toast(
-      ownID()
-    );
-
-  }
-
+async function copyReceiveId() {
+  try { await navigator.clipboard.writeText(ownID()); toast('FIDEXA receiving ID copied.'); }
+  catch(e) { toast(ownID()); }
 }
 
+function openMigrationModal() { openModal('migrationModal'); }
+function showTransactionHistory() { renderTransactions(); openModal('historyModal'); }
 
-function openMigrationModal(){
-
-  openModal(
-    'migrationModal'
-  );
-
-}
-
-
-function showTransactionHistory(){
-
-  renderTransactions();
-
-  openModal(
-    'historyModal'
-  );
-
-}
-
-
-document.getElementById('copyReferral').addEventListener('click', async () => {
-  const linkText = document.getElementById('referralLink').textContent.trim();
-  try {
-    await navigator.clipboard.writeText(linkText);
-    toast('Referral link copied to clipboard!');
-  } catch (e) {
-    toast(linkText);
-  }
+$('copyReferral').addEventListener('click', async () => {
+  const linkText = $('referralLink').textContent.trim();
+  try { await navigator.clipboard.writeText(linkText); toast('Referral link copied!'); }
+  catch(e) { toast(linkText); }
 });
 
-
-function save(){
-
-  try{
-
-    localStorage.setItem(
-      KEY,
-      JSON.stringify(state)
-    );
-
-  }catch(e){}
-
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
 }
 
-
-function load(){
-
-  try{
-
-    const x=
-      JSON.parse(
-        localStorage.getItem(KEY)
-        || 'null'
-      );
-
-    if(x)
-      Object.assign(
-        state,
-        x
-      );
-
-    if(
-      !Array.isArray(
-        state.boosterEvents
-      )
-    )
-      state.boosterEvents=[];
-
-    if(
-      !Array.isArray(
-        state.friends
-      )
-    )
-      state.friends=[];
-
-    if(
-      !Array.isArray(
-        state.transactions
-      )
-    )
-      state.transactions=[];
-
-    if(
-      !state.claimedMilestones
-    )
-      state.claimedMilestones={};
-
-  }catch(e){}
-
+function load() {
+  try {
+    const x = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if(x) Object.assign(state, x);
+    if(!Array.isArray(state.boosterEvents)) state.boosterEvents = [];
+    if(!Array.isArray(state.friends)) state.friends = [];
+    if(!Array.isArray(state.transactions)) state.transactions = [];
+    if(!state.claimedMilestones) state.claimedMilestones = {};
+  } catch(e) {}
 }
 
-
-function telegramProfile(){
-
-  const tg=
-    window.Telegram?.WebApp;
-
-  if(!tg)
-    return;
-
-
-  try{
-
+function telegramProfile() {
+  const tg = window.Telegram?.WebApp;
+  if(!tg) return;
+  try {
     tg.ready();
     tg.expand();
-
-    const u=
-      tg.initDataUnsafe?.user;
-
-    if(!u)
-      return;
-
-
-    state.telegramUserId=
-      u.id;
-
-
-    const name=
-      [
-        u.first_name,
-        u.last_name
-      ]
-      .filter(Boolean)
-      .join(' ')
-      ||
-      'Telegram User';
-
-
-    const un=
-      u.username
-        ? '@'+u.username
-        : 'Telegram account';
-
-
-    $('profileName').textContent=
-      name;
-
-    $('profileUsername').textContent=
-      un;
-
-
-    const ini=
-      (
-        (u.first_name?.[0]||'F')+
-        (u.last_name?.[0]||'')
-      ).toUpperCase();
-
-
-    $('topAvatar').textContent=
-      ini;
-
-    $('profileAvatar').textContent=
-      ini;
-
-
-    if(
-      u.photo_url
-    ){
-
-      $('topAvatar').innerHTML=
-        `<img src="${u.photo_url}" alt="">`;
-
-      $('profileAvatar').innerHTML=
-        `<img src="${u.photo_url}" alt="">`;
-
+    const u = tg.initDataUnsafe?.user;
+    if(!u) return;
+    state.telegramUserId = u.id;
+    const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || 'Telegram User';
+    const un = u.username ? '@' + u.username : 'Telegram account';
+    $('profileName').textContent = name;
+    $('profileUsername').textContent = un;
+    const ini = ((u.first_name?.[0]||'F') + (u.last_name?.[0]||'')).toUpperCase();
+    $('topAvatar').textContent = ini;
+    $('profileAvatar').textContent = ini;
+    if(u.photo_url) {
+      $('topAvatar').innerHTML = `<img src="${u.photo_url}" alt="">`;
+      $('profileAvatar').innerHTML = `<img src="${u.photo_url}" alt="">`;
     }
-
-
-    if(u.id){
-
-      $('referralLink').textContent=
-        `https://t.me/FIDEXANetworkBot/fidexa?startapp=ref_${u.id}`;
-
+    if(u.id) {
+      $('referralLink').textContent = `https://t.me/FIDEXANetworkBot/fidexa?startapp=ref_${u.id}`;
     }
-
-
-  }catch(e){}
-
+  } catch(e) {}
 }
 
-
 load();
-
 telegramProfile();
-
 checkMilestones();
-
 updateUI();
-
 updateMiningTimer();
 
-
-setInterval(()=>{
-
+setInterval(() => {
   cleanBoosterEvents();
-
-  state.friends.forEach(f=>{
-
-    if(
-      f.miningEnd &&
-      Date.now()>=f.miningEnd
-    ){
-
-      f.active=false;
-
-    }
-
+  state.friends.forEach(f => {
+    if(f.miningEnd && Date.now() >= f.miningEnd) f.active = false;
   });
-
   updateUI();
-
   updateMiningTimer();
-
   save();
-
-},1000);
-
+}, 1000);
 </script>
 
 </body>
