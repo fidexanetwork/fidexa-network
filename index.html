@@ -44,7 +44,6 @@ a{text-decoration:none;color:inherit}
 .mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:#102b47;display:flex;align-items:center;justify-content:center}
 .mining-icon{width:50px;height:50px;border-radius:16px;font-size:24px}
 
-/* Digging animation for the pickaxe icon */
 @keyframes digAnimation {
   0% { transform: rotate(0deg) translateY(0); }
   25% { transform: rotate(-25deg) translateY(-3px); }
@@ -94,12 +93,12 @@ a{text-decoration:none;color:inherit}
 .stat-value{font-size:16px;font-weight:800;margin-top:7px}
 
 .task,.row-card{background:var(--panel);border:1px solid var(--border);padding:14px;border-radius:17px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
-.icon-box{width:42px;height:42px;border-radius:13px;flex:none}
+.icon-box{width:42px;height:42px;border-radius:13px;flex:none;font-size:20px}
 .task-info{flex:1}
 .task-info strong{font-size:12px}
 .task-info p{color:#71869b;font-size:9px;margin-top:4px;line-height:1.4}
 .small-btn{border:0;background:#117ed0;color:#fff;padding:9px 11px;font-size:9px}
-.small-btn:disabled{opacity:.45}
+.small-btn:disabled{opacity:.45;background:#153048;color:#71869b}
 
 .referral-card{padding:21px;text-align:center}
 .referral-card h2{font-size:21px}
@@ -247,7 +246,6 @@ a{text-decoration:none;color:inherit}
     </div>
   </div>
 
-  <!-- Single Dynamic Mining Action Button -->
   <button class="primary" id="mineButton" onclick="handleMainButton()">
     START
   </button>
@@ -328,40 +326,40 @@ a{text-decoration:none;color:inherit}
   <span>FIDEXA COMMUNITY</span>
 </div>
 
-<div class="task">
+<div class="task" id="taskTelegram">
   <div class="icon-box">✈️</div>
   <div class="task-info">
-    <strong>Join FIDEXA Telegram</strong>
-    <p>Join the official FIDEXA Network channel.</p>
+    <strong>Join channel</strong>
+    <p>Join the official FIDEXA Telegram channel. Earn +10 $FDX.</p>
   </div>
-  <a class="small-btn" href="https://t.me/fidexa_Network" target="_blank" rel="noopener">OPEN</a>
+  <button class="small-btn" id="tgTaskBtn" onclick="handleTelegramTask()">OPEN</button>
 </div>
 
-<div class="task">
+<div class="task" id="taskX">
   <div class="icon-box">𝕏</div>
   <div class="task-info">
-    <strong>Follow FIDEXA on X</strong>
-    <p>Follow @Fidexa_Network for official updates.</p>
+    <strong>Join X</strong>
+    <p>Follow @Fidexa_Network on X. Earn +10 $FDX.</p>
   </div>
-  <a class="small-btn" href="https://x.com/Fidexa_Network" target="_blank" rel="noopener">OPEN</a>
+  <button class="small-btn" id="xTaskBtn" onclick="handleXTask()">OPEN</button>
 </div>
 
 <div class="task">
-  <div class="icon-box">📦</div>
+  <div class="icon-box">🎁</div>
   <div class="task-info">
     <strong>Lucky Box 1</strong>
-    <p>3 chances per 12 hours. Watch ads to win rewards (0, 10, 20, 30, 50 $FDX).</p>
+    <p>3 chances per 12 hours. Tap to open, watch ads to win mystery rewards!</p>
   </div>
-  <button class="small-btn" id="luckyBox1Button" onclick="openLuckyBox(1)">OPEN</button>
+  <button class="small-btn" id="luckyBox1Button" onclick="openLuckyBox(1)">OPEN (3/3)</button>
 </div>
 
 <div class="task">
   <div class="icon-box">🎁</div>
   <div class="task-info">
     <strong>Lucky Box 2</strong>
-    <p>3 chances per 12 hours. Watch ads to win rewards (0, 20, 1, 5, 100 $FDX).</p>
+    <p>3 chances per 12 hours. Tap to open, watch ads to win mystery rewards!</p>
   </div>
-  <button class="small-btn" id="luckyBox2Button" onclick="openLuckyBox(2)">OPEN</button>
+  <button class="small-btn" id="luckyBox2Button" onclick="openLuckyBox(2)">OPEN (3/3)</button>
 </div>
 
 <div class="notice">
@@ -639,8 +637,8 @@ a{text-decoration:none;color:inherit}
 <div class="modal" id="luckyModal">
 <div class="modal-box">
 <h3 id="luckyModalTitle">🎁 Lucky Box</h3>
-<p id="luckyModalDesc">Watch the rewarded ad to use a chance.</p>
-<button class="primary" onclick="watchLuckyBoxAd()">WATCH AD & OPEN CHANCE</button>
+<p id="luckyModalDesc">Tap open and watch the rewarded ad to reveal your surprise reward!</p>
+<button class="primary" onclick="watchLuckyBoxAd()">WATCH AD & OPEN BOX</button>
 <button class="secondary" onclick="closeModal('luckyModal')">CANCEL</button>
 </div>
 </div>
@@ -734,6 +732,8 @@ const state = {
   friends: [],
   referralRewards: 0,
   claimedMilestones: {},
+  telegramTaskCompleted: false,
+  xTaskCompleted: false,
   lucky1Chances: 3,
   lucky1LastReset: 0,
   lucky2Chances: 3,
@@ -750,7 +750,7 @@ const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 12*60*60*1000;
 const MAX_LUCKY_CHANCES = 3;
-const KEY = 'fidexa_final_state_v8';
+const KEY = 'fidexa_final_state_v9';
 
 const $ = id => document.getElementById(id);
 
@@ -886,9 +886,59 @@ function updateUI() {
     r.querySelector('.reward-value').textContent = claimed ? '✓ CLAIMED' : reached ? 'CLAIM' : `+${n===1?5:n===5?20:n===10?30:n===50?50:100} $FDX`;
   });
 
+  // Task button states
+  const tgBtn = $('tgTaskBtn');
+  if(state.telegramTaskCompleted) {
+    tgBtn.textContent = 'CLAIMED';
+    tgBtn.disabled = true;
+  } else {
+    tgBtn.textContent = 'OPEN';
+    tgBtn.disabled = false;
+  }
+
+  const xBtn = $('xTaskBtn');
+  if(state.xTaskCompleted) {
+    xBtn.textContent = 'CLAIMED';
+    xBtn.disabled = true;
+  } else {
+    xBtn.textContent = 'OPEN';
+    xBtn.disabled = false;
+  }
+
   $('walletTxCount').textContent = `${state.transactions.length} ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
+}
+
+function handleTelegramTask() {
+  if(state.telegramTaskCompleted) return;
+  window.open('https://t.me/fidexa_Network', '_blank');
+  // Complete and give reward after clicking open
+  setTimeout(() => {
+    if(!state.telegramTaskCompleted) {
+      state.telegramTaskCompleted = true;
+      state.homeBalance += 10;
+      state.transactions.unshift({ label: 'Join Telegram Channel Reward', amount: 10, time: Date.now() });
+      save();
+      updateUI();
+      toast('+10 $FDX added for joining Telegram channel!');
+    }
+  }, 1000);
+}
+
+function handleXTask() {
+  if(state.xTaskCompleted) return;
+  window.open('https://x.com/Fidexa_Network', '_blank');
+  setTimeout(() => {
+    if(!state.xTaskCompleted) {
+      state.xTaskCompleted = true;
+      state.homeBalance += 10;
+      state.transactions.unshift({ label: 'Join X Reward', amount: 10, time: Date.now() });
+      save();
+      updateUI();
+      toast('+10 $FDX added for joining X!');
+    }
+  }, 1000);
 }
 
 function updateMiningTimer() {
@@ -1054,7 +1104,7 @@ function openLuckyBox(boxNum) {
   if(boxNum === 2 && state.lucky2Chances <= 0) { toast('Chances exhausted.'); return; }
   state.activeLuckyBox = boxNum;
   $('luckyModalTitle').textContent = `🎁 Lucky Box ${boxNum}`;
-  $('luckyModalDesc').textContent = `Watch the rewarded ad to open Lucky Box ${boxNum}.`;
+  $('luckyModalDesc').textContent = `Tap open and watch the rewarded ad to reveal your mystery reward from Lucky Box ${boxNum}!`;
   openModal('luckyModal');
 }
 
@@ -1080,7 +1130,7 @@ function watchLuckyBoxAd() {
   }
   save();
   updateUI();
-  toast(reward > 0 ? `Lucky Box reward: +${reward} $FDX added!` : 'Better luck next time! (0 $FDX)');
+  toast(reward >  0 ? `🎁 Mystery reward unlocked: +${reward} $FDX added!` : 'Better luck next time! (0 $FDX)');
 }
 
 function simulateReferral() {
