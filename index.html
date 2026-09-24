@@ -36,7 +36,6 @@ a{text-decoration:none;color:inherit}
 .balance-label,.wallet-label{font-size:11px;color:#7f98b4}
 .balance{font-size:36px;font-weight:800;margin-top:7px}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
-.balance-bottom{margin-top:17px;display:flex;justify-content:space-between;color:#7891aa;font-size:10px}
 
 .card,.wallet-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:18px}
 .mining-top,.boost-info,.pending-row,.active-referrals{display:flex;align-items:center;justify-content:space-between}
@@ -64,8 +63,6 @@ a{text-decoration:none;color:inherit}
 .pending-card{margin-top:12px;background:#0c2034;border:1px solid #1b4768;border-radius:17px;padding:15px}
 .pending-label{font-size:9px;color:#71869b}
 .pending-value{font-size:20px;font-weight:800;color:var(--cyan)}
-.pending-note{font-size:9px;color:#71869b;line-height:1.4;margin-top:5px}
-.claim{width:100%;margin-top:12px;border:0;padding:14px;border-radius:13px;background:linear-gradient(90deg,#12a76a,#33d18b);color:#fff;font-weight:800}
 
 .boost-rate{font-size:25px;font-weight:800}
 .boost-rate span{font-size:11px;color:var(--cyan)}
@@ -200,12 +197,8 @@ a{text-decoration:none;color:inherit}
 <section id="home" class="page active">
 
 <div class="balance-card">
-  <div class="balance-label">TOTAL ACCUMULATED MINING</div>
+  <div class="balance-label">TOTAL BALANCE</div>
   <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
-  <div class="balance-bottom">
-    <span>Home Mining Dashboard</span>
-    <span>FIDEXA Network</span>
-  </div>
 </div>
 
 <div class="section-title">
@@ -254,10 +247,6 @@ a{text-decoration:none;color:inherit}
 
     <div>
       <div class="pending-label">MINING STATISTICS</div>
-
-      <div class="pending-note">
-        Accumulated mining earnings stay completely on the Home page until mainnet distribution.
-      </div>
     </div>
 
     <div class="pending-value" id="pendingReward">
