@@ -127,7 +127,6 @@ a{text-decoration:none;color:inherit}
 .wallet-action.migrate{border-color:#7b43e8}
 .wallet-action.history{border-color:#245b91}
 
-/* Balance Breakdown Cards */
 .pi-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .pi-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px}
 .pi-label{font-size:9px;color:#7f98b4;text-transform:uppercase;letter-spacing:.5px}
@@ -201,10 +200,10 @@ a{text-decoration:none;color:inherit}
 <section id="home" class="page active">
 
 <div class="balance-card">
-  <div class="balance-label">TOTAL FIDEXA BALANCE</div>
+  <div class="balance-label">TOTAL ACCUMULATED MINING</div>
   <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
   <div class="balance-bottom">
-    <span>Available Balance</span>
+    <span>Home Mining Dashboard</span>
     <span>FIDEXA Network</span>
   </div>
 </div>
@@ -257,7 +256,7 @@ a{text-decoration:none;color:inherit}
       <div class="pending-label">MINING STATISTICS</div>
 
       <div class="pending-note">
-        Accumulated earnings stay separate from Total Balance until the session ends and you tap Claim.
+        Accumulated mining earnings stay completely on the Home page until mainnet distribution.
       </div>
     </div>
 
@@ -269,7 +268,7 @@ a{text-decoration:none;color:inherit}
 
   <div class="notice">
     <strong id="pendingStatusText">NOT MINING</strong>
-    — pending mining reward is not added to Total Balance yet.
+    — session output updates live here.
   </div>
 
 </div>
@@ -567,7 +566,7 @@ a{text-decoration:none;color:inherit}
   <div class="pi-card">
     <div class="pi-label">Transferable Balance</div>
     <div class="pi-amount"><span id="transferableBalance">0.00</span> <span>$FDX</span></div>
-    <div class="pi-note">Ready for network actions</div>
+    <div class="pi-note">Awaiting mainnet distribution</div>
   </div>
   <div class="pi-card">
     <div class="pi-label">Unverified Balance</div>
@@ -612,7 +611,7 @@ a{text-decoration:none;color:inherit}
 <div class="wallet-card"
      id="transactionList">
   <div class="notice" style="margin-top:0">
-    No transactions yet.
+    No wallet transactions yet. Mining and task activities remain isolated on your Home dashboard until distribution day.
   </div>
 </div>
 
@@ -1035,7 +1034,7 @@ Migration is planned for the official on-chain phase.
 
 <br>
 
-Eligibility, wallet connection and the final migration transaction will be activated by the production backend.
+Eligibility, wallet connection and final token distribution will be activated on mainnet day.
 
 </div>
 
@@ -1078,7 +1077,7 @@ CLOSE
 <script>
 
 const state={
-  balance:0,
+  homeBalance:0, // Mining & task rewards stay here on Home
   baseRate:1,
   boosterEvents:[],
   miningStart:null,
@@ -1092,7 +1091,7 @@ const state={
   lucky2Chances:3,
   lucky2LastReset:0,
   activeLuckyBox:1,
-  transactions:[],
+  transactions:[], // Only true wallet actions (like sends if simulated) go here
   telegramUserId:null
 };
 
@@ -1106,7 +1105,7 @@ const BOOSTER_WINDOW=24*60*60*1000;
 const LUCKY_COOLDOWN=12*60*60*1000;
 const MAX_LUCKY_CHANCES=3;
 
-const KEY='fidexa_final_state_v4';
+const KEY='fidexa_final_state_v5';
 
 const $=id=>document.getElementById(id);
 
@@ -1178,7 +1177,7 @@ function showProfileInfo(){
 function showPrivacyPolicy(){
   showInfo(
     'Privacy Policy',
-    `1. INTRODUCTION\nWelcome to FIDEXA Network ("we", "our", or "us"). We respect your privacy and are committed to protecting your personal information collected via our Telegram WebApp.\n\n2. INFORMATION WE COLLECT\n- Telegram User ID, First Name, and Username for account syncing.\n- App activity, mining progress, and referral connections stored securely via local device cache and secure backend infrastructure.\n\n3. USE OF DATA\nYour data is used strictly to maintain your $FDX balance records, calculate hourly mining rates, process lucky box draws, and secure network distribution.\n\n4. DATA SECURITY\nWe implement standard protective measures to ensure your accumulated $FDX rewards remain safe throughout the pre-migration phase.\n\n5. CONTACT US\nReach out via our official Telegram community channel for any data privacy inquiries.`
+    `1. INTRODUCTION\nWelcome to FIDEXA Network ("we", "our", or "us"). We respect your privacy and are committed to protecting your personal information collected via our Telegram WebApp.\n\n2. INFORMATION WE COLLECT\n- Telegram User ID, First Name, and Username for account syncing.\n- App activity, mining progress, and referral connections stored securely via local device cache and secure backend infrastructure.\n\n3. USE OF DATA\nYour data is used strictly to maintain your mining records, calculate hourly mining rates, process lucky box draws, and secure network distribution.\n\n4. DATA SECURITY\nWe implement standard protective measures to ensure your accumulated $FDX rewards remain safe throughout the pre-migration phase.\n\n5. CONTACT US\nReach out via our official Telegram community channel for any data privacy inquiries.`
   );
 }
 
@@ -1357,17 +1356,14 @@ function updateUI(){
   const rate=
     rateAt(Date.now());
 
+  // Home balance displays home accumulated mining/task reward only
   $('balanceValue').textContent=
-    state.balance.toFixed(2);
+    state.homeBalance.toFixed(2);
 
-  $('walletBalance').textContent=
-    state.balance.toFixed(2);
-
-  // Split calculation (e.g. 60% transferable, 40% unverified)
-  const transferable = state.balance * 0.6;
-  const unverified = state.balance * 0.4;
-
-  $('transferableBalance').textContent = transferable.toFixed(2);$('unverifiedBalance').textContent = unverified.toFixed(2);
+  // Wallet stays 0.00 until distribution day
+  $('walletBalance').textContent = "0.00";
+  $('transferableBalance').textContent = "0.00";
+  $('unverifiedBalance').textContent = "0.00";
 
   $('rateValue').textContent=
     rate.toFixed(1);
@@ -1669,14 +1665,8 @@ function claimMining(){
     );
 
 
-  state.balance+=amount;
-
-  state.transactions.unshift({
-    type:'mining',
-    label:'Mining Reward',
-    amount:amount,
-    time:Date.now()
-  });
+  // Added to Home balance only, NO wallet transaction history logged
+  state.homeBalance+=amount;
 
   state.pendingReward=0;
 
@@ -1689,7 +1679,7 @@ function claimMining(){
   updateMiningTimer();
 
   toast(
-    `Claimed ${amount.toFixed(2)} $FDX. Start mining again.`
+    `Claimed ${amount.toFixed(2)} $FDX to Home Dashboard.`
   );
 
 }
@@ -1727,7 +1717,7 @@ function requestBooster(){
 
 
   $('adText').textContent=
-    'Complete the rewarded ad to receive +0.5 $FDX/hour. This demo gate will be replaced by the real Adsgram completion callback.';
+    'Complete the rewarded ad to receive +0.5 $FDX/hour.';
 
   openModal('adModal');
 
@@ -1872,22 +1862,14 @@ function watchLuckyBoxAd(){
     reward = pool2[Math.floor(Math.random() * pool2.length)];
   }
 
-  state.balance += reward;
-
-  if(reward > 0){
-    state.transactions.unshift({
-      type:'lucky',
-      label:`Lucky Box ${state.activeLuckyBox} Reward`,
-      amount:reward,
-      time:Date.now()
-    });
-  }
+  // Task rewards go to Home dashboard only, NOT the wallet history/balance
+  state.homeBalance += reward;
 
   save();
   updateUI();
 
   if(reward > 0){
-    toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX!`);
+    toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX added to Home dashboard!`);
   } else {
     toast(`Lucky Box ${state.activeLuckyBox}: Better luck next time! (0 $FDX)`);
   }
@@ -1988,9 +1970,7 @@ function checkMilestones(){
       ){
 
         state.claimedMilestones[n]=true;
-
-        state.balance+=
-          rewards[n];
+        state.homeBalance+= rewards[n]; // Milestone added to Home balance only
 
       }
 
@@ -2013,15 +1993,7 @@ function renderTransactions(){
 <div class="transaction">
 
   <div class="tx-icon">
-    ${
-      t.amount<0
-        ? '↗'
-        : t.type==='mining'
-          ? '⛏'
-          : t.type==='lucky'
-            ? '🎁'
-            : '★'
-    }
+    ${t.amount<0 ? '↗' : '★'}
   </div>
 
   <div class="tx-main">
@@ -2036,21 +2008,8 @@ function renderTransactions(){
 
   </div>
 
-  <div class="tx-amount ${
-    t.amount<0
-      ? 'tx-negative'
-      : 'tx-positive'
-  }">
-
-    ${
-      t.amount>0
-        ? '+'
-        : ''
-    }
-
-    ${Number(t.amount).toFixed(2)}
-    $FDX
-
+  <div class="tx-amount ${t.amount<0 ? 'tx-negative' : 'tx-positive'}">
+    ${t.amount>0 ? '+' : ''}${Number(t.amount).toFixed(2)} $FDX
   </div>
 
 </div>
@@ -2060,7 +2019,7 @@ function renderTransactions(){
 
       :
 
-    '<div class="notice" style="margin-top:0">No transactions yet.</div>';
+    '<div class="notice" style="margin-top:0">No wallet transactions yet. Mining and task activities remain isolated on your Home dashboard until distribution day.</div>';
 
 
   $('transactionList').innerHTML=
@@ -2135,41 +2094,12 @@ function sendFDX(){
 
   }
 
-
-  if(
-    a>state.balance
-  ){
-
-    toast(
-      'Insufficient $FDX balance.'
-    );
-
-    return;
-
-  }
-
-
-  state.balance-=a;
-
-  state.transactions.unshift({
-    type:'sent',
-    label:`Sent to ${to}`,
-    amount:-a,
-    time:Date.now()
-  });
-
-  save();
-
-  updateUI();
-
-  closeModal(
-    'sendModal'
-  );
-
+  // Wallet has 0 balance pre-distribution
   toast(
-    `Preview transfer: ${a.toFixed(2)} $FDX sent.`
+    'Wallet transfers will be unlocked on distribution day.'
   );
 
+  closeModal('sendModal');
 }
 
 
