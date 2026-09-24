@@ -42,6 +42,20 @@ a{text-decoration:none;color:inherit}
 .mining-left{display:flex;align-items:center;gap:12px}
 .mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:#102b47;display:flex;align-items:center;justify-content:center}
 .mining-icon{width:50px;height:50px;border-radius:16px;font-size:24px}
+
+/* Digging animation for the pickaxe icon */
+@keyframes digAnimation {
+  0% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-25deg) translateY(-3px); }
+  50% { transform: rotate(15deg) translateY(2px); }
+  75% { transform: rotate(-10deg) translateY(-1px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+.mining-icon.digging {
+  animation: digAnimation .6s ease-in-out infinite;
+  color: var(--cyan);
+}
+
 .status{font-size:10px;color:#6f849b}
 .status strong{display:block;color:var(--cyan);margin-top:4px;font-size:11px}
 .rate{text-align:right}
@@ -211,7 +225,7 @@ a{text-decoration:none;color:inherit}
 
   <div class="mining-top">
     <div class="mining-left">
-      <div class="mining-icon">⛏</div>
+      <div class="mining-icon" id="miningIcon">⛏</div>
       <div class="status">
         STATUS
         <strong id="miningStatus">READY TO MINE</strong>
@@ -735,7 +749,7 @@ const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 12*60*60*1000;
 const MAX_LUCKY_CHANCES = 3;
-const KEY = 'fidexa_final_state_v7';
+const KEY = 'fidexa_final_state_v8';
 
 const $ = id => document.getElementById(id);
 
@@ -881,6 +895,7 @@ function updateMiningTimer() {
   const s = $('miningStatus');
   const bar = $('progressBar');
   const timer = $('timer');
+  const icon = $('miningIcon');
 
   if(!state.miningStart || !state.miningEnd) {
     timer.textContent = '04:00:00';
@@ -888,6 +903,7 @@ function updateMiningTimer() {
     b.textContent = 'START';
     b.disabled = false;
     bar.style.width = '0%';
+    icon.classList.remove('digging');
     $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
     return;
   }
@@ -903,6 +919,7 @@ function updateMiningTimer() {
     b.textContent = 'CLAIM';
     b.disabled = false;
     bar.style.width = '100%';
+    icon.classList.remove('digging');
     $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
     return;
   }
@@ -918,6 +935,7 @@ function updateMiningTimer() {
   b.textContent = 'ACTIVE MINING';
   b.disabled = true;
   bar.style.width = `${(elapsed / FOUR_HOURS) * 100}%`;
+  icon.classList.add('digging');
   $('pendingReward').textContent = state.pendingReward.toFixed(2) + '$FDX';
 }
 
