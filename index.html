@@ -261,7 +261,7 @@ a{text-decoration:none;color:inherit}
   </div>
 
   <div class="notice">
-    <strong id="pendingStatus">NOT MINING</strong>
+    <strong id="pendingStatusText">NOT MINING</strong>
     — pending mining reward is not added to Total Balance yet.
   </div>
 
@@ -364,17 +364,6 @@ a{text-decoration:none;color:inherit}
      rel="noopener">
      OPEN
   </a>
-</div>
-
-<div class="task">
-  <div class="icon-box">🎁</div>
-  <div class="task-info">
-    <strong>Daily Spin & Ads</strong>
-    <p>One free preview spin is available each day.</p>
-  </div>
-  <button class="small-btn" onclick="openSpinPreview()">
-    OPEN
-  </button>
 </div>
 
 <div class="task">
@@ -951,32 +940,6 @@ CANCEL
 </div>
 
 
-<!-- SPIN MODAL -->
-<div class="modal" id="spinModal">
-
-<div class="modal-box">
-
-<h3>Daily Spin & Ads</h3>
-
-<p id="spinText">
-One free preview spin is available today.
-</p>
-
-<button class="primary"
-        onclick="spinPreview()">
-SPIN NOW
-</button>
-
-<button class="secondary"
-        onclick="closeModal('spinModal')">
-CLOSE
-</button>
-
-</div>
-
-</div>
-
-
 <!-- SEND MODAL -->
 <div class="modal" id="sendModal">
 
@@ -1116,7 +1079,6 @@ const state={
   friends:[],
   referralRewards:0,
   claimedMilestones:{},
-  dailySpinUsed:false,
   luckyBoxLastClaim:0,
   transactions:[],
   telegramUserId:null
@@ -1131,7 +1093,7 @@ const BOOSTER_WINDOW=24*60*60*1000;
 
 const LUCKY_BOX_COOLDOWN=12*60*60*1000;
 
-const KEY='fidexa_final_state_v1';
+const KEY='fidexa_final_state_v2';
 
 const $=id=>document.getElementById(id);
 
@@ -1229,8 +1191,7 @@ function sendSupportMessage(){
 
   i.value='';
 
-  $('messages').scrollTop=
-    $('messages').scrollHeight;
+  $('messages').scrollTop=$('messages').scrollHeight;
 
   toast(
     'Message prepared. Support backend will be connected later.'
@@ -1314,13 +1275,9 @@ function sessionRewardAt(endTime){
     if(t>start&&t<end)
       points.push(t);
 
-    if(
-      t+BOOSTER_WINDOW>start &&
-      t+BOOSTER_WINDOW<end
-    )
-      points.push(
-        t+BOOSTER_WINDOW
-      );
+    const expiry = t+BOOSTER_WINDOW;
+    if(expiry>start&&expiry<end)
+      points.push(expiry);
 
   });
 
@@ -1340,7 +1297,7 @@ function sessionRewardAt(endTime){
 
   });
 
-  points.sort(
+  const uniquePoints = [...new Set(points)].sort(
     (a,b)=>a-b
   );
 
@@ -1348,12 +1305,12 @@ function sessionRewardAt(endTime){
 
   for(
     let i=0;
-    i<points.length-1;
+    i<uniquePoints.length-1;
     i++
   ){
 
-    const a=points[i];
-    const b=points[i+1];
+    const a=uniquePoints[i];
+    const b=uniquePoints[i+1];
     const mid=(a+b)/2;
 
     total+=
@@ -1417,7 +1374,7 @@ function updateUI(){
   $('pendingReward').textContent=
     `${state.pendingReward.toFixed(2)} FDX`;
 
-  $('pendingStatus').textContent=
+  $('pendingStatusText').textContent=
     state.miningStart
       ? 'MINING ACTIVE'
       : 'NOT MINING';
@@ -1974,73 +1931,6 @@ function watchLuckyBoxAd(){
 }
 
 
-function openSpinPreview(){
-
-  openModal(
-    'spinModal'
-  );
-
-}
-
-
-function spinPreview(){
-
-  if(
-    state.dailySpinUsed
-  ){
-
-    toast(
-      'Today’s free spin has already been used.'
-    );
-
-    return;
-
-  }
-
-
-  state.dailySpinUsed=true;
-
-
-  const rewards=[
-    1,
-    2,
-    3,
-    5,
-    8
-  ];
-
-  const r=
-    rewards[
-      Math.floor(
-        Math.random()*
-        rewards.length
-      )
-    ];
-
-
-  state.balance+=r;
-
-  state.transactions.unshift({
-    type:'spin',
-    label:'Daily Spin Reward',
-    amount:r,
-    time:Date.now()
-  });
-
-  save();
-
-  updateUI();
-
-  $('spinText').textContent=
-    `Preview result: +${r} FDX.`;
-
-  toast(
-    `You won +${r} FDX.`
-  );
-
-}
-
-
 function simulateReferral(){
 
   const n=
@@ -2138,13 +2028,6 @@ function checkMilestones(){
 
         state.balance+=
           rewards[n];
-
-        state.transactions.unshift({
-          type:'reward',
-          label:`Referral Milestone (${n})`,
-          amount:rewards[n],
-          time:Date.now()
-        });
 
       }
 
@@ -2253,8 +2136,7 @@ function esc(v){
 
 function openSendModal(){
 
-  $('sendRecipient').value='';
-  $('sendAmount').value='';
+  $('sendRecipient').value='';$('sendAmount').value='';
 
   openModal(
     'sendModal'
@@ -2391,6 +2273,17 @@ function showTransactionHistory(){
   );
 
 }
+
+
+document.getElementById('copyReferral').addEventListener('click', async () => {
+  const linkText = document.getElementById('referralLink').textContent.trim();
+  try {
+    await navigator.clipboard.writeText(linkText);
+    toast('Referral link copied to clipboard!');
+  } catch (e) {
+    toast(linkText);
+  }
+});
 
 
 function save(){
