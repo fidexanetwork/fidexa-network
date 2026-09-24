@@ -255,11 +255,6 @@ a{text-decoration:none;color:inherit}
 
   </div>
 
-  <div class="notice">
-    <strong id="pendingStatusText">NOT MINING</strong>
-    — session output updates live here.
-  </div>
-
 </div>
 
 <div class="notice">
@@ -1066,7 +1061,7 @@ CLOSE
 <script>
 
 const state={
-  homeBalance:0, // Mining & task rewards stay here on Home
+  homeBalance:0,
   baseRate:1,
   boosterEvents:[],
   miningStart:null,
@@ -1080,7 +1075,7 @@ const state={
   lucky2Chances:3,
   lucky2LastReset:0,
   activeLuckyBox:1,
-  transactions:[], // Only true wallet actions (like sends if simulated) go here
+  transactions:[],
   telegramUserId:null
 };
 
@@ -1345,11 +1340,9 @@ function updateUI(){
   const rate=
     rateAt(Date.now());
 
-  // Home balance displays home accumulated mining/task reward only
   $('balanceValue').textContent=
     state.homeBalance.toFixed(2);
 
-  // Wallet stays 0.00 until distribution day
   $('walletBalance').textContent = "0.00";
   $('transferableBalance').textContent = "0.00";
   $('unverifiedBalance').textContent = "0.00";
@@ -1382,11 +1375,6 @@ function updateUI(){
 
   $('pendingReward').textContent=
     `${state.pendingReward.toFixed(2)} $FDX`;
-
-  $('pendingStatusText').textContent=
-    state.miningStart
-      ? 'MINING ACTIVE'
-      : 'NOT MINING';
 
 
   document
@@ -1654,7 +1642,6 @@ function claimMining(){
     );
 
 
-  // Added to Home balance only, NO wallet transaction history logged
   state.homeBalance+=amount;
 
   state.pendingReward=0;
@@ -1851,7 +1838,6 @@ function watchLuckyBoxAd(){
     reward = pool2[Math.floor(Math.random() * pool2.length)];
   }
 
-  // Task rewards go to Home dashboard only, NOT the wallet history/balance
   state.homeBalance += reward;
 
   save();
@@ -1959,7 +1945,7 @@ function checkMilestones(){
       ){
 
         state.claimedMilestones[n]=true;
-        state.homeBalance+= rewards[n]; // Milestone added to Home balance only
+        state.homeBalance+= rewards[n];
 
       }
 
@@ -2083,7 +2069,6 @@ function sendFDX(){
 
   }
 
-  // Wallet has 0 balance pre-distribution
   toast(
     'Wallet transfers will be unlocked on distribution day.'
   );
