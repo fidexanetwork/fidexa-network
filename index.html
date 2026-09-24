@@ -127,6 +127,14 @@ a{text-decoration:none;color:inherit}
 .wallet-action.migrate{border-color:#7b43e8}
 .wallet-action.history{border-color:#245b91}
 
+/* Balance Breakdown Cards */
+.pi-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.pi-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px}
+.pi-label{font-size:9px;color:#7f98b4;text-transform:uppercase;letter-spacing:.5px}
+.pi-amount{font-size:18px;font-weight:800;margin-top:6px;color:#fff}
+.pi-amount span{font-size:11px;color:var(--cyan)}
+.pi-note{font-size:8px;color:#71869b;margin-top:4px;line-height:1.3}
+
 .transaction-list{margin-top:10px}
 .transaction{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;background:#071522;border:1px solid #19334e;margin-bottom:8px}
 .tx-icon{width:34px;height:34px;border-radius:10px;flex:none}
@@ -151,7 +159,6 @@ a{text-decoration:none;color:inherit}
 .modal-box h3{font-size:17px}
 .modal-box p{color:#8095a9;font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
 
-/* Scrollable container for Whitepaper, Privacy Policy, and Roadmap docs */
 .scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid #18334d;border-bottom:1px solid #18334d;padding-top:10px;padding-bottom:10px;text-align:left}
 .scrollable-doc::-webkit-scrollbar{width:4px}
 .scrollable-doc::-webkit-scrollbar-thumb{background:#204363;border-radius:4px}
@@ -164,10 +171,7 @@ a{text-decoration:none;color:inherit}
 .chat-input{display:flex;gap:7px;margin-top:12px}
 .chat-input input,.wallet-input{flex:1;background:#0c1d2f;border:1px solid #203a53;border-radius:11px;color:#fff;padding:12px;font-size:11px;outline:none}
 .chat-input button{border:0;border-radius:11px;background:#117ed0;color:#fff;padding:0 14px;font-weight:800}
-.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px}
-.cancel{border:0;padding:13px;border-radius:12px;background:#13283c;color:#fff;font-weight:800}
 
-/* Receive method switch tabs */
 .receive-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;margin-bottom:12px}
 .receive-tab-btn{background:#0c2034;border:1px solid #1c3d5a;color:#7f98b4;padding:10px;border-radius:10px;font-size:11px;font-weight:800}
 .receive-tab-btn.active{background:#117ed0;border-color:#117ed0;color:#fff}
@@ -558,6 +562,20 @@ a{text-decoration:none;color:inherit}
 
 </div>
 
+<!-- Balance Breakdown Cards -->
+<div class="pi-balance-grid">
+  <div class="pi-card">
+    <div class="pi-label">Transferable Balance</div>
+    <div class="pi-amount"><span id="transferableBalance">0.00</span> <span>$FDX</span></div>
+    <div class="pi-note">Ready for network actions</div>
+  </div>
+  <div class="pi-card">
+    <div class="pi-label">Unverified Balance</div>
+    <div class="pi-amount"><span id="unverifiedBalance">0.00</span> <span>$FDX</span></div>
+    <div class="pi-note">Pending network verification</div>
+  </div>
+</div>
+
 <div class="wallet-actions">
 
   <button class="wallet-action send"
@@ -939,7 +957,7 @@ CANCEL
 </div>
 
 
-<!-- RECEIVE MODAL (Updated with QR Code / ID Choice Toggle) -->
+<!-- RECEIVE MODAL -->
 <div class="modal" id="receiveModal">
 
 <div class="modal-box">
@@ -966,7 +984,6 @@ Choose whether to scan a QR code or use your ID for sending the token.
 
 <div class="receive-pane" id="paneQr">
   <div class="qr-container">
-    <!-- Simple SVG representation of a QR code placeholder -->
     <svg width="140" height="140" viewBox="0 0 100 100" fill="#07111f">
       <rect width="100" height="100" fill="#fff"/>
       <rect x="10" y="10" width="30" height="30" fill="#07111f"/>
@@ -1089,7 +1106,7 @@ const BOOSTER_WINDOW=24*60*60*1000;
 const LUCKY_COOLDOWN=12*60*60*1000;
 const MAX_LUCKY_CHANCES=3;
 
-const KEY='fidexa_final_state_v3';
+const KEY='fidexa_final_state_v4';
 
 const $=id=>document.getElementById(id);
 
@@ -1158,7 +1175,6 @@ function showProfileInfo(){
 }
 
 
-/* Professional Content Builders for Profile Docs */
 function showPrivacyPolicy(){
   showInfo(
     'Privacy Policy',
@@ -1346,6 +1362,12 @@ function updateUI(){
 
   $('walletBalance').textContent=
     state.balance.toFixed(2);
+
+  // Split calculation (e.g. 60% transferable, 40% unverified)
+  const transferable = state.balance * 0.6;
+  const unverified = state.balance * 0.4;
+
+  $('transferableBalance').textContent = transferable.toFixed(2);$('unverifiedBalance').textContent = unverified.toFixed(2);
 
   $('rateValue').textContent=
     rate.toFixed(1);
@@ -1836,7 +1858,6 @@ function watchLuckyBoxAd(){
     }
     state.lucky1Chances--;
 
-    // Box 1: 0, 10, 20, 30, 50
     const pool1 = [0, 10, 20, 30, 50];
     reward = pool1[Math.floor(Math.random() * pool1.length)];
 
@@ -1847,24 +1868,29 @@ function watchLuckyBoxAd(){
     }
     state.lucky2Chances--;
 
-    // Box 2: 0, 20, 1, 5, 100
     const pool2 = [0, 20, 1, 5, 100];
     reward = pool2[Math.floor(Math.random() * pool2.length)];
   }
 
   state.balance += reward;
 
-  state.transactions.unshift({
-    type:'lucky',
-    label:`Lucky Box ${state.activeLuckyBox} Reward`,
-    amount:reward,
-    time:Date.now()
-  });
+  if(reward > 0){
+    state.transactions.unshift({
+      type:'lucky',
+      label:`Lucky Box ${state.activeLuckyBox} Reward`,
+      amount:reward,
+      time:Date.now()
+    });
+  }
 
   save();
   updateUI();
 
-  toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX!`);
+  if(reward > 0){
+    toast(`Lucky Box ${state.activeLuckyBox} reward: +${reward} $FDX!`);
+  } else {
+    toast(`Lucky Box ${state.activeLuckyBox}: Better luck next time! (0 $FDX)`);
+  }
 }
 
 
@@ -2161,7 +2187,6 @@ function openReceiveModal(){
   $('receiveIdBox').textContent=
     'FIDEX ID: '+ownID();
 
-  // Default to ID view when opening
   switchReceiveTab('id');
 
   openModal(
