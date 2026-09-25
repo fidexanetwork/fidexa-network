@@ -16,11 +16,7 @@ button:active{transform:scale(.98)}
 a{text-decoration:none;color:inherit}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px}
-.header{padding:18px 17px 10px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1677ff,#00b7ff);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900}
-.brand h1{font-size:18px}
-.brand p{font-size:9px;color:var(--muted);margin-top:3px}
+.header{padding:18px 17px 10px;display:flex;align-items:center;justify-content:flex-end}
 .avatar,.profile-avatar{background:#13243a;border:1px solid #203b57;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:800;overflow:hidden}
 .avatar{width:39px;height:39px;border-radius:50%}
 .avatar img,.profile-avatar img{width:100%;height:100%;object-fit:cover}
@@ -207,14 +203,7 @@ a{text-decoration:none;color:inherit}
 <div class="app">
 
 <header class="header">
-  <div class="brand">
-    <div class="logo">F</div>
-    <div>
-      <h1>FIDEXA NETWORK</h1>
-      <p>DECENTRALIZED DIGITAL NETWORK</p>
-    </div>
-  </div>
-  <div class="avatar" id="topAvatar">F</div>
+  <div class="avatar" id="topAvatar" style="display:none;">F</div>
 </header>
 
 <main class="content">
@@ -347,7 +336,6 @@ a{text-decoration:none;color:inherit}
 
 </section>
 
-
 <section id="tasks" class="page">
 <div class="section-title">
   <h2>Tasks</h2>
@@ -395,7 +383,6 @@ a{text-decoration:none;color:inherit}
   Each box has 3 chances and resets every <strong>12 hours</strong>. Watching an ad is required per chance.
 </div>
 </section>
-
 
 <section id="friends" class="page">
 <div class="section-title">
@@ -490,7 +477,6 @@ a{text-decoration:none;color:inherit}
 <button class="secondary" onclick="toggleLastReferralActivity()">TOGGLE LAST FRIEND ACTIVE / INACTIVE</button>
 </section>
 
-
 <section id="wallet" class="page">
 <div class="section-title">
   <h2>Wallet</h2>
@@ -535,7 +521,6 @@ a{text-decoration:none;color:inherit}
   </div>
 </div>
 </section>
-
 
 <section id="profile" class="page">
 <div class="profile-head">
@@ -925,7 +910,6 @@ function updateUI() {
       $('recoverySubText').textContent = `Active streak running (${7 - daysLeft}/7 days)`;
       $('claimRecoveryBtn').textContent = 'LOCKED';$('claimRecoveryBtn').disabled = true;
     } else {
-      // 1 week fulfilled, 10% gradual daily claim available
       const dailyPortion = state.lostTokenAmount * 0.10;
       $('recoverySubText').textContent = `Ready: 10% daily claim (~${dailyPortion.toFixed(2)} $FDX)`;
       $('claimRecoveryBtn').textContent = 'CLAIM';$('claimRecoveryBtn').disabled = false;
@@ -973,7 +957,6 @@ function updateUI() {
   updateLuckyBoxesUI();
 }
 
-// NEW: Recovery Ad & Claim Action Handler
 function handleRecoveryClaim() {
   if (state.lostTokenAmount <= 0) return;
   window.isRecoveryAd = true;
@@ -1066,7 +1049,6 @@ function handleMainButton() {
     state.miningEnd = state.miningStart + FOUR_HOURS;
     state.pendingReward = 0;
     
-    // Trigger or track 1-week active streak start if recovery tokens exist
     if (state.lostTokenAmount > 0 && !state.recoveryActiveStart) {
       state.recoveryActiveStart = Date.now();
     }
@@ -1097,7 +1079,6 @@ function requestBooster() {
 function completeRewardedAd() {
   closeModal('adModal');
 
-  // NEW: Handle Recovery Claim Ad completion
   if(window.isRecoveryAd) {
     window.isRecoveryAd = false;
     const claimPortion = state.lostTokenAmount * 0.10;
@@ -1340,24 +1321,18 @@ $('copyReferral').addEventListener('click', async () => {
 
   try {
     const textarea = document.createElement('textarea');
-
     textarea.value = linkText;
     textarea.setAttribute('readonly', '');
     textarea.style.position = 'fixed';
     textarea.style.left = '-9999px';
     textarea.style.top = '0';
     textarea.style.opacity = '0';
-
     document.body.appendChild(textarea);
-
     textarea.focus();
     textarea.select();
     textarea.setSelectionRange(0, textarea.value.length);
-
     const copied = document.execCommand('copy');
-
     document.body.removeChild(textarea);
-
     if(copied) {
       toast('Referral link copied!');
     } else {
