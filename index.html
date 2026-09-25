@@ -38,6 +38,16 @@ a{text-decoration:none;color:inherit}
 .balance{font-size:36px;font-weight:800;margin-top:7px}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
 
+/* NEW: Burning Streak & Recovery Panel Styles */
+.streak-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.streak-box,.recovery-box{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
+.streak-label,.recovery-label{font-size:9px;color:#71869b;text-transform:uppercase;letter-spacing:.5px}
+.streak-value{font-size:20px;font-weight:800;color:var(--danger);margin-top:8px}
+.recovery-value{font-size:16px;font-weight:800;color:var(--cyan);margin-top:8px}
+.recovery-sub{font-size:8px;color:#71869b;margin-top:4px;line-height:1.3}
+.recovery-btn{margin-top:10px;width:100%;border:0;background:#117ed0;color:#fff;padding:8px;border-radius:10px;font-size:9px;font-weight:800}
+.recovery-btn:disabled{opacity:.45;background:#153048;color:#71869b}
+
 .card,.wallet-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:18px}
 .mining-top,.boost-info,.pending-row,.active-referrals{display:flex;align-items:center;justify-content:space-between}
 .mining-left{display:flex;align-items:center;gap:12px}
@@ -214,6 +224,25 @@ a{text-decoration:none;color:inherit}
 <div class="balance-card">
   <div class="balance-label">TOTAL BALANCE</div>
   <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
+</div>
+
+<!-- NEW: Burning Streak & Recovery Section Integration -->
+<div class="streak-recovery-grid">
+  <div class="streak-box">
+    <div>
+      <div class="streak-label">Burning Streak</div>
+      <div class="streak-value" id="inactiveDaysVal">0 Days</div>
+    </div>
+    <div style="font-size:8px;color:#71869b;margin-top:8px">Inactivity period recorded</div>
+  </div>
+  <div class="recovery-box">
+    <div>
+      <div class="recovery-label">Recover $FDX</div>
+      <div class="recovery-value" id="lostTokenVal">0.00 $FDX</div>
+      <div class="recovery-sub" id="recoverySubText">Complete 1 week active to unlock (0/7 days)</div>
+    </div>
+    <button class="recovery-btn" id="claimRecoveryBtn" disabled onclick="handleRecoveryClaim()">CLAIM</button>
+  </div>
 </div>
 
 <div class="section-title">
@@ -739,17 +768,24 @@ const state = {
   lucky2LastReset: 0,
   activeLuckyBox: 1,
   transactions: [],
-  telegramUserId: null
+  telegramUserId: null,
+  
+  // NEW: Burning Streak & Recovery State Fields
+  inactiveDays: 3,          // Example: 3 days inactive recorded
+  lostTokenAmount: 45.00,   // Example: 45.00 $FDX lost due to streak break
+  recoveryActiveStart: null,// Timestamp when user returned and started 1-week streak
+  recoveredClaimedTotal: 0  // Tracks how much has already been claimed from recovery
 };
 
 const FOUR_HOURS = 4*60*60*1000;
+const ONE_WEEK = 7*24*60*60*1000;
 const BOOST_AMOUNT = .5;
 const REFERRAL_AMOUNT = .1;
 const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 12*60*60*1000;
 const MAX_LUCKY_CHANCES = 3;
-const KEY = 'fidexa_final_state_v9';
+const KEY = 'fidexa_final_state_v10';
 
 const $ = id => document.getElementById(id);
 
@@ -872,6 +908,30 @@ function updateUI() {
   $('friendRatePreview').textContent = `${rate.toFixed(1)} $FDX/H`;
   $('pendingReward').textContent = `${state.pendingReward.toFixed(2)} $FDX`;
 
+  // NEW: Update Burning Streak & Recovery UI Fields
+  $('inactiveDaysVal').textContent = `${state.inactiveDays} Days`;
+  $('lostTokenVal').textContent = `${state.lostTokenAmount.toFixed(2)} $FDX`;
+
+  if (state.lostTokenAmount <= 0) {
+    $('recoverySubText').textContent = 'All lost tokens recovered!';
+    $('claimRecoveryBtn').textContent = 'CLAIMED';$('claimRecoveryBtn').disabled = true;
+  } else if (!state.recoveryActiveStart) {
+    $('recoverySubText').textContent = 'Complete 1 week active to unlock (0/7 days)';
+    $('claimRecoveryBtn').textContent = 'CLAIM';$('claimRecoveryBtn').disabled = true;
+  } else {
+    const activeTimeElapsed = Date.now() - state.recoveryActiveStart;
+    if (activeTimeElapsed < ONE_WEEK) {
+      const daysLeft = Math.ceil((ONE_WEEK - activeTimeElapsed) / (24*60*60*1000));
+      $('recoverySubText').textContent = `Active streak running (${7 - daysLeft}/7 days)`;
+      $('claimRecoveryBtn').textContent = 'LOCKED';$('claimRecoveryBtn').disabled = true;
+    } else {
+      // 1 week fulfilled, 10% gradual daily claim available
+      const dailyPortion = state.lostTokenAmount * 0.10;
+      $('recoverySubText').textContent = `Ready: 10% daily claim (~${dailyPortion.toFixed(2)} $FDX)`;
+      $('claimRecoveryBtn').textContent = 'CLAIM';$('claimRecoveryBtn').disabled = false;
+    }
+  }
+
   document.querySelectorAll('#boosterList .booster').forEach((x,i) => {
     x.classList.toggle('used', i < state.boosterEvents.length);
     x.textContent = i < state.boosterEvents.length ? '✓ +0.5' : '+0.5';
@@ -903,7 +963,6 @@ function updateUI() {
     xBtn.disabled = false;
   }
 
-  // Filter out internal app rewards/tasks/milestones from the wallet list count
   const walletOnlyTransactions = (state.transactions || []).filter(t => {
     const l = t.label.toLowerCase();
     return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
@@ -912,6 +971,14 @@ function updateUI() {
   $('walletTxCount').textContent = `${walletOnlyTransactions.length} ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
+}
+
+// NEW: Recovery Ad & Claim Action Handler
+function handleRecoveryClaim() {
+  if (state.lostTokenAmount <= 0) return;
+  window.isRecoveryAd = true;
+  $('adText').textContent = 'Watch the rewarded ad to claim your 10% daily gradual recovery amount!';
+  openModal('adModal');
 }
 
 function handleTelegramTask() {
@@ -998,6 +1065,12 @@ function handleMainButton() {
     state.miningStart = Date.now();
     state.miningEnd = state.miningStart + FOUR_HOURS;
     state.pendingReward = 0;
+    
+    // Trigger or track 1-week active streak start if recovery tokens exist
+    if (state.lostTokenAmount > 0 && !state.recoveryActiveStart) {
+      state.recoveryActiveStart = Date.now();
+    }
+
     save();
     updateUI();
     updateMiningTimer();
@@ -1016,12 +1089,33 @@ function requestBooster() {
     return;
   }
   window.isClaimAd = false;
+  window.isRecoveryAd = false;
   $('adText').textContent = 'Complete the rewarded ad to receive +0.5$FDX/hour.';
   openModal('adModal');
 }
 
 function completeRewardedAd() {
   closeModal('adModal');
+
+  // NEW: Handle Recovery Claim Ad completion
+  if(window.isRecoveryAd) {
+    window.isRecoveryAd = false;
+    const claimPortion = state.lostTokenAmount * 0.10;
+    state.homeBalance += claimPortion;
+    state.lostTokenAmount = Math.max(0, state.lostTokenAmount - claimPortion);
+    state.recoveredClaimedTotal += claimPortion;
+
+    state.transactions.unshift({
+      label: 'Recovery Claim (10% Daily)',
+      amount: claimPortion,
+      time: Date.now()
+    });
+
+    save();
+    updateUI();
+    toast(`Successfully claimed ${claimPortion.toFixed(2)} $FDX recovery reward!`);
+    return;
+  }
 
   if(window.isClaimAd) {
     window.isClaimAd = false;
@@ -1167,7 +1261,6 @@ function checkMilestones() {
 }
 
 function renderTransactions() {
-  // Filter out internal app rewards/tasks/milestones so they stay off the wallet screen
   const walletOnlyTransactions = state.transactions.filter(t => {
     const l = t.label.toLowerCase();
     return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
