@@ -903,7 +903,13 @@ function updateUI() {
     xBtn.disabled = false;
   }
 
-  $('walletTxCount').textContent = `${state.transactions.length} ACTIVITY`;
+  // Filter out internal app rewards/tasks/milestones from the wallet list count
+  const walletOnlyTransactions = (state.transactions || []).filter(t => {
+    const l = t.label.toLowerCase();
+    return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
+  });
+
+  $('walletTxCount').textContent = `${walletOnlyTransactions.length} ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
 }
@@ -1161,7 +1167,13 @@ function checkMilestones() {
 }
 
 function renderTransactions() {
-  const html = state.transactions.length ? state.transactions.slice(0,20).map(t => `
+  // Filter out internal app rewards/tasks/milestones so they stay off the wallet screen
+  const walletOnlyTransactions = state.transactions.filter(t => {
+    const l = t.label.toLowerCase();
+    return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
+  });
+
+  const html = walletOnlyTransactions.length ? walletOnlyTransactions.slice(0,20).map(t => `
     <div class="transaction">
       <div class="tx-icon">${t.amount < 0 ? '↗' : '★'}</div>
       <div class="tx-main">
@@ -1301,7 +1313,6 @@ function telegramProfile() {
     }
 
     if(u.id) {
-      // Updated referral format to open bot chat via ?start= parameter
       $('referralLink').textContent = `https://t.me/FIDEXANetworkBot?start=ref_${u.id}`;
     }
   } catch(e) {}
