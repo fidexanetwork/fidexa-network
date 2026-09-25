@@ -377,7 +377,7 @@ a{text-decoration:none;color:inherit}
 <div class="referral-card">
   <h2>Invite & Earn</h2>
   <p>Invite friends to FIDEXA and grow the network together.</p>
-  <div class="referral-code" id="referralLink">t.me/FIDEXANetworkBot/fidexa?startapp=ref_loading</div>
+  <div class="referral-code" id="referralLink">t.me/FIDEXANetworkBot?start=ref_loading</div>
   <button class="copy-btn" id="copyReferral">COPY INVITE LINK</button>
 </div>
 
@@ -885,7 +885,6 @@ function updateUI() {
     r.querySelector('.reward-value').textContent = claimed ? '✓ CLAIMED' : reached ? 'CLAIM' : `+${n===1?5:n===5?20:n===10?30:n===50?50:100} $FDX`;
   });
 
-  // Task button states
   const tgBtn = $('tgTaskBtn');
   if(state.telegramTaskCompleted) {
     tgBtn.textContent = 'CLAIMED';
@@ -912,7 +911,6 @@ function updateUI() {
 function handleTelegramTask() {
   if(state.telegramTaskCompleted) return;
   window.open('https://t.me/fidexa_Network', '_blank');
-  // Complete and give reward after clicking open
   setTimeout(() => {
     if(!state.telegramTaskCompleted) {
       state.telegramTaskCompleted = true;
@@ -1219,12 +1217,6 @@ async function copyReceiveId() {
 function openMigrationModal() { openModal('migrationModal'); }
 function showTransactionHistory() { renderTransactions(); openModal('historyModal'); }
 
-
-/* =========================================================
-   REFERRAL COPY FIX
-   Only this function was changed.
-   ========================================================= */
-
 $('copyReferral').addEventListener('click', async () => {
   const linkText = $('referralLink').textContent.trim();
 
@@ -1233,7 +1225,6 @@ $('copyReferral').addEventListener('click', async () => {
     return;
   }
 
-  // First try the modern Clipboard API.
   try {
     if(navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(linkText);
@@ -1242,7 +1233,6 @@ $('copyReferral').addEventListener('click', async () => {
     }
   } catch(e) {}
 
-  // Fallback for Telegram WebView / Android.
   try {
     const textarea = document.createElement('textarea');
 
@@ -1272,7 +1262,6 @@ $('copyReferral').addEventListener('click', async () => {
     toast('Please press and hold the link to copy it.');
   }
 });
-
 
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {}
@@ -1312,7 +1301,8 @@ function telegramProfile() {
     }
 
     if(u.id) {
-      $('referralLink').textContent = `https://t.me/FIDEXANetworkBot/fidexa?startapp=ref_${u.id}`;
+      // Updated referral format to open bot chat via ?start= parameter
+      $('referralLink').textContent = `https://t.me/FIDEXANetworkBot?start=ref_${u.id}`;
     }
   } catch(e) {}
 }
