@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,12 +39,15 @@ a{text-decoration:none;color:inherit}
 .balance{font-size:36px;font-weight:800;margin-top:7px}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
 
-/* Burning Streak Panel Styles */
-.streak-panel{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;margin-top:12px;display:flex;flex-direction:column;gap:8px}
-.streak-top{display:flex;justify-content:space-between;align-items:center}
-.streak-label{font-size:9px;color:#71869b;text-transform:uppercase;letter-spacing:.5px}
-.streak-value{font-size:16px;font-weight:800;color:var(--danger)}
-.streak-sub{font-size:9px;color:#71869b;line-height:1.4}
+/* NEW: Burning Streak & Recovery Panel Styles */
+.streak-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.streak-box,.recovery-box{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
+.streak-label,.recovery-label{font-size:9px;color:#71869b;text-transform:uppercase;letter-spacing:.5px}
+.streak-value{font-size:20px;font-weight:800;color:var(--danger);margin-top:8px}
+.recovery-value{font-size:16px;font-weight:800;color:var(--cyan);margin-top:8px}
+.recovery-sub{font-size:8px;color:#71869b;margin-top:4px;line-height:1.3}
+.recovery-btn{margin-top:10px;width:100%;border:0;background:#117ed0;color:#fff;padding:8px;border-radius:10px;font-size:9px;font-weight:800}
+.recovery-btn:disabled{opacity:.45;background:#153048;color:#71869b}
 
 .card,.wallet-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:18px}
 .mining-top,.boost-info,.pending-row,.active-referrals{display:flex;align-items:center;justify-content:space-between}
@@ -223,13 +227,23 @@ a{text-decoration:none;color:inherit}
   <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
 </div>
 
-<!-- Burning Streak Panel Integration -->
-<div class="streak-panel">
-  <div class="streak-top">
-    <div class="streak-label">Burning Streak Status</div>
-    <div class="streak-value" id="streakStatusVal">Active</div>
+<!-- NEW: Burning Streak & Recovery Section Integration -->
+<div class="streak-recovery-grid">
+  <div class="streak-box">
+    <div>
+      <div class="streak-label">Burning Streak</div>
+      <div class="streak-value" id="inactiveDaysVal">0 Days</div>
+    </div>
+    <div style="font-size:8px;color:#71869b;margin-top:8px">Inactivity period recorded</div>
   </div>
-  <div class="streak-sub" id="streakSubText">Mining regularly protects your balance from 10% daily inactivity deductions.</div>
+  <div class="recovery-box">
+    <div>
+      <div class="recovery-label">Recover $FDX</div>
+      <div class="recovery-value" id="lostTokenVal">0.00 $FDX</div>
+      <div class="recovery-sub" id="recoverySubText">Complete 1 week active to unlock (0/7 days)</div>
+    </div>
+    <button class="recovery-btn" id="claimRecoveryBtn" disabled onclick="handleRecoveryClaim()">CLAIM</button>
+  </div>
 </div>
 
 <div class="section-title">
@@ -280,7 +294,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <div class="notice">
-  <strong>Burning Streak Rule:</strong> If you remain inactive for <strong>1 week (7 days)</strong> without starting a mining session, a <strong>10% penalty deduction</strong> will be automatically applied to your Total Balance every day until you return and become active again.
+  <strong>Mining:</strong> Base rate is 1 $FDX/hour. Referral bonuses and rewarded-ad boosters affect the current mining rate.
 </div>
 
 <div class="section-title">
@@ -738,7 +752,7 @@ a{text-decoration:none;color:inherit}
 
 <script>
 const state = {
-  homeBalance: 120.00,      // Starting balance example to demonstrate deductions if inactive
+  homeBalance: 0,
   baseRate: 1,
   boosterEvents: [],
   miningStart: null,
@@ -757,21 +771,22 @@ const state = {
   transactions: [],
   telegramUserId: null,
   
-  // Burning Streak Tracking Fields
-  lastActiveTimestamp: Date.now(),
-  lastDeductionTimestamp: null
+  // NEW: Burning Streak & Recovery State Fields
+  inactiveDays: 3,          // Example: 3 days inactive recorded
+  lostTokenAmount: 45.00,   // Example: 45.00 $FDX lost due to streak break
+  recoveryActiveStart: null,// Timestamp when user returned and started 1-week streak
+  recoveredClaimedTotal: 0  // Tracks how much has already been claimed from recovery
 };
 
 const FOUR_HOURS = 4*60*60*1000;
 const ONE_WEEK = 7*24*60*60*1000;
-const ONE_DAY = 24*60*60*1000;
 const BOOST_AMOUNT = .5;
 const REFERRAL_AMOUNT = .1;
 const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 12*60*60*1000;
 const MAX_LUCKY_CHANCES = 3;
-const KEY = 'fidexa_final_state_v11';
+const KEY = 'fidexa_final_state_v10';
 
 const $ = id => document.getElementById(id);
 
@@ -877,53 +892,9 @@ function sessionRewardAt(endTime) {
   return total;
 }
 
-// Check and apply 10% daily balance deductions if inactive for > 1 week
-function checkBurningStreakDeductions() {
-  const now = Date.now();
-  const inactiveDuration = now - state.lastActiveTimestamp;
-
-  if (inactiveDuration >= ONE_WEEK) {
-    // Determine how many days past the 1-week threshold have passed
-    const timePastThreshold = inactiveDuration - ONE_WEEK;
-    const expectedDeductionsCount = Math.floor(timePastThreshold / ONE_DAY) + 1;
-
-    if (!state.lastDeductionTimestamp) {
-      state.lastDeductionTimestamp = state.lastActiveTimestamp + ONE_WEEK;
-    }
-
-    const timeSinceLastDeduction = now - state.lastDeductionTimestamp;
-    if (timeSinceLastDeduction >= ONE_DAY && state.homeBalance > 0) {
-      const deductionAmount = state.homeBalance * 0.10;
-      state.homeBalance = Math.max(0, state.homeBalance - deductionAmount);
-      state.lastDeductionTimestamp += ONE_DAY;
-
-      state.transactions.unshift({
-        label: 'Burning Streak Penalty (10% Balance Deduction)',
-        amount: -deductionAmount,
-        time: Date.now()
-      });
-      save();
-    }
-  }
-}
-
 function updateUI() {
   cleanBoosterEvents();
   checkLuckyResets();
-  checkBurningStreakDeductions();
-
-  const now = Date.now();
-  const inactiveDuration = now - state.lastActiveTimestamp;
-
-  if (inactiveDuration >= ONE_WEEK) {
-    const daysInactive = Math.floor(inactiveDuration / ONE_DAY);
-    $('streakStatusVal.style') // safety check$('streakStatusVal').textContent = `INACTIVE (${daysInactive} Days)`;
-    $('streakStatusVal').style.color = 'var(--danger)';$('streakSubText').textContent = `Warning: You have been inactive for over 7 days! A 10% daily penalty deduction is active on your balance until you start mining.`;
-  } else {
-    const hoursLeft = Math.ceil((ONE_WEEK - inactiveDuration) / (60*60*1000));
-    $('streakStatusVal').textContent = 'Active Streak Protected';
-    $('streakStatusVal').style.color = 'var(--green)';$('streakSubText').textContent = `Your balance is safe. Next inactivity warning threshold in ~${hoursLeft} hours of zero mining activity.`;
-  }
 
   const rate = rateAt(Date.now());
   $('balanceValue').textContent = state.homeBalance.toFixed(2);$('walletBalance').textContent = "0.00";
@@ -937,6 +908,30 @@ function updateUI() {
   $('referralMiningBonus').textContent = `+${referralBonusAt(Date.now()).toFixed(1)}`;
   $('friendRatePreview').textContent = `${rate.toFixed(1)} $FDX/H`;
   $('pendingReward').textContent = `${state.pendingReward.toFixed(2)} $FDX`;
+
+  // NEW: Update Burning Streak & Recovery UI Fields
+  $('inactiveDaysVal').textContent = `${state.inactiveDays} Days`;
+  $('lostTokenVal').textContent = `${state.lostTokenAmount.toFixed(2)} $FDX`;
+
+  if (state.lostTokenAmount <= 0) {
+    $('recoverySubText').textContent = 'All lost tokens recovered!';
+    $('claimRecoveryBtn').textContent = 'CLAIMED';$('claimRecoveryBtn').disabled = true;
+  } else if (!state.recoveryActiveStart) {
+    $('recoverySubText').textContent = 'Complete 1 week active to unlock (0/7 days)';
+    $('claimRecoveryBtn').textContent = 'CLAIM';$('claimRecoveryBtn').disabled = true;
+  } else {
+    const activeTimeElapsed = Date.now() - state.recoveryActiveStart;
+    if (activeTimeElapsed < ONE_WEEK) {
+      const daysLeft = Math.ceil((ONE_WEEK - activeTimeElapsed) / (24*60*60*1000));
+      $('recoverySubText').textContent = `Active streak running (${7 - daysLeft}/7 days)`;
+      $('claimRecoveryBtn').textContent = 'LOCKED';$('claimRecoveryBtn').disabled = true;
+    } else {
+      // 1 week fulfilled, 10% gradual daily claim available
+      const dailyPortion = state.lostTokenAmount * 0.10;
+      $('recoverySubText').textContent = `Ready: 10% daily claim (~${dailyPortion.toFixed(2)} $FDX)`;
+      $('claimRecoveryBtn').textContent = 'CLAIM';$('claimRecoveryBtn').disabled = false;
+    }
+  }
 
   document.querySelectorAll('#boosterList .booster').forEach((x,i) => {
     x.classList.toggle('used', i < state.boosterEvents.length);
@@ -979,9 +974,16 @@ function updateUI() {
   updateLuckyBoxesUI();
 }
 
+// NEW: Recovery Ad & Claim Action Handler
+function handleRecoveryClaim() {
+  if (state.lostTokenAmount <= 0) return;
+  window.isRecoveryAd = true;
+  $('adText').textContent = 'Watch the rewarded ad to claim your 10% daily gradual recovery amount!';
+  openModal('adModal');
+}
+
 function handleTelegramTask() {
   if(state.telegramTaskCompleted) return;
-  state.lastActiveTimestamp = Date.now(); // Mark user active
   window.open('https://t.me/fidexa_Network', '_blank');
   setTimeout(() => {
     if(!state.telegramTaskCompleted) {
@@ -997,7 +999,6 @@ function handleTelegramTask() {
 
 function handleXTask() {
   if(state.xTaskCompleted) return;
-  state.lastActiveTimestamp = Date.now(); // Mark user active
   window.open('https://x.com/Fidexa_Network', '_blank');
   setTimeout(() => {
     if(!state.xTaskCompleted) {
@@ -1061,17 +1062,20 @@ function updateMiningTimer() {
 }
 
 function handleMainButton() {
-  state.lastActiveTimestamp = Date.now(); // Reset streak inactivity timer upon action
-  state.lastDeductionTimestamp = null;
-
   if(!state.miningStart) {
     state.miningStart = Date.now();
     state.miningEnd = state.miningStart + FOUR_HOURS;
     state.pendingReward = 0;
+    
+    // Trigger or track 1-week active streak start if recovery tokens exist
+    if (state.lostTokenAmount > 0 && !state.recoveryActiveStart) {
+      state.recoveryActiveStart = Date.now();
+    }
+
     save();
     updateUI();
     updateMiningTimer();
-    toast('Mining session started (4 Hours)! Streak refreshed.');
+    toast('Mining session started (4 Hours)!');
   } else if(state.miningEnd && Date.now() >= state.miningEnd) {
     window.isClaimAd = true;
     $('adText').textContent = 'Watch the rewarded ad to claim your accumulated mining rewards to your Total Balance.';
@@ -1085,14 +1089,34 @@ function requestBooster() {
     toast('5 rewarded ads have been used in the last 24 hours.');
     return;
   }
-  state.lastActiveTimestamp = Date.now(); // Mark user active
   window.isClaimAd = false;
+  window.isRecoveryAd = false;
   $('adText').textContent = 'Complete the rewarded ad to receive +0.5$FDX/hour.';
   openModal('adModal');
 }
 
 function completeRewardedAd() {
   closeModal('adModal');
+
+  // NEW: Handle Recovery Claim Ad completion
+  if(window.isRecoveryAd) {
+    window.isRecoveryAd = false;
+    const claimPortion = state.lostTokenAmount * 0.10;
+    state.homeBalance += claimPortion;
+    state.lostTokenAmount = Math.max(0, state.lostTokenAmount - claimPortion);
+    state.recoveredClaimedTotal += claimPortion;
+
+    state.transactions.unshift({
+      label: 'Recovery Claim (10% Daily)',
+      amount: claimPortion,
+      time: Date.now()
+    });
+
+    save();
+    updateUI();
+    toast(`Successfully claimed ${claimPortion.toFixed(2)} $FDX recovery reward!`);
+    return;
+  }
 
   if(window.isClaimAd) {
     window.isClaimAd = false;
@@ -1108,8 +1132,6 @@ function completeRewardedAd() {
     state.pendingReward = 0;
     state.miningStart = null;
     state.miningEnd = null;
-    state.lastActiveTimestamp = Date.now();
-    state.lastDeductionTimestamp = null;
 
     save();
     updateUI();
@@ -1124,7 +1146,6 @@ function completeRewardedAd() {
     return;
   }
   state.boosterEvents.push(Date.now());
-  state.lastActiveTimestamp = Date.now();
   save();
   updateUI();
   toast('+0.5 $FDX/hour booster earned.');
@@ -1188,7 +1209,6 @@ function openLuckyBox(boxNum) {
 function watchLuckyBoxAd() {
   closeModal('luckyModal');
   checkLuckyResets();
-  state.lastActiveTimestamp = Date.now(); // Mark user active
   let reward = 0;
   if(state.activeLuckyBox === 1) {
     if(state.lucky1Chances <= 0) return;
@@ -1208,12 +1228,11 @@ function watchLuckyBoxAd() {
   }
   save();
   updateUI();
-  toast(reward > 0 ? `🎁 Mystery reward unlocked: +${reward} $FDX added!` : 'Better luck next time! (0 $FDX)');
+  toast(reward >  0 ? `🎁 Mystery reward unlocked: +${reward} $FDX added!` : 'Better luck next time! (0 $FDX)');
 }
 
 function simulateReferral() {
   const n = Date.now();
-  state.lastActiveTimestamp = Date.now();
   state.friends.push({ id: 'preview_' + n, active: true, miningStart: n, miningEnd: n + FOUR_HOURS });
   checkMilestones();
   save();
@@ -1226,7 +1245,6 @@ function toggleLastReferralActivity() {
   const f = state.friends[state.friends.length - 1];
   f.active = !f.active;
   f.miningEnd = f.active ? Date.now() + FOUR_HOURS : Date.now();
-  state.lastActiveTimestamp = Date.now();
   save();
   updateUI();
 }
@@ -1415,3 +1433,4 @@ setInterval(() => {
 
 </body>
 </html>
+
