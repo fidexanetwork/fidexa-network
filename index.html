@@ -333,7 +333,6 @@ a{text-decoration:none;color:inherit}
 <section id="tasks" class="page">
 <div class="section-title">
   <h2>Tasks</h2>
-  <span>FIDEXA COMMUNITY</span>
 </div>
 
 <div class="task" id="taskTelegram">
@@ -381,7 +380,6 @@ a{text-decoration:none;color:inherit}
 <section id="friends" class="page">
 <div class="section-title">
   <h2>Friends</h2>
-  <span>REFERRALS</span>
 </div>
 
 <div class="referral-card">
@@ -517,7 +515,6 @@ a{text-decoration:none;color:inherit}
 </section>
 
 <section id="profile" class="page">
-<!-- Profile container box removed completely as requested -->
 
 <div class="menu-group">
   <div class="menu-label">ACCOUNT</div>
@@ -1354,12 +1351,6 @@ function telegramProfile() {
     const u = tg.initDataUnsafe?.user;
     if(!u) return;
     state.telegramUserId = u.id;
-    const ini = ((u.first_name?.[0]||'F') + (u.last_name?.[0]||'')).toUpperCase();
-    $('topAvatar').textContent = ini;
-
-    if(u.photo_url) {
-      $('topAvatar').innerHTML = `<img src="${u.photo_url}" alt="">`;
-    }
 
     if(u.id) {
       $('referralLink').textContent = `https://t.me/FIDEXANetworkBot?start=ref_${u.id}`;
