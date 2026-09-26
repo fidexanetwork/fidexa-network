@@ -35,8 +35,20 @@ button:active{transform:scale(.98)}
 .system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:10px}
 .mining-timer{font-size:34px;font-weight:900;letter-spacing:2px;color:#fff}
 
-/* Start Mining Button */
-.start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3);margin-bottom:20px}
+/* Action Controls Container */
+.action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+
+/* Start / Claim Mining Button */
+.start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
+
+/* Booster Button */
+.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.booster-left{display:flex;align-items:center;gap:10px}
+.booster-icon{font-size:16px}
+.booster-text{text-align:left}
+.booster-title{font-size:12px;font-weight:800;color:var(--yellow);letter-spacing:.5px}
+.booster-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600}
+.booster-badge{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;color:var(--yellow)}
 
 /* Dual Grid Boxes */
 .dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -45,6 +57,18 @@ button:active{transform:scale(.98)}
 .info-box-label{font-size:10px;color:var(--muted);font-weight:700;line-height:1.3;letter-spacing:.5px}
 .info-box-icon{width:28px;height:28px;border-radius:8px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:13px}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
+
+/* Ad Simulation Overlay Modal */
+.ad-modal{position:fixed;inset:0;background:rgba(5,8,12,0.92);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.ad-modal.active{display:flex}
+.ad-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.ad-header{font-size:12px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:12px}
+.ad-screen{background:#111b27;border:1px solid #223247;border-radius:12px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;position:relative}
+.ad-timer-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:var(--yellow)}
+.ad-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:4px}
+.ad-desc{font-size:10px;color:var(--muted)}
+.ad-close-btn{width:100%;background:#0284c7;border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800;opacity:0.5;pointer-events:none;transition:opacity 0.3s}
+.ad-close-btn.ready{opacity:1;pointer-events:auto}
 
 /* Bottom Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100}
@@ -65,7 +89,7 @@ button:active{transform:scale(.98)}
       <div class="balance-label">TOTAL BALANCE</div>
       <div class="balance-row">
         <div class="balance-value" id="balanceDisplay">0.00</div>
-        <div class="balance-token">FDX</div>
+        <div class="balance-token">$FDX</div>
       </div>
       <div class="balance-sub">$USD</div>
     </div>
@@ -73,13 +97,28 @@ button:active{transform:scale(.98)}
     <!-- Circular Timer Node -->
     <div class="mining-node-container">
       <div class="ring-wrapper">
-        <div class="system-status-pill">SYSTEM ACTIVE</div>
-        <div class="mining-timer" id="timerDisplay">03:52:01</div>
+        <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
+        <div class="mining-timer" id="timerDisplay">04:00:00</div>
       </div>
     </div>
 
-    <!-- Start Mining Button -->
-    <button class="start-mining-btn" id="miningToggleBtn" onclick="toggleMining()">MINING ACTIVE</button>
+    <!-- Action Controls (Button + Booster) -->
+    <div class="action-controls">
+      <!-- Start / Claim Mining Button -->
+      <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">MINING ACTIVE</button>
+
+      <!-- Booster Button -->
+      <button class="booster-btn" id="boosterBtn" onclick="watchAdForBoost()">
+        <div class="booster-left">
+          <div class="booster-icon">🚀</div>
+          <div class="booster-text">
+            <div class="booster-title">RATE BOOSTER</div>
+            <div class="booster-sub">+0.5 mining rate instantly</div>
+          </div>
+        </div>
+        <div class="booster-badge" id="boosterChances">5/5 Left</div>
+      </button>
+    </div>
 
     <!-- Dual Metric Cards -->
     <div class="dual-grid">
@@ -95,39 +134,147 @@ button:active{transform:scale(.98)}
           <div class="info-box-label">RECOVERABLE<br>$FDX</div>
           <div class="info-box-icon">💎</div>
         </div>
-        <div class="info-box-value" id="recoverableFdx">0.00</div>
+        <div class="info-box-value" id="recoverableFdx">10.00</div>
       </div>
     </div>
 
   </main>
+
+  <!-- Ad Watch Simulation Modal -->
+  <div class="ad-modal" id="adModal">
+    <div class="ad-box">
+      <div class="ad-header" id="adHeader">SPONSORED ADVERTISEMENT</div>
+      <div class="ad-screen">
+        <div class="ad-timer-badge" id="adTimerBadge">Ad in 5s</div>
+        <div class="ad-title" id="adTitleText">Fidexa Partner Network</div>
+        <div class="ad-desc" id="adDescText">Watch full video to secure your reward</div>
+      </div>
+      <button class="ad-close-btn" id="adCloseBtn" onclick="closeAdModal()">CLAIM REWARD</button>
+    </div>
+  </div>
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
     <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
     <button class="nav-item"><span class="nav-icon">🌐</span>Network</button>
-    <button class="nav-item"><span class="nav-icon">🛡️</span>Profile</button>
+    <button class="nav-item"><span class="nav-icon">🛡️</span>Profile session</button>
   </nav>
 
 </div>
 
 <script>
-let isMining = true;
+// State variables
+let totalBalance = 0.00;
+let recoverableFdx = 10.00; // Reward ready to claim when timer completes
+let miningState = 'ACTIVE'; // 'ACTIVE', 'READY_TO_CLAIM', 'IDLE'
+let boosterChancesLeft = 5;
+let currentMiningRate = 1.0; // Base rate + boosters
+let adInterval = null;
+let activeAdType = ''; // 'booster' or 'claim'
 
-function toggleMining() {
-  const btn = document.getElementById('miningToggleBtn');
-  const pill = document.querySelector('.system-status-pill');
-  
-  if (!isMining) {
-    isMining = true;
-    btn.textContent = "MINING ACTIVE";
-    btn.style.background = "#0284c7";
-    pill.textContent = "SYSTEM ACTIVE";
+// Countdown Timer setup (4 Hours = 14400 seconds)
+let totalSeconds = 5; // Set low (5s) for quick testing of the CLAIM feature, or change to 14400 for 4 hours.
+
+function updateTimerDisplay() {
+  if (miningState === 'ACTIVE') {
+    if (totalSeconds > 0) {
+      totalSeconds--;
+      let h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+      let m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+      let s = (totalSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${h}:${m}:${s}`;
+    } else {
+      // Timer finished -> Switch to CLAIM state
+      miningState = 'READY_TO_CLAIM';
+      document.getElementById('timerDisplay').textContent = "00:00:00";
+      document.getElementById('systemPill').textContent = "SESSION ENDED";
+      document.getElementById('miningToggleBtn').textContent = "CLAIM REWARD";
+      document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#facc15,#f59e0b)";
+      document.getElementById('miningToggleBtn').style.color = "#05080c";
+    }
+  }
+}
+setInterval(updateTimerDisplay, 1000);
+
+// Main Button Handler (Mining Active vs Claiming)
+function handleMiningAction() {
+  if (miningState === 'READY_TO_CLAIM') {
+    triggerAd('claim');
+  } else if (miningState === 'IDLE') {
+    // Start fresh 4-hour cycle
+    totalSeconds = 14400; 
+    miningState = 'ACTIVE';
+    document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
+    document.getElementById('miningToggleBtn').textContent = "MINING ACTIVE";
+    document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
+    document.getElementById('miningToggleBtn').style.color = "#fff";
+  }
+}
+
+// Booster Button Handler
+function watchAdForBoost() {
+  if (boosterChancesLeft > 0) {
+    triggerAd('booster');
   } else {
-    isMining = false;
-    btn.textContent = "START MINING";
-    btn.style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
-    pill.textContent = "SYSTEM READY";
+    alert("No booster chances left for today!");
+  }
+}
+
+// Simulated Ad Flow
+function triggerAd(type) {
+  activeAdType = type;
+  const modal = document.getElementById('adModal');
+  const closeBtn = document.getElementById('adCloseBtn');
+  const timerBadge = document.getElementById('adTimerBadge');
+  
+  modal.classList.add('active');
+  closeBtn.classList.remove('ready');
+  closeBtn.textContent = "PLEASE WAIT...";
+  
+  let adCountdown = 4;
+  timerBadge.textContent = `Ad in ${adCountdown}s`;
+  
+  if (adInterval) clearInterval(adInterval);
+  
+  adInterval = setInterval(() => {
+    adCountdown--;
+    if (adCountdown > 0) {
+      timerBadge.textContent = `Ad in ${adCountdown}s`;
+    } else {
+      timerBadge.textContent = "Ad Finished";
+      clearInterval(adInterval);
+      closeBtn.classList.add('ready');
+      closeBtn.textContent = type === 'claim' ? "CLAIM TO BALANCE ($FDX)" : "COLLECT +0.5 RATE";
+    }
+  }, 1000);
+}
+
+// Close Ad & Apply Rewards
+function closeAdModal() {
+  const modal = document.getElementById('adModal');
+  modal.classList.remove('active');
+  
+  if (activeAdType === 'booster') {
+    boosterChancesLeft--;
+    currentMiningRate += 0.5;
+    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
+    alert(`Success! Mining rate increased by +0.5. Current Rate: ${currentMiningRate}`);
+  } else if (activeAdType === 'claim') {
+    // Add recoverable FDX directly to total balance $FDX
+    totalBalance += recoverableFdx;
+    document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
+    
+    // Reset/Restart mining session loop
+    recoverableFdx = 10.00; // Reset next cycle reward pool or scale up
+    document.getElementById('recoverableFdx').textContent = recoverableFdx.toFixed(2);
+    
+    totalSeconds = 14400; // Reset to 4 hours
+    miningState = 'ACTIVE';
+    document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
+    document.getElementById('miningToggleBtn').textContent = "MINING ACTIVE";
+    document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
+    document.getElementById('miningToggleBtn').style.color = "#fff";
   }
 }
 </script>
