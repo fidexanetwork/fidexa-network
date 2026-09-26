@@ -75,14 +75,15 @@ button:active{transform:scale(.98)}
 .spin-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:20px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
 .spin-close{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--muted);font-size:18px;font-weight:bold}
 .spin-title{font-size:14px;font-weight:800;color:var(--yellow);margin-bottom:14px;letter-spacing:1px}
-.wheel-container{width:240px;height:240px;margin:0 auto 16px;position:relative;border-radius:50%;border:4px solid var(--yellow);box-shadow:0 0 20px rgba(250,204,21,0.2);overflow:hidden;background:#080d14;transition:transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)}
-.wheel-segment{position:absolute;width:50%;height:50%;top:0;left:50%;transform-origin:0% 100%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;border-left:1px solid rgba(255,255,255,0.1)}
-.wheel-pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:16px solid var(--yellow);z-index:10}
+.wheel-container{width:260px;height:260px;margin:0 auto 16px;position:relative;border-radius:50%;border:4px solid var(--yellow);box-shadow:0 0 20px rgba(250,204,21,0.2);overflow:hidden;background:#080d14}
+.wheel-inner{width:100%;height:100%;position:relative;transition:transform 4s cubic-bezier(0.15, 0.85, 0.15, 1)}
+.wheel-segment{position:absolute;width:50%;height:50%;top:0;left:50%;transform-origin:0% 100%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;border-left:1px solid rgba(255,255,255,0.15)}
+.wheel-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:16px solid var(--yellow);z-index:10}
 .spin-action-btn{width:100%;background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:13px;font-weight:900;letter-spacing:1px}
 
-/* Bottom Navigation Bar (Updated Layout: Mining, Tasks, Network, Wallet, Spin, Profile) */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{background:none;border:0;color:var(--muted);font-size:8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
+/* Bottom Navigation Bar (5 items: Mining, Tasks, Wallet, Spin, Profile) */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{background:none;border:0;color:var(--muted);font-size:9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
 .nav-icon{font-size:16px}
 .nav-item.active{color:var(--cyan)}
 </style>
@@ -98,7 +99,7 @@ button:active{transform:scale(.98)}
       <div class="balance-dot"></div>
       <div class="balance-label">TOTAL BALANCE</div>
       <div class="balance-row">
-        <div class="balance-value" id="balanceDisplay">10.00</div>
+        <div class="balance-value" id="balanceDisplay">100.00</div>
         <div class="balance-token">$FDX</div>
       </div>
       <div class="balance-sub">$USD</div>
@@ -108,7 +109,7 @@ button:active{transform:scale(.98)}
     <div class="mining-node-container">
       <div class="ring-wrapper">
         <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
-        <div class="mining-timer" id="timerDisplay">03:40:58</div>
+        <div class="mining-timer" id="timerDisplay">03:37:51</div>
       </div>
     </div>
 
@@ -130,7 +131,7 @@ button:active{transform:scale(.98)}
       </button>
     </div>
 
-    <!-- Dual Metric Cards -->
+    <!-- Dual Metric Cards (Recoverable completely cleared out) -->
     <div class="dual-grid">
       <div class="info-box">
         <div class="info-box-top">
@@ -144,7 +145,7 @@ button:active{transform:scale(.98)}
           <div class="info-box-label">RECOVERABLE<br>$FDX</div>
           <div class="info-box-icon">💎</div>
         </div>
-        <div class="info-box-value" id="recoverableFdx">4.00</div>
+        <div class="info-box-value" id="recoverableFdx">0.00</div>
       </div>
     </div>
 
@@ -170,19 +171,18 @@ button:active{transform:scale(.98)}
       <div class="spin-title">LUCKY $FDX SPIN</div>
       <div class="wheel-container">
         <div class="wheel-pointer"></div>
-        <div id="wheelInner" style="width:100%;height:100%;position:relative;transition:transform 4s cubic-bezier(0.15,0.85,0.15,1);">
-          <!-- 8 Wheel Segments generated or placed here -->
+        <div class="wheel-inner" id="wheelInner">
+          <!-- Wheel Segments populated via JS -->
         </div>
       </div>
       <button class="spin-action-btn" id="spinActionBtn" onclick="spinTheWheel()">SPIN NOW</button>
     </div>
   </div>
 
-  <!-- Bottom Navigation (6 items: Mining, Tasks, Network, Wallet, Spin, Profile) -->
+  <!-- Bottom Navigation (5 items: Mining, Tasks, Wallet, Spin, Profile - Network removed) -->
   <nav class="bottom-nav">
     <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
     <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
-    <button class="nav-item"><span class="nav-icon">🌐</span>Network</button>
     <button class="nav-item"><span class="nav-icon">👛</span>Wallet</button>
     <button class="nav-item" onclick="openSpinModal()"><span class="nav-icon">🎯</span>Spin</button>
     <button class="nav-item"><span class="nav-icon">🛡️</span>Profile</button>
@@ -191,17 +191,17 @@ button:active{transform:scale(.98)}
 </div>
 
 <script>
-// State variables
-let totalBalance = 10.00;
-let recoverableFdx = 4.00; // Based on 1 $FDX per hour over current countdown scale
+// State variables (Mining rate set to 1 $FDX per hour base)
+let totalBalance = 100.00;
+let recoverableFdx = 0.00; // Completely blanked out as requested
 let miningState = 'ACTIVE'; 
 let boosterChancesLeft = 0;
 let currentMiningRate = 1.0; 
 let adInterval = null;
-let activeAdType = ''; // 'booster', 'claim', 'spin'
-let currentSpinReward = 0;
+let activeAdType = ''; 
+let currentSpinReward = '0$FDX';
 
-let totalSeconds = 13258; // matches roughly the 3h 40m remaining display
+let totalSeconds = 13071; // Matches roughly the remaining timer display
 
 function updateTimerDisplay() {
   if (miningState === 'ACTIVE') {
@@ -261,9 +261,9 @@ function triggerAd(type) {
       clearInterval(adInterval);
       closeBtn.classList.add('ready');
       if (type === 'spin') {
-        closeBtn.textContent = `CLAIM ${currentSpinReward} $FDX`;
+        closeBtn.textContent = `WATCH ADS TO CLAIM (${currentSpinReward})`;
       } else if (type === 'claim') {
-        closeBtn.textContent = "CLAIM TO BALANCE ($FDX)";
+        closeBtn.textContent = "CLAIM REWARD TO BALANCE";
       } else {
         closeBtn.textContent = "COLLECT +0.5 RATE";
       }
@@ -281,10 +281,10 @@ function closeAdModal() {
     document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
     alert(`Success! Mining rate increased by +0.5.`);
   } else if (activeAdType === 'claim') {
-    totalBalance += recoverableFdx;
+    // 4 hours at 1 FDX/hr = 4 FDX added directly to balance
+    totalBalance += 4.00;
     document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
-    recoverableFdx = 4.00;
-    document.getElementById('recoverableFdx').textContent = recoverableFdx.toFixed(2);
+    
     totalSeconds = 14400;
     miningState = 'ACTIVE';
     document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
@@ -292,15 +292,17 @@ function closeAdModal() {
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
     document.getElementById('miningToggleBtn').style.color = "#fff";
   } else if (activeAdType === 'spin') {
-    totalBalance += currentSpinReward;
+    // Extract numerical value from string e.g. "15$FDX" -> 15
+    let numericVal = parseFloat(currentSpinReward) || 0;
+    totalBalance += numericVal;
     document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
-    alert(`Successfully claimed ${currentSpinReward} $FDX to your Total Balance!`);
+    alert(`Successfully added ${currentSpinReward} to your Total Balance!`);
   }
 }
 
-// Spin Wheel Logic
-const spinRewards = [1, 20, 10, 5, 15, 25, 35, 40]; // 8 rewards
-const wheelColors = ['#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1'];
+// Spin Wheel Configuration (6 distinct physical slots highlighted clearly: 0$FDX, 1$FDX, 5$FDX, 10$FDX, 15$FDX, 30$FDX)
+const spinRewards = ['0$FDX', '1$FDX', '5$FDX', '10$FDX', '15$FDX', '30$FDX'];
+const wheelColors = ['#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1'];
 
 function buildWheel() {
   const wheelInner = document.getElementById('wheelInner');
@@ -310,9 +312,9 @@ function buildWheel() {
   spinRewards.forEach((reward, index) => {
     const seg = document.createElement('div');
     seg.className = 'wheel-segment';
-    seg.style.transform = `rotate(${index * angleStep}deg) skewY(-45deg)`;
+    seg.style.transform = `rotate(${index * angleStep}deg) skewY(-30deg)`;
     seg.style.backgroundColor = wheelColors[index % wheelColors.length];
-    seg.innerHTML = `<span style="transform: skewY(45deg) rotate(22.5deg); display:inline-block; font-size:11px; font-weight:800;">${reward}$</span>`;
+    seg.innerHTML = `<span style="transform: skewY(30deg) rotate(30deg); display:inline-block; font-size:13px; font-weight:900; color:#facc15; text-shadow:0 1px 2px rgba(0,0,0,0.8);">${reward}</span>`;
     wheelInner.appendChild(seg);
   });
 }
@@ -336,7 +338,6 @@ function spinTheWheel() {
   currentSpinReward = spinRewards[randomIndex];
   
   const angleStep = 360 / spinRewards.length;
-  // Calculate specific target rotation so pointer lands accurately on the chosen segment
   const extraSpins = 5 * 360; 
   const targetAngle = currentRotation + extraSpins + (360 - (randomIndex * angleStep + angleStep / 2));
   currentRotation = targetAngle;
@@ -348,7 +349,7 @@ function spinTheWheel() {
     btn.style.pointerEvents = 'auto';
     btn.textContent = "SPIN NOW";
     closeSpinModal();
-    // Prompt ad watch to claim spin reward
+    // Prompt ad watch to claim the randomized spin reward
     triggerAd('spin');
   }, 4000);
 }
