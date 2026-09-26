@@ -199,16 +199,39 @@ const REFERRAL_AMOUNT = 0.1;
 const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24 * 60 * 60 * 1000;
 
-// Application State
-let totalBalance = 100.00;
-let recoverableFdx = 0.00; 
+// ============================================================
+// FIDEXA MINING — STATE
+// ============================================================
+
+const state = {
+  homeBalance: 100.00,
+  baseRate: 1,
+  boosterEvents: [],
+  miningStart: Date.now(),
+  miningEnd: Date.now() + FOUR_HOURS,
+  pendingReward: 0,
+  friends: [],
+  referralRewards: 0,
+  claimedMilestones: {},
+  telegramTaskCompleted: false,
+  xTaskCompleted: false,
+  lucky1Chances: 5,
+  lucky1LastReset: 0,
+  lucky2Chances: 5,
+  lucky2LastReset: 0,
+  activeLuckyBox: 1,
+  transactions: [],
+  telegramUserId: null,
+  inactiveDays: 3,
+  lostTokenAmount: 45.00,
+  recoveryActiveStart: null,
+  recoveredClaimedTotal: 0
+};
+
 let miningState = 'ACTIVE'; 
-let boosterChancesLeft = BOOSTER_LIMIT;
-let currentMiningRate = 1.0; 
 let adInterval = null;
 let activeAdType = ''; 
 let currentSpinReward = '0$FDX';
-
 let totalSeconds = FOUR_HOURS / 1000;
 
 function updateTimerDisplay() {
@@ -238,7 +261,7 @@ function handleMiningAction() {
 }
 
 function watchAdForBoost() {
-  if (boosterChancesLeft > 0) {
+  if (state.lucky1Chances > 0) {
     triggerAd('booster');
   } else {
     alert("No booster chances left for today!");
@@ -284,26 +307,28 @@ function closeAdModal() {
   modal.classList.remove('active');
   
   if (activeAdType === 'booster') {
-    boosterChancesLeft--;
-    currentMiningRate += BOOST_AMOUNT;
-    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/${BOOSTER_LIMIT} Left`;
+    state.lucky1Chances--;
+    state.baseRate += BOOST_AMOUNT;
+    document.getElementById('boosterChances').textContent = `${state.lucky1Chances}/${BOOSTER_LIMIT} Left`;
     alert(`Success! Mining rate increased by +${BOOST_AMOUNT}.`);
   } else if (activeAdType === 'claim') {
-    // 4 hours at current mining rate (Base 1 FDX/hr) added directly to balance
-    let minedReward = (FOUR_HOURS / 3600000) * currentMiningRate;
-    totalBalance += minedReward;
-    document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
+    let minedReward = (FOUR_HOURS / 3600000) * state.baseRate;
+    state.homeBalance += minedReward;
+    document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
     
     totalSeconds = FOUR_HOURS / 1000;
     miningState = 'ACTIVE';
+    state.miningStart = Date.now();
+    state.miningEnd = Date.now() + FOUR_HOURS;
+    
     document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
     document.getElementById('miningToggleBtn').textContent = "MINING ACTIVE";
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
     document.getElementById('miningToggleBtn').style.color = "#fff";
   } else if (activeAdType === 'spin') {
     let numericVal = parseFloat(currentSpinReward) || 0;
-    totalBalance += numericVal;
-    document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
+    state.homeBalance += numericVal;
+    document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
     alert(`Successfully added ${currentSpinReward} to your Total Balance!`);
   }
 }
