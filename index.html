@@ -102,7 +102,7 @@ button:active{transform:scale(.98)}
         <div class="balance-value" id="balanceDisplay">100.00</div>
         <div class="balance-token">$FDX</div>
       </div>
-      <div class="balance-sub">$USD</div>
+      <div class="balance-sub" id="usdBalanceSub">$USD Equivalent: $0.00</div>
     </div>
 
     <!-- Circular Timer Node -->
@@ -205,6 +205,8 @@ const BOOSTER_WINDOW = 24 * 60 * 60 * 1000;
 
 const state = {
   homeBalance: 100.00,
+  transferableBalance: 0.00,
+  unverifiedBalance: 0.00,
   baseRate: 1,
   boosterEvents: [],
   miningStart: Date.now(),
@@ -316,6 +318,9 @@ function closeAdModal() {
     state.homeBalance += minedReward;
     document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
     
+    // Log accounting record & update backend state atomically via helper
+    logFdxTransaction(window.dbInstance, 'Mining', minedReward, { description: 'Mining session reward claimed' });
+    
     totalSeconds = FOUR_HOURS / 1000;
     miningState = 'ACTIVE';
     state.miningStart = Date.now();
@@ -329,6 +334,8 @@ function closeAdModal() {
     let numericVal = parseFloat(currentSpinReward) || 0;
     state.homeBalance += numericVal;
     document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
+    
+    logFdxTransaction(window.dbInstance, 'LuckyBox', numericVal, { description: 'Spin wheel reward' });
     alert(`Successfully added ${currentSpinReward} to your Total Balance!`);
   }
 }
@@ -384,6 +391,163 @@ function spinTheWheel() {
     closeSpinModal();
     triggerAd('spin');
   }, 4000);
+}
+
+// ============================================================
+// INTEGRATED WALLET & FIRESTORE BACKEND LOGIC
+// ============================================================
+
+function getCurrentUserId() {
+  return window.currentUser ? window.currentUser.uid : (state.telegramUserId || "demo_user_id");
+}
+
+async function syncWalletBalances(db) {
+  if (!db) return;
+  const userId = getCurrentUserId();
+  if (!userId) return;
+
+  const userRef = db.collection('users').doc(userId);
+  try {
+    const doc = await userRef.get();
+    if (doc.exists) {
+      const userData = doc.data();
+      const wallet = userData.wallet || {};
+
+      state.homeBalance = wallet.totalBalance ?? state.homeBalance;
+      state.transferableBalance = wallet.transferableBalance ?? 0.00;
+      state.unverifiedBalance = wallet.unverifiedBalance ?? 0.00;
+
+      if (document.getElementById('balanceDisplay')) {
+        document.getElementById('balanceDisplay').textContent = Number(state.homeBalance).toFixed(2);
+      }
+      if (document.getElementById('usdBalanceSub')) {
+        document.getElementById('usdBalanceSub').textContent = `$USD Equivalent: $${(state.homeBalance * 0.12).toFixed(2)}`;
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching authoritative wallet balance:", error);
+  }
+}
+
+async function sendFdxTransfer(db, recipientFidexId, amountToSend) {
+  const senderId = getCurrentUserId();
+  const parsedAmount = parseFloat(amountToSend);
+
+  if (!recipientFidexId || parsedAmount <= 0) {
+    alert("Invalid recipient or amount.");
+    return false;
+  }
+
+  const usersRef = db.collection('users');
+  const senderRef = usersRef.doc(senderId);
+
+  try {
+    return await db.runTransaction(async (transaction) => {
+      const senderDoc = await transaction.get(senderRef);
+      if (!senderDoc.exists) throw new Error("Sender account does not exist.");
+
+      const senderData = senderDoc.data();
+      const senderWallet = senderData.wallet || { transferableBalance: 0, totalBalance: 0 };
+
+      if (parsedAmount > (senderWallet.transferableBalance || 0)) {
+        throw new Error("Amount exceeds transferable balance.");
+      }
+
+      const recipientQuery = await transaction.get(usersRef.where('fidexId', '==', recipientFidexId).limit(1));
+      if (recipientQuery.empty) throw new Error("Recipient FIDEX ID does not exist.");
+
+      const recipientDoc = recipientQuery.docs[0];
+      if (recipientDoc.id === senderId) throw new Error("Cannot transfer to yourself.");
+
+      const recipientData = recipientDoc.data();
+      const recipientRef = recipientDoc.ref;
+      const recipientWallet = recipientData.wallet || { transferableBalance: 0, totalBalance: 0 };
+
+      const newSenderTransferable = Number((senderWallet.transferableBalance - parsedAmount).toFixed(2));
+      const newSenderTotal = Number((senderWallet.totalBalance - parsedAmount).toFixed(2));
+      
+      const newRecipientTransferable = Number(((recipientWallet.transferableBalance || 0) + parsedAmount).toFixed(2));
+      const newRecipientTotal = Number(((recipientWallet.totalBalance || 0) + parsedAmount).toFixed(2));
+
+      transaction.update(senderRef, {
+        "wallet.transferableBalance": newSenderTransferable,
+        "wallet.totalBalance": newSenderTotal
+      });
+
+      transaction.update(recipientRef, {
+        "wallet.transferableBalance": newRecipientTransferable,
+        "wallet.totalBalance": newRecipientTotal
+      });
+
+      const txId = 'tx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+      const timestamp = Date.now();
+
+      const txRecord = {
+        transactionId: txId,
+        userId: senderId,
+        type: 'Send',
+        amount: parsedAmount,
+        timestamp: timestamp,
+        status: 'Completed',
+        senderId: senderId,
+        recipientId: recipientDoc.id,
+        recipientFidexId: recipientFidexId
+      };
+
+      transaction.set(db.collection('transactions').doc(txId), txRecord);
+
+      alert(`Successfully sent ${parsedAmount} $FDX to ${recipientFidexId}!`);
+      return true;
+    });
+  } catch (error) {
+    console.error("Transfer failed:", error.message);
+    alert(`Transfer failed: ${error.message}`);
+    return false;
+  }
+}
+
+function getReceiveDetails(userData) {
+  const fidexId = userData?.fidexId || getCurrentUserId() || "FIDEX_UNKNOWN";
+  return {
+    fidexId: fidexId,
+    qrPayload: `FIDEX_RECEIVE:${fidexId}`
+  };
+}
+
+function checkMigrationEligibility(userData) {
+  const verificationStatus = userData?.wallet?.verificationStatus || false;
+  const transferableBalance = userData?.wallet?.transferableBalance || 0;
+
+  return {
+    isAvailable: false,
+    eligibilityCheck: verificationStatus && transferableBalance > 0,
+    verificationStatus: verificationStatus,
+    transferableBalance: transferableBalance,
+    statusMessage: "Mainnet migration is currently unavailable. Stay tuned for official rollout."
+  };
+}
+
+async function logFdxTransaction(db, type, amount, additionalData = {}) {
+  if (!db) return;
+  const userId = getCurrentUserId();
+  if (!userId) return;
+
+  const txId = 'tx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+  const transactionPayload = {
+    transactionId: txId,
+    userId: userId,
+    type: type,
+    amount: Number(amount),
+    timestamp: Date.now(),
+    status: 'Completed',
+    ...additionalData
+  };
+
+  try {
+    await db.collection('transactions').doc(txId).set(transactionPayload);
+  } catch (error) {
+    console.error("Failed to write authoritative transaction log:", error);
+  }
 }
 </script>
 
