@@ -31,21 +31,22 @@ button:active{transform:scale(.98)}
 .ring-wrapper::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px dashed rgba(56,189,248,0.4);animation:spin 30s linear infinite}
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-.system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:6px}
+.system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:4px}
 .mining-timer{font-size:34px;font-weight:900;letter-spacing:2px;color:#fff}
-.mining-rate-indicator{font-size:10px;color:var(--muted);font-weight:700;margin-top:6px}
-.mining-rate-indicator span{color:var(--yellow)}
+.mining-rate-indicator{font-size:11px;color:var(--muted);font-weight:700;margin-top:6px}
+.mining-rate-indicator span{color:var(--yellow);font-weight:900}
 
 /* Action Controls Container */
 .action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
 
 /* Booster Button Left-Aligned */
-.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:flex-start;gap:12px;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
 .booster-left{display:flex;align-items:center;gap:10px;text-align:left;}
 .booster-icon{font-size:18px}
 .booster-title{font-size:12px;font-weight:800;color:var(--yellow);letter-spacing:.5px}
 .booster-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600}
+.booster-badge{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;color:var(--yellow)}
 
 .dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .info-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
@@ -107,12 +108,12 @@ button:active{transform:scale(.98)}
       <div class="balance-sub">$USD</div>
     </div>
 
-    <!-- Circular Timer Node -->
+    <!-- Circular Mining Node Section -->
     <div class="mining-node-container">
       <div class="ring-wrapper">
         <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
         <div class="mining-timer" id="timerDisplay">03:37:51</div>
-        <div class="mining-rate-indicator">Base: 1 $FDX/H | Rate: <span id="currentRateDisplay">1.0</span> $FDX/H</div>
+        <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">1.0</span> $FDX/H</div>
       </div>
     </div>
 
@@ -120,15 +121,16 @@ button:active{transform:scale(.98)}
     <div class="action-controls">
       <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">MINING ACTIVE</button>
       
-      <!-- Boost Mining Speed Button (Left Aligned) -->
+      <!-- Boost Mining Speed Button -->
       <button class="booster-btn" id="boosterBtn" onclick="openBoosterPrompt()">
         <div class="booster-left">
           <div class="booster-icon">🚀</div>
           <div>
             <div class="booster-title">Boost mining speed</div>
-            <div class="booster-sub">Increase rate by +0.1 $FDX/H instantly</div>
+            <div class="booster-sub">Increase rate by +0.5 $FDX/H</div>
           </div>
         </div>
+        <div class="booster-badge" id="boosterChances">5/5 Left</div>
       </button>
     </div>
 
@@ -193,6 +195,7 @@ button:active{transform:scale(.98)}
     <div class="spin-box">
       <button class="spin-close" onclick="closeSpinModal()">×</button>
       <div class="spin-title">LUCKY $FDX SPIN</div>
+      <div style="font-size: 10px; color: var(--yellow); margin-bottom: 8px;" id="spinChancesText">5 chances left</div>
       <div class="wheel-container">
         <div class="wheel-pointer"></div>
         <div class="wheel-inner" id="wheelInner"></div>
@@ -236,7 +239,9 @@ function enforceAccessControl() {
 // --- APP CORE VARIABLES ---
 let totalBalance = 100.00;
 let miningState = 'ACTIVE'; 
-let currentMiningRate = 1.0; // Normal starting rate: 1 $FDX/H
+let currentMiningRate = 1.0; // Base rate 1 $FDX/H
+let boosterChancesLeft = 5;
+let spinChancesLeft = 5;
 let adInterval = null;
 let activeAdType = ''; 
 let currentSpinReward = '0$FDX';
@@ -270,9 +275,13 @@ function handleMiningAction() {
   }
 }
 
-// --- BOOSTER CONTROLS (LEFT SIDED & PROMPT FLOW) ---
+// --- BOOSTER CONTROLS (5 CHANCES / 4H RESET) ---
 function openBoosterPrompt() {
   if (!enforceAccessControl()) return;
+  if (boosterChancesLeft <= 0) {
+    alert("No booster chances left! Please wait for the 4-hour reset cycle.");
+    return;
+  }
   document.getElementById('boosterPromptModal').classList.add('active');
 }
 
@@ -285,6 +294,7 @@ function confirmWatchBoosterAd() {
   triggerAd('booster');
 }
 
+// --- AD SIMULATION ENGINE ---
 function triggerAd(type) {
   activeAdType = type;
   const modal = document.getElementById('adModal');
@@ -309,11 +319,11 @@ function triggerAd(type) {
       clearInterval(adInterval);
       closeBtn.classList.add('ready');
       if (type === 'spin') {
-        closeBtn.textContent = `CLAIM SPIN REWARD (${currentSpinReward})`;
+        closeBtn.textContent = `CLAIM REWARD (${currentSpinReward})`;
       } else if (type === 'claim') {
         closeBtn.textContent = "CLAIM REWARD TO BALANCE";
       } else {
-        closeBtn.textContent = "COLLECT +0.1 SPEED BOOST";
+        closeBtn.textContent = "COLLECT +0.5 SPEED BOOST";
       }
     }
   }, 1000);
@@ -324,9 +334,21 @@ function closeAdModal() {
   modal.classList.remove('active');
   
   if (activeAdType === 'booster') {
-    currentMiningRate = parseFloat((currentMiningRate + 0.1).toFixed(1));
+    boosterChancesLeft--;
+    currentMiningRate = parseFloat((currentMiningRate + 0.5).toFixed(1));
     document.getElementById('currentRateDisplay').textContent = currentMiningRate.toFixed(1);
-    alert(`Success! Mining rate increased by +0.1. Current rate: ${currentMiningRate.toFixed(1)} $FDX/H`);
+    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
+    
+    if (boosterChancesLeft <= 0) {
+      document.getElementById('boosterBtn').style.opacity = '0.5';
+      // Simulate 4 hour reset timer (14400 seconds)
+      setTimeout(() => {
+        boosterChancesLeft = 5;
+        document.getElementById('boosterChances').textContent = `5/5 Left`;
+        document.getElementById('boosterBtn').style.opacity = '1';
+      }, 14400 * 1000);
+    }
+    alert(`Success! Mining speed increased to ${currentMiningRate.toFixed(1)} $FDX/H`);
   } else if (activeAdType === 'claim') {
     totalBalance += 4.00;
     document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
@@ -344,7 +366,7 @@ function closeAdModal() {
   }
 }
 
-// --- SPIN WHEEL CONFIGURATION & FIX ---
+// --- SPIN WHEEL CONFIGURATION (5 CHANCES / 4H RESET) ---
 const spinRewards = ['0$FDX', '1$FDX', '5$FDX', '10$FDX', '15$FDX', '30$FDX'];
 const wheelColors = ['#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1'];
 
@@ -365,7 +387,12 @@ function buildWheel() {
 
 function openSpinModal() {
   if (!enforceAccessControl()) return;
+  if (spinChancesLeft <= 0) {
+    alert("No spin chances left! Please wait for the 4-hour reset cycle.");
+    return;
+  }
   document.getElementById('spinModal').classList.add('active');
+  document.getElementById('spinChancesText').textContent = `${spinChancesLeft} chances left`;
   buildWheel();
 }
 
@@ -390,12 +417,27 @@ function spinTheWheel() {
   const wheelInner = document.getElementById('wheelInner');
   wheelInner.style.transform = `rotate(${currentRotation}deg)`;
   
-  // FIX: Wait for wheel animation to finish entirely (4s), show result, and only then trigger ad without kicking out prematurely
+  // Wait for wheel animation completely, then close wheel and trigger ad safely
   setTimeout(() => {
     btn.style.pointerEvents = 'auto';
     btn.textContent = "SPIN NOW";
-    closeSpinModal(); // Close spin wheel modal first
-    triggerAd('spin'); // Open ad modal afterwards to claim reward safely
+    
+    spinChancesLeft--;
+    document.getElementById('spinChancesText').textContent = `${spinChancesLeft} chances left`;
+    
+    if (spinChancesLeft <= 0) {
+      document.getElementById('spinActionBtn').style.opacity = '0.5';
+      document.getElementById('spinActionBtn').style.pointerEvents = 'none';
+      // Simulate 4 hour reset timer
+      setTimeout(() => {
+        spinChancesLeft = 5;
+        document.getElementById('spinActionBtn').style.opacity = '1';
+        document.getElementById('spinActionBtn').style.pointerEvents = 'auto';
+      }, 14400 * 1000);
+    }
+    
+    closeSpinModal(); 
+    triggerAd('spin'); 
   }, 4000);
 }
 
