@@ -13,12 +13,12 @@ body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highli
 button{font:inherit;cursor:pointer}
 button:active{transform:scale(.98)}
 
-.app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px;position:relative}
+.app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:95px;position:relative}
 
 /* Full-Screen Page Views (True A-Z Layers) */
-.page-view{display:none;padding:20px;min-height:calc(100vh - 88px);animation:fadeIn .2s ease-in-out}
+.page-view{display:none;padding:24px 20px;min-height:calc(100vh - 95px);animation:fadeIn .2s ease-in-out}
 .page-view.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* Balance Card (Mining) */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
@@ -29,27 +29,52 @@ button:active{transform:scale(.98)}
 .balance-sub{font-size:11px;color:var(--muted);margin-top:4px;font-weight:700;letter-spacing:.5px}
 .balance-dot{position:absolute;top:18px;right:18px;width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px var(--cyan)}
 
-/* Massive Crypto-Wallet Hero Balance Card */
-.crypto-wallet-hero{background:linear-gradient(145deg,#111c2e,#070d16);border:2px solid var(--cyan);border-radius:22px;padding:26px 20px;text-align:center;box-shadow:0 8px 30px rgba(56,189,248,0.15);margin-bottom:20px;position:relative}
-.crypto-wallet-hero::before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:120px;height:3px;background:var(--cyan);border-radius:2px}
-.crypto-hero-label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-.crypto-hero-value-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
-.crypto-hero-value{font-size:38px;font-weight:900;color:#fff;letter-spacing:-0.5px}
-.crypto-hero-token{font-size:22px;font-weight:900;color:var(--yellow)}
-.crypto-hero-sub{font-size:12px;color:var(--cyan);margin-top:6px;font-weight:700}
+/* ==========================================================
+   WALLET SECTION: MASSIVE & FULL LAYER CARD STYLING
+   ================================================---------- */
+.crypto-wallet-hero{background:linear-gradient(145deg,#0f1a2e,#070d16);border:2px solid var(--cyan);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 12px 35px rgba(56,189,248,0.2);margin-bottom:24px;position:relative}
+.crypto-wallet-hero::before{content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);width:140px;height:4px;background:var(--cyan);border-radius:2px}
+.crypto-hero-label{font-size:12px;color:var(--muted);font-weight:900;letter-spacing:1.8px;text-transform:uppercase}
+.crypto-hero-value-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px}
+.crypto-hero-value{font-size:42px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.crypto-hero-token{font-size:24px;font-weight:900;color:var(--yellow)}
+.crypto-hero-sub{font-size:13px;color:var(--cyan);margin-top:8px;font-weight:800}
 
-/* Big Full Balance Layer Cards (Transferable & Unverified) */
-.wallet-huge-stack{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
-.wallet-huge-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-.wallet-huge-lbl{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.8px;margin-bottom:8px}
+/* Fully Expanded Transferable & Unverified Balance Layers */
+.wallet-huge-stack{display:flex;flex-direction:column;gap:18px;margin-bottom:24px}
+.wallet-huge-card{background:linear-gradient(145deg,#0c141f,#070b12);border:1px solid #22324a;border-radius:22px;padding:26px 24px;box-shadow:0 8px 30px rgba(0,0,0,0.4);position:relative;overflow:hidden}
+.wallet-huge-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.wallet-huge-lbl{font-size:12px;color:var(--muted);font-weight:900;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase}
 .wallet-huge-val-row{display:flex;align-items:baseline;justify-content:space-between}
-.wallet-huge-value{font-size:26px;font-weight:900;color:#fff}
-.wallet-huge-unit{font-size:16px;font-weight:800;color:var(--yellow)}
+.wallet-huge-value{font-size:34px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.wallet-huge-unit{font-size:18px;font-weight:900;color:var(--yellow)}
 
 /* Wallet Action Buttons */
-.wallet-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
-.wallet-btn-send{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;color:var(--cyan);font-size:14px;font-weight:800;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.wallet-btn-receive{background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:16px;padding:16px;color:#fff;font-size:14px;font-weight:800;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
+.wallet-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.wallet-btn-send{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;color:var(--cyan);font-size:15px;font-weight:900;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+.wallet-btn-receive{background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:18px;padding:18px;color:#fff;font-size:15px;font-weight:900;box-shadow:0 6px 25px rgba(56,189,248,0.35)}
+
+
+/* ==========================================================
+   FRIENDS SECTION: MASSIVE & FULL LAYER CARD STYLING
+   ================================================---------- */
+.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.friend-stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:20px;padding:20px 10px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+.friend-stat-lbl{font-size:12px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+.friend-stat-val{font-size:26px;font-weight:900;color:#fff;margin-top:8px}
+
+.friends-scroll-area{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.friend-row-item{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:20px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
+.friend-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:.4px}
+.friend-status-tag{font-size:13px;font-weight:900;padding:8px 16px;border-radius:10px}
+.status-active{background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4)}
+.status-inactive{background:rgba(136,153,166,0.15);color:var(--muted);border:1px solid rgba(136,153,166,0.3)}
+
+.milestones-title{font-size:14px;font-weight:900;color:var(--yellow);margin-bottom:14px;letter-spacing:.8px;text-transform:uppercase}
+.milestones-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.milestone-item{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:18px;padding:16px 20px;font-size:14px;font-weight:800}
+.milestone-reward{color:var(--yellow);font-weight:900;font-size:16px}
+
 
 /* Circular Mining Node Section */
 .mining-node-container{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:15px 0 20px}
@@ -81,28 +106,10 @@ button:active{transform:scale(.98)}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
 
 /* Large Readable Layer Headers */
-.full-page-header{font-size:20px;font-weight:900;color:var(--cyan);letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-.full-page-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.4;font-weight:600}
+.full-page-header{font-size:22px;font-weight:900;color:var(--cyan);letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.full-page-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5;font-weight:700}
 
-/* Friends Page Big Expanded UI Cards */
-.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
-.friend-stat-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px 8px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.friend-stat-lbl{font-size:11px;color:var(--muted);font-weight:800}
-.friend-stat-val{font-size:22px;font-weight:900;color:#fff;margin-top:6px}
-
-.friends-scroll-area{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
-.friend-row-item{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.friend-name{font-size:15px;font-weight:900;color:#fff;letter-spacing:.3px}
-.friend-status-tag{font-size:12px;font-weight:800;padding:6px 14px;border-radius:8px}
-.status-active{background:rgba(56,189,248,0.18);color:var(--cyan);border:1px solid rgba(56,189,248,0.3)}
-.status-inactive{background:rgba(136,153,166,0.15);color:var(--muted);border:1px solid rgba(136,153,166,0.3)}
-
-.milestones-title{font-size:13px;font-weight:900;color:var(--yellow);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
-.milestones-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
-.milestone-item{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 18px;font-size:13px;font-weight:700}
-.milestone-reward{color:var(--yellow);font-weight:900;font-size:14px}
-
-.full-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:16px;padding:18px;color:#fff;font-size:15px;font-weight:900;box-shadow:0 4px 20px rgba(56,189,248,0.3);letter-spacing:.5px}
+.full-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:18px;padding:20px;color:#fff;font-size:16px;font-weight:900;box-shadow:0 6px 25px rgba(56,189,248,0.35);letter-spacing:.8px}
 
 /* Modal Overlays */
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,0.95);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
@@ -120,13 +127,13 @@ button:active{transform:scale(.98)}
 .prompt-title{font-size:14px;font-weight:800;color:var(--yellow);margin-bottom:12px;letter-spacing:.5px}
 .prompt-desc{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.4}
 .prompt-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--muted);font-size:12px;font-weight:800}
+.prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:#var(--muted);font-size:12px;font-weight:800}
 .prompt-btn-confirm{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:12px;font-weight:900}
 
 /* Bottom Navigation Bar */
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{background:none;border:0;color:var(--muted);font-size:9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
-.nav-icon{font-size:16px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700}
+.nav-icon{font-size:18px}
 .nav-item.active{color:var(--cyan)}
 </style>
 </head>
@@ -202,21 +209,21 @@ button:active{transform:scale(.98)}
       <div class="friend-row-item">
         <div>
           <div class="friend-name">Join Telegram Channel</div>
-          <div style="font-size:12px;color:var(--yellow);margin-top:4px;font-weight:800;">+10.00 $FDX</div>
+          <div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">+10.00 $FDX</div>
         </div>
         <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
       </div>
       <div class="friend-row-item">
         <div>
           <div class="friend-name">Follow Official X Handle</div>
-          <div style="font-size:12px;color:var(--yellow);margin-top:4px;font-weight:800;">+15.00 $FDX</div>
+          <div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">+15.00 $FDX</div>
         </div>
         <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
       </div>
     </div>
   </main>
 
-  <!-- ================= 3. FRIENDS PAGE (BIG EXPANDED A-Z LAYER) ================= -->
+  <!-- ================= 3. FRIENDS PAGE (MASSIVE EXPANDED A-Z LAYER) ================= -->
   <main class="page-view" id="page-friends">
     <div class="full-page-header">👥 REFERRAL NETWORK</div>
     <div class="full-page-sub">Invite friends, track their active mining status, and unlock full milestone rewards from top to bottom.</div>
@@ -236,7 +243,7 @@ button:active{transform:scale(.98)}
       </div>
     </div>
 
-    <div style="font-size: 13px; font-weight: 900; color: var(--cyan); margin-bottom: 10px; letter-spacing:.5px;">YOUR INVITED FRIENDS</div>
+    <div style="font-size: 14px; font-weight: 900; color: var(--cyan); margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase;">YOUR INVITED FRIENDS</div>
     <div class="friends-scroll-area" id="friendsListContainer">
       <div class="friend-row-item">
         <div class="friend-name">@alex_crypto99</div>
@@ -265,11 +272,11 @@ button:active{transform:scale(.98)}
     <button class="full-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
   </main>
 
-  <!-- ================= 4. WALLET PAGE (BIG EXPANDED A-Z LAYER) ================= -->
+  <!-- ================= 4. WALLET PAGE (MASSIVE EXPANDED A-Z LAYER) ================= -->
   <main class="page-view" id="page-wallet">
     <!-- Massive Crypto Wallet Total Balance Header -->
     <div class="crypto-wallet-hero">
-      <div class="crypto-hero-label">TOTAL BALANCE $FDX</div>
+      <div class="crypto-hero-label">TOTAL WALLET BALANCE</div>
       <div class="crypto-hero-value-row">
         <div class="crypto-hero-value" id="walletTotalDisplay">1,000,000.00</div>
         <div class="crypto-hero-token">$FDX</div>
@@ -277,7 +284,7 @@ button:active{transform:scale(.98)}
       <div class="crypto-hero-sub">Main Net Full Asset Valuation</div>
     </div>
 
-    <!-- Big Readable Balance Layers Stack -->
+    <!-- Fully Expanded Transferable & Unverified Balance Layers -->
     <div class="wallet-huge-stack">
       <div class="wallet-huge-card">
         <div class="wallet-huge-lbl">TRANSFERABLE BALANCE</div>
@@ -302,21 +309,21 @@ button:active{transform:scale(.98)}
       <button class="wallet-btn-receive" onclick="alert('Receive address copied!')">RECEIVE</button>
     </div>
 
-    <div style="font-size: 13px; font-weight: 900; color: var(--muted); margin-bottom: 10px; letter-spacing: .5px;">RECENT TRANSACTIONS</div>
+    <div style="font-size: 14px; font-weight: 900; color: var(--muted); margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase;">RECENT TRANSACTIONS</div>
     <div class="friends-scroll-area">
       <div class="friend-row-item">
         <div>
-          <div class="friend-name" style="font-size:13px;">Mining Reward Claim</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-weight:700;">Today, 10:45 AM</div>
+          <div class="friend-name" style="font-size:15px;">Mining Reward Claim</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:700;">Today, 10:45 AM</div>
         </div>
-        <div style="font-size:13px;font-weight:900;color:var(--yellow);">+4.00 $FDX</div>
+        <div style="font-size:15px;font-weight:900;color:var(--yellow);">+4.00 $FDX</div>
       </div>
       <div class="friend-row-item">
         <div>
-          <div class="friend-name" style="font-size:13px;">Referral Bonus</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-weight:700;">Yesterday</div>
+          <div class="friend-name" style="font-size:15px;">Referral Bonus</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:700;">Yesterday</div>
         </div>
-        <div style="font-size:13px;font-weight:900;color:var(--yellow);">+5.00 $FDX</div>
+        <div style="font-size:15px;font-weight:900;color:var(--yellow);">+5.00 $FDX</div>
       </div>
     </div>
   </main>
@@ -328,7 +335,7 @@ button:active{transform:scale(.98)}
     <div class="friends-scroll-area">
       <div class="friend-row-item">
         <div class="friend-name">Telegram ID</div>
-        <div style="font-size:13px;color:var(--cyan);font-weight:800;" id="profileUserId">6771764389</div>
+        <div style="font-size:14px;color:var(--cyan);font-weight:900;" id="profileUserId">6771764389</div>
       </div>
       <div class="friend-row-item">
         <div class="friend-name">KYC Status</div>
@@ -336,7 +343,7 @@ button:active{transform:scale(.98)}
       </div>
       <div class="friend-row-item">
         <div class="friend-name">App Version</div>
-        <div style="font-size:13px;color:var(--muted);font-weight:700;">v2.4.0 Live</div>
+        <div style="font-size:14px;color:var(--muted);font-weight:800;">v2.4.0 Live</div>
       </div>
     </div>
   </main>
@@ -609,7 +616,7 @@ function closeAdModal() {
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
     document.getElementById('miningToggleBtn').style.border = "0";
     document.getElementById('miningToggleBtn').style.color = "#fff";
-    document.getElementById('miningToggleBtn')./style.pointerEvents = "auto";
+    document.getElementById('miningToggleBtn').style.pointerEvents = "auto";
   }
 }
 
