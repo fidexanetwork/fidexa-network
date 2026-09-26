@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#07111f">
 <title>FIDEXA NETWORK</title>
+<!-- QRCode.js Library CDN for real verified QR codes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#07111f;--panel:#0b192a;--border:#19334e;--text:#fff;--muted:#71869b;--cyan:#55c4ff;--blue:#1185e5;--green:#24c987;--danger:#ef6b73}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -33,6 +35,7 @@ a{text-decoration:none;color:inherit}
 .balance-label,.wallet-label{font-size:11px;color:#7f98b4}
 .balance{font-size:36px;font-weight:800;margin-top:7px}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
+.usd-equiv{font-size:13px;color:#7f98b4;margin-top:4px;font-weight:600}
 
 .streak-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .streak-box,.recovery-box{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
@@ -203,7 +206,8 @@ a{text-decoration:none;color:inherit}
 .receive-tab-btn.active{background:#117ed0;border-color:#117ed0;color:#fff}
 .receive-pane{display:none}
 .receive-pane.active{display:block}
-.qr-container{background:#fff;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px}
+.qr-container{background:#fff;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px;min-height:172px}
+.qr-container canvas, .qr-container img {display:block;margin:auto}
 </style>
 </head>
 
@@ -222,6 +226,7 @@ a{text-decoration:none;color:inherit}
 <div class="balance-card">
   <div class="balance-label">TOTAL BALANCE</div>
   <div class="balance"><span id="balanceValue">0.00</span> <span>$FDX</span></div>
+  <div class="usd-equiv" id="homeUsdEquiv">= $0.00 USD</div>
 </div>
 
 <div class="streak-recovery-grid">
@@ -500,6 +505,7 @@ a{text-decoration:none;color:inherit}
     <span id="walletBalance">0.00</span>
     <span>$FDX</span>
   </div>
+  <div class="usd-equiv" id="walletUsdEquiv">= $0.00 USD</div>
 </div>
 
 <div class="pi-balance-grid">
@@ -688,27 +694,8 @@ a{text-decoration:none;color:inherit}
   <button class="primary" onclick="copyReceiveId()">COPY FIDEX ID</button>
 </div>
 <div class="receive-pane" id="paneQr">
-  <div class="qr-container">
-    <svg width="140" height="140" viewBox="0 0 100 100" fill="#07111f">
-      <rect width="100" height="100" fill="#fff"/>
-      <rect x="10" y="10" width="30" height="30" fill="#07111f"/>
-      <rect x="15" y="15" width="20" height="20" fill="#fff"/>
-      <rect x="20" y="20" width="10" height="10" fill="#07111f"/>
-      <rect x="60" y="10" width="30" height="30" fill="#07111f"/>
-      <rect x="65" y="15" width="20" height="20" fill="#fff"/>
-      <rect x="70" y="20" width="10" height="10" fill="#07111f"/>
-      <rect x="10" y="60" width="30" height="30" fill="#07111f"/>
-      <rect x="15" y="65" width="20" height="20" fill="#fff"/>
-      <rect x="20" y="70" width="10" height="10" fill="#07111f"/>
-      <rect x="45" y="45" width="10" height="10" fill="#07111f"/>
-      <rect x="60" y="60" width="12" height="12" fill="#07111f"/>
-      <rect x="78" y="78" width="12" height="12" fill="#07111f"/>
-      <rect x="55" y="80" width="10" height="10" fill="#07111f"/>
-      <rect x="80" y="55" width="10" height="10" fill="#07111f"/>
-      <rect x="45" y="70" width="10" height="15" fill="#07111f"/>
-    </svg>
-  </div>
-  <div class="notice" style="text-align:center;margin-top:0">Scan this QR code to receive $FDX directly.</div>
+  <div class="qr-container" id="qrcode"></div>
+  <div class="notice" style="text-align:center;margin-top:0">Scan this verified QR code to receive $FDX directly.</div>
 </div>
 <button class="secondary" onclick="closeModal('receiveModal')" style="margin-top:12px">CLOSE</button>
 </div>
@@ -767,6 +754,8 @@ const state = {
   recoveredClaimedTotal: 0
 };
 
+const FDX_TO_USD_RATE = 0.00; // Configurable exchange rate value if needed later
+
 const FOUR_HOURS = 4*60*60*1000;
 const ONE_WEEK = 7*24*60*60*1000;
 const BOOST_AMOUNT = .5;
@@ -775,7 +764,7 @@ const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 4*60*60*1000;
 const MAX_LUCKY_CHANCES = 5;
-const KEY = 'fidexa_final_state_v12';
+const KEY = 'fidexa_final_state_v13';
 
 const $ = id => document.getElementById(id);
 
@@ -886,7 +875,14 @@ function updateUI() {
   checkLuckyResets();
 
   const rate = rateAt(Date.now());
-  $('balanceValue').textContent = state.homeBalance.toFixed(2);$('walletBalance').textContent = "0.00";
+  const usdValue = (state.homeBalance * FDX_TO_USD_RATE).toFixed(2);
+
+  // Update Home Balance & USD
+  $('balanceValue').textContent = state.homeBalance.toFixed(2);$('homeUsdEquiv').textContent = `= $${usdValue} USD`;
+
+  // Update Wallet Balance & USD
+  $('walletBalance').textContent = state.homeBalance.toFixed(2);$('walletUsdEquiv').textContent = `= $${usdValue} USD`;
+
   $('transferableBalance').textContent = "0.00";
   $('unverifiedBalance').textContent = "0.00";
   $('rateValue').textContent = rate.toFixed(1);
@@ -1299,9 +1295,23 @@ function sendFDX() {
 
 function ownID() { return state.telegramUserId ? 'FDX-' + state.telegramUserId : 'FDX-PREVIEW-USER'; }
 
+let qrInstance = null;
 function openReceiveModal() {
   $('receiveIdBox').textContent = 'FIDEX ID: ' + ownID();
   switchReceiveTab('id');
+  
+  // Generate verified QR code dynamically
+  const qrContainer = $('qrcode');
+  qrContainer.innerHTML = '';
+  qrInstance = new QRCode(qrContainer, {
+    text: ownID(),
+    width: 140,
+    height: 140,
+    colorDark: "#07111f",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
   openModal('receiveModal');
 }
 
