@@ -81,7 +81,7 @@ button:active{transform:scale(.98)}
 .wheel-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:16px solid var(--yellow);z-index:10}
 .spin-action-btn{width:100%;background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:13px;font-weight:900;letter-spacing:1px}
 
-/* Bottom Navigation Bar (5 items: Mining, Tasks, Wallet, Spin, Profile) */
+/* Bottom Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
 .nav-item{background:none;border:0;color:var(--muted);font-size:9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
 .nav-icon{font-size:16px}
@@ -109,7 +109,7 @@ button:active{transform:scale(.98)}
     <div class="mining-node-container">
       <div class="ring-wrapper">
         <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
-        <div class="mining-timer" id="timerDisplay">03:37:51</div>
+        <div class="mining-timer" id="timerDisplay">04:00:00</div>
       </div>
     </div>
 
@@ -127,11 +127,11 @@ button:active{transform:scale(.98)}
             <div class="booster-sub">+0.5 mining rate instantly</div>
           </div>
         </div>
-        <div class="booster-badge" id="boosterChances">0/5 Left</div>
+        <div class="booster-badge" id="boosterChances">5/5 Left</div>
       </button>
     </div>
 
-    <!-- Dual Metric Cards (Recoverable completely cleared out) -->
+    <!-- Dual Metric Cards -->
     <div class="dual-grid">
       <div class="info-box">
         <div class="info-box-top">
@@ -171,15 +171,13 @@ button:active{transform:scale(.98)}
       <div class="spin-title">LUCKY $FDX SPIN</div>
       <div class="wheel-container">
         <div class="wheel-pointer"></div>
-        <div class="wheel-inner" id="wheelInner">
-          <!-- Wheel Segments populated via JS -->
-        </div>
+        <div class="wheel-inner" id="wheelInner"></div>
       </div>
       <button class="spin-action-btn" id="spinActionBtn" onclick="spinTheWheel()">SPIN NOW</button>
     </div>
   </div>
 
-  <!-- Bottom Navigation (5 items: Mining, Tasks, Wallet, Spin, Profile - Network removed) -->
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
     <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
@@ -191,17 +189,27 @@ button:active{transform:scale(.98)}
 </div>
 
 <script>
-// State variables (Mining rate set to 1 $FDX per hour base)
+// ============================================================
+// FIDEXA MINING — CORE CONSTANTS
+// ============================================================
+
+const FOUR_HOURS = 4 * 60 * 60 * 1000;
+const BOOST_AMOUNT = 0.5;
+const REFERRAL_AMOUNT = 0.1;
+const BOOSTER_LIMIT = 5;
+const BOOSTER_WINDOW = 24 * 60 * 60 * 1000;
+
+// Application State
 let totalBalance = 100.00;
-let recoverableFdx = 0.00; // Completely blanked out as requested
+let recoverableFdx = 0.00; 
 let miningState = 'ACTIVE'; 
-let boosterChancesLeft = 0;
+let boosterChancesLeft = BOOSTER_LIMIT;
 let currentMiningRate = 1.0; 
 let adInterval = null;
 let activeAdType = ''; 
 let currentSpinReward = '0$FDX';
 
-let totalSeconds = 13071; // Matches roughly the remaining timer display
+let totalSeconds = FOUR_HOURS / 1000;
 
 function updateTimerDisplay() {
   if (miningState === 'ACTIVE') {
@@ -265,7 +273,7 @@ function triggerAd(type) {
       } else if (type === 'claim') {
         closeBtn.textContent = "CLAIM REWARD TO BALANCE";
       } else {
-        closeBtn.textContent = "COLLECT +0.5 RATE";
+        closeBtn.textContent = `COLLECT +${BOOST_AMOUNT} RATE`;
       }
     }
   }, 1000);
@@ -277,22 +285,22 @@ function closeAdModal() {
   
   if (activeAdType === 'booster') {
     boosterChancesLeft--;
-    currentMiningRate += 0.5;
-    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
-    alert(`Success! Mining rate increased by +0.5.`);
+    currentMiningRate += BOOST_AMOUNT;
+    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/${BOOSTER_LIMIT} Left`;
+    alert(`Success! Mining rate increased by +${BOOST_AMOUNT}.`);
   } else if (activeAdType === 'claim') {
-    // 4 hours at 1 FDX/hr = 4 FDX added directly to balance
-    totalBalance += 4.00;
+    // 4 hours at current mining rate (Base 1 FDX/hr) added directly to balance
+    let minedReward = (FOUR_HOURS / 3600000) * currentMiningRate;
+    totalBalance += minedReward;
     document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
     
-    totalSeconds = 14400;
+    totalSeconds = FOUR_HOURS / 1000;
     miningState = 'ACTIVE';
     document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
     document.getElementById('miningToggleBtn').textContent = "MINING ACTIVE";
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
     document.getElementById('miningToggleBtn').style.color = "#fff";
   } else if (activeAdType === 'spin') {
-    // Extract numerical value from string e.g. "15$FDX" -> 15
     let numericVal = parseFloat(currentSpinReward) || 0;
     totalBalance += numericVal;
     document.getElementById('balanceDisplay').textContent = totalBalance.toFixed(2);
@@ -300,7 +308,7 @@ function closeAdModal() {
   }
 }
 
-// Spin Wheel Configuration (6 distinct physical slots highlighted clearly: 0$FDX, 1$FDX, 5$FDX, 10$FDX, 15$FDX, 30$FDX)
+// Spin Wheel Configuration
 const spinRewards = ['0$FDX', '1$FDX', '5$FDX', '10$FDX', '15$FDX', '30$FDX'];
 const wheelColors = ['#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1'];
 
@@ -349,7 +357,6 @@ function spinTheWheel() {
     btn.style.pointerEvents = 'auto';
     btn.textContent = "SPIN NOW";
     closeSpinModal();
-    // Prompt ad watch to claim the randomized spin reward
     triggerAd('spin');
   }, 4000);
 }
