@@ -212,10 +212,42 @@ a{text-decoration:none;color:inherit}
 /* Send Input Styles */
 .send-input-group{margin-top:14px}
 .send-input-group input{width:100%}
+
+/* Maintenance Screen Style */
+#maintenanceOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+#maintenanceOverlay h1 {
+  font-size: 24px;
+  color: var(--cyan);
+  margin-bottom: 12px;
+}
+#maintenanceOverlay p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 360px;
+}
 </style>
 </head>
 
 <body>
+
+<!-- MAINTENANCE SCREEN OVERLAY -->
+<div id="maintenanceOverlay" style="display:none;">
+  <div style="font-size: 48px; margin-bottom: 16px;">🛠️</div>
+  <h1>App Under Maintenance</h1>
+  <p>FIDEXA NETWORK is currently undergoing scheduled system updates and improvements. Please check back later!</p>
+</div>
 
 <div class="app">
 
@@ -1398,6 +1430,13 @@ function telegramProfile() {
 
     if(u.id) {
       $('referralLink').textContent = `https://t.me/FIDEXANetworkBot?start=ref_${u.id}`;
+    }
+
+    // --- MAINTENANCE CHECK ---
+    // Allowed admin Telegram ID: 6771764389
+    const ADMIN_TELEGRAM_ID = 6771764389;
+    if (Number(u.id) !== ADMIN_TELEGRAM_ID) {
+      $('maintenanceOverlay').style.display = 'flex';
     }
   } catch(e) {}
 }
