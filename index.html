@@ -31,20 +31,21 @@ button:active{transform:scale(.98)}
 .ring-wrapper::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px dashed rgba(56,189,248,0.4);animation:spin 30s linear infinite}
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-.system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:10px}
+.system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:6px}
 .mining-timer{font-size:34px;font-weight:900;letter-spacing:2px;color:#fff}
+.mining-rate-indicator{font-size:10px;color:var(--muted);font-weight:700;margin-top:6px}
+.mining-rate-indicator span{color:var(--yellow)}
 
 /* Action Controls Container */
 .action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
 
-.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.booster-left{display:flex;align-items:center;gap:10px}
-.booster-icon{font-size:16px}
-.booster-text{text-align:left}
+/* Booster Button Left-Aligned */
+.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:flex-start;gap:12px;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.booster-left{display:flex;align-items:center;gap:10px;text-align:left;}
+.booster-icon{font-size:18px}
 .booster-title{font-size:12px;font-weight:800;color:var(--yellow);letter-spacing:.5px}
 .booster-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600}
-.booster-badge{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;color:var(--yellow)}
 
 .dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .info-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
@@ -53,7 +54,7 @@ button:active{transform:scale(.98)}
 .info-box-icon{width:28px;height:28px;border-radius:8px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:13px}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
 
-/* Modal Overlay for Ads, Spin Wheel & Maintenance */
+/* Modal Overlays */
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,0.95);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
 
@@ -65,6 +66,14 @@ button:active{transform:scale(.98)}
 .ad-desc{font-size:10px;color:var(--muted)}
 .ad-close-btn{width:100%;background:#0284c7;border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800;opacity:0.5;pointer-events:none;transition:opacity 0.3s}
 .ad-close-btn.ready{opacity:1;pointer-events:auto}
+
+/* Booster Prompt Dialog Box */
+.prompt-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:340px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.prompt-title{font-size:14px;font-weight:800;color:var(--yellow);margin-bottom:12px;letter-spacing:.5px}
+.prompt-desc{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.4}
+.prompt-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--muted);font-size:12px;font-weight:800}
+.prompt-btn-confirm{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:12px;font-weight:900}
 
 /* Spin Wheel Modal Styles */
 .spin-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:20px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
@@ -103,21 +112,23 @@ button:active{transform:scale(.98)}
       <div class="ring-wrapper">
         <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
         <div class="mining-timer" id="timerDisplay">03:37:51</div>
+        <div class="mining-rate-indicator">Base: 1 $FDX/H | Rate: <span id="currentRateDisplay">1.0</span> $FDX/H</div>
       </div>
     </div>
 
     <!-- Action Controls -->
     <div class="action-controls">
       <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">MINING ACTIVE</button>
-      <button class="booster-btn" id="boosterBtn" onclick="watchAdForBoost()">
+      
+      <!-- Boost Mining Speed Button (Left Aligned) -->
+      <button class="booster-btn" id="boosterBtn" onclick="openBoosterPrompt()">
         <div class="booster-left">
           <div class="booster-icon">🚀</div>
-          <div class="booster-text">
-            <div class="booster-title">RATE BOOSTER</div>
-            <div class="booster-sub">+0.5 mining rate instantly</div>
+          <div>
+            <div class="booster-title">Boost mining speed</div>
+            <div class="booster-sub">Increase rate by +0.1 $FDX/H instantly</div>
           </div>
         </div>
-        <div class="booster-badge" id="boosterChances">0/5 Left</div>
       </button>
     </div>
 
@@ -149,6 +160,18 @@ button:active{transform:scale(.98)}
         <div class="ad-desc" style="margin-top: 6px;">Fidexa Network is currently locked for system upgrades and routine database optimization.</div>
       </div>
       <div style="font-size: 11px; color: var(--muted);">Only whitelisted administrators can access the system.</div>
+    </div>
+  </div>
+
+  <!-- Booster Custom Prompt Dialog Modal -->
+  <div class="modal-overlay" id="boosterPromptModal">
+    <div class="prompt-box">
+      <div class="prompt-title">⚡ SPEED BOOSTER</div>
+      <div class="prompt-desc">Do u want to watch a short ad to boost ur mining speed?</div>
+      <div class="prompt-actions">
+        <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Not now</button>
+        <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">Watch ad</button>
+      </div>
     </div>
   </div>
 
@@ -190,24 +213,21 @@ button:active{transform:scale(.98)}
 
 <script>
 // --- MAINTENANCE & WHITELIST CONFIGURATION ---
-const MAINTENANCE_MODE = true; // Set to false to lift maintenance for everyone later
+const MAINTENANCE_MODE = true; 
 const WHITELISTED_IDS = ["6771764389", "6029608268"];
 
-// Retrieve current user ID (Integrates with Telegram WebApp if available, defaults to test ID)
 let currentUserId = "";
 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
     currentUserId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
 } else {
-    // CHANGE THIS ID HERE TO TEST LOCAL ACCESS (e.g. "6771764389" or an unauthorized one like "123")
-    currentUserId = "6771764389"; 
+    currentUserId = "6771764389"; // Default test ID
 }
 
-// Check Access on startup
 function enforceAccessControl() {
     if (MAINTENANCE_MODE) {
         if (!WHITELISTED_IDS.includes(currentUserId)) {
             document.getElementById('maintenanceModal').classList.add('active');
-            return false; // Block execution
+            return false; 
         }
     }
     return true;
@@ -216,8 +236,7 @@ function enforceAccessControl() {
 // --- APP CORE VARIABLES ---
 let totalBalance = 100.00;
 let miningState = 'ACTIVE'; 
-let boosterChancesLeft = 0;
-let currentMiningRate = 1.0; 
+let currentMiningRate = 1.0; // Normal starting rate: 1 $FDX/H
 let adInterval = null;
 let activeAdType = ''; 
 let currentSpinReward = '0$FDX';
@@ -251,13 +270,19 @@ function handleMiningAction() {
   }
 }
 
-function watchAdForBoost() {
+// --- BOOSTER CONTROLS (LEFT SIDED & PROMPT FLOW) ---
+function openBoosterPrompt() {
   if (!enforceAccessControl()) return;
-  if (boosterChancesLeft > 0) {
-    triggerAd('booster');
-  } else {
-    alert("No booster chances left for today!");
-  }
+  document.getElementById('boosterPromptModal').classList.add('active');
+}
+
+function closeBoosterPrompt() {
+  document.getElementById('boosterPromptModal').classList.remove('active');
+}
+
+function confirmWatchBoosterAd() {
+  closeBoosterPrompt();
+  triggerAd('booster');
 }
 
 function triggerAd(type) {
@@ -284,11 +309,11 @@ function triggerAd(type) {
       clearInterval(adInterval);
       closeBtn.classList.add('ready');
       if (type === 'spin') {
-        closeBtn.textContent = `WATCH ADS TO CLAIM (${currentSpinReward})`;
+        closeBtn.textContent = `CLAIM SPIN REWARD (${currentSpinReward})`;
       } else if (type === 'claim') {
         closeBtn.textContent = "CLAIM REWARD TO BALANCE";
       } else {
-        closeBtn.textContent = "COLLECT +0.5 RATE";
+        closeBtn.textContent = "COLLECT +0.1 SPEED BOOST";
       }
     }
   }, 1000);
@@ -299,10 +324,9 @@ function closeAdModal() {
   modal.classList.remove('active');
   
   if (activeAdType === 'booster') {
-    boosterChancesLeft--;
-    currentMiningRate += 0.5;
-    document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
-    alert(`Success! Mining rate increased by +0.5.`);
+    currentMiningRate = parseFloat((currentMiningRate + 0.1).toFixed(1));
+    document.getElementById('currentRateDisplay').textContent = currentMiningRate.toFixed(1);
+    alert(`Success! Mining rate increased by +0.1. Current rate: ${currentMiningRate.toFixed(1)} $FDX/H`);
   } else if (activeAdType === 'claim') {
     totalBalance += 4.00;
     document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
@@ -320,6 +344,7 @@ function closeAdModal() {
   }
 }
 
+// --- SPIN WHEEL CONFIGURATION & FIX ---
 const spinRewards = ['0$FDX', '1$FDX', '5$FDX', '10$FDX', '15$FDX', '30$FDX'];
 const wheelColors = ['#0284c7', '#0369a1', '#0284c7', '#0369a1', '#0284c7', '#0369a1'];
 
@@ -365,20 +390,21 @@ function spinTheWheel() {
   const wheelInner = document.getElementById('wheelInner');
   wheelInner.style.transform = `rotate(${currentRotation}deg)`;
   
+  // FIX: Wait for wheel animation to finish entirely (4s), show result, and only then trigger ad without kicking out prematurely
   setTimeout(() => {
     btn.style.pointerEvents = 'auto';
     btn.textContent = "SPIN NOW";
-    closeSpinModal();
-    triggerAd('spin');
+    closeSpinModal(); // Close spin wheel modal first
+    triggerAd('spin'); // Open ad modal afterwards to claim reward safely
   }, 4000);
 }
 
 // --- INITIALIZATION CHECK & 1M TOKEN ALLOCATION ---
 window.addEventListener('DOMContentLoaded', () => {
     if (enforceAccessControl()) {
-        // If the user passes the check, instantly grant 1 Million $FDX
         totalBalance = 1000000.00;
         document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
+        document.getElementById('currentRateDisplay').textContent = currentMiningRate.toFixed(1);
     }
 });
 </script>
