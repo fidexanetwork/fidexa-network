@@ -807,7 +807,7 @@ const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 4*60*60*1000;
 const MAX_LUCKY_CHANCES = 5;
-const KEY = 'fidexa_final_state_v14';
+const KEY = 'fidexa_final_state_v15';
 
 const $ = id => document.getElementById(id);
 
@@ -840,7 +840,7 @@ function showProfileInfo() {
   showInfo('Account Information', `Account Status: Verified Member\nNetwork ID: ${ownID()}`);
 }
 
-// INTEGRATED PRIVACY POLICY MATCHING PROJECT SCRIPT
+// PRIVACY POLICY
 function showPrivacyPolicy() {
   showInfo('Privacy Policy', 
 `1. INTRODUCTION & SCOPE
@@ -859,36 +859,76 @@ To provide secure mining capabilities and track network progression, we collect 
   );
 }
 
-// INTEGRATED WHITEPAPER MATCHING PROJECT SCRIPT
+// INTEGRATED WHITEPAPER V1.0 MATCHING USER TEXT EXACTLY
 function showWhitepaper() {
-  showInfo('FIDEXA Whitepaper v1.0', 
-`1. VISION & MISSION
-FIDEXA Network is a cutting-edge, gamified web3 ecosystem designed to democratize crypto distribution. By leveraging mobile mining mechanics, community tasks, and referral incentives, FIDEXA builds a robust decentralized network.
+  showInfo('FIDEXA Network Whitepaper v1.0', 
+`Ticker: FDX
+Platform: Telegram Mini App
+Status: Live App Experience
 
-2. TOKENOMICS & SUPPLY ($FDX)
-- Total Supply: Fixed community-first distribution cap.
-- Base Mining Rate: 1.0 $FDX per hour structured around continuous 4-hour mining cycles.
-- Boosters & Multipliers: Active users can boost their hourly rates up to +2.5 $FDX/h through supported ecosystem tools and ad milestones.
+1. VISION & MISSION
+FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.
+The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.
+FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.
 
-3. SECURITY & MAINNET GOALS
-Balances remain isolated in pre-migration accounts until mandatory user verification protocols and mainnet smart contract deployments are successfully executed.`
+2. FIDEXA MINING SYSTEM
+FIDEXA uses a timed mining-session system. Users start a mining session from the Mini App and the session runs for a defined period.
+Current Mining Structure:
+- Mining cycle: 4 hours
+- Base mining rate: 1.0 FDX per hour
+- Base reward per completed 4-hour cycle: 4 FDX
+Users can return after the mining timer has completed and claim their accumulated reward, then begin another session.
+
+3. REWARD CLAIM & ADVERTISING SYSTEM
+Advertising is integrated into the reward-claim process as an additional sustainability mechanism for the platform, supporting ongoing operation, infrastructure, and development. 
+Flow: Start Mining → 4-Hour Mining Session → Timer Completes → Claim Reward → Advertisement → Reward Credited to Balance.
+Important: The advertisement is not a separate mining system; rewards derive from the completed mining session.
+
+4. BOOSTERS & GAMIFICATION
+- Mining Boosters: Active users can access supported boosting mechanisms up to +2.5 FDX/hour.
+- Lucky Boxes: Interactive elements providing extra ways to participate beyond the standard cycle.
+- Streak Recovery: Mechanism designed to help users maintain their participation streak when an interruption occurs.
+
+5. COMMUNITY TASKS & 6. REFERRAL SYSTEM
+- Community Tasks: Participate in activities connected via Telegram and X.
+- Referral System: Invite participants through integrated links to encourage organic community expansion.
+
+7. USER BALANCE & REWARDS / 8. PROFILE / 9. SUPPORT
+FDX rewards reflect in the user's in-app balance. The Telegram Mini App environment incorporates comprehensive user support, profile functionality, chat support, and account controls.
+
+10. FDX TOKEN / REWARD MODEL & 11. PRINCIPLES
+FDX is the internal reward unit. Balances are not currently transferable to an external blockchain until functionality is implemented. Core principles include Accessibility, Community, Engagement, Sustainability, and Transparency.`
   );
 }
 
-// INTEGRATED ROADMAP MATCHING PROJECT SCRIPT
+// INTEGRATED OFFICIAL ROADMAP MATCHING USER TEXT EXACTLY
 function showRoadmap() {
-  showInfo('Project Roadmap', 
-`PHASE 1: Foundation & Mini App Launch (Completed)
-- Deployment of Telegram WebApp interface.
-- Core 4-hour mining session framework and basic referral tracking integration.
+  showInfo('FIDEXA Official Roadmap', 
+`PHASE 1 — Foundation & Mini App Launch (Completed)
+• FIDEXA Telegram Mini App interface
+• User profile integration
+• Core mining system (4-hour cycles, 1.0 FDX/hour base rate)
+• In-app FDX balance & basic referral system
+• Initial community-task structure & account/support interface
 
-PHASE 2: Engagement & Gamification (Active)
-- Introduction of Lucky Boxes, ad boosters, and burning streak recovery systems.
-- Expansion of community task verification channels (Telegram & X integration).
+PHASE 2 — Engagement & Gamification (Active)
+• Mining boosters & Lucky Boxes
+• Streak recovery & reward-claim advertising integration
+• Community task expansion (Telegram & X community activities)
+• Continued improvements to the referral system and overall user experience
 
-PHASE 3: Mainnet Migration & Distribution (Upcoming)
-- Implementation of comprehensive user verification and KYC protocols.
-- On-chain wallet connectivity, token migration, and transferable balance activation.`
+PHASE 3 — Ecosystem Growth (Current Development)
+• Expansion of community participation
+• Improvement of mining and reward interfaces
+• Expansion of gamification features already integrated into the platform
+• Continued optimization of the referral and task systems
+• Improvement of user-support and account-management features
+• Platform performance and usability improvements
+
+FIDEXA Development Philosophy:
+FIDEXA will continue to develop based on actual platform implementation and community participation. New functionality will be introduced progressively as the ecosystem develops.
+
+FIDEXA Network — Mine. Participate. Grow.`
   );
 }
 
@@ -1473,7 +1513,6 @@ function telegramProfile() {
     }
 
     // --- MAINTENANCE CHECK ---
-    // Allowed admin Telegram ID: 6771764389
     const ADMIN_TELEGRAM_ID = 6771764389;
     if (Number(u.id) !== ADMIN_TELEGRAM_ID) {
       $('maintenanceOverlay').style.display = 'flex';
