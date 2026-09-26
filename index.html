@@ -14,7 +14,9 @@ button{font:inherit;cursor:pointer}
 button:active{transform:scale(.98)}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px;position:relative}
-.content{padding:14px 16px;margin-top:10px}
+.page-view{display:none;padding:14px 16px;margin-top:10px;animation:fadeIn .2s ease-in-out}
+.page-view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* Balance Card */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
@@ -40,25 +42,55 @@ button:active{transform:scale(.98)}
 .action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
 
-/* Booster Button Left-Aligned */
-.booster-btn{width:100%;background:rgba(10,16,24,0.9);border:1px solid rgba(250,204,21,0.3);border-radius:14px;padding:12px 16px;color:#fff;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-.booster-left{display:flex;align-items:center;gap:10px;text-align:left;}
-.booster-icon{font-size:18px}
-.booster-title{font-size:12px;font-weight:800;color:var(--yellow);letter-spacing:.5px}
-.booster-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600}
-.booster-badge{background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.4);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;color:var(--yellow)}
+/* Interactive Grid for Booster & Lucky Box */
+.interactive-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action-tile{background:rgba(10,16,24,0.9);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.action-tile-icon{font-size:22px}
+.action-tile-title{font-size:11px;font-weight:800;color:#fff;letter-spacing:.3px}
+.action-tile-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600}
 
-.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .info-box{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
 .info-box-top{display:flex;align-items:flex-start;justify-content:space-between}
 .info-box-label{font-size:10px;color:var(--muted);font-weight:700;line-height:1.3;letter-spacing:.5px}
 .info-box-icon{width:28px;height:28px;border-radius:8px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:13px}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
 
+/* Full Screen Pages Styling */
+.full-page-header{font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:1px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.full-page-sub{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.4}
+
+.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.friend-stat-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center}
+.friend-stat-lbl{font-size:9px;color:var(--muted);font-weight:700}
+.friend-stat-val{font-size:16px;font-weight:900;color:#fff;margin-top:4px}
+
+.friends-scroll-area{max-height:180px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.friend-row-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.friend-name{font-size:12px;font-weight:800;color:#fff}
+.friend-status-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
+.status-active{background:rgba(56,189,248,0.15);color:var(--cyan)}
+.status-inactive{background:rgba(136,153,166,0.15);color:var(--muted)}
+
+.milestones-title{font-size:11px;font-weight:800;color:var(--yellow);margin-bottom:8px;letter-spacing:.5px}
+.milestones-list{max-height:160px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:6px}
+.milestone-item{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:11px}
+.milestone-reward{color:var(--yellow);font-weight:900}
+
+.full-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:14px;color:#fff;font-size:13px;font-weight:800;box-shadow:0 4px 20px rgba(56,189,248,0.3)}
+
+/* Wallet Full Page Styles */
+.wallet-split-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.wallet-sub-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px}
+.wallet-sub-lbl{font-size:9px;color:var(--muted);font-weight:700;line-height:1.2}
+.wallet-sub-val{font-size:15px;font-weight:900;color:#fff;margin-top:6px}
+.wallet-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.wallet-btn-send{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;color:var(--cyan);font-size:13px;font-weight:800}
+.wallet-btn-receive{background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:14px;color:#fff;font-size:13px;font-weight:800}
+
 /* Modal Overlays */
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,0.95);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
-
 .ad-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 .ad-header{font-size:12px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:12px}
 .ad-screen{background:#111b27;border:1px solid #223247;border-radius:12px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;position:relative}
@@ -68,48 +100,12 @@ button:active{transform:scale(.98)}
 .ad-close-btn{width:100%;background:#0284c7;border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800;opacity:0.5;pointer-events:none;transition:opacity 0.3s}
 .ad-close-btn.ready{opacity:1;pointer-events:auto}
 
-/* Booster Prompt Dialog Box */
 .prompt-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:340px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 .prompt-title{font-size:14px;font-weight:800;color:var(--yellow);margin-bottom:12px;letter-spacing:.5px}
 .prompt-desc{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.4}
 .prompt-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--muted);font-size:12px;font-weight:800}
 .prompt-btn-confirm{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:12px;font-weight:900}
-
-/* Friends Modal Styles */
-.friends-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:380px;max-height:85vh;padding:20px;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
-.friends-close{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--muted);font-size:18px;font-weight:bold}
-.friends-title{font-size:14px;font-weight:800;color:var(--cyan);margin-bottom:4px;letter-spacing:1px;text-align:center}
-.friends-subtitle{font-size:10px;color:var(--muted);margin-bottom:12px;text-align:center}
-.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
-.friend-stat-card{background:#111b27;border:1px solid #223247;border-radius:10px;padding:8px 4px;text-align:center}
-.friend-stat-lbl{font-size:8px;color:var(--muted);font-weight:700}
-.friend-stat-val{font-size:13px;font-weight:900;color:#fff;margin-top:2px}
-
-.friends-scroll-area{overflow-y:auto;max-height:140px;margin-bottom:12px;padding-right:4px}
-.friend-row-item{background:#111b27;border:1px solid #223247;border-radius:10px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.friend-name{font-size:11px;font-weight:800;color:#fff}
-.friend-status-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px}
-.status-active{background:rgba(56,189,248,0.15);color:var(--cyan)}
-.status-inactive{background:rgba(136,153,166,0.15);color:var(--muted)}
-
-.milestones-title{font-size:10px;font-weight:800;color:var(--yellow);margin-bottom:6px;letter-spacing:.5px}
-.milestones-list{overflow-y:auto;max-height:110px;margin-bottom:12px;padding-right:4px}
-.milestone-item{display:flex;align-items:center;justify-content:space-between;background:#111b27;border:1px solid #223247;border-radius:8px;padding:6px 10px;margin-bottom:4px;font-size:10px}
-.milestone-reward{color:var(--yellow);font-weight:900}
-
-.friends-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800}
-
-/* Wallet Modal Styles */
-.wallet-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
-.wallet-close{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--muted);font-size:18px;font-weight:bold}
-.wallet-split-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 20px}
-.wallet-sub-card{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;text-align:left}
-.wallet-sub-lbl{font-size:9px;color:var(--muted);font-weight:700;line-height:1.2}
-.wallet-sub-val{font-size:14px;font-weight:900;color:#fff;margin-top:6px}
-.wallet-actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.wallet-btn-send{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--cyan);font-size:12px;font-weight:800}
-.wallet-btn-receive{background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800}
 
 /* Bottom Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
@@ -121,8 +117,8 @@ button:active{transform:scale(.98)}
 <body>
 
 <div class="app">
-  <main class="content">
-    <!-- Total Balance Card -->
+  <!-- ================= 1. MINING PAGE ================= -->
+  <main class="page-view active" id="page-mining">
     <div class="balance-card">
       <div class="balance-dot"></div>
       <div class="balance-label">TOTAL BALANCE</div>
@@ -133,7 +129,6 @@ button:active{transform:scale(.98)}
       <div class="balance-sub">$USD Equivalent</div>
     </div>
 
-    <!-- Circular Mining Node Section -->
     <div class="mining-node-container">
       <div class="ring-wrapper">
         <div class="system-status-pill" id="systemPill">READY TO MINE</div>
@@ -142,24 +137,29 @@ button:active{transform:scale(.98)}
       </div>
     </div>
 
-    <!-- Action Controls -->
     <div class="action-controls">
       <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">START MINING</button>
       
-      <!-- Boost Mining Speed Button -->
-      <button class="booster-btn" id="boosterBtn" onclick="openBoosterPrompt()">
-        <div class="booster-left">
-          <div class="booster-icon">🚀</div>
+      <!-- Interactive Grid: Boost Speed & Lucky Box -->
+      <div class="interactive-grid">
+        <button class="action-tile" onclick="openBoosterPrompt()">
+          <div class="action-tile-icon">🚀</div>
           <div>
-            <div class="booster-title">Boost mining speed</div>
-            <div class="booster-sub">Increase rate by +0.5 $FDX/H</div>
+            <div class="action-tile-title">Speed Boost</div>
+            <div class="action-tile-sub" id="boosterChances">5/5 Left</div>
           </div>
-        </div>
-        <div class="booster-badge" id="boosterChances">5/5 Left</div>
-      </button>
+        </button>
+
+        <button class="action-tile" onclick="openLuckyBoxModal()" style="border-color: rgba(250,204,21,0.4);">
+          <div class="action-tile-icon">🎁</div>
+          <div>
+            <div class="action-tile-title" style="color:var(--yellow);">Lucky Box</div>
+            <div class="action-tile-sub">Claim Mystery Gift</div>
+          </div>
+        </button>
+      </div>
     </div>
 
-    <!-- Dual Metric Cards -->
     <div class="dual-grid">
       <div class="info-box">
         <div class="info-box-top">
@@ -175,6 +175,140 @@ button:active{transform:scale(.98)}
         </div>
         <div class="info-box-value" id="recoverableFdx">0.00</div>
       </div>
+    </div>
+  </main>
+
+  <!-- ================= 2. TASKS PAGE ================= -->
+  <main class="page-view" id="page-tasks">
+    <div class="full-page-header">📋 SYSTEM TASKS</div>
+    <div class="full-page-sub">Complete daily community tasks to earn extra $FDX rewards.</div>
+    <div class="friend-row-item">
+      <div>
+        <div class="friend-name">Join Telegram Channel</div>
+        <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+10.00 $FDX</div>
+      </div>
+      <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
+    </div>
+    <div class="friend-row-item">
+      <div>
+        <div class="friend-name">Follow Official X Handle</div>
+        <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+15.00 $FDX</div>
+      </div>
+      <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
+    </div>
+  </main>
+
+  <!-- ================= 3. FRIENDS PAGE ================= -->
+  <main class="page-view" id="page-friends">
+    <div class="full-page-header">🤝 REFERRAL NETWORK</div>
+    <div class="full-page-sub">Invite friends, track their active mining status, and unlock milestone rewards!</div>
+    
+    <div class="friends-stats-grid">
+      <div class="friend-stat-card">
+        <div class="friend-stat-lbl">Total</div>
+        <div class="friend-stat-val" id="totalFriendsCount">3</div>
+      </div>
+      <div class="friend-stat-card">
+        <div class="friend-stat-lbl" style="color:var(--cyan)">Active</div>
+        <div class="friend-stat-val" id="activeFriendsCount">2</div>
+      </div>
+      <div class="friend-stat-card">
+        <div class="friend-stat-lbl" style="color:var(--muted)">Inactive</div>
+        <div class="friend-stat-val" id="inactiveFriendsCount">1</div>
+      </div>
+    </div>
+
+    <div style="font-size: 11px; font-weight: 800; color: var(--cyan); margin-bottom: 6px;">YOUR INVITED FRIENDS</div>
+    <div class="friends-scroll-area" id="friendsListContainer">
+      <div class="friend-row-item">
+        <div class="friend-name">@alex_crypto99</div>
+        <div class="friend-status-tag status-active">Active</div>
+      </div>
+      <div class="friend-row-item">
+        <div class="friend-name">@satoshi_jr</div>
+        <div class="friend-status-tag status-active">Active</div>
+      </div>
+      <div class="friend-row-item">
+        <div class="friend-name">@fidexa_fanatic</div>
+        <div class="friend-status-tag status-inactive">Inactive</div>
+      </div>
+    </div>
+
+    <div class="milestones-title">MILESTONE REWARDS</div>
+    <div class="milestones-list">
+      <div class="milestone-item"><span>Invite 1 friend</span><span class="milestone-reward">5 $FDX</span></div>
+      <div class="milestone-item"><span>Invite 5 friends</span><span class="milestone-reward">10 $FDX</span></div>
+      <div class="milestone-item"><span>Invite 10 friends</span><span class="milestone-reward">20 $FDX</span></div>
+      <div class="milestone-item"><span>Invite 20 friends</span><span class="milestone-reward">30 $FDX</span></div>
+      <div class="milestone-item"><span>Invite 50 friends</span><span class="milestone-reward">50 $FDX</span></div>
+      <div class="milestone-item"><span>Invite 100 friends</span><span class="milestone-reward">100 $FDX</span></div>
+    </div>
+
+    <button class="full-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
+  </main>
+
+  <!-- ================= 4. WALLET PAGE ================= -->
+  <main class="page-view" id="page-wallet">
+    <div class="balance-card" style="margin-bottom: 16px;">
+      <div class="balance-dot"></div>
+      <div class="balance-label">TOTAL BALANCE $FDX</div>
+      <div class="balance-row">
+        <div class="balance-value" id="walletTotalDisplay">1,000,000.00</div>
+        <div class="balance-token">$FDX</div>
+      </div>
+      <div class="balance-sub">Main Net Asset Valuation</div>
+    </div>
+
+    <div class="wallet-split-grid">
+      <div class="wallet-sub-card">
+        <div class="wallet-sub-lbl">TRANSFERABLE BALANCE</div>
+        <div class="wallet-sub-val" id="transferableBalance">950,000.00</div>
+      </div>
+      <div class="wallet-sub-card">
+        <div class="wallet-sub-lbl">UNVERIFIED BALANCE</div>
+        <div class="wallet-sub-val" id="unverifiedBalance">50,000.00</div>
+      </div>
+    </div>
+
+    <div class="wallet-actions-grid">
+      <button class="wallet-btn-send" onclick="alert('Send feature coming soon!')">SEND</button>
+      <button class="wallet-btn-receive" onclick="alert('Receive address copied!')">RECEIVE</button>
+    </div>
+
+    <div style="font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 8px; letter-spacing: .5px;">RECENT TRANSACTIONS</div>
+    <div class="friends-scroll-area" style="max-height: 160px;">
+      <div class="friend-row-item">
+        <div>
+          <div class="friend-name" style="font-size:11px;">Mining Reward Claim</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px;">Today, 10:45 AM</div>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:var(--yellow);">+4.00 $FDX</div>
+      </div>
+      <div class="friend-row-item">
+        <div>
+          <div class="friend-name" style="font-size:11px;">Referral Bonus</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:2px;">Yesterday</div>
+        </div>
+        <div style="font-size:11px;font-weight:900;color:var(--yellow);">+5.00 $FDX</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= 5. PROFILE PAGE ================= -->
+  <main class="page-view" id="page-profile">
+    <div class="full-page-header">🛡️ USER PROFILE</div>
+    <div class="full-page-sub">Manage your account security and node verification details.</div>
+    <div class="friend-row-item" style="margin-bottom:8px;">
+      <div class="friend-name">Telegram ID</div>
+      <div style="font-size:11px;color:var(--cyan);font-weight:700;" id="profileUserId">6771764389</div>
+    </div>
+    <div class="friend-row-item" style="margin-bottom:8px;">
+      <div class="friend-name">KYC Status</div>
+      <div class="friend-status-tag status-active">Verified Node</div>
+    </div>
+    <div class="friend-row-item">
+      <div class="friend-name">App Version</div>
+      <div style="font-size:11px;color:var(--muted);">v2.4.0 Live</div>
     </div>
   </main>
 
@@ -202,6 +336,18 @@ button:active{transform:scale(.98)}
     </div>
   </div>
 
+  <!-- Lucky Box Dialog Modal -->
+  <div class="modal-overlay" id="luckyBoxModal">
+    <div class="prompt-box">
+      <div class="prompt-title">🎁 LUCKY GIFT BOX</div>
+      <div class="prompt-desc">Open the mystery box by watching a short video to claim instant bonus $FDX!</div>
+      <div class="prompt-actions">
+        <button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">Close</button>
+        <button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">Open Box</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Ad Watch Simulation Modal -->
   <div class="modal-overlay" id="adModal">
     <div class="ad-box">
@@ -215,92 +361,13 @@ button:active{transform:scale(.98)}
     </div>
   </div>
 
-  <!-- Friends / Referral Modal -->
-  <div class="modal-overlay" id="friendsModal">
-    <div class="friends-box">
-      <button class="friends-close" onclick="closeFriendsModal()">×</button>
-      <div class="friends-title">🤝 REFERRAL NETWORK</div>
-      <div class="friends-subtitle">Invite friends & earn milestones + active mining bonuses</div>
-      
-      <div class="friends-stats-grid">
-        <div class="friend-stat-card">
-          <div class="friend-stat-lbl">Total</div>
-          <div class="friend-stat-val" id="totalFriendsCount">3</div>
-        </div>
-        <div class="friend-stat-card">
-          <div class="friend-stat-lbl" style="color:var(--cyan)">Active</div>
-          <div class="friend-stat-val" id="activeFriendsCount">2</div>
-        </div>
-        <div class="friend-stat-card">
-          <div class="friend-stat-lbl" style="color:var(--muted)">Inactive</div>
-          <div class="friend-stat-val" id="inactiveFriendsCount">1</div>
-        </div>
-      </div>
-
-      <!-- Referred Friends Directory -->
-      <div style="font-size: 10px; font-weight: 800; color: var(--cyan); margin-bottom: 4px; text-align: left;">YOUR INVITED FRIENDS</div>
-      <div class="friends-scroll-area" id="friendsListContainer">
-        <div class="friend-row-item">
-          <div class="friend-name">@alex_crypto99</div>
-          <div class="friend-status-tag status-active">Active</div>
-        </div>
-        <div class="friend-row-item">
-          <div class="friend-name">@satoshi_jr</div>
-          <div class="friend-status-tag status-active">Active</div>
-        </div>
-        <div class="friend-row-item">
-          <div class="friend-name">@fidexa_fanatic</div>
-          <div class="friend-status-tag status-inactive">Inactive</div>
-        </div>
-      </div>
-
-      <!-- Milestone Rewards -->
-      <div class="milestones-title">MILESTONE REWARDS</div>
-      <div class="milestones-list">
-        <div class="milestone-item"><span>Invite 1 friend</span><span class="milestone-reward">5 $FDX</span></div>
-        <div class="milestone-item"><span>Invite 5 friends</span><span class="milestone-reward">10 $FDX</span></div>
-        <div class="milestone-item"><span>Invite 10 friends</span><span class="milestone-reward">20 $FDX</span></div>
-        <div class="milestone-item"><span>Invite 20 friends</span><span class="milestone-reward">30 $FDX</span></div>
-        <div class="milestone-item"><span>Invite 50 friends</span><span class="milestone-reward">50 $FDX</span></div>
-        <div class="milestone-item"><span>Invite 100 friends</span><span class="milestone-reward">100 $FDX</span></div>
-      </div>
-
-      <button class="friends-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
-    </div>
-  </div>
-
-  <!-- Wallet Modal -->
-  <div class="modal-overlay" id="walletModal">
-    <div class="wallet-box">
-      <button class="wallet-close" onclick="closeWalletModal()">×</button>
-      <div style="font-size: 15px; font-weight: 800; color: var(--yellow); letter-spacing: 1px; margin-bottom: 4px;">WALLET ASSETS</div>
-      <div style="font-size: 11px; color: var(--muted);">Manage your token balances securely</div>
-      
-      <div class="wallet-split-grid">
-        <div class="wallet-sub-card">
-          <div class="wallet-sub-lbl">TRANSFERABLE BALANCE</div>
-          <div class="wallet-sub-val" id="transferableBalance">950,000.00</div>
-        </div>
-        <div class="wallet-sub-card">
-          <div class="wallet-sub-lbl">UNVERIFIED BALANCE</div>
-          <div class="wallet-sub-val" id="unverifiedBalance">50,000.00</div>
-        </div>
-      </div>
-
-      <div class="wallet-actions-grid">
-        <button class="wallet-btn-send" onclick="alert('Send feature coming soon!')">SEND</button>
-        <button class="wallet-btn-receive" onclick="alert('Receive address copied!')">RECEIVE</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation Bar (Wallet right next to Profile) -->
   <nav class="bottom-nav">
-    <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
-    <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
-    <button class="nav-item" onclick="openFriendsModal()"><span class="nav-icon">👥</span>Friends</button>
-    <button class="nav-item" onclick="openWalletModal()"><span class="nav-icon">👛</span>Wallet</button>
-    <button class="nav-item"><span class="nav-icon">🛡️</span>Profile</button>
+    <button class="nav-item active" onclick="switchTab('mining', this)"><span class="nav-icon">⚡</span>Mining</button>
+    <button class="nav-item" onclick="switchTab('tasks', this)"><span class="nav-icon">📋</span>Tasks</button>
+    <button class="nav-item" onclick="switchTab('friends', this)"><span class="nav-icon">👥</span>Friends</button>
+    <button class="nav-item" onclick="switchTab('wallet', this)"><span class="nav-icon">👛</span>Wallet</button>
+    <button class="nav-item" onclick="switchTab('profile', this)"><span class="nav-icon">🛡️</span>Profile</button>
   </nav>
 </div>
 
@@ -309,12 +376,11 @@ button:active{transform:scale(.98)}
 const MAINTENANCE_MODE = true; 
 const WHITELISTED_IDS = ["6771764389", "6029608268"];
 
-let currentUserId = "";
+let currentUserId = "6771764389";
 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
     currentUserId = window.Telegram.WebApp.initDataUnsafe.user.id.toString();
-} else {
-    currentUserId = "6771764389"; // Default test ID
 }
+document.getElementById('profileUserId').textContent = currentUserId;
 
 function enforceAccessControl() {
     if (MAINTENANCE_MODE) {
@@ -324,6 +390,20 @@ function enforceAccessControl() {
         }
     }
     return true;
+}
+
+// --- TAB SWITCHING LOGIC ---
+function switchTab(tabName, btnElement) {
+    if (!enforceAccessControl()) return;
+
+    // Hide all pages
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    // Show selected page
+    document.getElementById(`page-${tabName}`).classList.add('active');
+
+    // Update bottom nav active state
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    btnElement.classList.add('active');
 }
 
 // --- APP CORE VARIABLES ---
@@ -404,29 +484,28 @@ function openBoosterPrompt() {
   }
   document.getElementById('boosterPromptModal').classList.add('active');
 }
-
 function closeBoosterPrompt() {
   document.getElementById('boosterPromptModal').classList.remove('active');
 }
-
 function confirmWatchBoosterAd() {
   closeBoosterPrompt();
   triggerAd('booster');
 }
 
-// --- FRIENDS MODAL ---
-function openFriendsModal() {
+// --- LUCKY BOX CONTROLS ---
+function openLuckyBoxModal() {
   if (!enforceAccessControl()) return;
-  document.getElementById('totalFriendsCount').textContent = referralData.total;
-  document.getElementById('activeFriendsCount').textContent = referralData.active;
-  document.getElementById('inactiveFriendsCount').textContent = referralData.inactive;
-  document.getElementById('friendsModal').classList.add('active');
+  document.getElementById('luckyBoxModal').classList.add('active');
+}
+function closeLuckyBoxModal() {
+  document.getElementById('luckyBoxModal').classList.remove('active');
+}
+function confirmOpenLuckyBox() {
+  closeLuckyBoxModal();
+  triggerAd('luckybox');
 }
 
-function closeFriendsModal() {
-  document.getElementById('friendsModal').classList.remove('active');
-}
-
+// --- FRIENDS / REFERRAL CONTROLS ---
 function copyReferralLink() {
   const refLink = `https://t.me/FidexaNetworkBot?start=ref_${currentUserId}`;
   navigator.clipboard.writeText(refLink).then(() => {
@@ -434,16 +513,6 @@ function copyReferralLink() {
   }).catch(() => {
     alert(`Your referral link: ${refLink}`);
   });
-}
-
-// --- WALLET MODAL ---
-function openWalletModal() {
-  if (!enforceAccessControl()) return;
-  document.getElementById('walletModal').classList.add('active');
-}
-
-function closeWalletModal() {
-  document.getElementById('walletModal').classList.remove('active');
 }
 
 // --- AD SIMULATION ENGINE ---
@@ -472,6 +541,8 @@ function triggerAd(type) {
       closeBtn.classList.add('ready');
       if (type === 'claim') {
         closeBtn.textContent = "CLAIM REWARD TO BALANCE";
+      } else if (type === 'luckybox') {
+        closeBtn.textContent = "COLLECT MYSTERY REWARD";
       } else {
         closeBtn.textContent = "COLLECT +0.5 SPEED BOOST";
       }
@@ -498,11 +569,16 @@ function closeAdModal() {
       }, 14400 * 1000);
     }
     alert(`Success! Mining speed increased to ${getCumulativeRate().toFixed(1)} $FDX/H`);
+  } else if (activeAdType === 'luckybox') {
+    let mysteryReward = 10.00;
+    totalBalance += mysteryReward;
+    transferableBal += mysteryReward;
+    updateBalancesUI();
+    alert(`Congratulations! You found ${mysteryReward} $FDX inside the Lucky Box!`);
   } else if (activeAdType === 'claim') {
     totalBalance += 4.00;
     transferableBal += 4.00;
-    document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
-    document.getElementById('transferableBalance').textContent = transferableBal.toLocaleString('en-US', {minimumFractionDigits: 2});
+    updateBalancesUI();
     
     totalSeconds = 14400;
     miningState = 'IDLE';
@@ -517,13 +593,22 @@ function closeAdModal() {
   }
 }
 
+function updateBalancesUI() {
+    let formattedBal = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
+    let formattedTrans = transferableBal.toLocaleString('en-US', {minimumFractionDigits: 2});
+    let formattedUnver = unverifiedBal.toLocaleString('en-US', {minimumFractionDigits: 2});
+
+    document.getElementById('balanceDisplay').textContent = formattedBal;
+    document.getElementById('walletTotalDisplay').textContent = formattedBal;
+    document.getElementById('transferableBalance').textContent = formattedTrans;
+    document.getElementById('unverifiedBalance').textContent = formattedUnver;
+}
+
 // --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
     if (enforceAccessControl()) {
         referralBonusRate = parseFloat((referralData.active * 0.1).toFixed(1));
-        document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
-        document.getElementById('transferableBalance').textContent = transferableBal.toLocaleString('en-US', {minimumFractionDigits: 2});
-        document.getElementById('unverifiedBalance').textContent = unverifiedBal.toLocaleString('en-US', {minimumFractionDigits: 2});
+        updateBalancesUI();
         document.getElementById('currentRateDisplay').textContent = getCumulativeRate().toFixed(1);
     }
 });
