@@ -7,6 +7,8 @@
 <title>FIDEXA NETWORK</title>
 <!-- QRCode.js Library CDN for real verified QR codes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Html5-qrcode Library CDN for live camera QR scanning -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <style>
 :root{--bg:#07111f;--panel:#0b192a;--border:#19334e;--text:#fff;--muted:#71869b;--cyan:#55c4ff;--blue:#1185e5;--green:#24c987;--danger:#ef6b73}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -208,6 +210,13 @@ a{text-decoration:none;color:inherit}
 .receive-pane.active{display:block}
 .qr-container{background:#fff;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px;min-height:172px}
 .qr-container canvas, .qr-container img {display:block;margin:auto}
+
+/* Send Input & Camera Scanner Styles */
+.send-input-group{position:relative;display:flex;align-items:center;margin-top:14px}
+.send-input-group input{width:100%;padding-right:44px}
+.camera-scanner-btn{position:absolute;right:8px;background:none;border:0;color:var(--cyan);font-size:18px;padding:6px;cursor:pointer}
+#reader{width:100%;border-radius:12px;overflow:hidden;margin-top:10px;display:none}
+#reader video{width:100%!important;border-radius:12px}
 </style>
 </head>
 
@@ -528,6 +537,10 @@ a{text-decoration:none;color:inherit}
   <button class="wallet-action history" onclick="showTransactionHistory()"><span class="wa-icon">▤</span>HISTORY</button>
 </div>
 
+<div class="notice" style="margin-top:14px;background:#0d263c;border-color:#1e4d7a;">
+  <strong>Notice:</strong> Wallet balance and transactions will remain at 0 until user verification and mainnet launch.
+</div>
+
 <div class="section-title">
   <h2>Recent Transactions</h2>
   <span id="walletTxCount">0 ACTIVITY</span>
@@ -535,7 +548,7 @@ a{text-decoration:none;color:inherit}
 
 <div class="wallet-card" id="transactionList">
   <div class="notice" style="margin-top:0">
-    No wallet transactions yet. Mining and task activities remain isolated on your Home dashboard until distribution day.
+    No wallet transactions yet. Balances are currently isolated until user verification begins.
   </div>
 </div>
 </section>
@@ -672,11 +685,16 @@ a{text-decoration:none;color:inherit}
 <div class="modal" id="sendModal">
 <div class="modal-box">
 <h3>Send $FDX</h3>
-<p>Enter another user's FIDEX ID/username and amount.</p>
-<input class="wallet-input" id="sendRecipient" style="width:100%;margin-top:14px" placeholder="Recipient FIDEX ID or username">
+<p>Enter another user's FIDEX ID/username, scan their QR code with your camera, or type the amount.</p>
+
+<div class="send-input-group">
+  <input class="wallet-input" id="sendRecipient" placeholder="Recipient FIDEX ID or username">
+  <button class="camera-scanner-btn" onclick="toggleCameraScanner()" title="Scan QR Code via Camera">📷</button>
+</div>
+<div id="reader"></div>
 <input class="wallet-input" id="sendAmount" style="width:100%;margin-top:9px" type="number" min="0.01" step="0.01" placeholder="Amount in $FDX">
 <button class="primary" onclick="sendFDX()">CONFIRM SEND</button>
-<button class="secondary" onclick="closeModal('sendModal')">CANCEL</button>
+<button class="secondary" onclick="closeSendModalBtn()">CANCEL</button>
 </div>
 </div>
 
@@ -764,7 +782,7 @@ const BOOSTER_LIMIT = 5;
 const BOOSTER_WINDOW = 24*60*60*1000;
 const LUCKY_COOLDOWN = 4*60*60*1000;
 const MAX_LUCKY_CHANCES = 5;
-const KEY = 'fidexa_final_state_v13';
+const KEY = 'fidexa_final_state_v14';
 
 const $ = id => document.getElementById(id);
 
@@ -880,11 +898,12 @@ function updateUI() {
   // Update Home Balance & USD
   $('balanceValue').textContent = state.homeBalance.toFixed(2);$('homeUsdEquiv').textContent = `= $${usdValue} USD`;
 
-  // Update Wallet Balance & USD
-  $('walletBalance').textContent = state.homeBalance.toFixed(2);$('walletUsdEquiv').textContent = `= $${usdValue} USD`;
-
+  // Wallet balances strictly stay at 0.00 until user verification & future plan enabled
+  $('walletBalance').textContent = "0.00";
+  $('walletUsdEquiv').textContent = "= $0.00 USD";
   $('transferableBalance').textContent = "0.00";
   $('unverifiedBalance').textContent = "0.00";
+
   $('rateValue').textContent = rate.toFixed(1);
   $('boostRate').textContent = rate.toFixed(1);$('boosterCount').textContent = `${state.boosterEvents.length} / ${BOOSTER_LIMIT}`;
   $('sessionReward').textContent = `${(rate*4).toFixed(1)} $FDX`;
@@ -949,12 +968,7 @@ function updateUI() {
 
   renderFriendsList();
 
-  const walletOnlyTransactions = (state.transactions || []).filter(t => {
-    const l = t.label.toLowerCase();
-    return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
-  });
-
-  $('walletTxCount').textContent = `${walletOnlyTransactions.length} ACTIVITY`;
+  $('walletTxCount').textContent = `0 ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
 }
@@ -1258,24 +1272,7 @@ function checkMilestones() {
 }
 
 function renderTransactions() {
-  const walletOnlyTransactions = state.transactions.filter(t => {
-    const l = t.label.toLowerCase();
-    return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
-  });
-
-  const html = walletOnlyTransactions.length ? walletOnlyTransactions.slice(0,20).map(t => `
-    <div class="transaction">
-      <div class="tx-icon">${t.amount < 0 ? '↗' : '★'}</div>
-      <div class="tx-main">
-        <strong>${esc(t.label)}</strong>
-        <p>${new Date(t.time).toLocaleString()}</p>
-      </div>
-      <div class="tx-amount ${t.amount < 0 ? 'tx-negative' : 'tx-positive'}">
-        ${t.amount > 0 ? '+' : ''}${Number(t.amount).toFixed(2)} $FDX
-      </div>
-    </div>
-  `).join('') : '<div class="notice" style="margin-top:0">No wallet transactions yet.</div>';
-
+  const html = '<div class="notice" style="margin-top:0">Wallet transactions are currently disabled until user verification and mainnet launch.</div>';
   $('transactionList').innerHTML = html;
   if($('historyModalList'))$('historyModalList').innerHTML = html;
 }
@@ -1284,12 +1281,64 @@ function esc(v) {
   return String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function openSendModal() { $('sendRecipient').value = '';$('sendAmount').value = ''; openModal('sendModal'); }
+let html5QrCode = null;
+
+function openSendModal() { 
+  $('sendRecipient').value = ''; 
+  $('sendAmount').value = '';$('reader').style.display = 'none';
+  openModal('sendModal'); 
+}
+
+function closeSendModalBtn() {
+  stopCameraScanner();
+  closeModal('sendModal');
+}
+
+function toggleCameraScanner() {
+  const readerDiv = $('reader');
+  if (readerDiv.style.display === 'block') {
+    stopCameraScanner();
+  } else {
+    readerDiv.style.display = 'block';
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("reader");
+    }
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      (decodedText, decodedResult) => {
+        $('sendRecipient').value = decodedText;
+        stopCameraScanner();
+        toast('QR Code scanned successfully!');
+      },
+      (errorMessage) => {
+        // Scanning frame scan error logging suppressed for clean UX
+      }
+    ).catch(err => {
+      toast('Unable to access camera permissions.');
+      readerDiv.style.display = 'none';
+    });
+  }
+}
+
+function stopCameraScanner() {
+  if (html5QrCode) {
+    html5QrCode.stop().then(() => {
+      $('reader').style.display = 'none';
+    }).catch(err => {
+      $('reader').style.display = 'none';
+    });
+  } else {
+    $('reader').style.display = 'none';
+  }
+}
+
 function sendFDX() {
   const to = $('sendRecipient').value.trim();
   const a = Number($('sendAmount').value);
   if(!to || !a || a <= 0) { toast('Enter recipient and valid amount.'); return; }
-  toast('Wallet transfers unlocked on distribution day.');
+  stopCameraScanner();
+  toast('Wallet transfers unlocked on distribution day after user verification.');
   closeModal('sendModal');
 }
 
