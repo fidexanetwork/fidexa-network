@@ -15,6 +15,8 @@ button:active{transform:scale(.98)}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px;position:relative}
 .content{padding:14px 16px;margin-top:10px}
+.view-section{display:none}
+.view-section.active{display:block}
 
 /* Balance Card */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
@@ -57,7 +59,23 @@ button:active{transform:scale(.98)}
 .info-box-icon{width:28px;height:28px;border-radius:8px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:13px}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
 
-/* Modal Overlay for Ads & Spin Wheel */
+/* Wallet Action Buttons Grid */
+.wallet-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;margin-bottom:20px}
+.wallet-action-btn{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px;font-weight:800}
+.wallet-action-icon{font-size:18px}
+
+/* Transaction History Panel */
+.tx-section-title{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.8px;margin-bottom:10px}
+.tx-list{display:flex;flex-direction:column;gap:8px}
+.tx-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;align-items:center;justify-content:space-between}
+.tx-left{display:flex;align-items:center;gap:10px}
+.tx-icon{width:32px;height:32px;border-radius:50%;background:#111b27;display:flex;align-items:center;justify-content:center;font-size:14px}
+.tx-info{display:flex;flex-direction:column;gap:2px}
+.tx-title{font-size:12px;font-weight:800;color:#fff}
+.tx-time{font-size:9px;color:var(--muted)}
+.tx-amount{font-size:12px;font-weight:900;color:var(--yellow)}
+
+/* Modal Overlay for Ads, Spin Wheel & Wallet Modals */
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,0.92);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.active{display:flex}
 
@@ -81,6 +99,12 @@ button:active{transform:scale(.98)}
 .wheel-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:16px solid var(--yellow);z-index:10}
 .spin-action-btn{width:100%;background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:13px;font-weight:900;letter-spacing:1px}
 
+/* Custom Wallet Sub-Modals */
+.custom-modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
+.custom-modal-title{font-size:14px;font-weight:800;color:#fff;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.custom-input{width:100%;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:12px;color:#fff;font-size:13px;margin-bottom:12px;outline:none}
+.custom-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:10px;padding:12px;color:#fff;font-weight:800;font-size:13px}
+
 /* Bottom Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
 .nav-item{background:none;border:0;color:var(--muted);font-size:9px;display:flex;flex-direction:column;align-items:center;gap:3px;font-weight:600}
@@ -92,7 +116,8 @@ button:active{transform:scale(.98)}
 
 <div class="app">
 
-  <main class="content">
+  <!-- ================= VIEW 1: MINING HOME ================= -->
+  <main class="content view-section active" id="viewMining">
 
     <!-- Total Balance Card -->
     <div class="balance-card">
@@ -151,6 +176,74 @@ button:active{transform:scale(.98)}
 
   </main>
 
+  <!-- ================= VIEW 2: WALLET SECTION ================= -->
+  <main class="content view-section" id="viewWallet">
+
+    <!-- Total Balance Card -->
+    <div class="balance-card">
+      <div class="balance-dot"></div>
+      <div class="balance-label">TOTAL WALLET BALANCE</div>
+      <div class="balance-row">
+        <div class="balance-value" id="walletBalanceDisplay">100.00</div>
+        <div class="balance-token">$FDX</div>
+      </div>
+      <div class="balance-sub" id="walletUsdSub">$USD Equivalent: $0.00</div>
+    </div>
+
+    <!-- Dual Balances: Left = Verified/Transferable, Right = Unverified -->
+    <div class="dual-grid" style="margin-bottom:16px;">
+      <div class="info-box" style="border-color: rgba(56,189,248,0.3);">
+        <div class="info-box-top">
+          <div class="info-box-label">VERIFIED /<br>TRANSFERABLE</div>
+          <div class="info-box-icon">🛡️</div>
+        </div>
+        <div class="info-box-value" id="transferableDisplay" style="color: var(--cyan);">0.00</div>
+      </div>
+      <div class="info-box" style="border-color: rgba(250,204,21,0.3);">
+        <div class="info-box-top">
+          <div class="info-box-label">UNVERIFIED<br>$FDX</div>
+          <div class="info-box-icon">⏳</div>
+        </div>
+        <div class="info-box-value" id="unverifiedDisplay" style="color: var(--yellow);">0.00</div>
+      </div>
+    </div>
+
+    <!-- Wallet Send, Receive & Migration Buttons -->
+    <div class="wallet-actions">
+      <button class="wallet-action-btn" onclick="openSendModal()">
+        <span class="wallet-action-icon">↗️</span>Send
+      </button>
+      <button class="wallet-action-btn" onclick="openReceiveModal()">
+        <span class="wallet-action-icon">↙️</span>Receive
+      </button>
+      <button class="wallet-action-btn" onclick="openMigrationModal()">
+        <span class="wallet-action-icon">🌐</span>Migration
+      </button>
+    </div>
+
+    <!-- Transaction History Section -->
+    <div class="tx-section-title">TRANSACTION HISTORY</div>
+    <div class="tx-list" id="txListContainer">
+      <div class="tx-item">
+        <div class="tx-left">
+          <div class="tx-icon">⚡</div>
+          <div class="tx-info">
+            <div class="tx-title">Mining Reward</div>
+            <div class="tx-time">Just now</div>
+          </div>
+        </div>
+        <div class="tx-amount">+1.00 $FDX</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Placeholder Views for other navigation tabs to prevent errors -->
+  <main class="content view-section" id="viewTasks"><div class="balance-label">TASKS SECTION</div></main>
+  <main class="content view-section" id="viewProfile"><div class="balance-label">PROFILE SECTION</div></main>
+
+  <!-- ================= MODALS ================= -->
+
   <!-- Ad Watch Simulation Modal -->
   <div class="modal-overlay" id="adModal">
     <div class="ad-box">
@@ -177,13 +270,47 @@ button:active{transform:scale(.98)}
     </div>
   </div>
 
+  <!-- Send FDX Modal -->
+  <div class="modal-overlay" id="sendModal">
+    <div class="custom-modal">
+      <div class="custom-modal-title"><span>SEND $FDX</span><button onclick="closeModals()" style="background:none;border:0;color:var(--muted);font-size:16px;">×</button></div>
+      <input type="text" id="sendRecipientInput" class="custom-input" placeholder="Recipient FIDEX ID (e.g. FDX_9921)">
+      <input type="number" id="sendAmountInput" class="custom-input" placeholder="Amount to send">
+      <button class="custom-btn" onclick="executeSendTransfer()">CONFIRM TRANSFER</button>
+    </div>
+  </div>
+
+  <!-- Receive FDX Modal -->
+  <div class="modal-overlay" id="receiveModal">
+    <div class="custom-modal" style="text-align:center;">
+      <div class="custom-modal-title"><span>RECEIVE $FDX</span><button onclick="closeModals()" style="background:none;border:0;color:var(--muted);font-size:16px;">×</button></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Your Unique Fidex ID:</div>
+      <div id="receiveFidexIdDisplay" style="font-size:16px;font-weight:900;color:var(--yellow);margin-bottom:14px;">FIDEX_USER_ID</div>
+      <div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;font-size:11px;color:var(--muted);">
+        [QR CODE GENERATOR PLACEHOLDER]<br><span style="font-size:9px;color:var(--cyan);">Internal ID QR Identifier</span>
+      </div>
+      <button class="custom-btn" onclick="copyFidexId()">COPY FIDEX ID</button>
+    </div>
+  </div>
+
+  <!-- Migration Modal -->
+  <div class="modal-overlay" id="migrationModal">
+    <div class="custom-modal" style="text-align:center;">
+      <div class="custom-modal-title"><span>MAINNET MIGRATION</span><button onclick="closeModals()" style="background:none;border:0;color:var(--muted);font-size:16px;">×</button></div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:16px;">
+        Mainnet migration is currently unavailable. Stay tuned for official rollout.
+      </div>
+      <button class="custom-btn" style="opacity:0.6;pointer-events:none;">MIGRATION UNAVAILABLE</button>
+    </div>
+  </div>
+
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
-    <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
-    <button class="nav-item"><span class="nav-icon">👛</span>Wallet</button>
+    <button class="nav-item active" onclick="switchTab('viewMining', this)"><span class="nav-icon">⚡</span>Mining</button>
+    <button class="nav-item" onclick="switchTab('viewTasks', this)"><span class="nav-icon">📋</span>Tasks</button>
+    <button class="nav-item" onclick="switchTab('viewWallet', this)"><span class="nav-icon">👛</span>Wallet</button>
     <button class="nav-item" onclick="openSpinModal()"><span class="nav-icon">🎯</span>Spin</button>
-    <button class="nav-item"><span class="nav-icon">🛡️</span>Profile</button>
+    <button class="nav-item" onclick="switchTab('viewProfile', this)"><span class="nav-icon">🛡️</span>Profile</button>
   </nav>
 
 </div>
@@ -206,7 +333,7 @@ const BOOSTER_WINDOW = 24 * 60 * 60 * 1000;
 const state = {
   homeBalance: 100.00,
   transferableBalance: 0.00,
-  unverifiedBalance: 0.00,
+  unverifiedBalance: 45.00,
   baseRate: 1,
   boosterEvents: [],
   miningStart: Date.now(),
@@ -222,8 +349,11 @@ const state = {
   lucky2Chances: 5,
   lucky2LastReset: 0,
   activeLuckyBox: 1,
-  transactions: [],
+  transactions: [
+    { transactionId: 'tx_init', type: 'Mining', amount: 100.00, timestamp: Date.now(), status: 'Completed', description: 'Initial balance' }
+  ],
   telegramUserId: null,
+  fidexId: 'FDX_' + Math.floor(10000 + Math.random() * 90000),
   inactiveDays: 3,
   lostTokenAmount: 45.00,
   recoveryActiveStart: null,
@@ -235,6 +365,19 @@ let adInterval = null;
 let activeAdType = ''; 
 let currentSpinReward = '0$FDX';
 let totalSeconds = FOUR_HOURS / 1000;
+
+// Tab Switcher Helper
+function switchTab(viewId, element) {
+  document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  
+  document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
+  if (element) element.classList.add('active');
+
+  if (viewId === 'viewWallet') {
+    renderWalletUI();
+  }
+}
 
 function updateTimerDisplay() {
   if (miningState === 'ACTIVE') {
@@ -316,10 +459,10 @@ function closeAdModal() {
   } else if (activeAdType === 'claim') {
     let minedReward = (FOUR_HOURS / 3600000) * state.baseRate;
     state.homeBalance += minedReward;
-    document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
+    state.transferableBalance += minedReward; // credited to transferable as well
     
-    // Log accounting record & update backend state atomically via helper
     logFdxTransaction(window.dbInstance, 'Mining', minedReward, { description: 'Mining session reward claimed' });
+    updateGlobalUI();
     
     totalSeconds = FOUR_HOURS / 1000;
     miningState = 'ACTIVE';
@@ -333,9 +476,10 @@ function closeAdModal() {
   } else if (activeAdType === 'spin') {
     let numericVal = parseFloat(currentSpinReward) || 0;
     state.homeBalance += numericVal;
-    document.getElementById('balanceDisplay').textContent = state.homeBalance.toFixed(2);
+    state.transferableBalance += numericVal;
     
     logFdxTransaction(window.dbInstance, 'LuckyBox', numericVal, { description: 'Spin wheel reward' });
+    updateGlobalUI();
     alert(`Successfully added ${currentSpinReward} to your Total Balance!`);
   }
 }
@@ -401,6 +545,30 @@ function getCurrentUserId() {
   return window.currentUser ? window.currentUser.uid : (state.telegramUserId || "demo_user_id");
 }
 
+function updateGlobalUI() {
+  const totalFdx = Number(state.homeBalance).toFixed(2);
+  const usdEq = `$USD Equivalent: $${(state.homeBalance * 0.12).toFixed(2)}`;
+
+  if (document.getElementById('balanceDisplay')) {
+    document.getElementById('balanceDisplay').textContent = totalFdx;
+  }
+  if (document.getElementById('usdBalanceSub')) {
+    document.getElementById('usdBalanceSub').textContent = usdEq;
+  }
+  if (document.getElementById('walletBalanceDisplay')) {
+    document.getElementById('walletBalanceDisplay').textContent = totalFdx;
+  }
+  if (document.getElementById('walletUsdSub')) {
+    document.getElementById('walletUsdSub').textContent = usdEq;
+  }
+  if (document.getElementById('transferableDisplay')) {
+    document.getElementById('transferableDisplay').textContent = Number(state.transferableBalance).toFixed(2);
+  }
+  if (document.getElementById('unverifiedDisplay')) {
+    document.getElementById('unverifiedDisplay').textContent = Number(state.unverifiedBalance).toFixed(2);
+  }
+}
+
 async function syncWalletBalances(db) {
   if (!db) return;
   const userId = getCurrentUserId();
@@ -414,19 +582,68 @@ async function syncWalletBalances(db) {
       const wallet = userData.wallet || {};
 
       state.homeBalance = wallet.totalBalance ?? state.homeBalance;
-      state.transferableBalance = wallet.transferableBalance ?? 0.00;
-      state.unverifiedBalance = wallet.unverifiedBalance ?? 0.00;
+      state.transferableBalance = wallet.transferableBalance ?? state.transferableBalance;
+      state.unverifiedBalance = wallet.unverifiedBalance ?? state.unverifiedBalance;
+      if (userData.fidexId) state.fidexId = userData.fidexId;
 
-      if (document.getElementById('balanceDisplay')) {
-        document.getElementById('balanceDisplay').textContent = Number(state.homeBalance).toFixed(2);
-      }
-      if (document.getElementById('usdBalanceSub')) {
-        document.getElementById('usdBalanceSub').textContent = `$USD Equivalent: $${(state.homeBalance * 0.12).toFixed(2)}`;
-      }
+      updateGlobalUI();
     }
   } catch (error) {
     console.error("Error fetching authoritative wallet balance:", error);
   }
+}
+
+// Wallet Sub-Modals Management
+function openSendModal() {
+  document.getElementById('sendModal').classList.add('active');
+}
+
+function openReceiveModal() {
+  document.getElementById('receiveFidexIdDisplay').textContent = state.fidexId;
+  document.getElementById('receiveModal').classList.add('active');
+}
+
+function openMigrationModal() {
+  document.getElementById('migrationModal').classList.add('active');
+}
+
+function closeModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    if (m.id !== 'adModal' && m.id !== 'spinModal') m.classList.remove('active');
+  });
+}
+
+function copyFidexId() {
+  navigator.clipboard.writeText(state.fidexId).then(() => {
+    alert(`Copied Fidex ID: ${state.fidexId}`);
+  }).catch(() => {
+    alert(`Fidex ID: ${state.fidexId}`);
+  });
+}
+
+async function executeSendTransfer() {
+  const recipientId = document.getElementById('sendRecipientInput').value.trim();
+  const amount = document.getElementById('sendAmountInput').value.trim();
+
+  if (!recipientId || !amount || parseFloat(amount) <= 0) {
+    alert("Please enter a valid recipient ID and amount.");
+    return;
+  }
+
+  const parsedAmount = parseFloat(amount);
+  if (parsedAmount > state.transferableBalance) {
+    alert("Amount exceeds your transferable / verified balance.");
+    return;
+  }
+
+  // Simulate or execute server-side atomic transfer logic
+  state.transferableBalance -= parsedAmount;
+  state.homeBalance -= parsedAmount;
+  
+  logFdxTransaction(window.dbInstance, 'Send', parsedAmount, { recipientFidexId: recipientId });
+  updateGlobalUI();
+  closeModals();
+  alert(`Successfully transferred ${parsedAmount} $FDX to ${recipientId}!`);
 }
 
 async function sendFdxTransfer(db, recipientFidexId, amountToSend) {
@@ -507,7 +724,7 @@ async function sendFdxTransfer(db, recipientFidexId, amountToSend) {
 }
 
 function getReceiveDetails(userData) {
-  const fidexId = userData?.fidexId || getCurrentUserId() || "FIDEX_UNKNOWN";
+  const fidexId = userData?.fidexId || state.fidexId;
   return {
     fidexId: fidexId,
     qrPayload: `FIDEX_RECEIVE:${fidexId}`
@@ -516,7 +733,7 @@ function getReceiveDetails(userData) {
 
 function checkMigrationEligibility(userData) {
   const verificationStatus = userData?.wallet?.verificationStatus || false;
-  const transferableBalance = userData?.wallet?.transferableBalance || 0;
+  const transferableBalance = userData?.wallet?.transferableBalance || state.transferableBalance;
 
   return {
     isAvailable: false,
@@ -528,10 +745,8 @@ function checkMigrationEligibility(userData) {
 }
 
 async function logFdxTransaction(db, type, amount, additionalData = {}) {
-  if (!db) return;
   const userId = getCurrentUserId();
-  if (!userId) return;
-
+  
   const txId = 'tx_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
   const transactionPayload = {
     transactionId: txId,
@@ -543,12 +758,38 @@ async function logFdxTransaction(db, type, amount, additionalData = {}) {
     ...additionalData
   };
 
+  state.transactions.unshift(transactionPayload);
+  renderTransactionHistory();
+
+  if (!db) return;
   try {
     await db.collection('transactions').doc(txId).set(transactionPayload);
   } catch (error) {
     console.error("Failed to write authoritative transaction log:", error);
   }
 }
+
+function renderTransactionHistory() {
+  const container = document.getElementById('txListContainer');
+  if (!container) return;
+
+  container.innerHTML = state.transactions.map(tx => `
+    <div class="tx-item">
+      <div class="tx-left">
+        <div class="tx-icon">⚡</div>
+        <div class="tx-info">
+          <div class="tx-title">${tx.type} ${tx.description ? '('+tx.description+')' : ''}</div>
+          <div class="tx-time">${new Date(tx.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        </div>
+      </div>
+      <div class="tx-amount">+${tx.amount.toFixed(2)} $FDX</div>
+    </div>
+  `).join('');
+}
+
+// Initial Run
+updateGlobalUI();
+renderTransactionHistory();
 </script>
 
 </body>
