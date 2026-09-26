@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#07111f">
+<meta name="theme-color" content="#080F0F">
 <title>FIDEXA NETWORK</title>
 <!-- QRCode.js Library CDN for real verified QR codes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#07111f;--panel:#0b192a;--border:#19334e;--text:#fff;--muted:#71869b;--cyan:#55c4ff;--blue:#1185e5;--green:#24c987;--danger:#ef6b73}
+:root{--bg:#080F0F;--panel:#111F26;--border:#2A3E52;--text:#fff;--muted:#8A9BA8;--cyan:#00E5D1;--cyan-bright:#14F1E6;--blue:#117ed0;--green:#27D69A;--warning:#FFB547;--danger:#EF6B78}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--bg)}
 body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
@@ -19,7 +19,7 @@ a{text-decoration:none;color:inherit}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px}
 .header{padding:18px 17px 10px;display:flex;align-items:center;justify-content:flex-end}
-.avatar,.profile-avatar{background:#13243a;border:1px solid #203b57;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:800;overflow:hidden}
+.avatar,.profile-avatar{background:#172A38;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:800;overflow:hidden}
 .avatar{width:39px;height:39px;border-radius:50%}
 .avatar img,.profile-avatar img{width:100%;height:100%;object-fit:cover}
 
@@ -27,29 +27,29 @@ a{text-decoration:none;color:inherit}
 .page{display:none}
 .page.active{display:block}
 .section-title{display:flex;align-items:center;justify-content:space-between;margin:24px 2px 12px}
-.section-title h2{font-size:17px}
+.section-title h2{font-size:17px;color:var(--text)}
 .section-title span{font-size:10px;color:var(--cyan)}
 
-.balance-card,.wallet-hero,.referral-card{background:linear-gradient(145deg,#102a48,#0b1d32);border:1px solid #1d4268;border-radius:22px}
-.balance-card{padding:23px;margin-top:10px}
-.balance-label,.wallet-label{font-size:11px;color:#7f98b4}
-.balance{font-size:36px;font-weight:800;margin-top:7px}
+.balance-card,.wallet-hero,.referral-card{background:linear-gradient(145deg,#111F26,#0E181F);border:1px solid var(--border)}
+.balance-card{padding:23px;margin-top:10px;border-radius:22px}
+.balance-label,.wallet-label{font-size:11px;color:var(--muted)}
+.balance{font-size:36px;font-weight:800;margin-top:7px;color:var(--text)}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
-.usd-equiv{font-size:13px;color:#7f98b4;margin-top:4px;font-weight:600}
+.usd-equiv{font-size:13px;color:var(--muted);margin-top:4px;font-weight:600}
 
 .streak-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .streak-box,.recovery-box{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
-.streak-label,.recovery-label{font-size:9px;color:#71869b;text-transform:uppercase;letter-spacing:.5px}
+.streak-label,.recovery-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .streak-value{font-size:20px;font-weight:800;color:var(--danger);margin-top:8px}
 .recovery-value{font-size:16px;font-weight:800;color:var(--cyan);margin-top:8px}
-.recovery-sub{font-size:8px;color:#71869b;margin-top:4px;line-height:1.3}
-.recovery-btn{margin-top:10px;width:100%;border:0;background:#117ed0;color:#fff;padding:8px;border-radius:10px;font-size:9px;font-weight:800}
-.recovery-btn:disabled{opacity:.45;background:#153048;color:#71869b}
+.recovery-sub{font-size:8px;color:var(--muted);margin-top:4px;line-height:1.3}
+.recovery-btn{margin-top:10px;width:100%;border:0;background:var(--cyan);color:#080F0F;padding:8px;border-radius:10px;font-size:9px;font-weight:800}
+.recovery-btn:disabled{opacity:.45;background:#172A38;color:var(--muted)}
 
 .card,.wallet-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:18px}
 .mining-top,.boost-info,.pending-row,.active-referrals{display:flex;align-items:center;justify-content:space-between}
 .mining-left{display:flex;align-items:center;gap:12px}
-.mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:#102b47;display:flex;align-items:center;justify-content:center}
+.mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:#172A38;display:flex;align-items:center;justify-content:center}
 .mining-icon{width:50px;height:50px;border-radius:16px;font-size:24px}
 
 @keyframes digAnimation {
@@ -64,146 +64,147 @@ a{text-decoration:none;color:inherit}
   color: var(--cyan);
 }
 
-.status{font-size:10px;color:#6f849b}
+.status{font-size:10px;color:var(--muted)}
 .status strong{display:block;color:var(--cyan);margin-top:4px;font-size:11px}
 .rate{text-align:right}
-.rate-number{font-size:22px;font-weight:800}
-.rate small{font-size:9px;color:#71869d}
+.rate-number{font-size:22px;font-weight:800;color:var(--text)}
+.rate small{font-size:9px;color:var(--muted)}
 
-.timer-box{margin-top:19px;padding:17px;border-radius:17px;background:#071321;text-align:center}
-.timer-label{font-size:9px;color:#6e8298;text-transform:uppercase;letter-spacing:1px}
-.timer{font-size:31px;font-weight:800;margin-top:7px;letter-spacing:2px}
-.progress{height:5px;background:#15273a;border-radius:10px;margin-top:14px;overflow:hidden}
-.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#087eff,#43c7ff);border-radius:10px}
+.timer-box{margin-top:19px;padding:17px;border-radius:17px;background:#080F0F;text-align:center;border:1px solid var(--border)}
+.timer-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.timer{font-size:31px;font-weight:800;margin-top:7px;letter-spacing:2px;color:var(--text)}
+.progress{height:5px;background:#172A38;border-radius:10px;margin-top:14px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--cyan-bright));border-radius:10px}
 
 .primary,.secondary,.small-btn,.copy-btn,.wallet-action{border-radius:13px;font-weight:800}
-.primary{width:100%;border:0;margin-top:17px;padding:15px;background:linear-gradient(90deg,#087eff,#00aef8);color:#fff;font-size:13px}
-.primary:disabled{opacity:.6;cursor:not-allowed}
-.secondary{width:100%;border:1px solid #22638e;background:#0d263c;color:var(--cyan);margin-top:14px;padding:13px;font-size:12px}
-.notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:#0c2034;border:1px solid #183b59;color:#7792aa;font-size:10px;line-height:1.5}
+.primary{width:100%;border:0;margin-top:17px;padding:15px;background:var(--cyan);color:#080F0F;font-size:13px}
+.primary:disabled{opacity:.6;cursor:not-allowed;background:#172A38;color:var(--muted)}
+.secondary{width:100%;border:1px solid var(--cyan);background:#111F26;color:var(--cyan);margin-top:14px;padding:13px;font-size:12px}
+.notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:#111F26;border:1px solid var(--border);color:var(--muted);font-size:10px;line-height:1.5}
 .notice strong{color:var(--cyan)}
 
-.pending-card{margin-top:12px;background:#0c2034;border:1px solid #1b4768;border-radius:17px;padding:15px}
-.pending-label{font-size:9px;color:#71869b}
+.pending-card{margin-top:12px;background:#111F26;border:1px solid var(--border);border-radius:17px;padding:15px}
+.pending-label{font-size:9px;color:var(--muted)}
 .pending-value{font-size:20px;font-weight:800;color:var(--cyan)}
 
-.boost-rate{font-size:25px;font-weight:800}
+.boost-rate{font-size:25px;font-weight:800;color:var(--text)}
 .boost-rate span{font-size:11px;color:var(--cyan)}
-.boost-limit{text-align:right;color:#74899f;font-size:9px}
+.boost-limit{text-align:right;color:var(--muted);font-size:9px}
 .boost-limit strong{display:block;color:#fff;font-size:15px}
 .booster-list{display:flex;gap:7px;margin-top:17px}
-.booster{flex:1;height:46px;border-radius:11px;background:#101f31;border:1px solid #203950;display:flex;align-items:center;justify-content:center;color:#50677f;font-weight:800;font-size:10px}
-.booster.used{background:#0c3650;border-color:#168dd0;color:#54c5ff}
+.booster{flex:1;height:46px;border-radius:11px;background:#172A38;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:800;font-size:10px}
+.booster.used{background:#111F26;border-color:var(--cyan);color:var(--cyan)}
 
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-.stat{background:var(--panel);border:1px solid #172f48;border-radius:16px;padding:14px}
-.stat-label{color:#71869b;font-size:9px}
-.stat-value{font-size:16px;font-weight:800;margin-top:7px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px}
+.stat-label{color:var(--muted);font-size:9px}
+.stat-value{font-size:16px;font-weight:800;margin-top:7px;color:var(--text)}
 
 .task,.row-card{background:var(--panel);border:1px solid var(--border);padding:14px;border-radius:17px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
-.icon-box{width:42px;height:42px;border-radius:13px;flex:none;font-size:20px}
+.icon-box{width:42px;height:42px;border-radius:13px;flex:none;font-size:20px;color:var(--cyan)}
 .task-info{flex:1}
-.task-info strong{font-size:12px}
-.task-info p{color:#71869b;font-size:9px;margin-top:4px;line-height:1.4}
-.small-btn{border:0;background:#117ed0;color:#fff;padding:9px 11px;font-size:9px}
-.small-btn:disabled{opacity:.45;background:#153048;color:#71869b}
+.task-info strong{font-size:12px;color:var(--text)}
+.task-info p{color:var(--muted);font-size:9px;margin-top:4px;line-height:1.4}
+.small-btn{border:0;background:var(--cyan);color:#080F0F;padding:9px 11px;font-size:9px}
+.small-btn:disabled{opacity:.45;background:#172A38;color:var(--muted)}
 
-.referral-card{padding:21px;text-align:center}
-.referral-card h2{font-size:21px}
-.referral-card p{color:#8095a9;font-size:11px;line-height:1.5;margin-top:7px}
-.referral-code{margin-top:16px;background:#071522;padding:12px;border-radius:12px;color:var(--cyan);font-size:10px;word-break:break-all;-webkit-user-select:all;-moz-user-select:all;-ms-user-select:all;user-select:all}
-.copy-btn{margin-top:9px;width:100%;padding:13px;border:0;background:#117ed0;color:#fff;font-size:11px}
+.referral-card{padding:21px;text-align:center;border-radius:22px}
+.referral-card h2{font-size:21px;color:var(--text)}
+.referral-card p{color:var(--muted);font-size:11px;line-height:1.5;margin-top:7px}
+.referral-code{margin-top:16px;background:#080F0F;padding:12px;border-radius:12px;color:var(--cyan);font-size:10px;word-break:break-all;border:1px solid var(--border);-webkit-user-select:all;-moz-user-select:all;-ms-user-select:all;user-select:all}
+.copy-btn{margin-top:9px;width:100%;padding:13px;border:0;background:var(--cyan);color:#080F0F;font-size:11px}
 
 .reward-list{margin-top:12px}
 .reward-row{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:12px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .reward-row .reward-main{flex:1}
-.reward-row strong{font-size:11px}
-.reward-row p{font-size:9px;color:#71869b;margin-top:3px}
+.reward-row strong{font-size:11px;color:var(--text)}
+.reward-row p{font-size:9px;color:var(--muted);margin-top:3px}
 .reward-value{font-size:12px;font-weight:800;color:var(--cyan)}
-.reward-row.claimed{border-color:#1b6388}
-.reward-row.claimed .reward-value{color:#66d7a2}
+.reward-row.claimed{border-color:var(--cyan)}
+.reward-row.claimed .reward-value{color:var(--green)}
 
 /* Friend List Item Styles */
 .friend-list{margin-top:12px}
 .friend-row{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .friend-info-left{display:flex;align-items:center;gap:10px}
-.friend-avatar-box{width:36px;height:36px;border-radius:10px;background:#12283e;border:1px solid #1f3b57;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;font-weight:800}
-.friend-details strong{font-size:11px;display:block}
-.friend-details p{font-size:9px;color:#71869b;margin-top:2px}
+.friend-avatar-box{width:36px;height:36px;border-radius:10px;background:#172A38;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;font-weight:800}
+.friend-details strong{font-size:11px;display:block;color:var(--text)}
+.friend-details p{font-size:9px;color:var(--muted);margin-top:2px}
 .friend-status-badge{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800}
 .status-dot{width:8px;height:8px;border-radius:50%}
-.friend-row.active-friend .status-dot{background:var(--green);box-shadow:0 0 8px rgba(36,201,135,.6)}
+.friend-row.active-friend .status-dot{background:var(--green);box-shadow:0 0 6px rgba(39,214,154,.4)}
 .friend-row.active-friend .friend-status-badge{color:var(--green)}
-.friend-row.inactive-friend .status-dot{background:#71869b}
-.friend-row.inactive-friend .friend-status-badge{color:#71869b}
+.friend-row.inactive-friend .status-dot{background:var(--muted)}
+.friend-row.inactive-friend .friend-status-badge{color:var(--muted)}
 
 /* Menu Group Styles */
 .menu-group{margin-top:12px}
-.menu-label{font-size:10px;color:#71869b;margin:0 4px 9px}
+.menu-label{font-size:10px;color:var(--muted);margin:0 4px 9px}
 .menu-item{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:14px;display:flex;align-items:center;gap:12px;color:#fff;text-align:left;margin-bottom:8px}
-.mi{width:34px;height:34px;border-radius:10px;flex:none}
+.mi{width:34px;height:34px;border-radius:10px;flex:none;color:var(--cyan)}
 .mt{flex:1}
-.mt strong{font-size:12px}
-.mt p{font-size:9px;color:#71869b;margin-top:3px}
-.arrow{color:#587087}
+.mt strong{font-size:12px;color:var(--text)}
+.mt p{font-size:9px;color:var(--muted);margin-top:3px}
+.arrow{color:var(--muted)}
 
-.wallet-hero{padding:22px}
-.wallet-total{font-size:37px;font-weight:900;margin-top:7px}
+.wallet-hero{padding:22px;border-radius:22px}
+.wallet-total{font-size:37px;font-weight:900;margin-top:7px;color:var(--text)}
 .wallet-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.wallet-action{min-height:82px;border:1px solid #1e4d7a;background:#0b2138;color:#fff;padding:9px 5px;font-size:10px}
-.wallet-action .wa-icon{display:block;font-size:22px;margin-bottom:7px}
-.wallet-action.send{border-color:#0ac8a5}
-.wallet-action.receive{border-color:#168dd0}
-.wallet-action.migrate{border-color:#7b43e8}
-.wallet-action.history{border-color:#245b91}
+.wallet-action{min-height:82px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:9px 5px;font-size:10px}
+.wallet-action .wa-icon{display:block;font-size:22px;margin-bottom:7px;color:var(--cyan)}
+.wallet-action.send{border-color:var(--cyan)}
+.wallet-action.receive{border-color:var(--cyan)}
+.wallet-action.migrate{border-color:var(--cyan)}
+.wallet-action.history{border-color:var(--border)}
 
 .pi-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .pi-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px}
-.pi-label{font-size:9px;color:#7f98b4;text-transform:uppercase;letter-spacing:.5px}
+.pi-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .pi-amount{font-size:18px;font-weight:800;margin-top:6px;color:#fff}
 .pi-amount span{font-size:11px;color:var(--cyan)}
-.pi-note{font-size:8px;color:#71869b;margin-top:4px;line-height:1.3}
+.pi-note{font-size:8px;color:var(--muted);margin-top:4px;line-height:1.3}
 
 .transaction-list{margin-top:10px}
-.transaction{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;background:#071522;border:1px solid #19334e;margin-bottom:8px}
-.tx-icon{width:34px;height:34px;border-radius:10px;flex:none}
+.transaction{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;background:var(--panel);border:1px solid var(--border);margin-bottom:8px}
+.tx-icon{width:34px;height:34px;border-radius:10px;flex:none;color:var(--cyan)}
 .tx-main{flex:1}
-.tx-main strong{font-size:10px}
-.tx-main p{font-size:8px;color:#71869b;margin-top:3px}
+.tx-main strong{font-size:10px;color:var(--text)}
+.tx-main p{font-size:8px;color:var(--muted);margin-top:3px}
 .tx-amount{font-size:10px;font-weight:800}
-.tx-positive{color:#66d7a2}
-.tx-negative{color:#ef8b92}
+.tx-positive{color:var(--green)}
+.tx-negative{color:var(--danger)}
 
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:rgba(7,17,31,.98);border-top:1px solid #172b40;display:grid;grid-template-columns:repeat(5,1fr);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{background:none;border:0;color:#5e7187;font-size:8px;padding:4px 2px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:rgba(8,15,15,.98);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{background:none;border:0;color:var(--muted);font-size:8px;padding:4px 2px}
 .nav-icon{display:block;font-size:18px;margin-bottom:3px}
-.nav-item.active{color:#4dbbff}
+.nav-item.active{color:var(--cyan)}
 
-.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:#102a40;border:1px solid #285576;color:#fff;padding:10px 14px;border-radius:12px;font-size:10px;opacity:0;pointer-events:none;transition:.25s;z-index:600;max-width:90%;text-align:center}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:var(--panel);border:1px solid var(--cyan);color:var(--text);padding:10px 14px;border-radius:12px;font-size:10px;opacity:0;pointer-events:none;transition:.25s;z-index:600;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:300;align-items:flex-end;justify-content:center;padding:14px;overflow:hidden}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:flex-end;justify-content:center;padding:14px;overflow:hidden}
 .modal.show{display:flex}
-.modal-box{width:min(480px,100%);max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#0b192a;border:1px solid #24435e;border-radius:22px;padding:20px 20px 26px}
-.modal-box h3{font-size:17px}
-.modal-box p{color:#8095a9;font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
+.modal-box{width:min(480px,100%);max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:20px 20px 26px}
+.modal-box h3{font-size:17px;color:var(--cyan)}
+.modal-box p{color:var(--muted);font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
 
-.scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid #18334d;border-bottom:1px solid #18334d;padding-top:10px;padding-bottom:10px;text-align:left}
+.scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding-top:10px;padding-bottom:10px;text-align:left}
 .scrollable-doc::-webkit-scrollbar{width:4px}
-.scrollable-doc::-webkit-scrollbar-thumb{background:#204363;border-radius:4px}
+.scrollable-doc::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-.support{background:#071321;border:1px solid #19334e;border-radius:18px;padding:15px;margin-top:14px}
+.support{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:15px;margin-top:14px}
 .messages{min-height:160px;max-height:34vh;overflow:auto;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
 .bubble{max-width:82%;padding:10px 12px;border-radius:13px;font-size:10px;line-height:1.4}
-.bubble.user{align-self:flex-end;background:#116fae}
-.bubble.admin{align-self:flex-start;background:#13283d;color:#dce9f4}
+.bubble.user{align-self:flex-end;background:var(--cyan);color:#080F0F;font-weight:700}
+.bubble.admin{align-self:flex-start;background:#172A38;color:var(--text)}
 .chat-input{display:flex;gap:7px;margin-top:12px}
-.chat-input input,.wallet-input{flex:1;background:#0c1d2f;border:1px solid #203a53;border-radius:11px;color:#fff;padding:12px;font-size:11px;outline:none}
-.chat-input button{border:0;border-radius:11px;background:#117ed0;color:#fff;padding:0 14px;font-weight:800}
+.chat-input input,.wallet-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:11px;color:#fff;padding:12px;font-size:11px;outline:none}
+.chat-input input:focus,.wallet-input:focus{border-color:var(--cyan)}
+.chat-input button{border:0;border-radius:11px;background:var(--cyan);color:#080F0F;padding:0 14px;font-weight:800}
 
 .receive-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;margin-bottom:12px}
-.receive-tab-btn{background:#0c2034;border:1px solid #1c3d5a;color:#7f98b4;padding:10px;border-radius:10px;font-size:11px;font-weight:800}
-.receive-tab-btn.active{background:#117ed0;border-color:#117ed0;color:#fff}
+.receive-tab-btn{background:#172A38;border:1px solid var(--border);color:var(--muted);padding:10px;border-radius:10px;font-size:11px;font-weight:800}
+.receive-tab-btn.active{background:var(--cyan);border-color:var(--cyan);color:#080F0F}
 .receive-pane{display:none}
 .receive-pane.active{display:block}
 .qr-container{background:#fff;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px;min-height:172px}
@@ -271,7 +272,7 @@ a{text-decoration:none;color:inherit}
       <div class="streak-label">Burning Streak</div>
       <div class="streak-value" id="inactiveDaysVal">0 Days</div>
     </div>
-    <div style="font-size:8px;color:#71869b;margin-top:8px">Inactivity period recorded</div>
+    <div style="font-size:8px;color:var(--muted);margin-top:8px">Inactivity period recorded</div>
   </div>
   <div class="recovery-box">
     <div>
@@ -347,12 +348,12 @@ a{text-decoration:none;color:inherit}
         <span id="boostRate">1.0</span>
         <span>$FDX/H</span>
       </div>
-      <div style="color:#71869b;font-size:9px;margin-top:4px">
+      <div style="color:var(--muted);font-size:9px;margin-top:4px">
         Current Mining Rate
       </div>
     </div>
     <div class="boost-limit">
-      <strong id="boosterCount">0 / 5</strong>
+      <strong id="boosterCount" style="color:var(--text)">0 / 5</strong>
       ADS USED<br>
       LAST 24 HOURS
     </div>
@@ -458,13 +459,13 @@ a{text-decoration:none;color:inherit}
 <div class="card" style="margin-top:12px">
   <div class="active-referrals">
     <div>
-      <div style="font-size:10px;color:#71869b">REFERRAL MINING BONUS</div>
-      <strong id="referralMiningBonus">+0.0</strong>
-      <span>$FDX/H</span>
+      <div style="font-size:10px;color:var(--muted)">REFERRAL MINING BONUS</div>
+      <strong id="referralMiningBonus" style="color:var(--text)">+0.0</strong>
+      <span style="color:var(--cyan)">$FDX/H</span>
     </div>
     <div style="text-align:right">
-      <div style="font-size:10px;color:#71869b">CURRENT TOTAL RATE</div>
-      <strong id="friendRatePreview">1.0 $FDX/H</strong>
+      <div style="font-size:10px;color:var(--muted)">CURRENT TOTAL RATE</div>
+      <strong id="friendRatePreview" style="color:var(--text)">1.0 $FDX/H</strong>
     </div>
   </div>
   <div class="notice">
@@ -479,7 +480,7 @@ a{text-decoration:none;color:inherit}
 
 <div class="reward-list">
   <div class="reward-row" id="reward1">
-    <div class="icon-box">1</div>
+    <div class="icon-box" style="font-size:14px;font-weight:800">1</div>
     <div class="reward-main">
       <strong>Invite first friend</strong>
       <p>First referral milestone</p>
@@ -487,7 +488,7 @@ a{text-decoration:none;color:inherit}
     <div class="reward-value">+5 $FDX</div>
   </div>
   <div class="reward-row" id="reward5">
-    <div class="icon-box">5</div>
+    <div class="icon-box" style="font-size:14px;font-weight:800">5</div>
     <div class="reward-main">
       <strong>Invite 5 friends</strong>
       <p>Network milestone</p>
@@ -495,7 +496,7 @@ a{text-decoration:none;color:inherit}
     <div class="reward-value">+20 $FDX</div>
   </div>
   <div class="reward-row" id="reward10">
-    <div class="icon-box">10</div>
+    <div class="icon-box" style="font-size:14px;font-weight:800">10</div>
     <div class="reward-main">
       <strong>Invite 10 friends</strong>
       <p>Network milestone</p>
@@ -503,7 +504,7 @@ a{text-decoration:none;color:inherit}
     <div class="reward-value">+30 $FDX</div>
   </div>
   <div class="reward-row" id="reward50">
-    <div class="icon-box">50</div>
+    <div class="icon-box" style="font-size:14px;font-weight:800">50</div>
     <div class="reward-main">
       <strong>Invite 50 friends</strong>
       <p>Network milestone</p>
@@ -511,7 +512,7 @@ a{text-decoration:none;color:inherit}
     <div class="reward-value">+50 $FDX</div>
   </div>
   <div class="reward-row" id="reward100">
-    <div class="icon-box">100</div>
+    <div class="icon-box" style="font-size:14px;font-weight:800">100</div>
     <div class="reward-main">
       <strong>Invite 100 friends</strong>
       <p>Network milestone</p>
@@ -564,7 +565,7 @@ a{text-decoration:none;color:inherit}
   <button class="wallet-action history" onclick="showTransactionHistory()"><span class="wa-icon">▤</span>HISTORY</button>
 </div>
 
-<div class="notice" style="margin-top:14px;background:#0d263c;border-color:#1e4d7a;">
+<div class="notice" style="margin-top:14px">
   <strong>Notice:</strong> Wallet balance and transactions will remain at 0 until user verification and mainnet launch.
 </div>
 
@@ -585,7 +586,7 @@ a{text-decoration:none;color:inherit}
 <div class="menu-group">
   <div class="menu-label">ACCOUNT</div>
   <button class="menu-item" onclick="showProfileInfo()">
-    <div class="mi">👤</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">👤</div>
     <div class="mt">
       <strong>Account Information</strong>
       <p>View your FIDEXA account details</p>
@@ -593,7 +594,7 @@ a{text-decoration:none;color:inherit}
     <div class="arrow">›</div>
   </button>
   <button class="menu-item" onclick="openSupport()">
-    <div class="mi">💬</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">💬</div>
     <div class="mt">
       <strong>Chat Support</strong>
       <p>Send a message directly to FIDEXA support</p>
@@ -605,7 +606,7 @@ a{text-decoration:none;color:inherit}
 <div class="menu-group">
   <div class="menu-label">DOCUMENTATION & POLICIES</div>
   <button class="menu-item" onclick="showPrivacyPolicy()">
-    <div class="mi">📄</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">📄</div>
     <div class="mt">
       <strong>Privacy Policy</strong>
       <p>How FIDEXA handles user data and security</p>
@@ -613,7 +614,7 @@ a{text-decoration:none;color:inherit}
     <div class="arrow">›</div>
   </button>
   <button class="menu-item" onclick="showWhitepaper()">
-    <div class="mi">📘</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">📘</div>
     <div class="mt">
       <strong>FIDEXA Whitepaper</strong>
       <p>Tokenomics, mining mechanics & vision</p>
@@ -621,7 +622,7 @@ a{text-decoration:none;color:inherit}
     <div class="arrow">›</div>
   </button>
   <button class="menu-item" onclick="showRoadmap()">
-    <div class="mi">🗺️</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">🗺️</div>
     <div class="mt">
       <strong>Project Roadmap</strong>
       <p>Development milestones and mainnet goals</p>
@@ -629,7 +630,7 @@ a{text-decoration:none;color:inherit}
     <div class="arrow">›</div>
   </button>
   <a class="menu-item" href="https://t.me/fidexa_Network" target="_blank" rel="noopener">
-    <div class="mi">✈️</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">✈️</div>
     <div class="mt">
       <strong>Official Telegram</strong>
       <p>@fidexa_Network</p>
@@ -637,7 +638,7 @@ a{text-decoration:none;color:inherit}
     <div class="arrow">›</div>
   </a>
   <a class="menu-item" href="https://x.com/Fidexa_Network" target="_blank" rel="noopener">
-    <div class="mi">𝕏</div>
+    <div class="mi" style="display:flex;align-items:center;justify-content:center">𝕏</div>
     <div class="mt">
       <strong>Official X</strong>
       <p>@Fidexa_Network</p>
@@ -684,7 +685,7 @@ a{text-decoration:none;color:inherit}
 <button onclick="sendSupportMessage()">SEND</button>
 </div>
 </div>
-<button class="secondary" onclick="closeModal('supportModal')">CLOSE</button>
+<button class="secondary" onclick="closeModal('supportModal')" style="margin-top:14px">CLOSE</button>
 </div>
 </div>
 
@@ -753,7 +754,7 @@ a{text-decoration:none;color:inherit}
 <strong>STATUS: NOT AVAILABLE YET</strong>
 <br>Eligibility, wallet connection and final token distribution will be activated on mainnet day.
 </div>
-<button class="secondary" onclick="closeModal('migrationModal')">CLOSE</button>
+<button class="secondary" onclick="closeModal('migrationModal')" style="margin-top:14px">CLOSE</button>
 </div>
 </div>
 
@@ -762,7 +763,7 @@ a{text-decoration:none;color:inherit}
 <div class="modal-box">
 <h3>Transaction History</h3>
 <div id="historyModalList" class="transaction-list"></div>
-<button class="secondary" onclick="closeModal('historyModal')">CLOSE</button>
+<button class="secondary" onclick="closeModal('historyModal')" style="margin-top:14px">CLOSE</button>
 </div>
 </div>
 
@@ -1518,7 +1519,7 @@ function openReceiveModal() {
     text: ownID(),
     width: 140,
     height: 140,
-    colorDark: "#07111f",
+    colorDark: "#080F0F",
     colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H
   });
