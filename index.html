@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#ff1493">
+<meta name="theme-color" content="#05080c">
 <title>FIDEXA NETWORK</title>
 <!-- QRCode.js Library CDN for real verified QR codes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#ff1493;--panel:Cyber;--border:Technology;--text:Diamond;--muted:Technology;--cyan:Diamond;--blue:Cyber;--green:Diamond;--danger:#ff1493}
+:root{--bg:#05080c;--panel:#0d131a;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--green:#10b981;--danger:#f43f5e}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--bg)}
 body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
@@ -19,7 +19,7 @@ a{text-decoration:none;color:inherit}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px}
 .header{padding:18px 17px 10px;display:flex;align-items:center;justify-content:flex-end}
-.avatar,.profile-avatar{background:Cyber;border:1px solid Technology;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:800;overflow:hidden}
+.avatar,.profile-avatar{background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-weight:800;overflow:hidden}
 .avatar{width:39px;height:39px;border-radius:50%}
 .avatar img,.profile-avatar img{width:100%;height:100%;object-fit:cover}
 
@@ -30,26 +30,26 @@ a{text-decoration:none;color:inherit}
 .section-title h2{font-size:17px}
 .section-title span{font-size:10px;color:var(--cyan)}
 
-.balance-card,.wallet-hero,.referral-card{background:linear-gradient(145deg,Cyber,Technology);border:1px solid Technology;border-radius:22px}
-.balance-card{padding:23px;margin-top:10px}
-.balance-label,.wallet-label{font-size:11px;color:Technology}
+.balance-card,.wallet-hero,.referral-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #223247}
+.balance-card{padding:23px;margin-top:10px;border-radius:22px}
+.balance-label,.wallet-label{font-size:11px;color:#8899a6}
 .balance{font-size:36px;font-weight:800;margin-top:7px}
 .balance span,.wallet-total span{font-size:15px;color:var(--cyan)}
-.usd-equiv{font-size:13px;color:Technology;margin-top:4px;font-weight:600}
+.usd-equiv{font-size:13px;color:#8899a6;margin-top:4px;font-weight:600}
 
 .streak-recovery-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .streak-box,.recovery-box{background:var(--panel);border:1px solid var(--border);border-radius:17px;padding:15px;display:flex;flex-direction:column;justify-content:space-between}
-.streak-label,.recovery-label{font-size:9px;color:Technology;text-transform:uppercase;letter-spacing:.5px}
+.streak-label,.recovery-label{font-size:9px;color:#8899a6;text-transform:uppercase;letter-spacing:.5px}
 .streak-value{font-size:20px;font-weight:800;color:var(--danger);margin-top:8px}
 .recovery-value{font-size:16px;font-weight:800;color:var(--cyan);margin-top:8px}
-.recovery-sub{font-size:8px;color:Technology;margin-top:4px;line-height:1.3}
-.recovery-btn{margin-top:10px;width:100%;border:0;background:Cyber;color:var(--text);padding:8px;border-radius:10px;font-size:9px;font-weight:800}
-.recovery-btn:disabled{opacity:.45;background:Cyber;color:Technology}
+.recovery-sub{font-size:8px;color:#8899a6;margin-top:4px;line-height:1.3}
+.recovery-btn{margin-top:10px;width:100%;border:0;background:#0284c7;color:#fff;padding:8px;border-radius:10px;font-size:9px;font-weight:800}
+.recovery-btn:disabled{opacity:.45;background:#111b27;color:#8899a6}
 
 .card,.wallet-card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:18px}
 .mining-top,.boost-info,.pending-row,.active-referrals{display:flex;align-items:center;justify-content:space-between}
 .mining-left{display:flex;align-items:center;gap:12px}
-.mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:Cyber;display:flex;align-items:center;justify-content:center}
+.mining-icon,.icon-box,.mi,.wr-icon,.tx-icon{background:#111b27;display:flex;align-items:center;justify-content:center}
 .mining-icon{width:50px;height:50px;border-radius:16px;font-size:24px}
 
 @keyframes digAnimation {
@@ -64,149 +64,149 @@ a{text-decoration:none;color:inherit}
   color: var(--cyan);
 }
 
-.status{font-size:10px;color:Technology}
+.status{font-size:10px;color:#8899a6}
 .status strong{display:block;color:var(--cyan);margin-top:4px;font-size:11px}
 .rate{text-align:right}
 .rate-number{font-size:22px;font-weight:800}
-.rate small{font-size:9px;color:Technology}
+.rate small{font-size:9px;color:#8899a6}
 
-.timer-box{margin-top:19px;padding:17px;border-radius:17px;background:#ff1493;text-align:center}
-.timer-label{font-size:9px;color:Technology;text-transform:uppercase;letter-spacing:1px}
+.timer-box{margin-top:19px;padding:17px;border-radius:17px;background:#05080c;text-align:center}
+.timer-label{font-size:9px;color:#8899a6;text-transform:uppercase;letter-spacing:1px}
 .timer{font-size:31px;font-weight:800;margin-top:7px;letter-spacing:2px}
-.progress{height:5px;background:Cyber;border-radius:10px;margin-top:14px;overflow:hidden}
-.progress-bar{height:100%;width:0;background:linear-gradient(90deg,Cyber,Diamond);border-radius:10px}
+.progress{height:5px;background:#111b27;border-radius:10px;margin-top:14px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#0284c7,#38bdf8);border-radius:10px}
 
 .primary,.secondary,.small-btn,.copy-btn,.wallet-action{border-radius:13px;font-weight:800}
-.primary{width:100%;border:0;margin-top:17px;padding:15px;background:linear-gradient(90deg,Cyber,Diamond);color:var(--text);font-size:13px}
+.primary{width:100%;border:0;margin-top:17px;padding:15px;background:linear-gradient(90deg,#0284c7,#38bdf8);color:#fff;font-size:13px}
 .primary:disabled{opacity:.6;cursor:not-allowed}
-.secondary{width:100%;border:1px solid Technology;background:Cyber;color:var(--cyan);margin-top:14px;padding:13px;font-size:12px}
-.notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:Cyber;border:1px solid Technology;color:Technology;font-size:10px;line-height:1.5}
+.secondary{width:100%;border:1px solid #1b365d;background:#0b1522;color:var(--cyan);margin-top:14px;padding:13px;font-size:12px}
+.notice{margin-top:12px;padding:11px 13px;border-radius:12px;background:#0a1018;border:1px solid #1b2636;color:#8899a6;font-size:10px;line-height:1.5}
 .notice strong{color:var(--cyan)}
 
-.pending-card{margin-top:12px;background:Cyber;border:1px solid Technology;border-radius:17px;padding:15px}
-.pending-label{font-size:9px;color:Technology}
+.pending-card{margin-top:12px;background:#0a1018;border:1px solid #1b2636;border-radius:17px;padding:15px}
+.pending-label{font-size:9px;color:#8899a6}
 .pending-value{font-size:20px;font-weight:800;color:var(--cyan)}
 
 .boost-rate{font-size:25px;font-weight:800}
 .boost-rate span{font-size:11px;color:var(--cyan)}
-.boost-limit{text-align:right;color:Technology;font-size:9px}
-.boost-limit strong{display:block;color:var(--text);font-size:15px}
+.boost-limit{text-align:right;color:#8899a6;font-size:9px}
+.boost-limit strong{display:block;color:#fff;font-size:15px}
 .booster-list{display:flex;gap:7px;margin-top:17px}
-.booster{flex:1;height:46px;border-radius:11px;background:Cyber;border:1px solid Technology;display:flex;align-items:center;justify-content:center;color:Technology;font-weight:800;font-size:10px}
-.booster.used{background:Cyber;border-color:Technology;color:Diamond}
+.booster{flex:1;height:46px;border-radius:11px;background:#0a1018;border:1px solid #1b2636;display:flex;align-items:center;justify-content:center;color:#8899a6;font-weight:800;font-size:10px}
+.booster.used{background:#0b2238;border-color:#0284c7;color:#38bdf8}
 
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-.stat{background:var(--panel);border:1px solid Technology;border-radius:16px;padding:14px}
-.stat-label{color:Technology;font-size:9px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:14px}
+.stat-label{color:#8899a6;font-size:9px}
 .stat-value{font-size:16px;font-weight:800;margin-top:7px}
 
 .task,.row-card{background:var(--panel);border:1px solid var(--border);padding:14px;border-radius:17px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
 .icon-box{width:42px;height:42px;border-radius:13px;flex:none;font-size:20px}
 .task-info{flex:1}
 .task-info strong{font-size:12px}
-.task-info p{color:Technology;font-size:9px;margin-top:4px;line-height:1.4}
-.small-btn{border:0;background:Cyber;color:var(--text);padding:9px 11px;font-size:9px}
-.small-btn:disabled{opacity:.45;background:Cyber;color:Technology}
+.task-info p{color:#8899a6;font-size:9px;margin-top:4px;line-height:1.4}
+.small-btn{border:0;background:#0284c7;color:#fff;padding:9px 11px;font-size:9px}
+.small-btn:disabled{opacity:.45;background:#111b27;color:#8899a6}
 
-.referral-card{padding:21px;text-align:center}
+.referral-card{padding:21px;text-align:center;border-radius:22px}
 .referral-card h2{font-size:21px}
-.referral-card p{color:Technology;font-size:11px;line-height:1.5;margin-top:7px}
-.referral-code{margin-top:16px;background:#ff1493;padding:12px;border-radius:12px;color:var(--cyan);font-size:10px;word-break:break-all;-webkit-user-select:all;-moz-user-select:all;-ms-user-select:all;user-select:all}
-.copy-btn{margin-top:9px;width:100%;padding:13px;border:0;background:Cyber;color:var(--text);font-size:11px}
+.referral-card p{color:#8899a6;font-size:11px;line-height:1.5;margin-top:7px}
+.referral-code{margin-top:16px;background:#05080c;padding:12px;border-radius:12px;color:var(--cyan);font-size:10px;word-break:break-all;-webkit-user-select:all;-moz-user-select:all;-ms-user-select:all;user-select:all}
+.copy-btn{margin-top:9px;width:100%;padding:13px;border:0;background:#0284c7;color:#fff;font-size:11px}
 
 .reward-list{margin-top:12px}
 .reward-row{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:12px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .reward-row .reward-main{flex:1}
 .reward-row strong{font-size:11px}
-.reward-row p{font-size:9px;color:Technology;margin-top:3px}
+.reward-row p{font-size:9px;color:#8899a6;margin-top:3px}
 .reward-value{font-size:12px;font-weight:800;color:var(--cyan)}
-.reward-row.claimed{border-color:Technology}
-.reward-row.claimed .reward-value{color:Diamond}
+.reward-row.claimed{border-color:#1b365d}
+.reward-row.claimed .reward-value{color:#10b981}
 
 /* Friend List Item Styles */
 .friend-list{margin-top:12px}
 .friend-row{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .friend-info-left{display:flex;align-items:center;gap:10px}
-.friend-avatar-box{width:36px;height:36px;border-radius:10px;background:Cyber;border:1px solid Technology;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;font-weight:800}
+.friend-avatar-box{width:36px;height:36px;border-radius:10px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;font-weight:800}
 .friend-details strong{font-size:11px;display:block}
-.friend-details p{font-size:9px;color:Technology;margin-top:2px}
+.friend-details p{font-size:9px;color:#8899a6;margin-top:2px}
 .friend-status-badge{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800}
 .status-dot{width:8px;height:8px;border-radius:50%}
-.friend-row.active-friend .status-dot{background:var(--green);box-shadow:0 0 8px Diamond}
+.friend-row.active-friend .status-dot{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.6)}
 .friend-row.active-friend .friend-status-badge{color:var(--green)}
-.friend-row.inactive-friend .status-dot{background:Technology}
-.friend-row.inactive-friend .friend-status-badge{color:Technology}
+.friend-row.inactive-friend .status-dot{background:#8899a6}
+.friend-row.inactive-friend .friend-status-badge{color:#8899a6}
 
 /* Menu Group Styles */
 .menu-group{margin-top:12px}
-.menu-label{font-size:10px;color:Technology;margin:0 4px 9px}
-.menu-item{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:14px;display:flex;align-items:center;gap:12px;color:var(--text);text-align:left;margin-bottom:8px}
+.menu-label{font-size:10px;color:#8899a6;margin:0 4px 9px}
+.menu-item{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:14px;display:flex;align-items:center;gap:12px;color:#fff;text-align:left;margin-bottom:8px}
 .mi{width:34px;height:34px;border-radius:10px;flex:none}
 .mt{flex:1}
 .mt strong{font-size:12px}
-.mt p{font-size:9px;color:Technology;margin-top:3px}
-.arrow{color:Technology}
+.mt p{font-size:9px;color:#8899a6;margin-top:3px}
+.arrow{color:#8899a6}
 
-.wallet-hero{padding:22px}
+.wallet-hero{padding:22px;border-radius:22px}
 .wallet-total{font-size:37px;font-weight:900;margin-top:7px}
 .wallet-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.wallet-action{min-height:82px;border:1px solid Technology;background:Cyber;color:var(--text);padding:9px 5px;font-size:10px}
+.wallet-action{min-height:82px;border:1px solid #1b365d;background:#0d1520;color:#fff;padding:9px 5px;font-size:10px;border-radius:13px}
 .wallet-action .wa-icon{display:block;font-size:22px;margin-bottom:7px}
-.wallet-action.send{border-color:Diamond}
-.wallet-action.receive{border-color:Diamond}
-.wallet-action.migrate{border-color:Diamond}
-.wallet-action.history{border-color:Technology}
+.wallet-action.send{border-color:#10b981}
+.wallet-action.receive{border-color:#0284c7}
+.wallet-action.migrate{border-color:#8b5cf6}
+.wallet-action.history{border-color:#334155}
 
 .pi-balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .pi-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:14px}
-.pi-label{font-size:9px;color:Technology;text-transform:uppercase;letter-spacing:.5px}
-.pi-amount{font-size:18px;font-weight:800;margin-top:6px;color:var(--text)}
+.pi-label{font-size:9px;color:#8899a6;text-transform:uppercase;letter-spacing:.5px}
+.pi-amount{font-size:18px;font-weight:800;margin-top:6px;color:#fff}
 .pi-amount span{font-size:11px;color:var(--cyan)}
-.pi-note{font-size:8px;color:Technology;margin-top:4px;line-height:1.3}
+.pi-note{font-size:8px;color:#8899a6;margin-top:4px;line-height:1.3}
 
 .transaction-list{margin-top:10px}
-.transaction{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;background:#ff1493;border:1px solid Technology;margin-bottom:8px}
+.transaction{display:flex;align-items:center;gap:10px;padding:12px;border-radius:13px;background:#05080c;border:1px solid #1b2636;margin-bottom:8px}
 .tx-icon{width:34px;height:34px;border-radius:10px;flex:none}
 .tx-main{flex:1}
 .tx-main strong{font-size:10px}
-.tx-main p{font-size:8px;color:Technology;margin-top:3px}
+.tx-main p{font-size:8px;color:#8899a6;margin-top:3px}
 .tx-amount{font-size:10px;font-weight:800}
-.tx-positive{color:Diamond}
-.tx-negative{color:#ff1493}
+.tx-positive{color:#10b981}
+.tx-negative{color:#f43f5e}
 
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:Cyber;border-top:1px solid Technology;display:grid;grid-template-columns:repeat(5,1fr);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:100}
-.nav-item{background:none;border:0;color:Technology;font-size:8px;padding:4px 2px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:rgba(5,8,12,.98);border-top:1px solid #1b2636;display:grid;grid-template-columns:repeat(5,1fr);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:100}
+.nav-item{background:none;border:0;color:#8899a6;font-size:8px;padding:4px 2px}
 .nav-icon{display:block;font-size:18px;margin-bottom:3px}
-.nav-item.active{color:Diamond}
+.nav-item.active{color:var(--cyan)}
 
-.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:Cyber;border:1px solid Technology;color:var(--text);padding:10px 14px;border-radius:12px;font-size:10px;opacity:0;pointer-events:none;transition:.25s;z-index:600;max-width:90%;text-align:center}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(15px);background:#0d1520;border:1px solid #223247;color:#fff;padding:10px 14px;border-radius:12px;font-size:10px;opacity:0;pointer-events:none;transition:.25s;z-index:600;max-width:90%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-.modal{display:none;position:fixed;inset:0;background:#ff1493;z-index:300;align-items:flex-end;justify-content:center;padding:14px;overflow:hidden}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;align-items:flex-end;justify-content:center;padding:14px;overflow:hidden}
 .modal.show{display:flex}
-.modal-box{width:min(480px,100%);max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:Cyber;border:1px solid Technology;border-radius:22px;padding:20px 20px 26px}
+.modal-box{width:min(480px,100%);max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#0d131a;border:1px solid #223247;border-radius:22px;padding:20px 20px 26px}
 .modal-box h3{font-size:17px}
-.modal-box p{color:Technology;font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
+.modal-box p{color:#8899a6;font-size:11px;line-height:1.6;margin-top:8px;white-space:pre-line}
 
-.scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid Technology;border-bottom:1px solid Technology;padding-top:10px;padding-bottom:10px;text-align:left}
+.scrollable-doc{max-height:55vh;overflow-y:auto;padding-right:6px;margin-top:12px;border-top:1px solid #1b2636;border-bottom:1px solid #1b2636;padding-top:10px;padding-bottom:10px;text-align:left}
 .scrollable-doc::-webkit-scrollbar{width:4px}
-.scrollable-doc::-webkit-scrollbar-thumb{background:Technology;border-radius:4px}
+.scrollable-doc::-webkit-scrollbar-thumb{background:#223247;border-radius:4px}
 
-.support{background:#ff1493;border:1px solid Technology;border-radius:18px;padding:15px;margin-top:14px}
+.support{background:#05080c;border:1px solid #1b2636;border-radius:18px;padding:15px;margin-top:14px}
 .messages{min-height:160px;max-height:34vh;overflow:auto;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
 .bubble{max-width:82%;padding:10px 12px;border-radius:13px;font-size:10px;line-height:1.4}
-.bubble.user{align-self:flex-end;background:Cyber}
-.bubble.admin{align-self:flex-start;background:Cyber;color:Diamond}
+.bubble.user{align-self:flex-end;background:#0284c7}
+.bubble.admin{align-self:flex-start;background:#111b27;color:#f1f5f9}
 .chat-input{display:flex;gap:7px;margin-top:12px}
-.chat-input input,.wallet-input{flex:1;background:Cyber;border:1px solid Technology;border-radius:11px;color:var(--text);padding:12px;font-size:11px;outline:none}
-.chat-input button{border:0;border-radius:11px;background:Cyber;color:var(--text);padding:0 14px;font-weight:800}
+.chat-input input,.wallet-input{flex:1;background:#05080c;border:1px solid #223247;border-radius:11px;color:#fff;padding:12px;font-size:11px;outline:none}
+.chat-input button{border:0;border-radius:11px;background:#0284c7;color:#fff;padding:0 14px;font-weight:800}
 
 .receive-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;margin-bottom:12px}
-.receive-tab-btn{background:Cyber;border:1px solid Technology;color:Technology;padding:10px;border-radius:10px;font-size:11px;font-weight:800}
-.receive-tab-btn.active{background:Cyber;border-color:Cyber;color:var(--text)}
+.receive-tab-btn{background:#0a1018;border:1px solid #1b2636;color:#8899a6;padding:10px;border-radius:10px;font-size:11px;font-weight:800}
+.receive-tab-btn.active{background:#0284c7;border-color:#0284c7;color:#fff}
 .receive-pane{display:none}
 .receive-pane.active{display:block}
-.qr-container{background:Diamond;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px;min-height:172px}
+.qr-container{background:#fff;padding:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:8px;margin-bottom:8px;min-height:172px}
 .qr-container canvas, .qr-container img {display:block;margin:auto}
 
 /* Send Input Styles */
@@ -271,7 +271,7 @@ a{text-decoration:none;color:inherit}
       <div class="streak-label">Burning Streak</div>
       <div class="streak-value" id="inactiveDaysVal">0 Days</div>
     </div>
-    <div style="font-size:8px;color:Technology;margin-top:8px">Inactivity period recorded</div>
+    <div style="font-size:8px;color:#8899a6;margin-top:8px">Inactivity period recorded</div>
   </div>
   <div class="recovery-box">
     <div>
@@ -347,7 +347,7 @@ a{text-decoration:none;color:inherit}
         <span id="boostRate">1.0</span>
         <span>$FDX/H</span>
       </div>
-      <div style="color:Technology;font-size:9px;margin-top:4px">
+      <div style="color:#8899a6;font-size:9px;margin-top:4px">
         Current Mining Rate
       </div>
     </div>
@@ -459,12 +459,12 @@ a{text-decoration:none;color:inherit}
 <div class="card" style="margin-top:12px">
   <div class="active-referrals">
     <div>
-      <div style="font-size:10px;color:Technology">REFERRAL MINING BONUS</div>
+      <div style="font-size:10px;color:#8899a6">REFERRAL MINING BONUS</div>
       <strong id="referralMiningBonus">+0.0</strong>
       <span>$FDX/H</span>
     </div>
     <div style="text-align:right">
-      <div style="font-size:10px;color:Technology">CURRENT TOTAL RATE</div>
+      <div style="font-size:10px;color:#8899a6">CURRENT TOTAL RATE</div>
       <strong id="friendRatePreview">1.0 $FDX/H</strong>
     </div>
   </div>
@@ -566,7 +566,7 @@ a{text-decoration:none;color:inherit}
   <button class="wallet-action history" onclick="showTransactionHistory()"><span class="wa-icon">▤</span>HISTORY</button>
 </div>
 
-<div class="notice" style="margin-top:14px;background:Cyber;border-color:Technology;">
+<div class="notice" style="margin-top:14px;background:#0d1520;border-color:#1b365d;">
   <strong>Notice:</strong> Wallet balance and transactions will remain at 0 until user verification and mainnet launch.
 </div>
 
@@ -794,14 +794,14 @@ const state = {
   activeLuckyBox: 1,
   transactions: [],
   telegramUserId: null,
-  
+   
   inactiveDays: 3,
   lostTokenAmount: 45.00,
   recoveryActiveStart: null,
   recoveredClaimedTotal: 0
 };
 
-const FDX_TO_USD_RATE = 0.00;
+const FDX_TO_USD_RATE = 0.00; // Configurable exchange rate value if needed later
 
 const FOUR_HOURS = 4*60*60*1000;
 const ONE_WEEK = 7*24*60*60*1000;
@@ -844,6 +844,7 @@ function showProfileInfo() {
   showInfo('Account Information', `Account Status: Verified Member\nNetwork ID: ${ownID()}`);
 }
 
+// PRIVACY POLICY (Integrated official text)
 function showPrivacyPolicy() {
   showInfo('FIDEXA Network Privacy Policy', 
 `Effective Date: September 26, 2026
@@ -963,6 +964,7 @@ Support: FIDEXA Chat Support`
   );
 }
 
+// INTEGRATED WHITEPAPER V1.0 MATCHING USER TEXT EXACTLY
 function showWhitepaper() {
   showInfo('FIDEXA Network Whitepaper v1.0', 
 `Ticker: FDX
@@ -1004,6 +1006,7 @@ FDX is the internal reward unit. Balances are not currently transferable to an e
   );
 }
 
+// INTEGRATED OFFICIAL ROADMAP MATCHING USER TEXT EXACTLY
 function showRoadmap() {
   showInfo('FIDEXA Official Roadmap', 
 `PHASE 1 — Foundation & Mini App Launch (Completed)
@@ -1102,8 +1105,10 @@ function updateUI() {
   const rate = rateAt(Date.now());
   const usdValue = (state.homeBalance * FDX_TO_USD_RATE).toFixed(2);
 
+  // Update Home Balance & USD
   $('balanceValue').textContent = state.homeBalance.toFixed(2);$('homeUsdEquiv').textContent = `= $${usdValue} USD`;
 
+  // Wallet balances strictly stay at 0.00 until user verification & future plan enabled
   $('walletBalance').textContent = "0.00";
   $('walletUsdEquiv').textContent = "= $0.00 USD";
   $('transferableBalance').textContent = "0.00";
@@ -1510,14 +1515,15 @@ function openReceiveModal() {
   $('receiveIdBox').textContent = 'FIDEX ID: ' + ownID();
   switchReceiveTab('id');
   
+  // Generate verified QR code dynamically
   const qrContainer = $('qrcode');
   qrContainer.innerHTML = '';
   qrInstance = new QRCode(qrContainer, {
     text: ownID(),
     width: 140,
     height: 140,
-    colorDark: "#ff1493",
-    colorLight: "#Diamond",
+    colorDark: "#05080c",
+    colorLight: "#ffffff",
     correctLevel: QRCode.CorrectLevel.H
   });
 
@@ -1611,6 +1617,7 @@ function telegramProfile() {
       $('referralLink').textContent = `https://t.me/FIDEXANetworkBot?start=ref_${u.id}`;
     }
 
+    // --- MAINTENANCE CHECK ---
     const ADMIN_TELEGRAM_ID = 6771764389;
     if (Number(u.id) !== ADMIN_TELEGRAM_ID) {
       $('maintenanceOverlay').style.display = 'flex';
