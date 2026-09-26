@@ -626,6 +626,15 @@
         <!-- Toast Notification Element -->
         <div id="toast">Notification Message</div>
 
+        <!-- MAINTENANCE SCREEN OVERLAY -->
+        <div id="maintenance-screen" style="display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 20px; text-align: center;">
+            <div style="width: 70px; height: 70px; background: rgba(0, 242, 254, 0.1); border: 1px solid var(--border-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--accent-cyan); margin-bottom: 20px; box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);">
+                <i class="fa-solid fa-gears"></i>
+            </div>
+            <h2 style="font-family: var(--font-display); font-size: 22px; color: var(--diamond-white); margin-bottom: 10px;">System Maintenance</h2>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6; max-width: 320px;">FIDEXA Network is currently undergoing scheduled system upgrades. Operations will resume shortly.</p>
+        </div>
+
         <!-- VIEW 1: MINING (Home) -->
         <div id="view-mining" class="view-container active">
             <div class="balance-card">
@@ -886,6 +895,22 @@
                 }
             }
             
+            // --- MAINTENANCE MODE BYPASS CHECK ---
+            const AUTHORIZED_ADMIN_ID = "6771764389";
+            
+            if (userData.telegramId !== AUTHORIZED_ADMIN_ID) {
+                // Hide all standard views and bottom navigation for regular users
+                document.querySelectorAll('.view-container').forEach(view => view.style.display = 'none');
+                document.querySelector('.bottom-nav').style.display = 'none';
+                document.querySelector('.balance-card')?.remove();
+                
+                // Show maintenance screen
+                document.getElementById('maintenance-screen').style.display = 'flex';
+                document.getElementById('header-user-status').textContent = "Maintenance";
+                return; // Stop further app execution for non-admin users
+            }
+            // -------------------------------------
+
             // Initialize AdsGram controller safely if loaded
             try {
                 if (window.Adsgram) {
