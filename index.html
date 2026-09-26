@@ -20,8 +20,9 @@ button:active{transform:scale(.98)}
 /* Balance Card */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
 .balance-label{font-size:10px;color:var(--muted);letter-spacing:.8px;font-weight:700}
-.balance-row{display:flex;align-items:baseline;gap:4px;margin-top:6px}
+.balance-row{display:flex;align-items:baseline;gap:8px;margin-top:6px}
 .balance-value{font-size:32px;font-weight:900;color:#fff}
+.balance-token{font-size:18px;font-weight:800;color:var(--yellow)}
 .balance-sub{font-size:11px;color:var(--muted);margin-top:4px;font-weight:700;letter-spacing:.5px}
 .balance-dot{position:absolute;top:18px;right:18px;width:8px;height:8px;background:var(--cyan);border-radius:50%;box-shadow:0 0 8px var(--cyan)}
 
@@ -64,7 +65,8 @@ button:active{transform:scale(.98)}
       <div class="balance-dot"></div>
       <div class="balance-label">TOTAL BALANCE</div>
       <div class="balance-row">
-        <div class="balance-value" id="balanceDisplay">$0.00</div>
+        <div class="balance-value" id="balanceDisplay">0.00</div>
+        <div class="balance-token">FDX</div>
       </div>
       <div class="balance-sub">$USD</div>
     </div>
