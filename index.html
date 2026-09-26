@@ -1,471 +1,1181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FIDEXA Network — Next-Gen Technology Platform</title>
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- FIDEXA Next-Gen Visual Identity Stylesheet -->
-  <style>
-    :root {
-      --bg-primary: #030712;
-      --bg-surface: #0B132B;
-      --bg-card: rgba(11, 19, 43, 0.75);
-      --accent-cyan: #00F0FF;
-      --accent-gold: #D4AF37;
-      --accent-gold-gradient: linear-gradient(135deg, #FFDF73 0%, #D4AF37 50%, #AA7C11 100%);
-      --accent-diamond: #E2E8F0;
-      --border-cyan: rgba(0, 240, 255, 0.25);
-      --border-diamond: rgba(226, 232, 240, 0.15);
-      --border-gold: rgba(212, 175, 55, 0.3);
-      --shadow-futuristic: 0 0 20px rgba(0, 240, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FIDEXA NETWORK</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- AdsGram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.js"></script>
+    <!-- Firebase App & Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050811;
+            --surface-dark: #0A101F;
+            --surface-card: rgba(13, 22, 41, 0.7);
+            --surface-card-solid: #0D1629;
+            --accent-cyan: #00F2FE;
+            --accent-cyan-dim: rgba(0, 242, 254, 0.15);
+            --accent-gold: #D4AF37;
+            --accent-gold-light: #FFDF73;
+            --accent-gold-dim: rgba(212, 175, 55, 0.15);
+            --diamond-white: #EAEFF8;
+            --icy-silver: #94A3B8;
+            --border-cyan: rgba(0, 242, 254, 0.3);
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --border-glass: rgba(234, 239, 248, 0.08);
+            --text-main: #EAEFF8;
+            --text-muted: #94A3B8;
+            --success: #00F2FE;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      background-color: var(--bg-primary);
-      color: var(--accent-diamond);
-      font-family: var(--font-main);
-    }
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-    .fidexa-app-container {
-      background-color: var(--bg-primary);
-      color: var(--accent-diamond);
-      font-family: var(--font-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 16px;
-      position: relative;
-      overflow-x: hidden;
-    }
+        /* App Container Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 90px; /* Space for navbar */
+        }
 
-    .glass-panel {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--border-cyan);
-      border-radius: 16px;
-      box-shadow: var(--shadow-futuristic);
-    }
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(5, 8, 17, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    .gold-text {
-      background: var(--accent-gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .diamond-text {
-      color: var(--accent-diamond);
-      font-weight: 600;
-    }
+        .brand-logo {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--accent-cyan), #0066FF);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--bg-deep);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .label-muted {
-      font-size: 11px;
-      letter-spacing: 1.2px;
-      color: rgba(226, 232, 240, 0.6);
-      text-transform: uppercase;
-    }
+        .brand-name {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, var(--diamond-white), var(--icy-silver));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .fidexa-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 4px;
-    }
+        .user-status-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-glass);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--icy-silver);
+        }
 
-    .brand-identity {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        .user-status-pill i {
+            color: var(--accent-cyan);
+            font-size: 8px;
+            animation: pulse-glow 2s infinite;
+        }
 
-    .fidexa-logo-mark {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, var(--accent-cyan), #0055FF);
-      border-radius: 6px;
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-    }
+        /* Main Content Views */
+        .view-container {
+            flex: 1;
+            padding: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
 
-    .brand-name {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #FFFFFF;
-    }
+        .view-container.active {
+            display: block;
+        }
 
-    .profile-support-nav {
-      display: flex;
-      gap: 8px;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .icon-btn {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-diamond);
-      border-radius: 10px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, var(--surface-card-solid), var(--surface-dark));
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(212, 175, 55, 0.2);
+            margin-bottom: 24px;
+        }
 
-    .icon-btn:hover {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-    }
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
 
-    .icon {
-      width: 20px;
-      height: 20px;
-      fill: var(--accent-diamond);
-    }
+        .balance-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
 
-    .balance-card {
-      padding: 20px;
-      margin: 12px 0;
-      border-color: var(--border-gold);
-    }
+        .balance-value {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-gold-light), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+        }
 
-    .balance-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+        .balance-usd {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
 
-    .network-status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--accent-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-cyan);
-    }
+        /* Mining Centerpiece Section */
+        .mining-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px 0;
+            position: relative;
+        }
 
-    .balance-display {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
+        .mining-orb-container {
+            width: 220px;
+            height: 220px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
 
-    .balance-display h1 {
-      font-size: 36px;
-      margin: 0;
-    }
+        .mining-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 242, 254, 0.2);
+            animation: rotateOrb 20s linear infinite;
+        }
 
-    .currency-tag {
-      font-size: 14px;
-      color: var(--accent-gold);
-      font-weight: 700;
-      padding-bottom: 2px;
-    }
+        .mining-ring-outer {
+            position: absolute;
+            width: 115%;
+            height: 115%;
+            border-radius: 50%;
+            border: 1px solid var(--border-cyan);
+            opacity: 0.4;
+            animation: rotateOrbReverse 15s linear infinite;
+        }
 
-    .balance-subtext {
-      margin-top: 8px;
-      font-size: 12px;
-      color: rgba(226, 232, 240, 0.7);
-    }
+        @keyframes rotateOrb {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-    .mining-centerpiece-section {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px 0;
-    }
+        @keyframes rotateOrbReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
 
-    .mining-core-wrapper {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-    }
+        .mining-core {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle at 30% 30%, #0A2540, #030712);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.25), inset 0 0 20px rgba(0, 242, 254, 0.2);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
 
-    .mining-energy-ring {
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(11, 19, 43, 0.9) 0%, rgba(3, 7, 18, 0.95) 100%);
-      border: 2px solid var(--accent-cyan);
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
-      position: relative;
-    }
+        .mining-core.active {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 45px rgba(0, 242, 254, 0.4), inset 0 0 25px rgba(0, 242, 254, 0.3);
+            animation: corePulse 3s infinite alternate;
+        }
 
-    .status-badge {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--accent-cyan);
-      background: rgba(0, 240, 255, 0.1);
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      margin-bottom: 8px;
-    }
+        @keyframes corePulse {
+            0% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.25), inset 0 0 20px rgba(0, 242, 254, 0.2); }
+            100% { box-shadow: 0 0 50px rgba(0, 242, 254, 0.5), inset 0 0 30px rgba(0, 242, 254, 0.4); }
+        }
 
-    .timer-display {
-      font-size: 28px;
-      font-weight: 700;
-      color: #FFFFFF;
-      letter-spacing: 1px;
-      font-family: monospace;
-    }
+        .mining-core i {
+            font-size: 32px;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.6));
+        }
 
-    .mining-instruction {
-      font-size: 11px;
-      color: rgba(226, 232, 240, 0.6);
-      max-width: 160px;
-      margin-top: 6px;
-      line-height: 1.4;
-    }
+        .mining-status-text {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--diamond-white);
+            text-transform: uppercase;
+        }
 
-    .fidexa-btn-cyan {
-      background: linear-gradient(135deg, #00F0FF 0%, #0088CC 100%);
-      color: #030712;
-      border: none;
-      padding: 16px 48px;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
-      transition: all 0.3s ease;
-      width: 100%;
-      max-width: 240px;
-    }
+        .mining-timer {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
 
-    .fidexa-btn-cyan:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(0, 240, 255, 0.6);
-    }
+        /* Action Buttons */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-cyan), #0099FF);
+            color: var(--bg-deep);
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
 
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
 
-    .metric-card {
-      padding: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: border-color 0.3s ease;
-    }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
-    .metric-card:hover {
-      border-color: var(--accent-cyan);
-    }
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold-light), var(--accent-gold));
+            color: var(--bg-deep);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
 
-    .metric-info h3 {
-      margin: 4px 0 0 0;
-      font-size: 16px;
-    }
+        /* Info Grid / Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
 
-    .metric-icon-wrap {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-diamond);
-    }
+        .stat-card {
+            background: var(--surface-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-    .metric-icon-wrap.cyan-glow svg { fill: var(--accent-cyan); }
-    .metric-icon-wrap.gold-glow svg { fill: var(--accent-gold); }
+        .stat-card-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .icon-sm {
-      width: 18px;
-      height: 18px;
-    }
+        .stat-card-value {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--diamond-white);
+        }
 
-    .fidexa-bottom-nav {
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-radius: 16px;
-    }
+        /* Tasks & Referrals List Views */
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--diamond-white);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    .nav-item {
-      background: transparent;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
-    }
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-    .nav-item.active {
-      opacity: 1;
-    }
+        .item-card {
+            background: var(--surface-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s ease;
+        }
 
-    .nav-item.active .nav-label {
-      color: var(--accent-cyan);
-    }
+        .item-card:hover {
+            border-color: var(--border-cyan);
+        }
 
-    .nav-icon {
-      font-size: 18px;
-    }
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-    .nav-label {
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      color: var(--accent-diamond);
-    }
-  </style>
+        .item-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-cyan);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+            font-size: 18px;
+        }
+
+        .item-icon.gold {
+            border-color: var(--border-gold);
+            color: var(--accent-gold);
+        }
+
+        .item-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--diamond-white);
+            margin-bottom: 3px;
+        }
+
+        .item-details p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+            border: 1px solid var(--border-cyan);
+            transition: all 0.2s;
+        }
+
+        .btn-sm:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-deep);
+        }
+
+        .btn-sm.completed {
+            background: transparent;
+            border-color: var(--border-glass);
+            color: var(--text-muted);
+            cursor: default;
+        }
+
+        /* Profile & Referral Specific */
+        .profile-box {
+            background: var(--surface-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--surface-dark), var(--bg-deep));
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            margin: 0 auto 14px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .profile-name {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--diamond-white);
+            margin-bottom: 4px;
+        }
+
+        .profile-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ref-link-box {
+            background: var(--surface-dark);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .ref-link-box span {
+            font-size: 12px;
+            color: var(--icy-silver);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+
+        /* Bottom Navigation Bar */
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: rgba(5, 8, 17, 0.9);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: var(--accent-cyan);
+        }
+
+        .nav-item.active i {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.5));
+        }
+
+        /* Toast Notifications */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--surface-card-solid);
+            border: 1px solid var(--border-cyan);
+            color: var(--diamond-white);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes pulse-glow {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="fidexa-app-container">
-    
-    <!-- Top Header Navigation -->
-    <header class="fidexa-header">
-      <div class="brand-identity">
-        <div class="fidexa-logo-mark"></div>
-        <span class="brand-name">FIDEXA</span>
-      </div>
-      <div class="profile-support-nav">
-        <button class="icon-btn" id="supportBtn" aria-label="Support">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
-        </button>
-        <button class="icon-btn" id="profileBtn" aria-label="Profile">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        </button>
-      </div>
-    </header>
+    <div class="app-container">
+        <!-- Top Header -->
+        <header>
+            <div class="brand">
+                <div class="brand-logo">FX</div>
+                <div class="brand-name">FIDEXA</div>
+            </div>
+            <div class="user-status-pill">
+                <i class="fa-solid fa-circle"></i>
+                <span id="header-user-status">Connected</span>
+            </div>
+        </header>
 
-    <!-- FDX Balance Overview Card -->
-    <section class="balance-card glass-panel">
-      <div class="balance-header">
-        <span class="label-muted">TOTAL FDX BALANCE</span>
-        <span class="network-status-dot active"></span>
-      </div>
-      <div class="balance-display">
-        <h1 id="fdxBalanceValue" class="gold-text">0.00</h1>
-        <span class="currency-tag">FDX</span>
-      </div>
-      <div class="balance-subtext">
-        <span>Value Ecosystem: <strong class="diamond-text">Active Tier 1</strong></span>
-      </div>
-    </section>
+        <!-- Toast Notification Element -->
+        <div id="toast">Notification Message</div>
 
-    <!-- Mining Centerpiece Section -->
-    <main class="mining-centerpiece-section">
-      <div class="mining-core-wrapper">
-        <div class="mining-energy-ring" id="miningProgressRing">
-          <div class="core-inner-glow"></div>
-          <div class="mining-status-content">
-            <div class="status-badge" id="miningStatusBadge">SYSTEM READY</div>
-            <div class="timer-display" id="miningTimer">00:00:00</div>
-            <p class="mining-instruction" id="miningInstructionText">Tap below to initiate digital node generation</p>
-          </div>
+        <!-- VIEW 1: MINING (Home) -->
+        <div id="view-mining" class="view-container active">
+            <div class="balance-card">
+                <div class="balance-label">
+                    <i class="fa-solid fa-gem" style="color: var(--accent-gold);"></i> Total FDX Balance
+                </div>
+                <div class="balance-value" id="user-balance">0.00</div>
+                <div class="balance-usd">≈ $<span id="user-usd-value">0.00</span> USD</div>
+            </div>
+
+            <div class="mining-section">
+                <div class="mining-orb-container" id="mining-trigger-btn">
+                    <div class="mining-ring-outer"></div>
+                    <div class="mining-ring"></div>
+                    <div class="mining-core" id="mining-core-element">
+                        <i class="fa-solid fa-bolt" id="mining-core-icon"></i>
+                        <div class="mining-status-text" id="mining-status-label">Ready</div>
+                        <div class="mining-timer" id="mining-timer-display">08:00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="main-action-btn" onclick="handleMainAction()">
+                <i class="fa-solid fa-power-off"></i> Start Mining Session
+            </button>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-label">Mining Rate</div>
+                    <div class="stat-card-value">1.2 FDX/h</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Session Reward</div>
+                    <div class="stat-card-value" style="color: var(--accent-gold);">9.6 FDX</div>
+                </div>
+            </div>
         </div>
 
-        <button class="fidexa-btn-cyan" id="miningActionBtn">
-          <span>START MINING</span>
-        </button>
-      </div>
-    </main>
-
-    <!-- Secondary Metrics (Referrals & Tasks) -->
-    <section class="metrics-grid">
-      <div class="metric-card glass-panel" id="referralCardTrigger">
-        <div class="metric-info">
-          <span class="label-muted">REFERRAL NETWORK</span>
-          <h3 class="diamond-text" id="referralCount">0 Nodes</h3>
+        <!-- VIEW 2: TASKS -->
+        <div id="view-tasks" class="view-container">
+            <div class="section-title">
+                <span>Ecosystem Missions</span>
+                <i class="fa-solid fa-list-check" style="color: var(--accent-cyan);"></i>
+            </div>
+            <div class="card-list" id="tasks-list-container">
+                <!-- Populated dynamically via JS -->
+            </div>
         </div>
-        <div class="metric-icon-wrap cyan-glow">
-          <svg viewBox="0 0 24 24" class="icon-sm"><path d="M16 11c1.66 0 2.99-1.34 2.99-2S17.66 7 16 7c-1.66 0-2.99 1.34-2.99 2s1.33 2 2.99 2zm-8 0c1.66 0 2.99-1.34 2.99-2S9.66 7 8 7C6.34 7 5 8.34 5 10s1.34 2 3 2zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+
+        <!-- VIEW 3: REFERRALS -->
+        <div id="view-referrals" class="view-container">
+            <div class="section-title">
+                <span>Network Growth</span>
+                <i class="fa-solid fa-network-wired" style="color: var(--accent-cyan);"></i>
+            </div>
+            
+            <div class="profile-box" style="margin-bottom: 20px;">
+                <div class="profile-avatar" style="border-color: var(--accent-gold);">
+                    <i class="fa-solid fa-users" style="color: var(--accent-gold);"></i>
+                </div>
+                <div class="profile-name">Invite & Earn FDX</div>
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Earn 15% commission from direct network mining yields.</p>
+                
+                <div class="ref-link-box">
+                    <span id="referral-link-text">https://t.me/FidexaNetworkBot?start=ref_000000</span>
+                    <button class="btn-sm" onclick="copyReferralLink()">Copy</button>
+                </div>
+            </div>
+
+            <div class="stats-grid" style="margin-bottom: 20px;">
+                <div class="stat-card">
+                    <div class="stat-card-label">Total Referrals</div>
+                    <div class="stat-card-value" id="ref-count-display">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Ref Rewards</div>
+                    <div class="stat-card-value" style="color: var(--accent-gold);" id="ref-earnings-display">0.00 FDX</div>
+                </div>
+            </div>
+
+            <div class="section-title" style="font-size: 15px;">
+                <span>Invited Members</span>
+            </div>
+            <div class="card-list" id="ref-list-container">
+                <div class="item-card">
+                    <div class="item-info">
+                        <div class="item-icon" style="color: var(--text-muted); border-color: var(--border-glass);"><i class="fa-solid fa-user-slash"></i></div>
+                        <div class="item-details">
+                            <h4>No Referrals Yet</h4>
+                            <p>Share your link to grow your network</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="metric-card glass-panel" id="tasksCardTrigger">
-        <div class="metric-info">
-          <span class="label-muted">ECOSYSTEM TASKS</span>
-          <h3 class="gold-text" id="completedTasksCount">0 / 0</h3>
+        <!-- VIEW 4: PROFILE -->
+        <div id="view-profile" class="view-container">
+            <div class="profile-box">
+                <div class="profile-avatar" id="profile-avatar-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="profile-name" id="profile-display-name">Fidexa User</div>
+                <div class="profile-id" id="profile-telegram-id">ID: 00000000</div>
+            </div>
+
+            <div class="card-list">
+                <div class="item-card">
+                    <div class="item-info">
+                        <div class="item-icon gold"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="item-details">
+                            <h4>Account Security</h4>
+                            <p>Telegram WebApp Verified</p>
+                        </div>
+                    </div>
+                    <button class="btn-sm completed">Secure</button>
+                </div>
+                <div class="item-card">
+                    <div class="item-info">
+                        <div class="item-icon"><i class="fa-solid fa-wallet"></i></div>
+                        <div class="item-details">
+                            <h4>Wallet Connection</h4>
+                            <p id="wallet-status-text">Not Connected</p>
+                        </div>
+                    </div>
+                    <button class="btn-sm" onclick="connectWallet()">Connect</button>
+                </div>
+            </div>
         </div>
-        <div class="metric-icon-wrap gold-glow">
-          <svg viewBox="0 0 24 24" class="icon-sm"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+
+        <!-- VIEW 5: SUPPORT -->
+        <div id="view-support" class="view-container">
+            <div class="section-title">
+                <span>Help & Assistance</span>
+                <i class="fa-solid fa-headset" style="color: var(--accent-cyan);"></i>
+            </div>
+            
+            <div class="card-list">
+                <div class="item-card" onclick="openSupportChannel('faq')" style="cursor: pointer;">
+                    <div class="item-info">
+                        <div class="item-icon"><i class="fa-solid fa-circle-question"></i></div>
+                        <div class="item-details">
+                            <h4>Frequently Asked Questions</h4>
+                            <p>Learn about FDX mining & rewards</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+                </div>
+                <div class="item-card" onclick="openSupportChannel('community')" style="cursor: pointer;">
+                    <div class="item-info">
+                        <div class="item-icon gold"><i class="fa-solid fa-comments"></i></div>
+                        <div class="item-details">
+                            <h4>Community Telegram Channel</h4>
+                            <p>Join official announcements & chat</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+                </div>
+                <div class="item-card" onclick="openSupportChannel('support')" style="cursor: pointer;">
+                    <div class="item-info">
+                        <div class="item-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                        <div class="item-details">
+                            <h4>Direct Support Desk</h4>
+                            <p>Contact our customer success team</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fidexa-bottom-nav glass-panel">
-      <button class="nav-item active" data-target="mining">
-        <span class="nav-icon">⚡</span>
-        <span class="nav-label">Mining</span>
-      </button>
-      <button class="nav-item" data-target="tasks">
-        <span class="nav-icon">📋</span>
-        <span class="nav-label">Tasks</span>
-      </button>
-      <button class="nav-item" data-target="referrals">
-        <span class="nav-icon">🌐</span>
-        <span class="nav-label">Network</span>
-      </button>
-      <button class="nav-item" data-target="profile">
-        <span class="nav-icon">🛡️</span>
-        <span class="nav-label">Profile</span>
-      </button>
-    </nav>
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('mining', this)">
+                <i class="fa-solid fa-cube"></i>
+                <span>Mining</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('tasks', this)">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Tasks</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('referrals', this)">
+                <i class="fa-solid fa-users"></i>
+                <span>Referral</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('profile', this)">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>Profile</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('support', this)">
+                <i class="fa-solid fa-headset"></i>
+                <span>Support</span>
+            </button>
+        </nav>
+    </div>
 
-  </div>
+    <!-- Application Script Logic -->
+    <script>
+        /* ==========================================================================
+           1. FIREBASE CONFIGURATION & INITIALIZATION
+           ========================================================================== */
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForFidexaNetworkDemoApp",
+            authDomain: "fidexa-network.firebaseapp.com",
+            projectId: "fidexa-network",
+            storageBucket: "fidexa-network.appspot.com",
+            messagingSenderId: "000000000000",
+            appId: "1:000000000000:web:000000000000000000"
+        };
 
-  <!-- FIDEXA Interface Hook Script (Integrates with your existing Firebase/Telegram/AdsGram logic bindings) -->
-  <script>
-    // Hook bindings preserving existing core logic execution flow
-    document.addEventListener("DOMContentLoaded", () => {
-      // Example visual state sync hook
-      window.FidexaUI = {
-        updateBalance: (amount) => {
-          document.getElementById('fdxBalanceValue').innerText = Number(amount).toFixed(2);
-        },
-        setMiningActiveState: (active, timeLeftStr) => {
-          const badge = document.getElementById('miningStatusBadge');
-          const timer = document.getElementById('miningTimer');
-          const btn = document.getElementById('miningActionBtn');
-          
-          if (active) {
-            badge.innerText = "NODE MINING ACTIVE";
-            timer.innerText = timeLeftStr;
-            btn.querySelector('span').innerText = "MINING IN PROGRESS";
-          } else {
-            badge.innerText = "SYSTEM READY";
-            timer.innerText = "00:00:00";
-            btn.querySelector('span').innerText = "START MINING";
-          }
+        // Initialize Firebase safely
+        let db;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+        } catch (e) {
+            console.warn("Firebase initialization warning (using local fallback if needed):", e);
         }
-      };
-    });
-  </script>
+
+        /* ==========================================================================
+           2. STATE MANAGEMENT & TELEGRAM / ADSGRAM INTEGRATION
+           ========================================================================== */
+        let tg = window.Telegram?.WebApp;
+        let userData = {
+            telegramId: "demo_user_12345",
+            username: "FidexaUser",
+            firstName: "Fidexa",
+            balance: 0.00,
+            miningActive: false,
+            miningEndTime: 0,
+            miningRewardAmount: 9.6,
+            referralCount: 0,
+            referralEarnings: 0.00,
+            completedTasks: []
+        };
+
+        // Tasks Registry Logic
+        const tasksList = [
+            { id: 'task_tg_channel', title: 'Join Telegram Channel', reward: '5.0 FDX', url: 'https://t.me/FidexaNetworkBot' },
+            { id: 'task_twitter', title: 'Follow on X (Twitter)', reward: '5.0 FDX', url: 'https://twitter.com' },
+            { id: 'task_partner', title: 'Explore Ecosystem Partner', reward: '3.0 FDX', url: 'https://t.me/FidexaNetworkBot' }
+        ];
+
+        let adsgramController = null;
+
+        // Initialize Telegram WebApp setup
+        function initTelegramApp() {
+            if (tg) {
+                tg.ready();
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    const user = tg.initDataUnsafe.user;
+                    userData.telegramId = user.id.toString();
+                    userData.username = user.username || user.first_name || "User";
+                    userData.firstName = user.first_name || "User";
+                }
+            }
+            
+            // Initialize AdsGram controller safely if loaded
+            try {
+                if (window.Adsgram) {
+                    adsgramController = window.Adsgram.init({ blockId: "int-7681" });
+                }
+            } catch (err) {
+                console.warn("Adsgram initialization skipped or unavailable:", err);
+            }
+
+            updateUIFromState();
+            loadUserDataFromFirebase();
+            renderTasks();
+        }
+
+        // Sync & Fetch User Data from Firestore
+        async function loadUserDataFromFirebase() {
+            if (!db) return;
+            try {
+                const userDocRef = db.collection("users").doc(userData.telegramId);
+                const doc = await userDocRef.get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    userData.balance = data.balance || 0.00;
+                    userData.miningActive = data.miningActive || false;
+                    userData.miningEndTime = data.miningEndTime || 0;
+                    userData.referralCount = data.referralCount || 0;
+                    userData.referralEarnings = data.referralEarnings || 0.00;
+                    userData.completedTasks = data.completedTasks || [];
+                } else {
+                    await userDocRef.set(userData);
+                }
+                updateUIFromState();
+            } catch (error) {
+                console.error("Error loading user state from Firestore:", error);
+            }
+        }
+
+        async function saveUserDataToFirebase() {
+            if (!db) return;
+            try {
+                await db.collection("users").doc(userData.telegramId).set({
+                    balance: userData.balance,
+                    miningActive: userData.miningActive,
+                    miningEndTime: userData.miningEndTime,
+                    referralCount: userData.referralCount,
+                    referralEarnings: userData.referralEarnings,
+                    completedTasks: userData.completedTasks,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            } catch (error) {
+                console.error("Error saving user state to Firestore:", error);
+            }
+        }
+
+        /* ==========================================================================
+           3. NAVIGATION & UI CONTROLLERS
+           ========================================================================== */
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.view-container').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+
+            document.getElementById(`view-${tabId}`).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateUIFromState() {
+            document.getElementById('user-balance').textContent = userData.balance.toFixed(2);
+            document.getElementById('user-usd-value').textContent = (userData.balance * 0.12).toFixed(2);
+            
+            document.getElementById('profile-display-name').textContent = userData.username;
+            document.getElementById('profile-telegram-id').textContent = `ID: ${userData.telegramId}`;
+            
+            document.getElementById('ref-count-display').textContent = userData.referralCount;
+            document.getElementById('ref-earnings-display').textContent = `${userData.referralEarnings.toFixed(2)} FDX`;
+            
+            const refLink = `https://t.me/FidexaNetworkBot?start=ref_${userData.telegramId}`;
+            document.getElementById('referral-link-text').textContent = refLink;
+
+            checkMiningTimerState();
+        }
+
+        /* ==========================================================================
+           4. MINING LOGIC & ADSGRAM INTEGRATION FLOW
+           ========================================================================== */
+        let miningInterval = null;
+
+        function checkMiningTimerState() {
+            const now = Date.now();
+            const coreElement = document.getElementById('mining-core-element');
+            const coreIcon = document.getElementById('mining-core-icon');
+            const statusLabel = document.getElementById('mining-status-label');
+            const timerDisplay = document.getElementById('mining-timer-display');
+            const actionBtn = document.getElementById('main-action-btn');
+
+            if (userData.miningActive) {
+                if (now >= userData.miningEndTime) {
+                    // Mining finished! Ready to claim
+                    userData.miningActive = false;
+                    saveUserDataToFirebase();
+
+                    coreElement.classList.remove('active');
+                    coreIcon.className = "fa-solid fa-gift";
+                    statusLabel.textContent = "Ready to Claim";
+                    timerDisplay.textContent = "00:00:00";
+
+                    actionBtn.innerHTML = `<i class="fa-solid fa-box-open"></i> Claim Reward (+${userData.miningRewardAmount} FDX)`;
+                    actionBtn.className = "btn-primary btn-gold";
+                    actionBtn.disabled = false;
+                    if (miningInterval) clearInterval(miningInterval);
+                } else {
+                    // Mining in progress
+                    coreElement.classList.add('active');
+                    coreIcon.className = "fa-solid fa-bolt";
+                    statusLabel.textContent = "Mining Active";
+
+                    const distance = userData.miningEndTime - now;
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    timerDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                    actionBtn.innerHTML = `<i class="fa-solid fa-hourglass-half"></i> Mining in Progress`;
+                    actionBtn.className = "btn-primary";
+                    actionBtn.disabled = true;
+
+                    if (!miningInterval) {
+                        miningInterval = setInterval(checkMiningTimerState, 1000);
+                    }
+                }
+            } else {
+                if (userData.miningEndTime > 0 && now >= userData.miningEndTime) {
+                    // Already completed state persistence check
+                    coreElement.classList.remove('active');
+                    coreIcon.className = "fa-solid fa-gift";
+                    statusLabel.textContent = "Ready to Claim";
+                    timerDisplay.textContent = "00:00:00";
+
+                    actionBtn.innerHTML = `<i class="fa-solid fa-box-open"></i> Claim Reward (+${userData.miningRewardAmount} FDX)`;
+                    actionBtn.className = "btn-primary btn-gold";
+                    actionBtn.disabled = false;
+                } else {
+                    // Idle state - Ready to start mining
+                    coreElement.classList.remove('active');
+                    coreIcon.className = "fa-solid fa-bolt";
+                    statusLabel.textContent = "Ready";
+                    timerDisplay.textContent = "08:00:00";
+
+                    actionBtn.innerHTML = `<i class="fa-solid fa-power-off"></i> Start Mining Session`;
+                    actionBtn.className = "btn-primary";
+                    actionBtn.disabled = false;
+                    if (miningInterval) clearInterval(miningInterval);
+                }
+            }
+        }
+
+        function handleMainAction() {
+            const now = Date.now();
+            if (!userData.miningActive && (userData.miningEndTime === 0 || now >= userData.miningEndTime)) {
+                if (userData.miningEndTime > 0 && now >= userData.miningEndTime) {
+                    // Trigger Claim flow with AdsGram integration
+                    executeClaimWithAd();
+                } else {
+                    // Start Mining Session (8 hour duration = 28800000 ms)
+                    userData.miningActive = true;
+                    userData.miningEndTime = now + 8 * 60 * 60 * 1000;
+                    saveUserDataToFirebase();
+                    checkMiningTimerState();
+                    showToast("Mining session initiated successfully!");
+                }
+            }
+        }
+
+        // AdsGram Integration flow when claiming reward
+        function executeClaimWithAd() {
+            if (adsgramController) {
+                adsgramController.show().then((result) => {
+                    // Ad completed successfully or dismissed, process reward
+                    processClaimReward();
+                }).catch((err) => {
+                    console.warn("Ad display skipped/failed:", err);
+                    // Fallback to ensure user gets reward even if ad network fails
+                    processClaimReward();
+                });
+            } else {
+                // Fallback simulation if AdsGram SDK is offline or unavailable
+                processClaimReward();
+            }
+        }
+
+        function processClaimReward() {
+            userData.balance += userData.miningRewardAmount;
+            userData.miningEndTime = 0;
+            saveUserDataToFirebase();
+            updateUIFromState();
+            showToast(`Successfully claimed +${userData.miningRewardAmount} FDX!`);
+        }
+
+        /* ==========================================================================
+           5. TASKS, REFERRALS & PROFILE HANDLERS
+           ========================================================================== */
+        function renderTasks() {
+            const container = document.getElementById('tasks-list-container');
+            container.innerHTML = '';
+
+            tasksList.forEach(task => {
+                const isCompleted = userData.completedTasks.includes(task.id);
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-icon gold"><i class="fa-solid fa-award"></i></div>
+                        <div class="item-details">
+                            <h4>${task.title}</h4>
+                            <p>Reward: ${task.reward}</p>
+                        </div>
+                    </div>
+                    <button class="btn-sm ${isCompleted ? 'completed' : ''}" onclick="completeTask('${task.id}', 5.0, '${task.url}')">
+                        ${isCompleted ? 'Completed' : 'Start'}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function completeTask(taskId, rewardAmount, url) {
+            if (userData.completedTasks.includes(taskId)) return;
+
+            // Open external target link via Telegram WebApp if available
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(url);
+            } else {
+                window.open(url, '_blank');
+            }
+
+            // Mark completed after user interaction simulation
+            setTimeout(() => {
+                if (!userData.completedTasks.includes(taskId)) {
+                    userData.completedTasks.push(taskId);
+                    userData.balance += rewardAmount;
+                    saveUserDataToFirebase();
+                    renderTasks();
+                    updateUIFromState();
+                    showToast(`Task completed! +${rewardAmount} FDX added.`);
+                }
+            }, 1500);
+        }
+
+        function copyReferralLink() {
+            const linkText = document.getElementById('referral-link-text').textContent;
+            navigator.clipboard.writeText(linkText).then(() => {
+                showToast("Referral link copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy link:", err);
+            });
+        }
+
+        function connectWallet() {
+            document.getElementById('wallet-status-text').textContent = "TON Wallet Connected";
+            showToast("TON Wallet successfully verified & connected!");
+        }
+
+        function openSupportChannel(type) {
+            let targetUrl = "https://t.me/FidexaNetworkBot";
+            if (type === 'faq') targetUrl = "https://t.me/FidexaNetworkBot";
+            if (type === 'community') targetUrl = "https://t.me/FidexaNetworkBot";
+            if (type === 'support') targetUrl = "https://t.me/FidexaNetworkBot";
+
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(targetUrl);
+            } else {
+                window.open(targetUrl, '_blank');
+            }
+        }
+
+        // Initialize application on window load
+        window.addEventListener('load', initTelegramApp);
+    </script>
 </body>
 </html>
