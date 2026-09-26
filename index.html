@@ -33,8 +33,7 @@ button:active{transform:scale(.98)}
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 .system-status-pill{background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);padding:4px 14px;border-radius:20px;font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:1px;margin-bottom:10px}
-.mining-timer{font-size:34px;font-weight:900;letter-spacing:2px;color:#fff;margin-bottom:6px}
-.node-instruction{font-size:10px;color:var(--muted);text-align:center;max-width:180px;line-height:1.4}
+.mining-timer{font-size:34px;font-weight:900;letter-spacing:2px;color:#fff}
 
 /* Start Mining Button */
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,0.3);margin-bottom:20px}
@@ -76,7 +75,6 @@ button:active{transform:scale(.98)}
       <div class="ring-wrapper">
         <div class="system-status-pill">SYSTEM ACTIVE</div>
         <div class="mining-timer" id="timerDisplay">03:52:01</div>
-        <div class="node-instruction">Tap below to initiate digital node generation</div>
       </div>
     </div>
 
@@ -87,17 +85,17 @@ button:active{transform:scale(.98)}
     <div class="dual-grid">
       <div class="info-box">
         <div class="info-box-top">
-          <div class="info-box-label">REFERRAL<br>NETWORK</div>
-          <div class="info-box-icon">👥</div>
+          <div class="info-box-label">BURNING<br>STREAK</div>
+          <div class="info-box-icon">🔥</div>
         </div>
-        <div class="info-box-value" id="nodeCount">0 Nodes</div>
+        <div class="info-box-value" id="burningStreak">0 Days</div>
       </div>
       <div class="info-box">
         <div class="info-box-top">
-          <div class="info-box-label">ECOSYSTEM<br>TASKS</div>
-          <div class="info-box-icon">✓</div>
+          <div class="info-box-label">RECOVERABLE<br>$FDX</div>
+          <div class="info-box-icon">💎</div>
         </div>
-        <div class="info-box-value">0/0</div>
+        <div class="info-box-value" id="recoverableFdx">0.00</div>
       </div>
     </div>
 
