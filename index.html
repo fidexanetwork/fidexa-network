@@ -15,12 +15,8 @@ button:active{transform:scale(.98)}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px;position:relative}
 
-/* Header - kept close button only */
-.header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(27,38,54,0.4)}
-.header-left{display:flex;align-items:center;gap:12px}
-.close-btn{background:none;border:0;color:#fff;font-size:18px}
-
-.content{padding:14px 16px}
+/* Header removed completely since all items inside it are gone */
+.content{padding:14px 16px;margin-top:10px}
 
 /* Balance Card */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
@@ -63,14 +59,7 @@ button:active{transform:scale(.98)}
 
 <div class="app">
 
-  <!-- Header Section (Cleaned up: Fidexa Network text & 3 dots removed) -->
-  <header class="header">
-    <div class="header-left">
-      <button class="close-btn">✕</button>
-    </div>
-  </header>
-
-  <!-- Main Mining Page Content -->
+  <!-- Main Mining Page Content (Top header with X and network name completely removed) -->
   <main class="content">
 
     <!-- Total Balance Card -->
@@ -128,8 +117,6 @@ button:active{transform:scale(.98)}
 
 <script>
 let isMining = true;
-let timerInterval = null;
-let secondsLeft = 13921; // Match initial timer state (03:52:01)
 
 function toggleMining() {
   const btn = document.getElementById('miningToggleBtn');
