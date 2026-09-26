@@ -1322,14 +1322,18 @@ function toggleCameraScanner() {
 }
 
 function stopCameraScanner() {
+  const readerDiv = $('reader');
   if (html5QrCode) {
-    html5QrCode.stop().then(() => {
-      $('reader').style.display = 'none';
-    }).catch(err => {
-      $('reader').style.display = 'none';
+    html5QrCode.stop().catch(err => {
+      console.warn("Camera stop warning:", err);
+    }).finally(() => {
+      html5QrCode = null;
+      readerDiv.style.display = 'none';
+      readerDiv.innerHTML = '';
     });
   } else {
-    $('reader').style.display = 'none';
+    readerDiv.style.display = 'none';
+    readerDiv.innerHTML = '';
   }
 }
 
