@@ -239,7 +239,7 @@ a{text-decoration:none;color:inherit}
   </div>
   <div class="recovery-box">
     <div>
-      <div class="recovery-label">Recover $FDX</div>
+      <div class="recovery-label">RECOVERABLE $FDX</div>
       <div class="recovery-value" id="lostTokenVal">0.00 $FDX</div>
       <div class="recovery-sub" id="recoverySubText">Complete 1 week active to unlock (0/7 days)</div>
     </div>
@@ -360,7 +360,7 @@ a{text-decoration:none;color:inherit}
     <strong>Join channel</strong>
     <p>Join the official FIDEXA Telegram channel. Earn +10 $FDX.</p>
   </div>
-  <button class="small-btn" id="tgTaskBtn" onclick="handleTelegramTask()">OPEN</button>
+  <button class="small-btn" id="tgTaskBtn" onclick="handleTelegramTask()">JOIN</button>
 </div>
 
 <div class="task" id="taskX">
@@ -369,7 +369,7 @@ a{text-decoration:none;color:inherit}
     <strong>Join X</strong>
     <p>Follow @Fidexa_Network on X. Earn +10 $FDX.</p>
   </div>
-  <button class="small-btn" id="xTaskBtn" onclick="handleXTask()">OPEN</button>
+  <button class="small-btn" id="xTaskBtn" onclick="handleXTask()">JOIN</button>
 </div>
 
 <div class="task">
@@ -934,7 +934,7 @@ function updateUI() {
     tgBtn.textContent = 'CLAIMED';
     tgBtn.disabled = true;
   } else {
-    tgBtn.textContent = 'OPEN';
+    tgBtn.textContent = 'JOIN';
     tgBtn.disabled = false;
   }
 
@@ -943,7 +943,7 @@ function updateUI() {
     xBtn.textContent = 'CLAIMED';
     xBtn.disabled = true;
   } else {
-    xBtn.textContent = 'OPEN';
+    xBtn.textContent = 'JOIN';
     xBtn.disabled = false;
   }
 
