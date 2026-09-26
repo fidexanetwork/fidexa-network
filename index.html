@@ -80,8 +80,12 @@ button:active{transform:scale(.98)}
 .friends-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:360px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);position:relative}
 .friends-close{position:absolute;top:12px;right:14px;background:none;border:0;color:var(--muted);font-size:18px;font-weight:bold}
 .friends-title{font-size:15px;font-weight:800;color:var(--cyan);margin-bottom:8px;letter-spacing:1px}
-.friends-subtitle{font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.4}
-.friends-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800;margin-top:12px}
+.friends-subtitle{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.4}
+.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.friend-stat-card{background:#111b27;border:1px solid #223247;border-radius:12px;padding:10px 6px;text-align:center}
+.friend-stat-lbl{font-size:9px;color:var(--muted);font-weight:700}
+.friend-stat-val{font-size:15px;font-weight:900;color:#fff;margin-top:4px}
+.friends-action-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:12px;padding:12px;color:#fff;font-size:12px;font-weight:800;margin-top:4px}
 
 /* Bottom Navigation Bar */
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100}
@@ -99,24 +103,24 @@ button:active{transform:scale(.98)}
       <div class="balance-dot"></div>
       <div class="balance-label">TOTAL BALANCE</div>
       <div class="balance-row">
-        <div class="balance-value" id="balanceDisplay">100.00</div>
+        <div class="balance-value" id="balanceDisplay">1,000,000.00</div>
         <div class="balance-token">$FDX</div>
       </div>
-      <div class="balance-sub">$USD</div>
+      <div class="balance-sub">$USD Equivalent</div>
     </div>
 
     <!-- Circular Mining Node Section -->
     <div class="mining-node-container">
       <div class="ring-wrapper">
-        <div class="system-status-pill" id="systemPill">SYSTEM ACTIVE</div>
-        <div class="mining-timer" id="timerDisplay">03:37:51</div>
+        <div class="system-status-pill" id="systemPill">READY TO MINE</div>
+        <div class="mining-timer" id="timerDisplay">04:00:00</div>
         <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">1.0</span> $FDX/H</div>
       </div>
     </div>
 
     <!-- Action Controls -->
     <div class="action-controls">
-      <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">MINING ACTIVE</button>
+      <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">START MINING</button>
       
       <!-- Boost Mining Speed Button -->
       <button class="booster-btn" id="boosterBtn" onclick="openBoosterPrompt()">
@@ -138,7 +142,7 @@ button:active{transform:scale(.98)}
           <div class="info-box-label">BURNING<br>STREAK</div>
           <div class="info-box-icon">🔥</div>
         </div>
-        <div class="info-box-value" id="burningStreak">0 Days</div>
+        <div class="info-box-value" id="burningStreak">1 Day</div>
       </div>
       <div class="info-box">
         <div class="info-box-top">
@@ -192,23 +196,33 @@ button:active{transform:scale(.98)}
     <div class="friends-box">
       <button class="friends-close" onclick="closeFriendsModal()">×</button>
       <div class="friends-title">🤝 REFERRAL NETWORK</div>
-      <div class="friends-subtitle">Invite your friends to Fidexa Network and earn active mining bonuses together!</div>
+      <div class="friends-subtitle">Earn +0.1 $FDX/H active mining bonus for every genuine active friend you invite!</div>
       
-      <div style="background:#111b27; border:1px solid #223247; border-radius:12px; padding:14px; margin-bottom:14px; text-align:left;">
-        <div style="font-size:10px; color:var(--muted); font-weight:700;">TOTAL REFERRED FRIENDS</div>
-        <div style="font-size:20px; font-weight:900; color:#fff; margin-top:4px;">0 Friends</div>
+      <div class="friends-stats-grid">
+        <div class="friend-stat-card">
+          <div class="friend-stat-lbl">Total</div>
+          <div class="friend-stat-val" id="totalFriendsCount">0</div>
+        </div>
+        <div class="friend-stat-card">
+          <div class="friend-stat-lbl" style="color:var(--cyan)">Active</div>
+          <div class="friend-stat-val" id="activeFriendsCount">0</div>
+        </div>
+        <div class="friend-stat-card">
+          <div class="friend-stat-lbl" style="color:var(--muted)">Inactive</div>
+          <div class="friend-stat-val" id="inactiveFriendsCount">0</div>
+        </div>
       </div>
 
       <button class="friends-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation (Wallet moved next to Profile) -->
   <nav class="bottom-nav">
     <button class="nav-item active"><span class="nav-icon">⚡</span>Mining</button>
     <button class="nav-item"><span class="nav-icon">📋</span>Tasks</button>
-    <button class="nav-item"><span class="nav-icon">👛</span>Wallet</button>
     <button class="nav-item" onclick="openFriendsModal()"><span class="nav-icon">👥</span>Friends</button>
+    <button class="nav-item"><span class="nav-icon">👛</span>Wallet</button>
     <button class="nav-item"><span class="nav-icon">🛡️</span>Profile</button>
   </nav>
 </div>
@@ -236,16 +250,32 @@ function enforceAccessControl() {
 }
 
 // --- APP CORE VARIABLES ---
-let totalBalance = 100.00;
-let miningState = 'ACTIVE'; 
-let currentMiningRate = 1.0; // Base rate 1 $FDX/H
+let totalBalance = 1000000.00;
+let miningState = 'IDLE'; // IDLE, ACTIVE, READY_TO_CLAIM
+let baseMiningRate = 1.0; 
+let boosterBonusRate = 0.0;
+let referralBonusRate = 0.0; 
+
 let boosterChancesLeft = 5;
 let adInterval = null;
 let activeAdType = ''; 
-let totalSeconds = 13071;
+let totalSeconds = 14400; // 4 Hours
+
+// Mock Referral & Anti-Cheat Database Record
+let referralData = {
+    total: 3,
+    active: 2,
+    inactive: 1,
+    isBotDetected: false
+};
+
+function getCumulativeRate() {
+    return parseFloat((baseMiningRate + boosterBonusRate + referralBonusRate).toFixed(1));
+}
 
 function updateTimerDisplay() {
   if (!enforceAccessControl()) return;
+  
   if (miningState === 'ACTIVE') {
     if (totalSeconds > 0) {
       totalSeconds--;
@@ -257,7 +287,9 @@ function updateTimerDisplay() {
       miningState = 'READY_TO_CLAIM';
       document.getElementById('timerDisplay').textContent = "00:00:00";
       document.getElementById('systemPill').textContent = "SESSION ENDED";
-      document.getElementById('miningToggleBtn').textContent = "CLAIM REWARD";
+      document.getElementById('systemPill').style.color = "var(--yellow)";
+      document.getElementById('systemPill').style.borderColor = "rgba(250,204,21,0.4)";
+      document.getElementById('miningToggleBtn').textContent = "CLAIM";
       document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#facc15,#f59e0b)";
       document.getElementById('miningToggleBtn').style.color = "#05080c";
     }
@@ -265,9 +297,23 @@ function updateTimerDisplay() {
 }
 setInterval(updateTimerDisplay, 1000);
 
+// --- MINING STATE MACHINE ---
 function handleMiningAction() {
   if (!enforceAccessControl()) return;
-  if (miningState === 'READY_TO_CLAIM') {
+  
+  if (miningState === 'IDLE') {
+    // Start Mining immediately
+    miningState = 'ACTIVE';
+    totalSeconds = 14400;
+    document.getElementById('systemPill').textContent = "ACTIVE MINING";
+    document.getElementById('systemPill').style.color = "var(--cyan)";
+    document.getElementById('miningToggleBtn').textContent = "ACTIVE MINING";
+    document.getElementById('miningToggleBtn').style.background = "rgba(56,189,248,0.2)";
+    document.getElementById('miningToggleBtn').style.border = "1px solid rgba(56,189,248,0.5)";
+    document.getElementById('miningToggleBtn').style.color = "var(--cyan)";
+    document.getElementById('miningToggleBtn').style.pointerEvents = "none"; // Locked while mining
+  } else if (miningState === 'READY_TO_CLAIM') {
+    // Trigger ad to claim reward
     triggerAd('claim');
   }
 }
@@ -291,9 +337,19 @@ function confirmWatchBoosterAd() {
   triggerAd('booster');
 }
 
-// --- FRIENDS / REFERRAL MODAL CONTROLS ---
+// --- FRIENDS / REFERRAL CONTROLS ---
 function openFriendsModal() {
   if (!enforceAccessControl()) return;
+  
+  // Anti-Cheat / Block Manipulation Check
+  if (referralData.isBotDetected) {
+    alert("Warning: Suspicious referral pattern or block manipulation detected. Fake accounts excluded.");
+  }
+  
+  document.getElementById('totalFriendsCount').textContent = referralData.total;
+  document.getElementById('activeFriendsCount').textContent = referralData.active;
+  document.getElementById('inactiveFriendsCount').textContent = referralData.inactive;
+  
   document.getElementById('friendsModal').classList.add('active');
 }
 
@@ -349,8 +405,8 @@ function closeAdModal() {
   
   if (activeAdType === 'booster') {
     boosterChancesLeft--;
-    currentMiningRate = parseFloat((currentMiningRate + 0.5).toFixed(1));
-    document.getElementById('currentRateDisplay').textContent = currentMiningRate.toFixed(1);
+    boosterBonusRate = parseFloat((boosterBonusRate + 0.5).toFixed(1));
+    document.getElementById('currentRateDisplay').textContent = getCumulativeRate().toFixed(1);
     document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
     
     if (boosterChancesLeft <= 0) {
@@ -361,25 +417,35 @@ function closeAdModal() {
         document.getElementById('boosterBtn').style.opacity = '1';
       }, 14400 * 1000);
     }
-    alert(`Success! Mining speed increased to ${currentMiningRate.toFixed(1)} $FDX/H`);
+    alert(`Success! Mining speed increased to ${getCumulativeRate().toFixed(1)} $FDX/H`);
   } else if (activeAdType === 'claim') {
     totalBalance += 4.00;
     document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
+    
+    // Reset back to idle ready state
     totalSeconds = 14400;
-    miningState = 'ACTIVE';
-    document.getElementById('systemPill').textContent = "SYSTEM ACTIVE";
-    document.getElementById('miningToggleBtn').textContent = "MINING ACTIVE";
+    miningState = 'IDLE';
+    document.getElementById('systemPill').textContent = "READY TO MINE";
+    document.getElementById('systemPill').style.color = "var(--cyan)";
+    document.getElementById('systemPill').style.borderColor = "rgba(56,189,248,0.3)";
+    document.getElementById('miningToggleBtn').textContent = "START MINING";
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
+    document.getElementById('miningToggleBtn').style.border = "0";
     document.getElementById('miningToggleBtn').style.color = "#fff";
+    document.getElementById('miningToggleBtn').style.pointerEvents = "auto";
   }
 }
 
-// --- INITIALIZATION CHECK & 1M TOKEN ALLOCATION ---
+// --- INITIALIZATION CHECK & CALCULATIONS ---
 window.addEventListener('DOMContentLoaded', () => {
     if (enforceAccessControl()) {
         totalBalance = 1000000.00;
+        
+        // Calculate dynamic active referral bonus (+0.1 FDX/H per active verified friend)
+        referralBonusRate = parseFloat((referralData.active * 0.1).toFixed(1));
+        
         document.getElementById('balanceDisplay').textContent = totalBalance.toLocaleString('en-US', {minimumFractionDigits: 2});
-        document.getElementById('currentRateDisplay').textContent = currentMiningRate.toFixed(1);
+        document.getElementById('currentRateDisplay').textContent = getCumulativeRate().toFixed(1);
     }
 });
 </script>
