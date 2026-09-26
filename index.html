@@ -120,6 +120,20 @@ a{text-decoration:none;color:inherit}
 .reward-row.claimed{border-color:#1b6388}
 .reward-row.claimed .reward-value{color:#66d7a2}
 
+/* Friend List Item Styles */
+.friend-list{margin-top:12px}
+.friend-row{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.friend-info-left{display:flex;align-items:center;gap:10px}
+.friend-avatar-box{width:36px;height:36px;border-radius:10px;background:#12283e;border:1px solid #1f3b57;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:14px;font-weight:800}
+.friend-details strong{font-size:11px;display:block}
+.friend-details p{font-size:9px;color:#71869b;margin-top:2px}
+.friend-status-badge{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.friend-row.active-friend .status-dot{background:var(--green);box-shadow:0 0 8px rgba(36,201,135,.6)}
+.friend-row.active-friend .friend-status-badge{color:var(--green)}
+.friend-row.inactive-friend .status-dot{background:#71869b}
+.friend-row.inactive-friend .friend-status-badge{color:#71869b}
+
 /* Menu Group Styles */
 .menu-group{margin-top:12px}
 .menu-label{font-size:10px;color:#71869b;margin:0 4px 9px}
@@ -463,6 +477,15 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="reward-value">+100 $FDX</div>
   </div>
+</div>
+
+<div class="section-title">
+  <h2>Your Friends List</h2>
+  <span id="friendListCount">0 MEMBERS</span>
+</div>
+
+<div class="friend-list" id="friendListContainer">
+  <div class="notice" style="margin-top:0">No friends invited yet. Share your link above to start building your network!</div>
 </div>
 </section>
 
@@ -928,6 +951,8 @@ function updateUI() {
     xBtn.disabled = false;
   }
 
+  renderFriendsList();
+
   const walletOnlyTransactions = (state.transactions || []).filter(t => {
     const l = t.label.toLowerCase();
     return !l.includes('reward') && !l.includes('channel') && !l.includes('milestone');
@@ -936,6 +961,38 @@ function updateUI() {
   $('walletTxCount').textContent = `${walletOnlyTransactions.length} ACTIVITY`;
   renderTransactions();
   updateLuckyBoxesUI();
+}
+
+function renderFriendsList() {
+  const container = $('friendListContainer');$('friendListCount').textContent = `${state.friends.length} MEMBERS`;
+
+  if(!state.friends || state.friends.length === 0) {
+    container.innerHTML = '<div class="notice" style="margin-top:0">No friends invited yet. Share your link above to start building your network!</div>';
+    return;
+  }
+
+  container.innerHTML = state.friends.map((f, index) => {
+    const isActive = f.active;
+    const rowClass = isActive ? 'friend-row active-friend' : 'friend-row inactive-friend';
+    const statusText = isActive ? 'Active' : 'Inactive';
+    const identifier = f.id || `FDX-FRIEND-${index + 1}`;
+
+    return `
+      <div class="${rowClass}">
+        <div class="friend-info-left">
+          <div class="friend-avatar-box">👤</div>
+          <div class="friend-details">
+            <strong>${esc(identifier)}</strong>
+            <p>${isActive ? 'Mining bonus active (+0.1 $FDX/h)' : 'Mining session ended'}</p>
+          </div>
+        </div>
+        <div class="friend-status-badge">
+          <div class="status-dot"></div>
+          <span>${statusText}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function handleRecoveryClaim() {
