@@ -14,9 +14,11 @@ button{font:inherit;cursor:pointer}
 button:active{transform:scale(.98)}
 
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:88px;position:relative}
-.page-view{display:none;padding:14px 16px;margin-top:10px;animation:fadeIn .2s ease-in-out}
+
+/* Full-Screen Page Views (From Top to Bottom, A to Z Layer) */
+.page-view{display:none;padding:16px;margin-top:0;min-height:calc(100vh - 88px);animation:fadeIn .2s ease-in-out}
 .page-view.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* Balance Card */
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px}
@@ -56,7 +58,7 @@ button:active{transform:scale(.98)}
 .info-box-icon{width:28px;height:28px;border-radius:8px;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:13px}
 .info-box-value{font-size:18px;font-weight:800;color:#fff;margin-top:16px}
 
-/* Full Screen Pages Styling */
+/* Full Screen Layers Styling */
 .full-page-header{font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:1px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
 .full-page-sub{font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.4}
 
@@ -65,7 +67,7 @@ button:active{transform:scale(.98)}
 .friend-stat-lbl{font-size:9px;color:var(--muted);font-weight:700}
 .friend-stat-val{font-size:16px;font-weight:900;color:#fff;margin-top:4px}
 
-.friends-scroll-area{max-height:180px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.friends-scroll-area{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .friend-row-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .friend-name{font-size:12px;font-weight:800;color:#fff}
 .friend-status-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
@@ -73,7 +75,7 @@ button:active{transform:scale(.98)}
 .status-inactive{background:rgba(136,153,166,0.15);color:var(--muted)}
 
 .milestones-title{font-size:11px;font-weight:800;color:var(--yellow);margin-bottom:8px;letter-spacing:.5px}
-.milestones-list{max-height:160px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:6px}
+.milestones-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
 .milestone-item{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:11px}
 .milestone-reward{color:var(--yellow);font-weight:900}
 
@@ -140,21 +142,21 @@ button:active{transform:scale(.98)}
     <div class="action-controls">
       <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">START MINING</button>
       
-      <!-- Interactive Grid: Boost Speed & Lucky Box -->
+      <!-- Interactive Grid: Speed Boost & Lucky Box Gift Box -->
       <div class="interactive-grid">
         <button class="action-tile" onclick="openBoosterPrompt()">
           <div class="action-tile-icon">🚀</div>
           <div>
-            <div class="action-tile-title">Speed Boost</div>
+            <div class="action-tile-title">Mining Boost</div>
             <div class="action-tile-sub" id="boosterChances">5/5 Left</div>
           </div>
         </button>
 
-        <button class="action-tile" onclick="openLuckyBoxModal()" style="border-color: rgba(250,204,21,0.4);">
+        <button class="action-tile" onclick="openLuckyBoxModal()" style="border-color: rgba(250,204,21,0.5);">
           <div class="action-tile-icon">🎁</div>
           <div>
             <div class="action-tile-title" style="color:var(--yellow);">Lucky Box</div>
-            <div class="action-tile-sub">Claim Mystery Gift</div>
+            <div class="action-tile-sub">Mystery Gift Box</div>
           </div>
         </button>
       </div>
@@ -181,27 +183,29 @@ button:active{transform:scale(.98)}
   <!-- ================= 2. TASKS PAGE ================= -->
   <main class="page-view" id="page-tasks">
     <div class="full-page-header">📋 SYSTEM TASKS</div>
-    <div class="full-page-sub">Complete daily community tasks to earn extra $FDX rewards.</div>
-    <div class="friend-row-item">
-      <div>
-        <div class="friend-name">Join Telegram Channel</div>
-        <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+10.00 $FDX</div>
+    <div class="full-page-sub">Complete community missions to earn extra token allocations.</div>
+    <div class="friends-scroll-area">
+      <div class="friend-row-item">
+        <div>
+          <div class="friend-name">Join Telegram Channel</div>
+          <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+10.00 $FDX</div>
+        </div>
+        <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
       </div>
-      <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
-    </div>
-    <div class="friend-row-item">
-      <div>
-        <div class="friend-name">Follow Official X Handle</div>
-        <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+15.00 $FDX</div>
+      <div class="friend-row-item">
+        <div>
+          <div class="friend-name">Follow Official X Handle</div>
+          <div style="font-size:10px;color:var(--yellow);margin-top:2px;">+15.00 $FDX</div>
+        </div>
+        <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
       </div>
-      <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
     </div>
   </main>
 
-  <!-- ================= 3. FRIENDS PAGE ================= -->
+  <!-- ================= 3. FRIENDS PAGE (FULL LAYER A-Z) ================= -->
   <main class="page-view" id="page-friends">
-    <div class="full-page-header">🤝 REFERRAL NETWORK</div>
-    <div class="full-page-sub">Invite friends, track their active mining status, and unlock milestone rewards!</div>
+    <div class="full-page-header">👥 REFERRAL NETWORK</div>
+    <div class="full-page-sub">Invite friends and unlock full milestone rewards from top to bottom.</div>
     
     <div class="friends-stats-grid">
       <div class="friend-stat-card">
@@ -247,7 +251,7 @@ button:active{transform:scale(.98)}
     <button class="full-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
   </main>
 
-  <!-- ================= 4. WALLET PAGE ================= -->
+  <!-- ================= 4. WALLET PAGE (FULL LAYER A-Z) ================= -->
   <main class="page-view" id="page-wallet">
     <div class="balance-card" style="margin-bottom: 16px;">
       <div class="balance-dot"></div>
@@ -256,7 +260,7 @@ button:active{transform:scale(.98)}
         <div class="balance-value" id="walletTotalDisplay">1,000,000.00</div>
         <div class="balance-token">$FDX</div>
       </div>
-      <div class="balance-sub">Main Net Asset Valuation</div>
+      <div class="balance-sub">Main Net Full Asset Valuation</div>
     </div>
 
     <div class="wallet-split-grid">
@@ -276,7 +280,7 @@ button:active{transform:scale(.98)}
     </div>
 
     <div style="font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 8px; letter-spacing: .5px;">RECENT TRANSACTIONS</div>
-    <div class="friends-scroll-area" style="max-height: 160px;">
+    <div class="friends-scroll-area">
       <div class="friend-row-item">
         <div>
           <div class="friend-name" style="font-size:11px;">Mining Reward Claim</div>
@@ -298,17 +302,19 @@ button:active{transform:scale(.98)}
   <main class="page-view" id="page-profile">
     <div class="full-page-header">🛡️ USER PROFILE</div>
     <div class="full-page-sub">Manage your account security and node verification details.</div>
-    <div class="friend-row-item" style="margin-bottom:8px;">
-      <div class="friend-name">Telegram ID</div>
-      <div style="font-size:11px;color:var(--cyan);font-weight:700;" id="profileUserId">6771764389</div>
-    </div>
-    <div class="friend-row-item" style="margin-bottom:8px;">
-      <div class="friend-name">KYC Status</div>
-      <div class="friend-status-tag status-active">Verified Node</div>
-    </div>
-    <div class="friend-row-item">
-      <div class="friend-name">App Version</div>
-      <div style="font-size:11px;color:var(--muted);">v2.4.0 Live</div>
+    <div class="friends-scroll-area">
+      <div class="friend-row-item">
+        <div class="friend-name">Telegram ID</div>
+        <div style="font-size:11px;color:var(--cyan);font-weight:700;" id="profileUserId">6771764389</div>
+      </div>
+      <div class="friend-row-item">
+        <div class="friend-name">KYC Status</div>
+        <div class="friend-status-tag status-active">Verified Node</div>
+      </div>
+      <div class="friend-row-item">
+        <div class="friend-name">App Version</div>
+        <div style="font-size:11px;color:var(--muted);">v2.4.0 Live</div>
+      </div>
     </div>
   </main>
 
@@ -340,7 +346,7 @@ button:active{transform:scale(.98)}
   <div class="modal-overlay" id="luckyBoxModal">
     <div class="prompt-box">
       <div class="prompt-title">🎁 LUCKY GIFT BOX</div>
-      <div class="prompt-desc">Open the mystery box by watching a short video to claim instant bonus $FDX!</div>
+      <div class="prompt-desc">Open the mystery gift box by watching a short video to claim instant bonus $FDX!</div>
       <div class="prompt-actions">
         <button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">Close</button>
         <button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">Open Box</button>
@@ -361,7 +367,7 @@ button:active{transform:scale(.98)}
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar (Wallet right next to Profile) -->
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('mining', this)"><span class="nav-icon">⚡</span>Mining</button>
     <button class="nav-item" onclick="switchTab('tasks', this)"><span class="nav-icon">📋</span>Tasks</button>
@@ -398,7 +404,7 @@ function switchTab(tabName, btnElement) {
 
     // Hide all pages
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-    // Show selected page
+    // Show selected page fully from top to bottom
     document.getElementById(`page-${tabName}`).classList.add('active');
 
     // Update bottom nav active state
@@ -424,8 +430,7 @@ let totalSeconds = 14400; // 4 Hours
 let referralData = {
     total: 3,
     active: 2,
-    inactive: 1,
-    isBotDetected: false
+    inactive: 1
 };
 
 function getCumulativeRate() {
@@ -560,21 +565,13 @@ function closeAdModal() {
     document.getElementById('currentRateDisplay').textContent = getCumulativeRate().toFixed(1);
     document.getElementById('boosterChances').textContent = `${boosterChancesLeft}/5 Left`;
     
-    if (boosterChancesLeft <= 0) {
-      document.getElementById('boosterBtn').style.opacity = '0.5';
-      setTimeout(() => {
-        boosterChancesLeft = 5;
-        document.getElementById('boosterChances').textContent = `5/5 Left`;
-        document.getElementById('boosterBtn').style.opacity = '1';
-      }, 14400 * 1000);
-    }
     alert(`Success! Mining speed increased to ${getCumulativeRate().toFixed(1)} $FDX/H`);
   } else if (activeAdType === 'luckybox') {
     let mysteryReward = 10.00;
     totalBalance += mysteryReward;
     transferableBal += mysteryReward;
     updateBalancesUI();
-    alert(`Congratulations! You found ${mysteryReward} $FDX inside the Lucky Box!`);
+    alert(`Congratulations! You found ${mysteryReward} $FDX inside the Lucky Gift Box!`);
   } else if (activeAdType === 'claim') {
     totalBalance += 4.00;
     transferableBal += 4.00;
