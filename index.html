@@ -1181,7 +1181,7 @@ border-bottom:1px solid rgba(27,38,54,.7);
 <button class="full-action-btn" onclick="copyReferralLink()" style="padding:15px;font-size:13px;box-shadow:none;">INVITE FRIENDS</button>
 </main>
 
-<!-- INTEGRATED WALLET VIEW (WITH REAL VERIFIED QR CODE) -->
+<!-- INTEGRATED WALLET VIEW (WITH REAL QR CODE) -->
 <main class="page-view" id="page-wallet">
 <div class="wallet-main-card">
 <div class="wallet-balance-title">TOTAL WALLET BALANCE</div>
@@ -1348,11 +1348,10 @@ const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
 const FIDEXA_BOT = 'https://t.me/FIDEXANetworkBot';
 const ADSGRAM_BLOCK_ID = "46559";
 
-// Initialize Adsgram controller if SDK is present
 let adsgramController = null;
 if (typeof window !== 'undefined' && window.Adsgram) {
     try {
-        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID, debug: true });
     } catch (e) {
         console.log("Adsgram init error:", e);
     }
@@ -1361,7 +1360,7 @@ if (typeof window !== 'undefined' && window.Adsgram) {
 /* =========================================================
    LOCAL STORAGE STATE
 ========================================================= */
-const STORAGE_KEY = 'fidexa_prototype_state_v8';
+const STORAGE_KEY = 'fidexa_prototype_state_v9';
 
 const defaultState = {
     totalBalance: 0,
@@ -1463,9 +1462,8 @@ function openReceiveModal() {
     
     const userWallet = getWalletAddress();
     addressBox.value = userWallet;
-    qrContainer.innerHTML = ''; // Clear previous QR
+    qrContainer.innerHTML = '';
 
-    // Generate real verified QR Code via qrcode.js
     qrInstance = new QRCode(qrContainer, {
         text: userWallet,
         width: 160,
@@ -1690,31 +1688,20 @@ async function copyReferralLink() {
 }
 
 /* =========================================================
-   OFFICIAL ADSGRAM INTEGRATION (BLOCK ID: 46559)
+   ADSGRAM INTEGRATION (BLOCK ID: 46559) - SEAMLESS FALLBACK
 ========================================================= */
 function showAdsgramAd(rewardCallback) {
     if (adsgramController) {
         adsgramController.show()
             .then(() => {
-                // User successfully watched the official Adsgram ad
                 rewardCallback();
             })
             .catch((err) => {
-                console.log("Adsgram display error or skipped:", err);
-                // Fallback simulation if running in a browser environment without test ad fill
-                if (confirm("[Simulation Mode] Ad network unavailable or test environment detected. Grant reward anyway?")) {
-                    rewardCallback();
-                } else {
-                    showToast("Ad was skipped or unavailable.");
-                }
+                console.warn("Adsgram ad execution skipped or error:", err);
+                rewardCallback();
             });
     } else {
-        // Fallback when SDK isn't fully loaded
-        if (confirm("Adsgram SDK loading. Simulate successful watch to claim reward?")) {
-            rewardCallback();
-        } else {
-            showToast("Adsgram controller loading...");
-        }
+        rewardCallback();
     }
 }
 
@@ -1801,7 +1788,6 @@ function handleMiningAction() {
         updateAllUI();
         showToast('Mining cycle started!');
     } else if (state.miningState === 'READY_TO_CLAIM') {
-        // Trigger Adsgram ad before letting user claim accumulated session rewards
         showAdsgramAd(() => {
             const accumulated = Number(state.sessionAccumulated || 0);
             state.totalBalance = Number(state.totalBalance) + accumulated;
@@ -1854,7 +1840,7 @@ function confirmOpenLuckyBox() {
             state.totalBalance = Number(state.totalBalance) + reward;
             saveState();
             updateAllUI();
-            alert(`🎁 Lucky Box opened via Adsgram!\n\n+${reward} FDX credited.`);
+            showToast(`🎁 Lucky Box opened! +${reward} FDX credited.`);
         }
     });
 }
