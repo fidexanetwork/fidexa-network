@@ -2334,11 +2334,8 @@ tgUser.first_name ||
    OFFICIAL LINKS
 ========================================================= */
 
-const FIDEXA_TELEGRAM=
-'[https://t.me/fidexa\_Network](https://t.me/fidexa_Network)';
-
-const FIDEXA_X=
-'[https://x.com/Fidexa\_Network](https://x.com/Fidexa_Network)';
+const FIDEXA_TELEGRAM='https://t.me/fidexa_Network';
+const FIDEXA_X='https://x.com/Fidexa_Network';
 
 /*
    IMPORTANT:
@@ -3265,18 +3262,8 @@ NOT YET OPEN
 
 
 /* =========================================================
-   REFERRAL
+   REFERRAL (FIXED DIRECT CLIPBOARD COPY)
 ========================================================= */
-
-/*
-   Generates:
-
-   https://t.me/FIDEXANetworkBot?start=ref_USERID
-
-   There is intentionally:
-   - NO /fidexa
-   - NO ?startapp=
-*/
 
 function getReferralLink(){
 
@@ -3291,12 +3278,6 @@ return `${FIDEXA_BOT}?start=ref_demo`;
 }
 
 
-/*
-   COPY REFERRAL LINK
-   Works with modern clipboard API and
-   also has a fallback for Telegram/mobile WebViews.
-*/
-
 async function copyReferralLink(){
 
 const referralLink=
@@ -3304,8 +3285,6 @@ getReferralLink();
 
 
 try{
-
-/* Modern clipboard API */
 
 if(
 navigator.clipboard &&
@@ -3325,18 +3304,11 @@ return;
 }
 
 
-/* Mobile / Telegram WebView fallback */
-
 const textArea=
 document.createElement('textarea');
 
 textArea.value=
 referralLink;
-
-textArea.setAttribute(
-'readonly',
-''
-);
 
 textArea.style.position=
 'fixed';
@@ -3395,38 +3367,9 @@ console.log(
 error
 );
 
-
-/*
-   Final fallback:
-   Show the real referral URL so the user
-   can manually copy it if the WebView blocks
-   clipboard access.
-*/
-
-try{
-
-const manualCopy=
-window.prompt(
-'Copy your FIDEXA referral link:',
-referralLink
-);
-
-if(manualCopy!==null){
-
 showToast(
-'Please copy the referral link from the box.'
+'Failed to copy link. Please try again.'
 );
-
-}
-
-}
-catch(promptError){
-
-showToast(
-'Unable to copy referral link.'
-);
-
-}
 
 }
 
@@ -3559,12 +3502,6 @@ friend.username ?
 `@${String(friend.username).replace(/^@/,'')}` :
 'Telegram User';
 
-
-/*
-   FIXED:
-   The previous line contained malformed Markdown
-   and caused a JavaScript syntax error.
-*/
 
 const displayName=
 friend.name ||
@@ -4012,7 +3949,7 @@ button.style.pointerEvents=
 
 
 /* =========================================================
-   START / CLAIM
+   START / CLAIM (SYNCHRONIZED RESET LOGIC)
 ========================================================= */
 
 function handleMiningAction(){
@@ -4028,6 +3965,13 @@ Date.now();
 state.sessionAccumulated=
 0;
 
+// SYNCHRONIZED FRESH CYCLE: Reset boosters & Lucky box chances together
+state.boosterBonusRate=0;
+state.boosterChancesLeft=5;
+state.luckyBoxChances=5;
+state.boosterResetAt=Date.now();
+state.luckyBoxResetAt=Date.now();
+
 markUserActive();
 
 saveState();
@@ -4035,7 +3979,7 @@ saveState();
 updateAllUI();
 
 showToast(
-'Mining started. Your FDX will accumulate hourly.'
+'New mining cycle started! Boosters & Lucky Boxes reset.'
 );
 
 return;
@@ -4053,7 +3997,7 @@ triggerAd('claim');
 
 
 /* =========================================================
-   BOOSTER & CYCLES RESET (4-HOUR INTERVAL)
+   BOOSTER & LUCKY BOX CYCLES RESET (4-HOUR INTERVAL)
 ========================================================= */
 
 function resetCyclesIfNeeded(){
@@ -4062,10 +4006,9 @@ const now=
 Date.now();
 
 const fourHours=
-4*60*60*1000;
+14400*1000;
 
 
-// Lucky Box 4-Hour Reset
 if(!state.luckyBoxResetAt || now-state.luckyBoxResetAt>=fourHours){
 
 state.luckyBoxChances=5;
@@ -4076,7 +4019,6 @@ now;
 }
 
 
-// Mining Booster 4-Hour Reset
 if(!state.boosterResetAt || now-state.boosterResetAt>=fourHours){
 
 state.boosterBonusRate=0;
