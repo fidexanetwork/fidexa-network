@@ -1,146 +1,5117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidexa Network - Updated UI & Logic</title>
-    <style>
-        body {
-            background-color: #0d1117;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-        }
-        h2 {
-            color: #38bdf8;
-        }
-        .card {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .btn {
-            background-color: #0284c7;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn:hover {
-            background-color: #0369a1;
-        }
-    </style>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="theme-color" content="#05080c">
+
+<title>Fidexa Network</title>
+
+<style>
+
+:root{
+--bg:#05080c;
+--panel:#0a1018;
+--border:#1b2636;
+--text:#f1f5f9;
+--muted:#8899a6;
+--cyan:#38bdf8;
+--blue:#0284c7;
+--yellow:#facc15;
+--red:#f87171;
+--green:#4ade80
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
+}
+
+html,body{
+min-height:100%;
+background:var(--bg)
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+color:var(--text);
+-webkit-tap-highlight-color:transparent;
+-webkit-user-select:none;
+user-select:none
+}
+
+button{
+font:inherit;
+cursor:pointer
+}
+
+button:active{
+transform:scale(.98)
+}
+
+.app{
+max-width:480px;
+min-height:100vh;
+margin:auto;
+padding-bottom:95px;
+position:relative
+}
+
+.page-view{
+display:none;
+padding:24px 20px;
+min-height:calc(100vh - 95px);
+animation:fadeIn .2s ease-in-out
+}
+
+.page-view.active{
+display:block
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(6px)
+}
+to{
+opacity:1;
+transform:translateY(0)
+}
+}
+
+/* =========================================================
+BALANCE
+========================================================= */
+
+.balance-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid #1b2636;
+border-radius:18px;
+padding:18px;
+position:relative;
+margin-bottom:18px
+}
+
+.balance-label{
+font-size:10px;
+color:var(--muted);
+letter-spacing:.8px;
+font-weight:700
+}
+
+.balance-row{
+display:flex;
+align-items:baseline;
+gap:8px;
+margin-top:6px
+}
+
+.balance-value{
+font-size:32px;
+font-weight:900;
+color:#fff
+}
+
+.balance-token{
+font-size:18px;
+font-weight:800;
+color:var(--yellow)
+}
+
+.balance-dot{
+position:absolute;
+top:18px;
+right:18px;
+width:8px;
+height:8px;
+background:var(--cyan);
+border-radius:50%;
+box-shadow:0 0 8px var(--cyan)
+}
+
+/* =========================================================
+MINING
+========================================================= */
+
+.mining-node-container{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin:15px 0 20px
+}
+
+.ring-wrapper{
+width:260px;
+height:260px;
+border-radius:50%;
+border:2px solid rgba(56,189,248,.25);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+position:relative;
+box-shadow:
+0 0 30px rgba(56,189,248,.08),
+inset 0 0 30px rgba(56,189,248,.08)
+}
+
+.ring-wrapper::before{
+content:'';
+position:absolute;
+inset:-6px;
+border-radius:50%;
+border:2px dashed rgba(56,189,248,.4);
+animation:spin 30s linear infinite
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg)
+}
+}
+
+.system-status-pill{
+background:rgba(56,189,248,.12);
+border:1px solid rgba(56,189,248,.3);
+padding:4px 14px;
+border-radius:20px;
+font-size:10px;
+font-weight:800;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:4px
+}
+
+.mining-timer{
+font-size:34px;
+font-weight:900;
+letter-spacing:2px;
+color:#fff
+}
+
+.mining-rate-indicator{
+font-size:11px;
+color:var(--muted);
+font-weight:700;
+margin-top:6px
+}
+
+.mining-rate-indicator span{
+color:var(--yellow);
+font-weight:900
+}
+
+.action-controls{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:18px
+}
+
+.start-mining-btn{
+width:100%;
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:14px;
+padding:16px;
+color:#fff;
+font-size:14px;
+font-weight:800;
+letter-spacing:1px;
+box-shadow:0 4px 20px rgba(56,189,248,.3)
+}
+
+.interactive-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.action-tile{
+background:rgba(10,16,24,.9);
+border:1px solid var(--border);
+border-radius:14px;
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px;
+text-align:left;
+box-shadow:0 4px 15px rgba(0,0,0,.2)
+}
+
+.action-tile-icon{
+font-size:22px
+}
+
+.action-tile-title{
+font-size:11px;
+font-weight:800;
+color:#fff;
+letter-spacing:.3px
+}
+
+.action-tile-sub{
+font-size:9px;
+color:var(--muted);
+margin-top:2px;
+font-weight:600
+}
+
+/* =========================================================
+MINING STATISTICS
+========================================================= */
+
+.mining-statistics-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+padding:17px;
+margin-top:16px;
+margin-bottom:18px
+}
+
+.mining-statistics-title{
+font-size:14px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.7px;
+margin-bottom:14px
+}
+
+.mining-stat-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
+}
+
+.mining-stat-item{
+background:#111b27;
+border:1px solid #223247;
+border-radius:13px;
+padding:13px
+}
+
+.mining-stat-label{
+font-size:9px;
+color:var(--muted);
+font-weight:900;
+letter-spacing:.5px;
+text-transform:uppercase
+}
+
+.mining-stat-value{
+font-size:17px;
+font-weight:900;
+color:#fff;
+margin-top:7px
+}
+
+.mining-stat-value.yellow{
+color:var(--yellow)
+}
+
+.dual-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:14px
+}
+
+.info-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:16px;
+padding:16px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+position:relative
+}
+
+.info-box-top{
+display:flex;
+align-items:flex-start;
+justify-content:space-between
+}
+
+.info-box-label{
+font-size:10px;
+color:var(--muted);
+font-weight:700;
+line-height:1.3;
+letter-spacing:.5px
+}
+
+.info-box-icon{
+width:28px;
+height:28px;
+border-radius:8px;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px
+}
+
+.info-box-value{
+font-size:18px;
+font-weight:800;
+color:#fff;
+margin-top:16px
+}
+
+/* =========================================================
+TASKS
+========================================================= */
+
+.full-page-header{
+font-size:22px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.full-page-sub{
+font-size:14px;
+color:var(--muted);
+margin-bottom:24px;
+line-height:1.5;
+font-weight:700
+}
+
+.friend-list-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:18px
+}
+
+.friend-list-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.friend-list-title{
+font-size:14px;
+font-weight:900;
+color:#fff
+}
+
+.friend-list-count{
+font-size:10px;
+font-weight:900;
+color:var(--cyan)
+}
+
+.friend-row-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:14px 16px;
+border-bottom:1px solid rgba(27,38,54,.7)
+}
+
+.friend-row-item:last-child{
+border-bottom:0
+}
+
+.friend-left{
+display:flex;
+align-items:center;
+gap:11px;
+min-width:0
+}
+
+.friend-avatar{
+width:38px;
+height:38px;
+border-radius:50%;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:17px;
+flex-shrink:0
+}
+
+.friend-name{
+font-size:13px;
+font-weight:900;
+color:#fff;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
+
+.friend-status{
+font-size:9px;
+font-weight:900;
+margin-top:4px
+}
+
+.friend-status.active{
+color:var(--green)
+}
+
+.friend-status.inactive{
+color:var(--muted)
+}
+
+.task-button{
+background:rgba(56,189,248,.2);
+color:var(--cyan);
+border:1px solid rgba(56,189,248,.4);
+padding:9px 12px;
+border-radius:10px;
+font-weight:900;
+font-size:11px;
+white-space:nowrap;
+flex-shrink:0
+}
+
+.task-button.completed{
+background:rgba(74,222,128,.12);
+border-color:rgba(74,222,128,.35);
+color:var(--green)
+}
+
+/* =========================================================
+FRIENDS
+========================================================= */
+
+.friends-stats-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:18px
+}
+
+.friend-stat-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:16px;
+padding:15px 8px;
+text-align:center
+}
+
+.friend-stat-value{
+font-size:22px;
+font-weight:900;
+color:#fff
+}
+
+.friend-stat-label{
+font-size:9px;
+color:var(--muted);
+font-weight:900;
+margin-top:5px;
+text-transform:uppercase;
+letter-spacing:.4px
+}
+
+.friends-scroll-area{
+max-height:330px;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch
+}
+
+.friend-empty-state{
+padding:30px 18px;
+text-align:center
+}
+
+.friend-empty-icon{
+font-size:32px;
+margin-bottom:10px
+}
+
+.friend-empty-title{
+font-size:15px;
+font-weight:900;
+color:#fff
+}
+
+.friend-empty-text{
+font-size:11px;
+color:var(--muted);
+line-height:1.6;
+margin-top:8px
+}
+
+/* =========================================================
+WALLET
+========================================================= */
+
+.crypto-wallet-hero{
+background:linear-gradient(145deg,#0f1a2e,#070d16);
+border:2px solid var(--cyan);
+border-radius:24px;
+padding:32px 24px;
+text-align:center;
+box-shadow:0 12px 35px rgba(56,189,248,0.2);
+margin-bottom:24px;
+position:relative
+}
+
+.crypto-wallet-hero::before{
+content:'';
+position:absolute;
+top:-1px;
+left:50%;
+transform:translateX(-50%);
+width:140px;
+height:4px;
+background:var(--cyan);
+border-radius:2px
+}
+
+.crypto-hero-label{
+font-size:12px;
+color:var(--muted);
+font-weight:900;
+letter-spacing:1.8px;
+text-transform:uppercase
+}
+
+.crypto-hero-value-row{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+margin-top:12px
+}
+
+.crypto-hero-value{
+font-size:42px;
+font-weight:900;
+color:#fff;
+letter-spacing:-.5px
+}
+
+.crypto-hero-token{
+font-size:24px;
+font-weight:900;
+color:var(--yellow)
+}
+
+.wallet-migration-card{
+background:linear-gradient(145deg,#101b2b,#080e17);
+border:1px solid rgba(56,189,248,.35);
+border-radius:20px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 8px 28px rgba(0,0,0,.35)
+}
+
+.wallet-migration-title{
+font-size:15px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px
+}
+
+.wallet-migration-text{
+font-size:12px;
+color:var(--muted);
+line-height:1.6;
+margin-top:8px
+}
+
+.wallet-migration-status{
+display:inline-block;
+margin-top:12px;
+padding:6px 10px;
+border-radius:20px;
+background:rgba(250,204,21,.08);
+border:1px solid rgba(250,204,21,.25);
+color:var(--yellow);
+font-size:10px;
+font-weight:900
+}
+
+.wallet-huge-stack{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-bottom:24px
+}
+
+.wallet-huge-card{
+background:linear-gradient(145deg,#0c141f,#070b12);
+border:1px solid #22324a;
+border-radius:20px;
+padding:20px 16px;
+box-shadow:0 8px 30px rgba(0,0,0,.4);
+position:relative;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+justify-content:space-between
+}
+
+.wallet-huge-card::after{
+content:'';
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+height:3px;
+background:linear-gradient(90deg,var(--blue),var(--cyan))
+}
+
+.wallet-huge-lbl{
+font-size:10px;
+color:var(--muted);
+font-weight:900;
+letter-spacing:.8px;
+margin-bottom:12px;
+text-transform:uppercase;
+line-height:1.3
+}
+
+.wallet-huge-value{
+font-size:24px;
+font-weight:900;
+color:#fff
+}
+
+.wallet-huge-unit{
+font-size:14px;
+font-weight:900;
+color:var(--yellow);
+margin-top:4px
+}
+
+.wallet-actions-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin-bottom:28px
+}
+
+.wallet-btn-send{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px;
+color:var(--cyan);
+font-size:15px;
+font-weight:900;
+box-shadow:0 6px 20px rgba(0,0,0,.3)
+}
+
+.wallet-btn-receive{
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:18px;
+padding:18px;
+color:#fff;
+font-size:15px;
+font-weight:900;
+box-shadow:0 6px 25px rgba(56,189,248,.35)
+}
+
+/* =========================================================
+PROFILE
+========================================================= */
+
+.profile-menu-list{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-bottom:28px
+}
+
+.profile-menu-item{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+box-shadow:0 4px 15px rgba(0,0,0,.2)
+}
+
+.profile-menu-left{
+display:flex;
+align-items:center;
+gap:14px
+}
+
+.profile-menu-icon{
+font-size:20px
+}
+
+.profile-menu-title{
+font-size:15px;
+font-weight:900;
+color:#fff;
+letter-spacing:.3px
+}
+
+.profile-menu-arrow{
+font-size:16px;
+color:var(--muted);
+font-weight:900
+}
+
+/* =========================================================
+CHAT
+========================================================= */
+
+.chat-messages-container{
+max-height:220px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:16px;
+padding-right:4px
+}
+
+.chat-bubble{
+padding:10px 14px;
+border-radius:12px;
+font-size:13px;
+max-width:85%;
+line-height:1.4;
+font-weight:700
+}
+
+.chat-bubble.user{
+background:var(--blue);
+color:#fff;
+align-self:flex-end;
+border-bottom-right-radius:2px
+}
+
+.chat-bubble.admin{
+background:#162235;
+color:var(--text);
+align-self:flex-start;
+border:1px solid var(--border);
+border-bottom-left-radius:2px
+}
+
+.chat-input-row{
+display:flex;
+gap:8px
+}
+
+.chat-input-field{
+flex:1;
+background:#111b27;
+border:1px solid var(--border);
+border-radius:12px;
+padding:12px;
+color:#fff;
+font-size:13px;
+outline:none
+}
+
+.chat-send-btn{
+background:var(--cyan);
+border:0;
+border-radius:12px;
+padding:0 18px;
+color:#05080c;
+font-weight:900;
+font-size:13px
+}
+
+/* =========================================================
+MODALS
+========================================================= */
+
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(5,8,12,.95);
+z-index:1000;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.modal-overlay.active{
+display:flex
+}
+
+.ad-box,
+.prompt-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:20px;
+width:100%;
+max-width:360px;
+padding:24px;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,.5)
+}
+
+.ad-header{
+font-size:12px;
+font-weight:800;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:12px
+}
+
+.ad-screen{
+background:#111b27;
+border:1px solid #223247;
+border-radius:12px;
+height:160px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin-bottom:16px;
+position:relative
+}
+
+.ad-timer-badge{
+position:absolute;
+top:10px;
+right:10px;
+background:rgba(0,0,0,.6);
+padding:2px 8px;
+border-radius:6px;
+font-size:10px;
+font-weight:700;
+color:var(--yellow)
+}
+
+.ad-title{
+font-size:14px;
+font-weight:800;
+color:#fff;
+margin-bottom:4px
+}
+
+.ad-desc{
+font-size:10px;
+color:var(--muted)
+}
+
+.ad-close-btn{
+width:100%;
+background:#0284c7;
+border:0;
+border-radius:12px;
+padding:12px;
+color:#fff;
+font-size:12px;
+font-weight:800;
+opacity:.5;
+pointer-events:none;
+transition:opacity .3s
+}
+
+.ad-close-btn.ready{
+opacity:1;
+pointer-events:auto
+}
+
+.prompt-title{
+font-size:14px;
+font-weight:800;
+color:var(--yellow);
+margin-bottom:12px;
+letter-spacing:.5px
+}
+
+.prompt-desc{
+font-size:12px;
+color:var(--muted);
+margin-bottom:20px;
+line-height:1.4
+}
+
+.prompt-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.prompt-btn-cancel{
+background:#111b27;
+border:1px solid #223247;
+border-radius:12px;
+padding:12px;
+color:var(--muted);
+font-size:12px;
+font-weight:800
+}
+
+.prompt-btn-confirm{
+background:linear-gradient(90deg,#facc15,#f59e0b);
+border:0;
+border-radius:12px;
+padding:12px;
+color:#05080c;
+font-size:12px;
+font-weight:900
+}
+
+/* =========================================================
+INFO SHEET
+========================================================= */
+
+.sheet-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:22px;
+width:100%;
+max-width:380px;
+max-height:80vh;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 12px 45px rgba(0,0,0,.6)
+}
+
+.sheet-header{
+padding:20px;
+border-bottom:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
+.sheet-title{
+font-size:16px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px
+}
+
+.sheet-close{
+background:none;
+border:0;
+font-size:18px;
+color:var(--muted);
+font-weight:900
+}
+
+.sheet-content{
+padding:20px;
+overflow-y:auto;
+font-size:13px;
+color:var(--muted);
+line-height:1.6;
+font-weight:700
+}
+
+.sheet-content strong{
+color:#fff
+}
+
+.sheet-content p{
+margin:0
+}
+
+/* =========================================================
+BOTTOM NAV
+========================================================= */
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:min(480px,100%);
+background:#070b10;
+border-top:1px solid var(--border);
+display:grid;
+grid-template-columns:repeat(5,1fr);
+padding:10px 0 calc(10px + env(safe-area-inset-bottom));
+z-index:100
+}
+
+.nav-item{
+background:none;
+border:0;
+color:var(--muted);
+font-size:10px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+font-weight:700
+}
+
+.nav-icon{
+font-size:18px
+}
+
+.nav-item.active{
+color:var(--cyan)
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- SYSTEM TASKS SECTION -->
-    <h2>SYSTEM TASKS</h2>
-    <p>Complete official FIDEXA community missions[span_0](start_span)[span_0](end_span). Join the channel first to claim your reward[span_1](start_span)[span_1](end_span).</p>
+<div class="app">
 
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <strong>Join Telegram</strong>
-            </div>
-            <button class="btn" onclick="claimTask('telegram')">CLAIM 5 $FDX</button>
-        </div>
-    </div>
+<!-- =========================================================
+MINING PAGE
+========================================================= -->
 
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <strong>Join X</strong>
-            </div>
-            <button class="btn" onclick="claimTask('twitter')">CLAIM 5 $FDX</button>
-        </div>
-    </div>
+<main class="page-view active" id="page-mining">
 
-    <!-- RECOVERABLE LAYER & MINING STATISTICS PAGE -->
-    <h2>Recoverable Layer & Mining Statistics</h2>
-    <div class="card">
-        <p><strong>Total Balance:</strong> <span id="totalBalance">0.00</span> $FDX</p>
-        <p><strong>Burning Streak Amount:</strong> <span id="burningAmount">100.00</span> $FDX</p>
-        <p><strong>Accumulated Mining:</strong> <span id="accumulatedMining">0.00</span> $FDX</p>
-        <p><strong>Countdown:</strong> <span id="countdownTimer">3600</span>s</p>
-        <button class="btn" onclick="claimMiningReward()">CLAIM & WATCH AD</button>
-    </div>
+<div class="balance-card">
+
+<div class="balance-dot"></div>
+
+<div class="balance-label">
+TOTAL BALANCE
 </div>
 
+<div class="balance-row">
+
+<div class="balance-value" id="balanceDisplay">
+0.00
+</div>
+
+<div class="balance-token">
+$FDX
+</div>
+
+</div>
+
+</div>
+
+
+<div class="mining-node-container">
+
+<div class="ring-wrapper">
+
+<div class="system-status-pill" id="systemPill">
+READY TO MINE
+</div>
+
+<div class="mining-timer" id="timerDisplay">
+04:00:00
+</div>
+
+<div class="mining-rate-indicator">
+Mining Rate:
+<span id="currentRateDisplay">1.0</span>
+$FDX/H
+</div>
+
+</div>
+
+</div>
+
+
+<div class="action-controls">
+
+<button
+class="start-mining-btn"
+id="miningToggleBtn"
+onclick="handleMiningAction()">
+
+START MINING
+
+</button>
+
+
+<div class="interactive-grid">
+
+<button
+class="action-tile"
+onclick="openBoosterPrompt()">
+
+<div class="action-tile-icon">
+🚀
+</div>
+
+<div>
+
+<div class="action-tile-title">
+Mining Boost
+</div>
+
+<div
+class="action-tile-sub"
+id="boosterChances">
+5/5 Left
+</div>
+
+</div>
+
+</button>
+
+
+<button
+class="action-tile"
+onclick="openLuckyBoxModal()"
+style="border-color:rgba(250,204,21,.5);">
+
+<div class="action-tile-icon">
+🎁
+</div>
+
+<div>
+
+<div
+class="action-tile-title"
+style="color:var(--yellow);">
+
+Lucky Box
+
+</div>
+
+<div class="action-tile-sub">
+Mystery Gift Box
+</div>
+
+</div>
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+MINING STATISTICS
+========================================================= -->
+
+<div class="mining-statistics-card">
+
+<div class="mining-statistics-title">
+📊 MINING STATISTICS
+</div>
+
+<div class="mining-stat-grid">
+
+<div class="mining-stat-item">
+
+<div class="mining-stat-label">
+Current Rate
+</div>
+
+<div
+class="mining-stat-value yellow"
+id="statRate">
+1.0 FDX/H
+</div>
+
+</div>
+
+
+<div class="mining-stat-item">
+
+<div class="mining-stat-label">
+Completed Hours
+</div>
+
+<div
+class="mining-stat-value"
+id="statHours">
+0 / 4
+</div>
+
+</div>
+
+
+<div class="mining-stat-item">
+
+<div class="mining-stat-label">
+Session Accumulated
+</div>
+
+<div
+class="mining-stat-value"
+id="statAccumulated">
+0.00 FDX
+</div>
+
+</div>
+
+
+<div class="mining-stat-item">
+
+<div class="mining-stat-label">
+Session Status
+</div>
+
+<div
+class="mining-stat-value"
+id="statStatus">
+READY
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="dual-grid">
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+BURNING<br>
+STREAK
+</div>
+
+<div class="info-box-icon">
+🔥
+</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="burningStreak">
+0 Days
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+RECOVERABLE<br>
+$FDX
+</div>
+
+<div class="info-box-icon">
+💎
+</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="recoverableFdx">
+0.00
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+
+<!-- =========================================================
+TASKS
+========================================================= -->
+
+<main class="page-view" id="page-tasks">
+
+<div class="full-page-header">
+📋 SYSTEM TASKS
+</div>
+
+<div class="full-page-sub">
+Complete official FIDEXA community missions to earn rewards.
+</div>
+
+
+<!-- TELEGRAM -->
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+Telegram
+</div>
+
+<div class="friend-list-count">
++5.00 $FDX
+</div>
+
+</div>
+
+
+<div class="friend-row-item">
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+📢
+</div>
+
+<div>
+
+<div class="friend-name">
+Join Telegram
+</div>
+
+<div
+class="friend-status active">
+OFFICIAL COMMUNITY
+</div>
+
+</div>
+
+</div>
+
+
+<button
+class="task-button"
+id="telegramTaskButton"
+onclick="openTaskLinkAndVerify('telegram')">
+
+JOIN TELEGRAM
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- X -->
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+X / TWITTER
+</div>
+
+<div class="friend-list-count">
++5.00 $FDX
+</div>
+
+</div>
+
+
+<div class="friend-row-item">
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+𝕏
+</div>
+
+<div>
+
+<div class="friend-name">
+Join X
+</div>
+
+<div
+class="friend-status active">
+OFFICIAL ACCOUNT
+</div>
+
+</div>
+
+</div>
+
+
+<button
+class="task-button"
+id="xTaskButton"
+onclick="openTaskLinkAndVerify('x')">
+
+JOIN X
+
+</button>
+
+</div>
+
+</div>
+
+</main>
+
+
+<!-- =========================================================
+FRIENDS
+========================================================= -->
+
+<main class="page-view" id="page-friends">
+
+<div class="full-page-header">
+👥 REFERRAL NETWORK
+</div>
+
+<div class="full-page-sub">
+View the users you personally invited and their current activity status.
+</div>
+
+
+<div class="friends-stats-grid">
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="totalFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Invited
+</div>
+
+</div>
+
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="activeFriendsCount"
+style="color:var(--green);">
+0
+</div>
+
+<div class="friend-stat-label">
+Active
+</div>
+
+</div>
+
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="inactiveFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Inactive
+</div>
+
+</div>
+
+</div>
+
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+My Invited Members
+</div>
+
+<div
+class="friend-list-count"
+id="friendListCount">
+0 MEMBERS
+</div>
+
+</div>
+
+
+<div
+class="friends-scroll-area"
+id="friendsList">
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
+👥
+</div>
+
+<div class="friend-empty-title">
+No Invited Members
+</div>
+
+<div class="friend-empty-text">
+Your real invited members will appear here when referral data is available.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<button
+class="full-action-btn"
+onclick="copyReferralLink()"
+style="width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:18px;padding:15px;color:#fff;font-size:13px;font-weight:900;box-shadow:none;">
+
+INVITE FRIENDS
+
+</button>
+
+</main>
+
+
+<!-- =========================================================
+WALLET
+========================================================= -->
+
+<main class="page-view" id="page-wallet">
+
+<div class="crypto-wallet-hero">
+
+<div class="crypto-hero-label">
+TOTAL WALLET BALANCE
+</div>
+
+<div class="crypto-hero-value-row">
+
+<div
+class="crypto-hero-value"
+id="walletTotalDisplay">
+0.00
+</div>
+
+<div class="crypto-hero-token">
+$FDX
+</div>
+
+</div>
+
+</div>
+
+
+<div class="wallet-migration-card">
+
+<div class="wallet-migration-title">
+🔄 FDX MIGRATION
+</div>
+
+<div class="wallet-migration-text">
+Your accumulated $FDX will be eligible for migration when the official FIDEXA distribution process begins.
+</div>
+
+<div class="wallet-migration-status">
+MIGRATION WILL OPEN AT DISTRIBUTION
+</div>
+
+<button
+style="width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:18px;padding:15px;color:#fff;font-size:13px;font-weight:900;box-shadow:none;margin-top:14px;"
+onclick="openMigrationInfo()">
+
+VIEW MIGRATION STATUS
+
+</button>
+
+</div>
+
+
+<div class="wallet-huge-stack">
+
+<div class="wallet-huge-card">
+
+<div class="wallet-huge-lbl">
+TRANSFERABLE BALANCE
+</div>
+
+<div>
+
+<div
+class="wallet-huge-value"
+id="transferableBalance">
+0.00
+</div>
+
+<div class="wallet-huge-unit">
+$FDX
+</div>
+
+</div>
+
+</div>
+
+
+<div class="wallet-huge-card">
+
+<div class="wallet-huge-lbl">
+UNVERIFIED BALANCE
+</div>
+
+<div>
+
+<div
+class="wallet-huge-value"
+id="unverifiedBalance">
+0.00
+</div>
+
+<div class="wallet-huge-unit">
+$FDX
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="wallet-actions-grid">
+
+<button
+class="wallet-btn-send"
+onclick="showComingSoon('Send')">
+
+SEND
+
+</button>
+
+<button
+class="wallet-btn-receive"
+onclick="showComingSoon('Receive')">
+
+RECEIVE
+
+</button>
+
+</div>
+
+
+<div
+style="font-size:14px;font-weight:900;color:var(--muted);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;">
+
+RECENT TRANSACTIONS
+
+</div>
+
+
+<div class="friend-list-card">
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
+📭
+</div>
+
+<div class="friend-empty-title">
+No Transactions
+</div>
+
+<div class="friend-empty-text">
+Real wallet transactions will appear here when the live wallet and migration systems are connected.
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+
+<!-- =========================================================
+PROFILE
+========================================================= -->
+
+<main class="page-view" id="page-profile">
+
+<div class="full-page-header">
+🛡️ USER PROFILE
+</div>
+
+<div class="full-page-sub">
+Manage your account, support, and official FIDEXA information.
+</div>
+
+
+<div class="profile-menu-list">
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('account')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+👤
+</span>
+
+<span class="profile-menu-title">
+Account Information
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+›
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('support')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+💬
+</span>
+
+<span class="profile-menu-title">
+Chat Support
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+›
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('privacy')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+🔒
+</span>
+
+<span class="profile-menu-title">
+Privacy Policy
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+›
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('whitepaper')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+📄
+</span>
+
+<span class="profile-menu-title">
+White Paper
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+›
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('roadmap')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+🗺️
+</span>
+
+<span class="profile-menu-title">
+Project Roadmap
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+›
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openExternalLink('telegram')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+📢
+</span>
+
+<span class="profile-menu-title">
+Official Telegram
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+↗
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openExternalLink('twitter')">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+🌐
+</span>
+
+<span class="profile-menu-title">
+Official X
+</span>
+
+</div>
+
+<span class="profile-menu-arrow">
+↗
+</span>
+
+</div>
+
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('deletion')"
+style="border-color:rgba(248,113,113,.3);">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">
+⚠️
+</span>
+
+<span
+class="profile-menu-title"
+style="color:var(--red);">
+
+Account Deletion
+
+</span>
+
+</div>
+
+<span
+class="profile-menu-arrow"
+style="color:var(--red);">
+
+›
+
+</span>
+
+</div>
+
+</div>
+
+</main>
+
+
+<!-- =========================================================
+PROFILE MODAL
+========================================================= -->
+
+<div
+class="modal-overlay"
+id="profileInfoModal">
+
+<div class="sheet-box">
+
+<div class="sheet-header">
+
+<div
+class="sheet-title"
+id="sheetTitle">
+
+Information
+
+</div>
+
+<button
+class="sheet-close"
+onclick="closeProfileInfo()">
+
+✕
+
+</button>
+
+</div>
+
+<div
+class="sheet-content"
+id="sheetContentBody">
+
+Loading details...
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+BOOSTER
+========================================================= -->
+
+<div
+class="modal-overlay"
+id="boosterPromptModal">
+
+<div class="prompt-box">
+
+<div class="prompt-title">
+⚡ SPEED BOOSTER
+</div>
+
+<div class="prompt-desc">
+Watch a short advertisement to increase your mining speed by +0.5 FDX/H.
+</div>
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeBoosterPrompt()">
+
+Not now
+
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="confirmWatchBoosterAd()">
+
+Watch ad
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+LUCKY BOX
+========================================================= -->
+
+<div
+class="modal-overlay"
+id="luckyBoxModal">
+
+<div class="prompt-box">
+
+<div class="prompt-title">
+🎁 LUCKY GIFT BOX
+</div>
+
+<div class="prompt-desc">
+Open the mystery gift box by watching a short video.
+</div>
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeLuckyBoxModal()">
+
+Close
+
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="confirmOpenLuckyBox()">
+
+Open Box
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+AD MODAL
+========================================================= -->
+
+<div
+class="modal-overlay"
+id="adModal">
+
+<div class="ad-box">
+
+<div
+class="ad-header"
+id="adHeader">
+
+SPONSORED ADVERTISEMENT
+
+</div>
+
+<div class="ad-screen">
+
+<div
+class="ad-timer-badge"
+id="adTimerBadge">
+
+Ad in 4s
+
+</div>
+
+<div class="ad-title">
+FIDEXA Partner Network
+</div>
+
+<div
+class="ad-desc"
+id="adDescText">
+
+Watch full video to secure your reward
+
+</div>
+
+</div>
+
+<button
+class="ad-close-btn"
+id="adCloseBtn"
+onclick="closeAdModal()">
+
+WATCHING AD...
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+NAVIGATION
+========================================================= -->
+
+<nav class="bottom-nav">
+
+<button
+class="nav-item active"
+onclick="switchTab('mining',this)">
+
+<span class="nav-icon">
+⚡
+</span>
+
+Mining
+
+</button>
+
+
+<button
+class="nav-item"
+onclick="switchTab('tasks',this)">
+
+<span class="nav-icon">
+📋
+</span>
+
+Tasks
+
+</button>
+
+
+<button
+class="nav-item"
+onclick="switchTab('friends',this)">
+
+<span class="nav-icon">
+👥
+</span>
+
+Friends
+
+</button>
+
+
+<button
+class="nav-item"
+onclick="switchTab('wallet',this)">
+
+<span class="nav-icon">
+👛
+</span>
+
+Wallet
+
+</button>
+
+
+<button
+class="nav-item"
+onclick="switchTab('profile',this)">
+
+<span class="nav-icon">
+🛡️
+</span>
+
+Profile
+
+</button>
+
+</nav>
+
+</div>
+
+
 <script>
-    // System Data State
-    const appState = {
-        totalBalance: 0.00,
-        burningStreakAmount: 100.00,
-        accumulatedMiningAmount: 0.00,
-        miningRatePerHour: 0.50,
-        countdownSeconds: 3600,
-        activeStreakDays: 7, // Set to 7 to enable automatic unlock demo
-        inactiveDays: 0
-    };
 
-    // Update UI elements on load
-    function updateUI() {
-        document.getElementById('totalBalance').innerText = appState.totalBalance.toFixed(2);
-        document.getElementById('burningAmount').innerText = appState.burningStreakAmount.toFixed(2);
-        document.getElementById('accumulatedMining').innerText = appState.accumulatedMiningAmount.toFixed(2);
-        document.getElementById('countdownTimer').innerText = appState.countdownSeconds;
-    }
+/* =========================================================
+FIDEXA LOCAL DEVELOPMENT ENGINE
+=========================================================
 
-    // Task Claim Handler
-    function claimTask(taskId) {
-        alert('Successfully claimed reward for ' + taskId + '!');
-        appState.totalBalance += 5.00;
-        updateUI();
-    }
+This version intentionally uses localStorage.
 
-    // Hourly Mining Accumulation Simulation (Runs every interval or simulated)
-    setInterval(() => {
-        appState.accumulatedMiningAmount += appState.miningRatePerHour / 3600; // Simulating continuous accumulation per second towards the 1-hour goal
-        updateUI();
-    }, 1000);
+Later Firebase/Firestore can replace this storage layer.
 
-    // Claim Mining with Ad Simulation
-    function claimMiningReward() {
-        console.log("Showing rewarded ad...");
-        setTimeout(() => {
-            // Add accumulated amount to TOTAL BALANCE
-            appState.totalBalance += appState.accumulatedMiningAmount;
-            appState.accumulatedMiningAmount = 0.00;
-            appState.countdownSeconds = 3600; // Reset countdown
-            alert('Ad watched successfully! Rewards added to Total Balance.');
-            updateUI();
-        }, 1500);
-    }
+========================================================= */
 
-    // Recoverable Layer Logic: 10% daily rule implementation
-    function checkRecoverableLayerStatus() {
-        if (appState.inactiveDays >= 7) {
-            // Deduct 10% each day if inactive for 7 days
-            const deduction = appState.burningStreakAmount * 0.10;
-            appState.burningStreakAmount = Math.max(0, appState.burningStreakAmount - deduction);
-        } else if (appState.activeStreakDays >= 7) {
-            // Automatic unlock by 10% each day once active for at least 7 days
-            const unlockAmount = appState.burningStreakAmount * 0.10;
-            if (appState.burningStreakAmount > 0) {
-                appState.burningStreakAmount = Math.max(0, appState.burningStreakAmount - unlockAmount);
-                appState.totalBalance += unlockAmount;
-            }
-        }
-        updateUI();
-    }
 
-    // Initialize UI view
-    updateUI();
+/* =========================================================
+TELEGRAM USER
+========================================================= */
+
+let currentUserId='';
+let currentUserName='';
+
+if(
+window.Telegram &&
+window.Telegram.WebApp &&
+window.Telegram.WebApp.initDataUnsafe &&
+window.Telegram.WebApp.initDataUnsafe.user
+){
+
+const tgUser=
+window.Telegram.WebApp.initDataUnsafe.user;
+
+currentUserId=
+tgUser.id ?
+tgUser.id.toString() :
+'';
+
+currentUserName=
+tgUser.username ||
+tgUser.first_name ||
+'';
+
+}
+
+
+/* =========================================================
+OFFICIAL LINKS
+========================================================= */
+
+const FIDEXA_TELEGRAM=
+'https://t.me/fidexa_Network';
+
+const FIDEXA_X=
+'https://x.com/Fidexa_Network';
+
+
+/* =========================================================
+LOCAL STORAGE
+========================================================= */
+
+const STORAGE_KEY=
+'fidexa_local_v3';
+
+
+const DEFAULT_DATA={
+
+totalBalance:0,
+
+transferableBalance:0,
+
+unverifiedBalance:0,
+
+recoverableBalance:0,
+
+burningStreak:0,
+
+activeMiningDays:0,
+
+inactiveDays:0,
+
+lastActivityDate:'',
+
+lastProcessedDate:'',
+
+sessionAccumulated:0,
+
+sessionHoursCompleted:0,
+
+miningState:'IDLE',
+
+sessionStartedAt:0,
+
+sessionLastProcessedAt:0,
+
+totalSeconds:14400,
+
+baseMiningRate:1.0,
+
+boosterBonusRate:0,
+
+referralBonusRate:0,
+
+boosterChancesLeft:5,
+
+telegramTaskClaimed:false,
+
+xTaskClaimed:false,
+
+friendsData:[],
+
+transactions:[]
+
+};
+
+
+let appData=
+loadAppData();
+
+
+/* =========================================================
+LOAD DATA
+========================================================= */
+
+function loadAppData(){
+
+try{
+
+const saved=
+localStorage.getItem(STORAGE_KEY);
+
+if(!saved){
+
+return {...DEFAULT_DATA};
+
+}
+
+const parsed=
+JSON.parse(saved);
+
+return {
+...DEFAULT_DATA,
+...parsed
+};
+
+}
+catch(error){
+
+console.error(
+'FIDEXA storage error:',
+error
+);
+
+return {...DEFAULT_DATA};
+
+}
+
+}
+
+
+/* =========================================================
+SAVE DATA
+========================================================= */
+
+function saveAppData(){
+
+try{
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(appData)
+);
+
+}
+catch(error){
+
+console.error(
+'Unable to save FIDEXA data:',
+error
+);
+
+}
+
+}
+
+
+/* =========================================================
+DATE HELPERS
+========================================================= */
+
+function getDateKey(date=new Date()){
+
+const year=
+date.getFullYear();
+
+const month=
+String(date.getMonth()+1)
+.padStart(2,'0');
+
+const day=
+String(date.getDate())
+.padStart(2,'0');
+
+return `${year}-${month}-${day}`;
+
+}
+
+
+function dateDifference(fromDate,toDate){
+
+const a=
+new Date(`${fromDate}T00:00:00`);
+
+const b=
+new Date(`${toDate}T00:00:00`);
+
+return Math.floor(
+(b-a)/(1000*60*60*24)
+);
+
+}
+
+
+/* =========================================================
+ACTIVITY / RECOVERY ENGINE
+=========================================================
+
+Rules:
+
+1. Mining activity creates an active day.
+
+2. Seven consecutive active days are required
+   before recovery starts unlocking.
+
+3. After the 7-day active streak,
+   10% of recoverable balance unlocks per active day.
+
+4. If the user is inactive for 7 days,
+   recoverable balance is reduced by 10% per day.
+
+========================================================= */
+
+function processDailyRecovery(){
+
+const today=
+getDateKey();
+
+if(!appData.lastProcessedDate){
+
+appData.lastProcessedDate=
+today;
+
+saveAppData();
+
+return;
+
+}
+
+if(appData.lastProcessedDate===today){
+
+return;
+
+}
+
+const daysPassed=
+dateDifference(
+appData.lastProcessedDate,
+today
+);
+
+if(daysPassed<=0){
+
+return;
+
+}
+
+
+/* -----------------------------------------
+Determine inactivity
+----------------------------------------- */
+
+if(appData.lastActivityDate){
+
+const inactiveSince=
+dateDifference(
+appData.lastActivityDate,
+today
+);
+
+
+/* -----------------------------------------
+Inactive for 7+ days
+----------------------------------------- */
+
+if(inactiveSince>=7){
+
+appData.inactiveDays=
+inactiveSince;
+
+
+/*
+10% deduction from recoverable amount
+for each inactive day after day 7.
+*/
+
+const deductionDays=
+Math.max(
+1,
+inactiveSince-6
+);
+
+for(
+let i=0;
+i<deductionDays;
+i++
+){
+
+if(
+appData.recoverableBalance<=0
+){
+
+break;
+
+}
+
+appData.recoverableBalance=
+Math.max(
+0,
+appData.recoverableBalance*0.90
+);
+
+}
+
+
+/* Reset active streak */
+
+appData.activeMiningDays=0;
+
+}
+
+
+/* -----------------------------------------
+Active within 7 days
+----------------------------------------- */
+
+else{
+
+appData.inactiveDays=0;
+
+}
+
+}
+else{
+
+appData.inactiveDays=
+Math.max(
+0,
+appData.inactiveDays+daysPassed
+);
+
+}
+
+
+/* -----------------------------------------
+Recoverable unlock
+----------------------------------------- */
+
+if(
+appData.activeMiningDays>=7 &&
+appData.recoverableBalance>0
+){
+
+const unlock=
+appData.recoverableBalance*0.10;
+
+appData.recoverableBalance=
+Math.max(
+0,
+appData.recoverableBalance-unlock
+);
+
+appData.transferableBalance+=
+unlock;
+
+appData.totalBalance+=
+unlock;
+
+addTransaction(
+'Recoverable FDX unlocked',
+unlock
+);
+
+}
+
+
+/* -----------------------------------------
+Update processed date
+----------------------------------------- */
+
+appData.lastProcessedDate=
+today;
+
+saveAppData();
+
+}
+
+
+/* =========================================================
+REGISTER ACTIVE DAY
+========================================================= */
+
+function registerActiveDay(){
+
+const today=
+getDateKey();
+
+if(
+appData.lastActivityDate===today
+){
+
+return;
+
+}
+
+
+/* Consecutive activity */
+
+if(
+appData.lastActivityDate
+){
+
+const gap=
+dateDifference(
+appData.lastActivityDate,
+today
+);
+
+if(gap===1){
+
+appData.activeMiningDays++;
+
+}
+else{
+
+appData.activeMiningDays=1;
+
+}
+
+}
+else{
+
+appData.activeMiningDays=1;
+
+}
+
+
+appData.lastActivityDate=
+today;
+
+appData.inactiveDays=0;
+
+
+/* Burning streak */
+
+appData.burningStreak=
+appData.activeMiningDays;
+
+
+/* If recoverable exists and user has now
+completed at least 7 active days,
+10% unlock begins on subsequent active days. */
+
+if(
+appData.activeMiningDays>7 &&
+appData.recoverableBalance>0
+){
+
+const unlock=
+appData.recoverableBalance*0.10;
+
+appData.recoverableBalance=
+Math.max(
+0,
+appData.recoverableBalance-unlock
+);
+
+appData.transferableBalance+=
+unlock;
+
+appData.totalBalance+=
+unlock;
+
+addTransaction(
+'Daily recoverable unlock',
+unlock
+);
+
+}
+
+
+saveAppData();
+
+}
+
+
+/* =========================================================
+FORMATTING
+========================================================= */
+
+function formatNumber(value){
+
+return Number(
+value || 0
+).toLocaleString(
+'en-US',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+/* =========================================================
+UPDATE BALANCES
+========================================================= */
+
+function updateBalancesUI(){
+
+const balance=
+document.getElementById(
+'balanceDisplay'
+);
+
+const wallet=
+document.getElementById(
+'walletTotalDisplay'
+);
+
+const transferable=
+document.getElementById(
+'transferableBalance'
+);
+
+const unverified=
+document.getElementById(
+'unverifiedBalance'
+);
+
+const recoverable=
+document.getElementById(
+'recoverableFdx'
+);
+
+if(balance){
+
+balance.textContent=
+formatNumber(
+appData.totalBalance
+);
+
+}
+
+if(wallet){
+
+wallet.textContent=
+formatNumber(
+appData.totalBalance
+);
+
+}
+
+if(transferable){
+
+transferable.textContent=
+formatNumber(
+appData.transferableBalance
+);
+
+}
+
+if(unverified){
+
+unverified.textContent=
+formatNumber(
+appData.unverifiedBalance
+);
+
+}
+
+if(recoverable){
+
+recoverable.textContent=
+formatNumber(
+appData.recoverableBalance
+);
+
+}
+
+}
+
+
+/* =========================================================
+MINING RATE
+========================================================= */
+
+function getCumulativeRate(){
+
+return parseFloat(
+(
+Number(appData.baseMiningRate)+
+Number(appData.boosterBonusRate)+
+Number(appData.referralBonusRate)
+).toFixed(1)
+);
+
+}
+
+
+/* =========================================================
+UPDATE MINING STATISTICS
+========================================================= */
+
+function updateMiningStatistics(){
+
+const rate=
+getCumulativeRate();
+
+const rateEl=
+document.getElementById(
+'currentRateDisplay'
+);
+
+const statRate=
+document.getElementById(
+'statRate'
+);
+
+const statHours=
+document.getElementById(
+'statHours'
+);
+
+const statAccumulated=
+document.getElementById(
+'statAccumulated'
+);
+
+const statStatus=
+document.getElementById(
+'statStatus'
+);
+
+if(rateEl){
+
+rateEl.textContent=
+rate.toFixed(1);
+
+}
+
+if(statRate){
+
+statRate.textContent=
+`${rate.toFixed(1)} FDX/H`;
+
+}
+
+if(statHours){
+
+statHours.textContent=
+`${appData.sessionHoursCompleted} / 4`;
+
+}
+
+if(statAccumulated){
+
+statAccumulated.textContent=
+`${formatNumber(appData.sessionAccumulated)} FDX`;
+
+}
+
+if(statStatus){
+
+if(
+appData.miningState==='ACTIVE'
+){
+
+statStatus.textContent=
+'MINING';
+
+}
+else if(
+appData.miningState==='READY_TO_CLAIM'
+){
+
+statStatus.textContent=
+'READY TO CLAIM';
+
+}
+else{
+
+statStatus.textContent=
+'READY';
+
+}
+
+}
+
+}
+
+
+/* =========================================================
+MINING TIMER DISPLAY
+========================================================= */
+
+function renderMiningUI(){
+
+const timer=
+document.getElementById(
+'timerDisplay'
+);
+
+const pill=
+document.getElementById(
+'systemPill'
+);
+
+const button=
+document.getElementById(
+'miningToggleBtn'
+);
+
+if(!timer || !pill || !button){
+
+return;
+
+}
+
+
+/* ACTIVE */
+
+if(
+appData.miningState==='ACTIVE'
+){
+
+timer.textContent=
+formatTime(
+appData.totalSeconds
+);
+
+pill.textContent=
+'ACTIVE MINING';
+
+pill.style.color=
+'var(--cyan)';
+
+pill.style.borderColor=
+'rgba(56,189,248,.3)';
+
+button.textContent=
+'ACTIVE MINING';
+
+button.style.background=
+'rgba(56,189,248,.2)';
+
+button.style.border=
+'1px solid rgba(56,189,248,.5)';
+
+button.style.color=
+'var(--cyan)';
+
+button.style.pointerEvents=
+'none';
+
+}
+
+
+/* READY TO CLAIM */
+
+else if(
+appData.miningState==='READY_TO_CLAIM'
+){
+
+timer.textContent=
+'00:00:00';
+
+pill.textContent=
+'SESSION ENDED';
+
+pill.style.color=
+'var(--yellow)';
+
+pill.style.borderColor=
+'rgba(250,204,21,.4)';
+
+button.textContent=
+'CLAIM';
+
+button.style.background=
+'linear-gradient(90deg,#facc15,#f59e0b)';
+
+button.style.border=
+'0';
+
+button.style.color=
+'#05080c';
+
+button.style.pointerEvents=
+'auto';
+
+}
+
+
+/* IDLE */
+
+else{
+
+timer.textContent=
+formatTime(
+appData.totalSeconds || 14400
+);
+
+pill.textContent=
+'READY TO MINE';
+
+pill.style.color=
+'var(--cyan)';
+
+pill.style.borderColor=
+'rgba(56,189,248,.3)';
+
+button.textContent=
+'START MINING';
+
+button.style.background=
+'linear-gradient(90deg,#0284c7,#38bdf8)';
+
+button.style.border=
+'0';
+
+button.style.color=
+'#fff';
+
+button.style.pointerEvents=
+'auto';
+
+}
+
+updateMiningStatistics();
+
+}
+
+
+/* =========================================================
+FORMAT TIME
+========================================================= */
+
+function formatTime(seconds){
+
+seconds=
+Math.max(
+0,
+Math.floor(seconds)
+);
+
+const h=
+Math.floor(seconds/3600)
+.toString()
+.padStart(2,'0');
+
+const m=
+Math.floor(
+(seconds%3600)/60
+)
+.toString()
+.padStart(2,'0');
+
+const s=
+(seconds%60)
+.toString()
+.padStart(2,'0');
+
+return `${h}:${m}:${s}`;
+
+}
+
+
+/* =========================================================
+PROCESS MINING HOURS
+=========================================================
+
+Every completed hour adds:
+
+current mining rate
+
+to sessionAccumulated.
+
+Example:
+
+1.0 FDX/H
+after 1 hour = 1.0 FDX
+
+after 2 hours = 2.0 FDX
+
+after 4 hours = 4.0 FDX
+
+========================================================= */
+
+function processMiningHours(){
+
+if(
+appData.miningState!=='ACTIVE'
+){
+
+return;
+
+}
+
+if(
+!appData.sessionStartedAt
+){
+
+return;
+
+}
+
+const now=
+Date.now();
+
+const elapsedMs=
+now-
+appData.sessionStartedAt;
+
+const completedHours=
+Math.min(
+4,
+Math.floor(
+elapsedMs/
+(60*60*1000)
+)
+);
+
+if(
+completedHours<=
+appData.sessionHoursCompleted
+){
+
+return;
+
+}
+
+
+const hoursToAdd=
+completedHours-
+appData.sessionHoursCompleted;
+
+const rate=
+getCumulativeRate();
+
+const amount=
+hoursToAdd*
+rate;
+
+appData.sessionAccumulated+=
+amount;
+
+appData.sessionHoursCompleted=
+completedHours;
+
+saveAppData();
+
+updateMiningStatistics();
+
+}
+
+
+/* =========================================================
+START MINING
+========================================================= */
+
+function startMining(){
+
+if(
+appData.miningState!=='IDLE'
+){
+
+return;
+
+}
+
+
+appData.miningState=
+'ACTIVE';
+
+appData.totalSeconds=
+14400;
+
+appData.sessionAccumulated=
+0;
+
+appData.sessionHoursCompleted=
+0;
+
+appData.sessionStartedAt=
+Date.now();
+
+appData.sessionLastProcessedAt=
+Date.now();
+
+
+/*
+Starting a mining session counts as
+activity for the day.
+*/
+
+registerActiveDay();
+
+saveAppData();
+
+renderMiningUI();
+
+}
+
+
+/* =========================================================
+SYNC ACTIVE MINING AFTER REFRESH
+========================================================= */
+
+function syncMiningAfterRefresh(){
+
+if(
+appData.miningState!=='ACTIVE'
+){
+
+return;
+
+}
+
+if(
+!appData.sessionStartedAt
+){
+
+appData.miningState=
+'IDLE';
+
+saveAppData();
+
+return;
+
+}
+
+
+const elapsed=
+Date.now()-
+appData.sessionStartedAt;
+
+const elapsedSeconds=
+Math.floor(
+elapsed/1000
+);
+
+appData.totalSeconds=
+Math.max(
+0,
+14400-elapsedSeconds
+);
+
+
+/* Process completed hours */
+
+processMiningHours();
+
+
+/* Four hours completed */
+
+if(
+appData.totalSeconds<=0
+){
+
+/*
+Make sure the fourth hour
+is included.
+*/
+
+if(
+appData.sessionHoursCompleted<4
+){
+
+const remainingHours=
+4-
+appData.sessionHoursCompleted;
+
+appData.sessionAccumulated+=
+remainingHours*
+getCumulativeRate();
+
+appData.sessionHoursCompleted=4;
+
+}
+
+appData.totalSeconds=0;
+
+appData.miningState=
+'READY_TO_CLAIM';
+
+saveAppData();
+
+}
+
+renderMiningUI();
+
+}
+
+
+/* =========================================================
+MAIN MINING ACTION
+========================================================= */
+
+function handleMiningAction(){
+
+if(
+appData.miningState==='IDLE'
+){
+
+startMining();
+
+return;
+
+}
+
+
+if(
+appData.miningState==='READY_TO_CLAIM'
+){
+
+triggerAd('claim');
+
+return;
+
+}
+
+}
+
+
+/* =========================================================
+REAL-TIME TIMER
+========================================================= */
+
+setInterval(
+()=>{
+
+if(
+appData.miningState!=='ACTIVE'
+){
+
+return;
+
+}
+
+
+syncMiningAfterRefresh();
+
+},
+1000
+);
+
+
+/* =========================================================
+BOOSTER
+========================================================= */
+
+function openBoosterPrompt(){
+
+if(
+appData.boosterChancesLeft<=0
+){
+
+alert(
+'No booster chances left. Please wait for the reset cycle.'
+);
+
+return;
+
+}
+
+document
+.getElementById(
+'boosterPromptModal'
+)
+.classList.add('active');
+
+}
+
+
+function closeBoosterPrompt(){
+
+document
+.getElementById(
+'boosterPromptModal'
+)
+.classList.remove('active');
+
+}
+
+
+function confirmWatchBoosterAd(){
+
+closeBoosterPrompt();
+
+triggerAd('booster');
+
+}
+
+
+/* =========================================================
+LUCKY BOX
+========================================================= */
+
+function openLuckyBoxModal(){
+
+document
+.getElementById(
+'luckyBoxModal'
+)
+.classList.add('active');
+
+}
+
+
+function closeLuckyBoxModal(){
+
+document
+.getElementById(
+'luckyBoxModal'
+)
+.classList.remove('active');
+
+}
+
+
+function confirmOpenLuckyBox(){
+
+closeLuckyBoxModal();
+
+triggerAd('luckybox');
+
+}
+
+
+/* =========================================================
+AD SYSTEM
+========================================================= */
+
+let adInterval=null;
+
+let activeAdType='';
+
+
+function triggerAd(type){
+
+activeAdType=
+type;
+
+const modal=
+document.getElementById(
+'adModal'
+);
+
+const closeBtn=
+document.getElementById(
+'adCloseBtn'
+);
+
+const timerBadge=
+document.getElementById(
+'adTimerBadge'
+);
+
+const desc=
+document.getElementById(
+'adDescText'
+);
+
+modal.classList.add('active');
+
+closeBtn.classList.remove('ready');
+
+closeBtn.textContent=
+'WATCHING AD...';
+
+
+if(type==='claim'){
+
+desc.textContent=
+'Watch the advertisement to claim your accumulated mining reward.';
+
+}
+else if(type==='booster'){
+
+desc.textContent=
+'Watch the advertisement to activate your mining speed boost.';
+
+}
+else{
+
+desc.textContent=
+'Watch the advertisement to open your Lucky Box.';
+
+}
+
+
+let countdown=4;
+
+timerBadge.textContent=
+`Ad in ${countdown}s`;
+
+if(adInterval){
+
+clearInterval(
+adInterval
+);
+
+}
+
+
+adInterval=
+setInterval(
+()=>{
+
+countdown--;
+
+if(countdown>0){
+
+timerBadge.textContent=
+`Ad in ${countdown}s`;
+
+}
+else{
+
+clearInterval(
+adInterval
+);
+
+adInterval=null;
+
+timerBadge.textContent=
+'Ad Finished';
+
+closeBtn.classList.add(
+'ready'
+);
+
+
+if(type==='claim'){
+
+closeBtn.textContent=
+'CLAIM REWARD';
+
+}
+else if(type==='luckybox'){
+
+closeBtn.textContent=
+'COLLECT MYSTERY REWARD';
+
+}
+else{
+
+closeBtn.textContent=
+'COLLECT +0.5 SPEED BOOST';
+
+}
+
+}
+
+},
+1000
+);
+
+}
+
+
+/* =========================================================
+CLOSE AD
+========================================================= */
+
+function closeAdModal(){
+
+const modal=
+document.getElementById(
+'adModal'
+);
+
+modal.classList.remove('active');
+
+
+/* BOOSTER */
+
+if(
+activeAdType==='booster'
+){
+
+appData.boosterChancesLeft=
+Math.max(
+0,
+appData.boosterChancesLeft-1
+);
+
+appData.boosterBonusRate=
+parseFloat(
+(
+Number(appData.boosterBonusRate)+
+0.5
+).toFixed(1)
+);
+
+document
+.getElementById(
+'boosterChances'
+)
+.textContent=
+`${appData.boosterChancesLeft}/5 Left`;
+
+saveAppData();
+
+updateMiningStatistics();
+
+alert(
+`Mining speed increased to ${getCumulativeRate().toFixed(1)} FDX/H`
+);
+
+}
+
+
+/* LUCKY BOX */
+
+else if(
+activeAdType==='luckybox'
+){
+
+/*
+Temporary local development reward.
+
+Later this will be replaced by
+the real reward backend.
+*/
+
+const reward=
+parseFloat(
+(
+Math.random()*2+0.5
+).toFixed(2)
+);
+
+appData.totalBalance+=
+reward;
+
+appData.transferableBalance+=
+reward;
+
+addTransaction(
+'Lucky Box reward',
+reward
+);
+
+saveAppData();
+
+updateBalancesUI();
+
+alert(
+`Lucky Box reward: +${reward.toFixed(2)} FDX`
+);
+
+}
+
+
+/* CLAIM */
+
+else if(
+activeAdType==='claim'
+){
+
+processMiningHours();
+
+
+if(
+appData.sessionHoursCompleted<4
+){
+
+alert(
+'Mining session is not fully completed yet.'
+);
+
+return;
+
+}
+
+
+const reward=
+Number(
+appData.sessionAccumulated
+);
+
+
+if(reward<=0){
+
+alert(
+'No accumulated mining reward available.'
+);
+
+return;
+
+}
+
+
+/*
+THIS IS THE IMPORTANT CLAIM LOGIC:
+
+Accumulated session amount
+moves into total balance only
+after the advertisement finishes.
+*/
+
+appData.totalBalance+=
+reward;
+
+appData.transferableBalance+=
+reward;
+
+
+/* Transaction */
+
+addTransaction(
+'Mining session reward',
+reward
+);
+
+
+/* Reset mining session */
+
+appData.sessionAccumulated=
+0;
+
+appData.sessionHoursCompleted=
+0;
+
+appData.totalSeconds=
+14400;
+
+appData.sessionStartedAt=
+0;
+
+appData.sessionLastProcessedAt=
+0;
+
+appData.miningState=
+'IDLE';
+
+
+saveAppData();
+
+updateBalancesUI();
+
+renderMiningUI();
+
+alert(
+`Mining reward claimed: +${reward.toFixed(2)} FDX`
+);
+
+}
+
+activeAdType='';
+
+}
+
+
+/* =========================================================
+TRANSACTIONS
+========================================================= */
+
+function addTransaction(
+description,
+amount
+){
+
+if(
+!Array.isArray(
+appData.transactions
+)
+){
+
+appData.transactions=[];
+
+}
+
+appData.transactions.unshift({
+
+description:
+description,
+
+amount:
+Number(amount),
+
+date:
+new Date().toISOString()
+
+});
+
+
+/*
+Keep only latest 50
+*/
+
+appData.transactions=
+appData.transactions.slice(
+0,
+50
+);
+
+}
+
+
+/* =========================================================
+TASK SYSTEM
+========================================================= */
+
+function openTaskLinkAndVerify(type){
+
+let url='';
+
+if(type==='telegram'){
+
+url=
+FIDEXA_TELEGRAM;
+
+}
+else if(type==='x'){
+
+url=
+FIDEXA_X;
+
+}
+else{
+
+return;
+
+}
+
+
+/*
+Open official destination.
+*/
+
+window.open(
+url,
+'_blank'
+);
+
+
+/*
+Temporary local verification.
+
+Real Telegram membership and X
+verification will be connected later.
+*/
+
+setTimeout(
+()=>{
+
+const confirmed=
+confirm(
+'After joining/following the official account, press OK to claim your +5.00 FDX reward.'
+);
+
+if(!confirmed){
+
+return;
+
+}
+
+
+claimTaskReward(type);
+
+},
+1200
+);
+
+}
+
+
+/* =========================================================
+TASK CLAIM
+========================================================= */
+
+function claimTaskReward(type){
+
+if(
+type==='telegram'
+){
+
+if(
+appData.telegramTaskClaimed
+){
+
+alert(
+'Telegram reward has already been claimed.'
+);
+
+return;
+
+}
+
+appData.telegramTaskClaimed=
+true;
+
+appData.totalBalance+=5;
+
+appData.transferableBalance+=5;
+
+addTransaction(
+'Telegram task reward',
+5
+);
+
+updateTaskButton(
+'telegram',
+true
+);
+
+}
+
+
+else if(
+type==='x'
+){
+
+if(
+appData.xTaskClaimed
+){
+
+alert(
+'X reward has already been claimed.'
+);
+
+return;
+
+}
+
+appData.xTaskClaimed=
+true;
+
+appData.totalBalance+=5;
+
+appData.transferableBalance+=5;
+
+addTransaction(
+'X task reward',
+5
+);
+
+updateTaskButton(
+'x',
+true
+);
+
+}
+
+
+saveAppData();
+
+updateBalancesUI();
+
+alert(
+'+5.00 FDX has been added to your balance.'
+);
+
+}
+
+
+/* =========================================================
+TASK BUTTON UI
+========================================================= */
+
+function updateTaskButton(
+type,
+claimed
+){
+
+let button=null;
+
+if(type==='telegram'){
+
+button=
+document.getElementById(
+'telegramTaskButton'
+);
+
+}
+else{
+
+button=
+document.getElementById(
+'xTaskButton'
+);
+
+}
+
+if(!button){
+
+return;
+
+}
+
+if(claimed){
+
+button.textContent=
+'CLAIMED';
+
+button.classList.add(
+'completed'
+);
+
+button.onclick=
+()=>{
+
+alert(
+'This task has already been claimed.'
+);
+
+};
+
+}
+
+}
+
+
+/* =========================================================
+FRIENDS
+========================================================= */
+
+function setFriendsData(data){
+
+if(!Array.isArray(data)){
+
+data=[];
+
+}
+
+appData.friendsData=
+data.filter(
+friend=>
+friend &&
+typeof friend==='object'
+);
+
+saveAppData();
+
+renderFriends();
+
+}
+
+
+function renderFriends(){
+
+const list=
+document.getElementById(
+'friendsList'
+);
+
+const friends=
+Array.isArray(
+appData.friendsData
+)
+?
+appData.friendsData
+:
+[];
+
+const total=
+friends.length;
+
+const active=
+friends.filter(
+friend=>
+friend.active===true
+).length;
+
+const inactive=
+total-active;
+
+
+const totalEl=
+document.getElementById(
+'totalFriendsCount'
+);
+
+const activeEl=
+document.getElementById(
+'activeFriendsCount'
+);
+
+const inactiveEl=
+document.getElementById(
+'inactiveFriendsCount'
+);
+
+const countEl=
+document.getElementById(
+'friendListCount'
+);
+
+
+if(totalEl){
+
+totalEl.textContent=
+total;
+
+}
+
+if(activeEl){
+
+activeEl.textContent=
+active;
+
+}
+
+if(inactiveEl){
+
+inactiveEl.textContent=
+inactive;
+
+}
+
+if(countEl){
+
+countEl.textContent=
+`${total} MEMBER${total===1?'':'S'}`;
+
+}
+
+if(!list){
+
+return;
+
+}
+
+
+if(total===0){
+
+list.innerHTML=`
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
+👥
+</div>
+
+<div class="friend-empty-title">
+No Invited Members
+</div>
+
+<div class="friend-empty-text">
+Your real invited members will appear here when referral data is available.
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+list.innerHTML='';
+
+
+friends.forEach(
+friend=>{
+
+const row=
+document.createElement(
+'div'
+);
+
+row.className=
+'friend-row-item';
+
+
+const username=
+friend.username
+?
+`@${String(friend.username).replace(/^@/,'')}`
+:
+'Telegram User';
+
+
+const displayName=
+friend.name ||
+username;
+
+
+const status=
+friend.active===true
+?
+'ACTIVE'
+:
+'INACTIVE';
+
+
+const statusClass=
+friend.active===true
+?
+'active'
+:
+'inactive';
+
+
+row.innerHTML=`
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+👤
+</div>
+
+<div style="min-width:0;">
+
+<div class="friend-name">
+${escapeHtml(displayName)}
+</div>
+
+<div class="friend-status ${statusClass}">
+${status}
+</div>
+
+</div>
+
+</div>
+
+<div style="font-size:10px;color:var(--muted);font-weight:800;">
+${escapeHtml(username)}
+</div>
+
+`;
+
+list.appendChild(row);
+
+});
+
+}
+
+
+/* =========================================================
+REFERRAL LINK
+========================================================= */
+
+function copyReferralLink(){
+
+if(!currentUserId){
+
+showComingSoon(
+'Referral invitation'
+);
+
+return;
+
+}
+
+
+const botUsername=
+'FIDEXANetworkBot';
+
+
+const referralLink=
+`https://t.me/${botUsername}?start=ref_${currentUserId}`;
+
+
+if(
+navigator.clipboard &&
+navigator.clipboard.writeText
+){
+
+navigator.clipboard
+.writeText(
+referralLink
+)
+.then(
+()=>{
+
+alert(
+'Your FIDEXA referral link has been copied.'
+);
+
+}
+)
+.catch(
+()=>{
+
+prompt(
+'Copy your FIDEXA referral link:',
+referralLink
+);
+
+}
+);
+
+}
+
+else{
+
+prompt(
+'Copy your FIDEXA referral link:',
+referralLink
+);
+
+}
+
+}
+
+
+/* =========================================================
+PROFILE INFORMATION
+========================================================= */
+
+function openProfileInfo(type){
+
+const modal=
+document.getElementById(
+'profileInfoModal'
+);
+
+const titleEl=
+document.getElementById(
+'sheetTitle'
+);
+
+const bodyEl=
+document.getElementById(
+'sheetContentBody'
+);
+
+modal.classList.add(
+'active'
+);
+
+
+/* ACCOUNT */
+
+if(type==='account'){
+
+titleEl.textContent=
+'Account Information';
+
+bodyEl.innerHTML=`
+
+<p>
+<strong>Telegram User ID:</strong>
+${escapeHtml(currentUserId || 'Not available')}
+</p>
+
+<p style="margin-top:10px;">
+<strong>Username:</strong>
+${escapeHtml(currentUserName || 'Not available')}
+</p>
+
+<p style="margin-top:10px;">
+<strong>Mining Mode:</strong>
+Local Development Mode
+</p>
+
+`;
+
+}
+
+
+/* SUPPORT */
+
+else if(type==='support'){
+
+titleEl.textContent=
+'Chat Support';
+
+bodyEl.innerHTML=`
+
+<div style="padding:13px;background:#111b27;border:1px solid rgba(56,189,248,.25);border-radius:13px;margin-bottom:14px;">
+
+<div style="font-size:12px;font-weight:900;color:var(--cyan);">
+💬 FIDEXA SUPPORT
+</div>
+
+<div style="font-size:11px;color:var(--muted);line-height:1.5;margin-top:5px;">
+Local support interface. Live delivery will be connected later.
+</div>
+
+</div>
+
+
+<div
+id="supportMessages"
+class="chat-messages-container">
+
+<div class="chat-bubble admin">
+Hello. How can we help you?
+</div>
+
+</div>
+
+
+<div class="chat-input-row">
+
+<input
+id="supportInput"
+class="chat-input-field"
+type="text"
+maxlength="500"
+placeholder="Write your message...">
+
+<button
+class="chat-send-btn"
+onclick="sendSupportMessage()">
+
+SEND
+
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* PRIVACY */
+
+else if(type==='privacy'){
+
+titleEl.textContent=
+'FIDEXA NETWORK — Privacy Policy';
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;margin-bottom:22px;">
+
+<div style="font-size:21px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:14px;color:var(--cyan);font-weight:900;margin-top:6px;">
+PRIVACY POLICY
+</div>
+
+<div style="font-size:11px;color:var(--muted);margin-top:8px;">
+Effective Date: September 26, 2026
+</div>
+
+</div>
+
+<p>
+FIDEXA Network respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
+</p>
+
+<p style="margin-top:10px;">
+The Mini App may process Telegram account information, application activity, mining sessions, balances, referrals, tasks, rewards, support interactions, and technical information necessary to operate the platform.
+</p>
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+Information We Collect
+</div>
+
+<p>
+Information made available by Telegram may include Telegram user ID, first name, last name, username, language information, and other profile information made available to the Mini App.
+</p>
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+How We Use Information
+</div>
+
+<p>
+FIDEXA may use information to operate accounts, mining sessions, rewards, referrals, community features, support, security, fraud prevention, platform improvement, and applicable legal obligations.
+</p>
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+Account Deletion
+</div>
+
+<p>
+Users may request account deletion where the live account-management system supports the request.
+</p>
+
+`;
+
+}
+
+
+/* WHITEPAPER */
+
+else if(type==='whitepaper'){
+
+titleEl.textContent=
+'FIDEXA NETWORK — Whitepaper v1.0';
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;margin-bottom:22px;">
+
+<div style="font-size:22px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:13px;color:var(--cyan);font-weight:900;margin-top:5px;">
+WHITEPAPER v1.0
+</div>
+
+<div style="font-size:11px;color:var(--muted);margin-top:6px;">
+A Gamified Digital Mining & Community Rewards Ecosystem
+</div>
+
+<div style="font-size:12px;color:var(--yellow);font-weight:900;margin-top:8px;">
+Ticker: FDX
+</div>
+
+</div>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
+1. Vision & Mission
+</div>
+
+<p>
+FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple and accessible.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+2. Mining System
+</div>
+
+<p>
+FIDEXA uses timed mining sessions. Users start a mining session and accumulated mining rewards are calculated according to the active mining rate.
+</p>
+
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;margin-bottom:8px;">
+Current Mining Structure
+</div>
+
+<div>
+• Mining cycle:
+<strong style="color:#fff;">
+4 hours
+</strong>
+</div>
+
+<div style="margin-top:5px;">
+• Base mining rate:
+<strong style="color:#fff;">
+1.0 FDX per hour
+</strong>
+</div>
+
+</div>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+3. Boosters & Lucky Boxes
+</div>
+
+<p>
+FIDEXA includes gamification features such as mining boosters, Lucky Boxes and streak-related features.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+4. Community Tasks
+</div>
+
+<p>
+FIDEXA includes community activities connected to official Telegram and X accounts.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+5. Referral System
+</div>
+
+<p>
+The referral interface is designed to display actual users invited by an account.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+6. Migration & Distribution
+</div>
+
+<p>
+FIDEXA plans to migrate users' accumulated FDX when the official distribution process begins.
+</p>
+
+`;
+
+}
+
+
+/* ROADMAP */
+
+else if(type==='roadmap'){
+
+titleEl.textContent=
+'FIDEXA NETWORK — Official Roadmap';
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;margin-bottom:22px;">
+
+<div style="font-size:21px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:12px;color:var(--cyan);font-weight:900;margin-top:5px;">
+OFFICIAL ROADMAP
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+
+<div style="font-size:15px;color:var(--cyan);font-weight:900;">
+PHASE 1 — Foundation & Mini App
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:var(--cyan);font-size:10px;font-weight:900;">
+COMPLETED
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+✓ FIDEXA Telegram Mini App interface<br>
+✓ User profile integration<br>
+✓ Core mining interface<br>
+✓ Community task structure<br>
+✓ Wallet interface<br>
+✓ Account interface
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid rgba(250,204,21,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+
+<div style="font-size:15px;color:var(--yellow);font-weight:900;">
+PHASE 2 — Engagement & Gamification
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(250,204,21,.1);border:1px solid rgba(250,204,21,.3);color:var(--yellow);font-size:10px;font-weight:900;">
+ACTIVE
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+• Mining boosters<br>
+• Lucky Boxes<br>
+• Community tasks<br>
+• Referral activity<br>
+• Support system<br>
+• User experience improvements
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:18px;padding:18px;">
+
+<div style="font-size:15px;color:#fff;font-weight:900;">
+PHASE 3 — Ecosystem Growth
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.08);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:900;">
+DEVELOPMENT
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+• Referral backend expansion<br>
+• Migration and distribution infrastructure<br>
+• Wallet infrastructure<br>
+• Support backend<br>
+• Platform performance improvements
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* DELETION */
+
+else if(type==='deletion'){
+
+titleEl.textContent=
+'Account Deletion Warning';
+
+bodyEl.innerHTML=`
+
+<p style="color:var(--red);">
+
+<strong>Warning:</strong>
+
+Account deletion will remove associated account data where supported by the live account system.
+
+</p>
+
+<button
+style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
+onclick="showComingSoon('Account deletion')">
+
+REQUEST ACCOUNT DELETION
+
+</button>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+SUPPORT
+========================================================= */
+
+function sendSupportMessage(){
+
+const input=
+document.getElementById(
+'supportInput'
+);
+
+const messages=
+document.getElementById(
+'supportMessages'
+);
+
+if(
+!input ||
+!messages
+){
+
+return;
+
+}
+
+const message=
+input.value.trim();
+
+if(!message){
+
+return;
+
+}
+
+
+const bubble=
+document.createElement(
+'div'
+);
+
+bubble.className=
+'chat-bubble user';
+
+bubble.textContent=
+message;
+
+messages.appendChild(
+bubble
+);
+
+input.value='';
+
+messages.scrollTop=
+messages.scrollHeight;
+
+
+const notice=
+document.createElement(
+'div'
+);
+
+notice.className=
+'chat-bubble admin';
+
+notice.textContent=
+'Message prepared. Live support delivery will be connected later.';
+
+messages.appendChild(
+notice
+);
+
+messages.scrollTop=
+messages.scrollHeight;
+
+}
+
+
+/* =========================================================
+CLOSE PROFILE
+========================================================= */
+
+function closeProfileInfo(){
+
+document
+.getElementById(
+'profileInfoModal'
+)
+.classList.remove('active');
+
+}
+
+
+/* =========================================================
+EXTERNAL LINKS
+========================================================= */
+
+function openExternalLink(target){
+
+if(
+target==='telegram'
+){
+
+window.open(
+FIDEXA_TELEGRAM,
+'_blank'
+);
+
+}
+else if(
+target==='twitter'
+){
+
+window.open(
+FIDEXA_X,
+'_blank'
+);
+
+}
+
+}
+
+
+/* =========================================================
+COMING SOON
+========================================================= */
+
+function showComingSoon(feature){
+
+const modal=
+document.getElementById(
+'profileInfoModal'
+);
+
+const titleEl=
+document.getElementById(
+'sheetTitle'
+);
+
+const bodyEl=
+document.getElementById(
+'sheetContentBody'
+);
+
+modal.classList.add(
+'active'
+);
+
+titleEl.textContent=
+feature.toUpperCase();
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;padding:12px 0 8px;">
+
+<div style="font-size:34px;margin-bottom:12px;">
+🚧
+</div>
+
+<div style="font-size:17px;font-weight:900;color:#fff;">
+${escapeHtml(feature)} Coming Soon
+</div>
+
+<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px;">
+This feature is not connected to the live backend yet.
+</div>
+
+<div style="display:inline-block;margin-top:14px;padding:6px 12px;border-radius:20px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25);color:var(--yellow);font-size:10px;font-weight:900;">
+DEVELOPMENT
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+MIGRATION
+========================================================= */
+
+function openMigrationInfo(){
+
+const modal=
+document.getElementById(
+'profileInfoModal'
+);
+
+const titleEl=
+document.getElementById(
+'sheetTitle'
+);
+
+const bodyEl=
+document.getElementById(
+'sheetContentBody'
+);
+
+modal.classList.add(
+'active'
+);
+
+titleEl.textContent=
+'FDX Migration';
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;">
+
+<div style="font-size:34px;margin-bottom:12px;">
+🔄
+</div>
+
+<div style="font-size:17px;font-weight:900;color:#fff;">
+Migration Not Open Yet
+</div>
+
+<div style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px;">
+FIDEXA plans to migrate users' accumulated $FDX when the official distribution process begins.
+</div>
+
+<div style="margin-top:16px;padding:13px;background:#111b27;border:1px solid var(--border);border-radius:12px;">
+
+<div style="font-size:10px;color:var(--muted);font-weight:900;">
+CURRENT MIGRATION STATUS
+</div>
+
+<div style="font-size:14px;color:var(--yellow);font-weight:900;margin-top:6px;">
+NOT YET OPEN
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+TAB NAVIGATION
+========================================================= */
+
+function switchTab(
+tabName,
+btnElement
+){
+
+document
+.querySelectorAll(
+'.page-view'
+)
+.forEach(
+p=>{
+p.classList.remove(
+'active'
+);
+}
+);
+
+
+const page=
+document.getElementById(
+`page-${tabName}`
+);
+
+if(page){
+
+page.classList.add(
+'active'
+);
+
+}
+
+
+document
+.querySelectorAll(
+'.nav-item'
+)
+.forEach(
+n=>{
+n.classList.remove(
+'active'
+);
+}
+);
+
+
+if(btnElement){
+
+btnElement.classList.add(
+'active'
+);
+
+}
+
+}
+
+
+/* =========================================================
+ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+return String(value)
+.replace(
+/&/g,
+'&amp;'
+)
+.replace(
+/</g,
+'&lt;'
+)
+.replace(
+/>/g,
+'&gt;'
+)
+.replace(
+/"/g,
+'&quot;'
+)
+.replace(
+/'/g,
+'&#039;'
+);
+
+}
+
+
+/* =========================================================
+INITIALIZATION
+========================================================= */
+
+window.addEventListener(
+'DOMContentLoaded',
+()=>{
+
+/*
+Process daily recovery before
+rendering the interface.
+*/
+
+processDailyRecovery();
+
+
+/*
+Restore active mining session.
+*/
+
+syncMiningAfterRefresh();
+
+
+/*
+Update UI.
+*/
+
+updateBalancesUI();
+
+renderFriends();
+
+renderMiningUI();
+
+
+/*
+Restore task buttons.
+*/
+
+updateTaskButton(
+'telegram',
+appData.telegramTaskClaimed
+);
+
+updateTaskButton(
+'x',
+appData.xTaskClaimed
+);
+
+});
+
 </script>
 
 </body>
