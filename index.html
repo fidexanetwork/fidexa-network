@@ -65,9 +65,6 @@ button:active{transform:scale(.98)}
 .friends-scroll-area{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
 .friend-row-item{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:20px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 20px rgba(0,0,0,0.3)}
 .friend-name{font-size:16px;font-weight:900;color:#fff;letter-spacing:.4px}
-.friend-status-tag{font-size:13px;font-weight:900;padding:8px 16px;border-radius:10px}
-.status-active{background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4)}
-.status-inactive{background:rgba(136,153,166,0.15);color:var(--muted);border:1px solid rgba(136,153,166,0.3)}
 
 .milestones-title{font-size:14px;font-weight:900;color:var(--yellow);margin-bottom:14px;letter-spacing:.8px;text-transform:uppercase}
 .milestones-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
@@ -112,7 +109,7 @@ button:active{transform:scale(.98)}
 
 /* Profile List Interactive Links */
 .profile-menu-list{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
-.profile-menu-item{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:18px;padding:18px 20px;display:flex;align-items:center;justify-content:between;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.profile-menu-item{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:18px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
 .profile-menu-left{display:flex;align-items:center;gap:14px}
 .profile-menu-icon{font-size:20px}
 .profile-menu-title{font-size:15px;font-weight:900;color:#fff;letter-spacing:.3px}
@@ -234,14 +231,14 @@ button:active{transform:scale(.98)}
           <div class="friend-name">Join Telegram Channel</div>
           <div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">+10.00 $FDX</div>
         </div>
-        <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
+        <button class="friend-status-tag status-active" onclick="alert('Task completed!')" style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4)">CLAIM</button>
       </div>
       <div class="friend-row-item">
         <div>
           <div class="friend-name">Follow Official X Handle</div>
           <div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">+15.00 $FDX</div>
         </div>
-        <button class="friend-status-tag status-active" onclick="alert('Task completed!')">CLAIM</button>
+        <button class="friend-status-tag status-active" onclick="alert('Task completed!')" style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4)">CLAIM</button>
       </div>
     </div>
   </main>
@@ -266,22 +263,6 @@ button:active{transform:scale(.98)}
       </div>
     </div>
 
-    <div style="font-size: 14px; font-weight: 900; color: var(--cyan); margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase;">YOUR INVITED FRIENDS</div>
-    <div class="friends-scroll-area" id="friendsListContainer">
-      <div class="friend-row-item">
-        <div class="friend-name">@alex_crypto99</div>
-        <div class="friend-status-tag status-active">Active</div>
-      </div>
-      <div class="friend-row-item">
-        <div class="friend-name">@satoshi_jr</div>
-        <div class="friend-status-tag status-active">Active</div>
-      </div>
-      <div class="friend-row-item">
-        <div class="friend-name">@fidexa_fanatic</div>
-        <div class="friend-status-tag status-inactive">Inactive</div>
-      </div>
-    </div>
-
     <div class="milestones-title">MILESTONE REWARDS</div>
     <div class="milestones-list">
       <div class="milestone-item"><span>Invite 1 friend</span><span class="milestone-reward">5 $FDX</span></div>
@@ -295,9 +276,8 @@ button:active{transform:scale(.98)}
     <button class="full-action-btn" onclick="copyReferralLink()">COPY INVITATION LINK</button>
   </main>
 
-  <!-- ================= 4. WALLET PAGE (SIDE-BY-SIDE BALANCES) ================= -->
+  <!-- ================= 4. WALLET PAGE ================= -->
   <main class="page-view" id="page-wallet">
-    <!-- Massive Crypto Wallet Total Balance Header (Text removed as requested) -->
     <div class="crypto-wallet-hero">
       <div class="crypto-hero-label">TOTAL WALLET BALANCE</div>
       <div class="crypto-hero-value-row">
@@ -306,7 +286,6 @@ button:active{transform:scale(.98)}
       </div>
     </div>
 
-    <!-- Transferable (Left) & Unverified Balance (Right) Side-by-Side Layers -->
     <div class="wallet-huge-stack">
       <div class="wallet-huge-card">
         <div class="wallet-huge-lbl">TRANSFERABLE BALANCE</div>
@@ -325,7 +304,6 @@ button:active{transform:scale(.98)}
       </div>
     </div>
 
-    <!-- Wallet Action Buttons (Fully enabled and functional) -->
     <div class="wallet-actions-grid">
       <button class="wallet-btn-send" onclick="openSendModal()">SEND</button>
       <button class="wallet-btn-receive" onclick="openReceiveModal()">RECEIVE</button>
@@ -350,7 +328,7 @@ button:active{transform:scale(.98)}
     </div>
   </main>
 
-  <!-- ================= 5. PROFILE PAGE (INTEGRATED MENU ITEMS) ================= -->
+  <!-- ================= 5. PROFILE PAGE ================= -->
   <main class="page-view" id="page-profile">
     <div class="full-page-header">🛡️ USER PROFILE</div>
     <div class="full-page-sub">Manage your account settings, community security, and official network documentation.</div>
@@ -367,7 +345,7 @@ button:active{transform:scale(.98)}
       <div class="profile-menu-item" onclick="openProfileInfo('support')">
         <div class="profile-menu-left">
           <span class="profile-menu-icon">💬</span>
-          <span class="profile-menu-title">Char Support</span>
+          <span class="profile-menu-title">Chat Support</span>
         </div>
         <span class="profile-menu-arrow">›</span>
       </div>
@@ -495,7 +473,6 @@ button:active{transform:scale(.98)}
 </div>
 
 <script>
-// --- MAINTENANCE & WHITELIST CONFIGURATION ---
 const MAINTENANCE_MODE = true; 
 const WHITELISTED_IDS = ["6771764389", "6029608268"];
 
@@ -514,21 +491,16 @@ function enforceAccessControl() {
     return true;
 }
 
-// --- TAB SWITCHING LOGIC ---
 function switchTab(tabName, btnElement) {
     if (!enforceAccessControl()) return;
 
-    // Hide all pages
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-    // Show selected page fully from top to bottom
     document.getElementById(`page-${tabName}`).classList.add('active');
 
-    // Update bottom nav active state
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     btnElement.classList.add('active');
 }
 
-// --- CHAT SUPPORT STORAGE & HANDLERS ---
 let supportMessages = [
     { sender: 'admin', text: 'Hello! Welcome to Fidexa Support. How can we help you today?' }
 ];
@@ -548,19 +520,16 @@ function sendSupportMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    // Add user message
     supportMessages.push({ sender: 'user', text: text });
     input.value = '';
     renderChatMessages();
 
-    // Simulate sending directly to admin panel & getting an automated response
     setTimeout(() => {
         supportMessages.push({ sender: 'admin', text: 'Your message has been delivered directly to the admin panel. An administrator will review your query shortly.' });
         renderChatMessages();
     }, 1000);
 }
 
-// --- PROFILE MENU MODAL LOGIC ---
 function openProfileInfo(type) {
     const modal = document.getElementById('profileInfoModal');
     const titleEl = document.getElementById('sheetTitle');
@@ -589,26 +558,27 @@ function openProfileInfo(type) {
     } else if (type === 'privacy') {
         titleEl.textContent = "Privacy Policy";
         bodyEl.innerHTML = `
-            <p>Fidexa Network values your data integrity. We only store encrypted decentralized node telemetry necessary for maintaining token mining distribution records.</p>
-            <p style="margin-top:10px;">Your private keys and personal Telegram profile identifiers are never sold or shared with third-party advertisers.</p>
+            <p><strong>Data Processing:</strong> We process your Telegram ID and in-app activity (mining, rewards, and ads via AdsGram) solely to run and secure the FIDEXA ecosystem.</p>
+            <p style="margin-top:10px;"><strong>Data Rights:</strong> You have the right to view, audit, or request the correction of your profile telemetry data anytime via community support channels.</p>
+            <p style="margin-top:10px;">Your private keys and personal identifiers are encrypted and never sold to third-party data brokers.</p>
         `;
     } else if (type === 'whitepaper') {
         titleEl.textContent = "White Paper";
         bodyEl.innerHTML = `
-            <p><strong>Fidexa Network ($FDX)</strong> is an advanced decentralized mobile-first mining ecosystem designed to facilitate secure peer-to-peer micro-transactions.</p>
-            <p style="margin-top:10px;">Read our full economic tokenomics model, halving schedules, and node consensus mechanism inside our official release paper.</p>
+            <p><strong>FIDEXA Network ($FDX)</strong> is an advanced decentralized mobile-first mining ecosystem designed to facilitate secure peer-to-peer micro-transactions.</p>
+            <p style="margin-top:10px;">Review our complete economic tokenomics design, halving schedules, validator metrics, and consensus flow directly within our ecosystem releases.</p>
         `;
     } else if (type === 'roadmap') {
         titleEl.textContent = "Project Roadmap";
         bodyEl.innerHTML = `
             <p><strong>Phase 1 (Completed):</strong> Core App Launch & Mining Engine Setup.</p>
-            <p style="margin-top:8px;"><strong>Phase 2 (Current):</strong> Referral Milestone Rollout & Wallet Transfers Integration.</p>
+            <p style="margin-top:8px;"><strong>Phase 2 (Current):</strong> Referral Milestone Rollout & Engagement Gamification Active.</p>
             <p style="margin-top:8px;"><strong>Phase 3 (Upcoming):</strong> Mainnet Bridge & Decentralized Exchange (DEX) Listing.</p>
         `;
     } else if (type === 'deletion') {
         titleEl.textContent = "Account Deletion Warning";
         bodyEl.innerHTML = `
-            <p style="color:var(--red);"><strong>Warning:</strong> Deleting your account will permanently wipe all unverified balances, active mining streaks, and referral networks associated with ID ${currentUserId}.</p>
+            <p style="color:var(--red);"><strong>Warning:</strong> Permanently deleting your account will clear your associated FDX balance, mining history, and active referral network streaks associated with ID ${currentUserId}.</p>
             <button style="width:100%;background:rgba(248,113,113,0.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;" onclick="alert('Account deletion request submitted to system queue.')">CONFIRM PERMANENT DELETION</button>
         `;
     }
@@ -626,7 +596,6 @@ function openExternalLink(target) {
     }
 }
 
-// --- WALLET SEND & RECEIVE DIALOG HANDLERS ---
 function openSendModal() {
     const modal = document.getElementById('profileInfoModal');
     const titleEl = document.getElementById('sheetTitle');
@@ -688,7 +657,6 @@ function copyWalletAddress() {
     });
 }
 
-// --- APP CORE VARIABLES ---
 let totalBalance = 1000000.00;
 let transferableBal = 950000.00;
 let unverifiedBal = 50000.00;
@@ -701,7 +669,7 @@ let referralBonusRate = 0.0;
 let boosterChancesLeft = 5;
 let adInterval = null;
 let activeAdType = ''; 
-let totalSeconds = 14400; // 4 Hours
+let totalSeconds = 14400;
 
 let referralData = {
     total: 3,
@@ -737,7 +705,6 @@ function updateTimerDisplay() {
 }
 setInterval(updateTimerDisplay, 1000);
 
-// --- MINING STATE MACHINE ---
 function handleMiningAction() {
   if (!enforceAccessControl()) return;
   
@@ -756,7 +723,6 @@ function handleMiningAction() {
   }
 }
 
-// --- BOOSTER CONTROLS ---
 function openBoosterPrompt() {
   if (!enforceAccessControl()) return;
   if (boosterChancesLeft <= 0) {
@@ -773,7 +739,6 @@ function confirmWatchBoosterAd() {
   triggerAd('booster');
 }
 
-// --- LUCKY BOX CONTROLS ---
 function openLuckyBoxModal() {
   if (!enforceAccessControl()) return;
   document.getElementById('luckyBoxModal').classList.add('active');
@@ -786,7 +751,6 @@ function confirmOpenLuckyBox() {
   triggerAd('luckybox');
 }
 
-// --- FRIENDS / REFERRAL CONTROLS ---
 function copyReferralLink() {
   const refLink = `https://t.me/FidexaNetworkBot?start=ref_${currentUserId}`;
   navigator.clipboard.writeText(refLink).then(() => {
@@ -796,7 +760,6 @@ function copyReferralLink() {
   });
 }
 
-// --- AD SIMULATION ENGINE ---
 function triggerAd(type) {
   activeAdType = type;
   const modal = document.getElementById('adModal');
@@ -862,7 +825,7 @@ function closeAdModal() {
     document.getElementById('miningToggleBtn').style.background = "linear-gradient(90deg,#0284c7,#38bdf8)";
     document.getElementById('miningToggleBtn').style.border = "0";
     document.getElementById('miningToggleBtn').style.color = "#fff";
-    document.getElementById('miningToggleBtn').style.pointerEvents = "auto";
+    document.getElementById('miningToggleBtn').value = "auto";
   }
 }
 
@@ -877,7 +840,6 @@ function updateBalancesUI() {
     document.getElementById('unverifiedBalance').textContent = formattedUnver;
 }
 
-// --- INITIALIZATION ---
 window.addEventListener('DOMContentLoaded', () => {
     if (enforceAccessControl()) {
         referralBonusRate = parseFloat((referralData.active * 0.1).toFixed(1));
