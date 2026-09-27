@@ -107,14 +107,6 @@ font-weight:800;
 color:var(--yellow)
 }
 
-.balance-sub{
-font-size:11px;
-color:var(--muted);
-margin-top:4px;
-font-weight:700;
-letter-spacing:.5px
-}
-
 .balance-dot{
 position:absolute;
 top:18px;
@@ -1071,10 +1063,6 @@ $FDX
 
 </div>
 
-<div class="balance-sub">
-Your accumulated FDX will appear here.
-</div>
-
 </div>
 
 <div class="mining-node-container">
@@ -1218,7 +1206,7 @@ RECOVERABLE<br>$FDX
 </div>
 
 <div class="full-page-sub">
-Complete official FIDEXA community missions.
+Complete official FIDEXA community missions. Join the channel first to claim your reward.
 </div>
 
 <div class="friend-list-card">
@@ -1226,7 +1214,7 @@ Complete official FIDEXA community missions.
 <div class="friend-list-header">
 
 <div class="friend-list-title">
-Telegram
+Telegram (Reward: +5.00 $FDX)
 </div>
 
 <div class="friend-list-count">
@@ -1246,7 +1234,7 @@ Telegram
 <div>
 
 <div class="friend-name">
-Join Official Telegram
+Join Official Telegram (Mandatory)
 </div>
 
 <div class="friend-status active">
@@ -1258,9 +1246,9 @@ OFFICIAL CHANNEL
 </div>
 
 <button
-onclick="openTaskLink('telegram')"
+onclick="openTaskLinkAndVerify('telegram')"
 style="background:rgba(56,189,248,.2);color:var(--cyan);border:1px solid rgba(56,189,248,.4);padding:8px 12px;border-radius:10px;font-weight:900;">
-JOIN
+CLAIM 5 $FDX
 </button>
 
 </div>
@@ -1273,7 +1261,7 @@ JOIN
 <div class="friend-list-header">
 
 <div class="friend-list-title">
-X / TWITTER
+X / TWITTER (Reward: +5.00 $FDX)
 </div>
 
 <div class="friend-list-count">
@@ -1305,9 +1293,9 @@ OFFICIAL ACCOUNT
 </div>
 
 <button
-onclick="openTaskLink('x')"
+onclick="openTaskLinkAndVerify('x')"
 style="background:rgba(56,189,248,.2);color:var(--cyan);border:1px solid rgba(56,189,248,.4);padding:8px 12px;border-radius:10px;font-weight:900;">
-FOLLOW
+CLAIM 5 $FDX
 </button>
 
 </div>
@@ -1411,7 +1399,6 @@ No Invited Members
 
 <div class="friend-empty-text">
 Your real invited members will appear here when referral data is available.
-No fake users are displayed.
 </div>
 
 </div>
@@ -1468,10 +1455,6 @@ $FDX
 
 <div class="wallet-migration-text">
 Your accumulated $FDX will be eligible for migration when the official FIDEXA distribution process begins.
-</div>
-
-<div class="wallet-migration-text">
-The migration process will use your actual accumulated FDX balance recorded by the live platform.
 </div>
 
 <div class="wallet-migration-status">
@@ -2097,7 +2080,7 @@ btnElement.classList.add('active');
 
 
 /* =========================================================
-   OFFICIAL TASK LINKS
+   OFFICIAL TASK LINKS WITH MANDATORY JOIN & CLAIM
 ========================================================= */
 
 const FIDEXA_TELEGRAM=
@@ -2107,25 +2090,27 @@ const FIDEXA_X=
 'https://x.com/Fidexa_Network';
 
 
-function openTaskLink(type){
+function openTaskLinkAndVerify(type){
 
 if(type==='telegram'){
-
 window.open(
 FIDEXA_TELEGRAM,
 '_blank'
 );
-
 }
-
 else if(type==='x'){
-
 window.open(
 FIDEXA_X,
 '_blank'
 );
-
 }
+
+setTimeout(()=>{
+const confirmed=confirm("Have you successfully joined/followed the official channel? Mandatory check required to claim your +5.00 $FDX reward.");
+if(confirmed){
+showComingSoon('5.00 $FDX Task Reward Claim');
+}
+}, 1500);
 
 }
 
@@ -2552,13 +2537,6 @@ input.value.trim();
 if(!message)
 return;
 
-
-/*
- IMPORTANT:
- The frontend does not falsely claim delivery.
- A real backend endpoint must be connected here.
-*/
-
 const bubble=
 document.createElement('div');
 
@@ -2716,10 +2694,6 @@ Migration Not Open Yet
 FIDEXA plans to migrate users' accumulated $FDX when the official distribution process begins.
 </div>
 
-<div style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px;">
-Your actual accumulated balance will be used when the live migration system is activated.
-</div>
-
 <div style="margin-top:16px;padding:13px;background:#111b27;border:1px solid var(--border);border-radius:12px;">
 
 <div style="font-size:10px;color:var(--muted);font-weight:900;">
@@ -2742,14 +2716,6 @@ NOT YET OPEN
 /* =========================================================
    BALANCES
 ========================================================= */
-
-/*
- IMPORTANT:
- All balances start at ZERO.
-
- A live backend must populate these values.
- No artificial starting balance is created.
-*/
 
 let totalBalance=0;
 let transferableBal=0;
@@ -2819,20 +2785,6 @@ formattedUnver;
 /* =========================================================
    REAL FRIEND DATA INTERFACE
 ========================================================= */
-
-/*
- The backend should call:
-
- setFriendsData([
-   {
-      username:'example',
-      name:'Example User',
-      active:true
-   }
- ]);
-
- No fake members are created here.
-*/
 
 let friendsData=[];
 
@@ -2909,7 +2861,6 @@ No Invited Members
 
 <div class="friend-empty-text">
 Your real invited members will appear here when referral data is available.
-No fake users are displayed.
 </div>
 
 </div>
@@ -3427,12 +3378,6 @@ alert(
 
 else if(activeAdType==='luckybox'){
 
-/*
- IMPORTANT:
- Lucky Box does not fabricate an FDX reward.
- The real backend must determine the reward.
-*/
-
 showComingSoon(
 'Lucky Box reward'
 );
@@ -3441,12 +3386,6 @@ showComingSoon(
 
 
 else if(activeAdType==='claim'){
-
-/*
- IMPORTANT:
- No fake balance is added.
- The real backend must process the claim.
-*/
 
 miningState=
 'IDLE';
@@ -3526,14 +3465,6 @@ return String(value)
 window.addEventListener(
 'DOMContentLoaded',
 ()=>{
-
-/*
- No maintenance mode.
- No fake whitelist.
- No fake balances.
- No fake referral users.
- No fake referral rewards.
-*/
 
 updateBalancesUI();
 
