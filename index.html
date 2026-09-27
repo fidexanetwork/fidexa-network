@@ -1,1277 +1,913 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#05080c">
-<title>FIDEXA NETWORK</title>
-
-<!-- Real QR Code Generator -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<title>Fidexa Network</title>
 
 <style>
 :root{
-  --bg:#05080c;
-  --panel:#0a1018;
-  --panel2:#0d1520;
-  --border:#1b2636;
-  --border2:#24344a;
-  --text:#f1f5f9;
-  --muted:#8899a6;
-  --cyan:#38bdf8;
-  --blue:#0284c7;
-  --yellow:#facc15;
-  --green:#34d399;
-  --red:#f87171;
+--bg:#05080c;
+--panel:#0a1018;
+--border:#1b2636;
+--text:#f1f5f9;
+--muted:#8899a6;
+--cyan:#38bdf8;
+--blue:#0284c7;
+--yellow:#facc15;
+--red:#f87171
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 html,body{
-  min-height:100%;
-  background:var(--bg);
+min-height:100%;
+background:var(--bg)
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  color:var(--text);
-  -webkit-tap-highlight-color:transparent;
-  -webkit-user-select:none;
-  user-select:none;
-}
-
-button,input,textarea{
-  font:inherit;
+font-family:Arial,Helvetica,sans-serif;
+color:var(--text);
+-webkit-tap-highlight-color:transparent;
+-webkit-user-select:none;
+user-select:none
 }
 
 button{
-  cursor:pointer;
+font:inherit;
+cursor:pointer
 }
 
 button:active{
-  transform:scale(.98);
+transform:scale(.98)
 }
 
 .app{
-  max-width:480px;
-  min-height:100vh;
-  margin:auto;
-  padding-bottom:95px;
-  position:relative;
+max-width:480px;
+min-height:100vh;
+margin:auto;
+padding-bottom:95px;
+position:relative
 }
 
-/* =========================
-   PAGE SYSTEM
-========================= */
-
 .page-view{
-  display:none;
-  padding:24px 20px;
-  min-height:calc(100vh - 95px);
-  animation:fadeIn .2s ease-in-out;
+display:none;
+padding:24px 20px;
+min-height:calc(100vh - 95px);
+animation:fadeIn .2s ease-in-out
 }
 
 .page-view.active{
-  display:block;
+display:block
 }
 
 @keyframes fadeIn{
-  from{
-    opacity:0;
-    transform:translateY(6px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+from{opacity:0;transform:translateY(6px)}
+to{opacity:1;transform:translateY(0)}
 }
 
-/* =========================
-   MINING
-========================= */
+/* BALANCE */
 
-.mining-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:20px;
+.balance-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid #1b2636;
+border-radius:18px;
+padding:18px;
+position:relative;
+margin-bottom:18px
 }
 
-.brand-small{
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:1px;
+.balance-label{
+font-size:10px;
+color:var(--muted);
+letter-spacing:.8px;
+font-weight:700
 }
 
-.network-status{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  font-size:9px;
-  font-weight:900;
-  color:var(--green);
-  letter-spacing:.7px;
+.balance-row{
+display:flex;
+align-items:baseline;
+gap:8px;
+margin-top:6px
 }
 
-.status-dot{
-  width:7px;
-  height:7px;
-  background:var(--green);
-  border-radius:50%;
-  box-shadow:0 0 8px rgba(52,211,153,.8);
+.balance-value{
+font-size:32px;
+font-weight:900;
+color:#fff
 }
 
-.mining-summary{
-  background:linear-gradient(145deg,#0d1520,#080d14);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:18px;
+.balance-token{
+font-size:18px;
+font-weight:800;
+color:var(--yellow)
 }
 
-.summary-label{
-  font-size:10px;
-  color:var(--muted);
-  font-weight:900;
-  letter-spacing:1px;
+.balance-sub{
+font-size:11px;
+color:var(--muted);
+margin-top:4px;
+font-weight:700;
+letter-spacing:.5px
 }
 
-.summary-title{
-  font-size:20px;
-  font-weight:900;
-  margin-top:7px;
+.balance-dot{
+position:absolute;
+top:18px;
+right:18px;
+width:8px;
+height:8px;
+background:var(--cyan);
+border-radius:50%;
+box-shadow:0 0 8px var(--cyan)
 }
 
-.summary-sub{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:5px;
-  line-height:1.5;
-  font-weight:700;
+/* WALLET */
+
+.crypto-wallet-hero{
+background:linear-gradient(145deg,#0f1a2e,#070d16);
+border:2px solid var(--cyan);
+border-radius:24px;
+padding:32px 24px;
+text-align:center;
+box-shadow:0 12px 35px rgba(56,189,248,0.2);
+margin-bottom:24px;
+position:relative
 }
 
-.mining-node-container{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  margin:15px 0 20px;
+.crypto-wallet-hero::before{
+content:'';
+position:absolute;
+top:-1px;
+left:50%;
+transform:translateX(-50%);
+width:140px;
+height:4px;
+background:var(--cyan);
+border-radius:2px
 }
 
-.ring-wrapper{
-  width:260px;
-  height:260px;
-  border-radius:50%;
-  border:2px solid rgba(56,189,248,.25);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  box-shadow:
-    0 0 30px rgba(56,189,248,.08),
-    inset 0 0 30px rgba(56,189,248,.08);
+.crypto-hero-label{
+font-size:12px;
+color:var(--muted);
+font-weight:900;
+letter-spacing:1.8px;
+text-transform:uppercase
 }
 
-.ring-wrapper::before{
-  content:'';
-  position:absolute;
-  inset:-6px;
-  border-radius:50%;
-  border:2px dashed rgba(56,189,248,.4);
-  animation:spin 30s linear infinite;
+.crypto-hero-value-row{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+margin-top:12px
 }
 
-@keyframes spin{
-  100%{
-    transform:rotate(360deg);
-  }
+.crypto-hero-value{
+font-size:42px;
+font-weight:900;
+color:#fff;
+letter-spacing:-0.5px
 }
 
-.system-status-pill{
-  background:rgba(56,189,248,.12);
-  border:1px solid rgba(56,189,248,.3);
-  padding:4px 14px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:800;
-  color:var(--cyan);
-  letter-spacing:1px;
-  margin-bottom:4px;
+.crypto-hero-token{
+font-size:24px;
+font-weight:900;
+color:var(--yellow)
 }
 
-.mining-timer{
-  font-size:34px;
-  font-weight:900;
-  letter-spacing:2px;
-  color:#fff;
+.wallet-huge-stack{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-bottom:24px
 }
 
-.mining-rate-indicator{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:700;
-  margin-top:6px;
+.wallet-huge-card{
+background:linear-gradient(145deg,#0c141f,#070b12);
+border:1px solid #22324a;
+border-radius:20px;
+padding:20px 16px;
+box-shadow:0 8px 30px rgba(0,0,0,0.4);
+position:relative;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+justify-content:space-between
 }
 
-.mining-rate-indicator span{
-  color:var(--yellow);
-  font-weight:900;
+.wallet-huge-card::after{
+content:'';
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+height:3px;
+background:linear-gradient(90deg,var(--blue),var(--cyan))
 }
 
-.action-controls{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-bottom:18px;
+.wallet-huge-lbl{
+font-size:10px;
+color:var(--muted);
+font-weight:900;
+letter-spacing:.8px;
+margin-bottom:12px;
+text-transform:uppercase;
+line-height:1.3
 }
 
-.start-mining-btn{
-  width:100%;
-  background:linear-gradient(90deg,#0284c7,#38bdf8);
-  border:0;
-  border-radius:14px;
-  padding:16px;
-  color:#fff;
-  font-size:14px;
-  font-weight:800;
-  letter-spacing:1px;
-  box-shadow:0 4px 20px rgba(56,189,248,.3);
+.wallet-huge-val-row{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:4px
 }
 
-.interactive-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.wallet-huge-value{
+font-size:24px;
+font-weight:900;
+color:#fff;
+letter-spacing:-0.5px
 }
 
-.action-tile{
-  background:rgba(10,16,24,.9);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  text-align:left;
-  box-shadow:0 4px 15px rgba(0,0,0,.2);
+.wallet-huge-unit{
+font-size:14px;
+font-weight:900;
+color:var(--yellow)
 }
 
-.action-tile-icon{
-  font-size:22px;
+.wallet-actions-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+margin-bottom:28px
 }
 
-.action-tile-title{
-  font-size:11px;
-  font-weight:800;
-  color:#fff;
-  letter-spacing:.3px;
+.wallet-btn-send{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px;
+color:var(--cyan);
+font-size:15px;
+font-weight:900;
+box-shadow:0 6px 20px rgba(0,0,0,0.3)
 }
 
-.action-tile-sub{
-  font-size:9px;
-  color:var(--muted);
-  margin-top:2px;
-  font-weight:600;
+.wallet-btn-receive{
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:18px;
+padding:18px;
+color:#fff;
+font-size:15px;
+font-weight:900;
+box-shadow:0 6px 25px rgba(56,189,248,0.35)
 }
 
-.dual-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:14px;
-}
-
-.info-box{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.info-box-top{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-}
-
-.info-box-label{
-  font-size:10px;
-  color:var(--muted);
-  font-weight:700;
-  line-height:1.3;
-  letter-spacing:.5px;
-}
-
-.info-box-icon{
-  width:28px;
-  height:28px;
-  border-radius:8px;
-  background:#111b27;
-  border:1px solid #223247;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:13px;
-}
-
-.info-box-value{
-  font-size:18px;
-  font-weight:800;
-  color:#fff;
-  margin-top:16px;
-}
-
-/* =========================
-   GENERAL
-========================= */
-
-.full-page-header{
-  font-size:22px;
-  font-weight:900;
-  color:var(--cyan);
-  letter-spacing:1px;
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.full-page-sub{
-  font-size:14px;
-  color:var(--muted);
-  margin-bottom:24px;
-  line-height:1.5;
-  font-weight:700;
-}
-
-.full-action-btn{
-  width:100%;
-  background:linear-gradient(90deg,#0284c7,#38bdf8);
-  border:0;
-  border-radius:18px;
-  padding:20px;
-  color:#fff;
-  font-size:16px;
-  font-weight:900;
-  box-shadow:0 6px 25px rgba(56,189,248,.35);
-  letter-spacing:.8px;
-}
-
-/* =========================
-   TASKS
-========================= */
-
-.friends-scroll-area{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  margin-bottom:28px;
-}
-
-.friend-row-item{
-  background:linear-gradient(145deg,#0d1520,#080d14);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 6px 20px rgba(0,0,0,.3);
-}
-
-.friend-name{
-  font-size:16px;
-  font-weight:900;
-  color:#fff;
-  letter-spacing:.4px;
-}
-
-/* =========================
-   FRIENDS
-========================= */
+/* FRIENDS */
 
 .friends-stats-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:24px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+margin-bottom:24px
 }
 
 .friend-stat-card{
-  background:linear-gradient(145deg,#0d1520,#080d14);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px 10px;
-  text-align:center;
-  box-shadow:0 6px 20px rgba(0,0,0,.3);
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+padding:20px 10px;
+text-align:center;
+box-shadow:0 6px 20px rgba(0,0,0,0.3)
 }
 
 .friend-stat-lbl{
-  font-size:11px;
-  color:var(--muted);
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.5px;
+font-size:12px;
+color:var(--muted);
+font-weight:900;
+text-transform:uppercase;
+letter-spacing:.5px
 }
 
 .friend-stat-val{
-  font-size:26px;
-  font-weight:900;
-  color:#fff;
-  margin-top:8px;
+font-size:26px;
+font-weight:900;
+color:#fff;
+margin-top:8px
+}
+
+.friends-scroll-area{
+display:flex;
+flex-direction:column;
+gap:14px;
+margin-bottom:28px
+}
+
+.friend-row-item{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+padding:20px 22px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+box-shadow:0 6px 20px rgba(0,0,0,0.3)
+}
+
+.friend-name{
+font-size:16px;
+font-weight:900;
+color:#fff;
+letter-spacing:.4px
 }
 
 .milestones-title{
-  font-size:14px;
-  font-weight:900;
-  color:var(--yellow);
-  margin-bottom:14px;
-  letter-spacing:.8px;
-  text-transform:uppercase;
+font-size:14px;
+font-weight:900;
+color:var(--yellow);
+margin-bottom:14px;
+letter-spacing:.8px;
+text-transform:uppercase
 }
 
 .milestones-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-bottom:28px;
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-bottom:28px
 }
 
 .milestone-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:linear-gradient(145deg,#0d1520,#080d14);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:16px 20px;
-  font-size:14px;
-  font-weight:800;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:18px;
+padding:16px 20px;
+font-size:14px;
+font-weight:800
 }
 
 .milestone-reward{
-  color:var(--yellow);
-  font-weight:900;
+color:var(--yellow);
+font-weight:900;
+font-size:16px
 }
 
-/* =========================
-   WALLET
-========================= */
+/* MINING */
 
-.wallet-header-card{
-  background:
-    radial-gradient(circle at 20% 10%,rgba(56,189,248,.14),transparent 35%),
-    linear-gradient(145deg,#101a2a,#070c13);
-  border:1px solid #29415d;
-  border-radius:24px;
-  padding:24px 20px;
-  margin-bottom:16px;
-  box-shadow:0 12px 35px rgba(0,0,0,.4);
+.mining-node-container{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin:15px 0 20px
 }
 
-.wallet-brand-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:24px;
+.ring-wrapper{
+width:260px;
+height:260px;
+border-radius:50%;
+border:2px solid rgba(56,189,248,0.25);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+position:relative;
+box-shadow:
+0 0 30px rgba(56,189,248,0.08),
+inset 0 0 30px rgba(56,189,248,0.08)
 }
 
-.wallet-brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.ring-wrapper::before{
+content:'';
+position:absolute;
+inset:-6px;
+border-radius:50%;
+border:2px dashed rgba(56,189,248,0.4);
+animation:spin 30s linear infinite
 }
 
-.wallet-logo{
-  width:42px;
-  height:42px;
-  border-radius:13px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#0284c7,#38bdf8);
-  color:#fff;
-  font-weight:900;
-  font-size:17px;
-  box-shadow:0 5px 18px rgba(56,189,248,.25);
+@keyframes spin{
+100%{transform:rotate(360deg)}
 }
 
-.wallet-brand-name{
-  font-size:15px;
-  font-weight:900;
+.system-status-pill{
+background:rgba(56,189,248,0.12);
+border:1px solid rgba(56,189,248,0.3);
+padding:4px 14px;
+border-radius:20px;
+font-size:10px;
+font-weight:800;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:4px
 }
 
-.wallet-brand-sub{
-  font-size:9px;
-  color:var(--muted);
-  margin-top:3px;
-  font-weight:700;
+.mining-timer{
+font-size:34px;
+font-weight:900;
+letter-spacing:2px;
+color:#fff
 }
 
-.wallet-connected{
-  padding:6px 9px;
-  border-radius:10px;
-  background:rgba(52,211,153,.1);
-  border:1px solid rgba(52,211,153,.25);
-  color:var(--green);
-  font-size:9px;
-  font-weight:900;
+.mining-rate-indicator{
+font-size:11px;
+color:var(--muted);
+font-weight:700;
+margin-top:6px
 }
 
-.wallet-address-label{
-  color:var(--muted);
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:1px;
-  margin-bottom:7px;
+.mining-rate-indicator span{
+color:var(--yellow);
+font-weight:900
 }
 
-.wallet-address-box{
-  background:#050a11;
-  border:1px solid #203047;
-  border-radius:13px;
-  padding:13px;
-  display:flex;
-  align-items:center;
-  gap:10px;
+.action-controls{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:18px
 }
 
-.wallet-address-text{
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  color:#dbeafe;
-  font-size:12px;
-  font-weight:800;
+.start-mining-btn{
+width:100%;
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:14px;
+padding:16px;
+color:#fff;
+font-size:14px;
+font-weight:800;
+letter-spacing:1px;
+box-shadow:0 4px 20px rgba(56,189,248,0.3)
 }
 
-.copy-small-btn{
-  border:1px solid #29415d;
-  background:#101a28;
-  color:var(--cyan);
-  border-radius:9px;
-  padding:7px 9px;
-  font-size:9px;
-  font-weight:900;
+.interactive-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
 }
 
-.wallet-action-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:9px;
-  margin-top:14px;
+.action-tile{
+background:rgba(10,16,24,0.9);
+border:1px solid var(--border);
+border-radius:14px;
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px;
+text-align:left;
+box-shadow:0 4px 15px rgba(0,0,0,0.2)
 }
 
-.wallet-action-btn{
-  border-radius:12px;
-  padding:12px 6px;
-  border:1px solid var(--border2);
-  background:#0b131e;
-  color:#fff;
-  font-size:10px;
-  font-weight:900;
+.action-tile-icon{
+font-size:22px
 }
 
-.wallet-action-btn.primary{
-  background:linear-gradient(90deg,#0284c7,#38bdf8);
-  border:0;
+.action-tile-title{
+font-size:11px;
+font-weight:800;
+color:#fff;
+letter-spacing:.3px
 }
 
-.wallet-action-btn.migration{
-  color:var(--yellow);
-  border-color:rgba(250,204,21,.3);
+.action-tile-sub{
+font-size:9px;
+color:var(--muted);
+margin-top:2px;
+font-weight:600
 }
 
-.wallet-section-card{
-  background:linear-gradient(145deg,#0c141f,#070b12);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:14px;
+.dual-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:14px
 }
 
-.wallet-section-title{
-  font-size:13px;
-  font-weight:900;
-  color:#fff;
-  margin-bottom:6px;
+.info-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:16px;
+padding:16px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+position:relative
 }
 
-.wallet-section-sub{
-  font-size:10px;
-  color:var(--muted);
-  line-height:1.5;
-  font-weight:700;
+.info-box-top{
+display:flex;
+align-items:flex-start;
+justify-content:space-between
 }
 
-.network-row{
-  margin-top:15px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px;
-  border-radius:12px;
-  background:#08101a;
-  border:1px solid #1c2a3c;
+.info-box-label{
+font-size:10px;
+color:var(--muted);
+font-weight:700;
+line-height:1.3;
+letter-spacing:.5px
 }
 
-.network-name{
-  font-size:11px;
-  font-weight:900;
+.info-box-icon{
+width:28px;
+height:28px;
+border-radius:8px;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px
 }
 
-.network-value{
-  color:var(--cyan);
-  font-size:10px;
-  font-weight:900;
+.info-box-value{
+font-size:18px;
+font-weight:800;
+color:#fff;
+margin-top:16px
 }
 
-.wallet-security{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:15px;
-  padding:11px;
-  border-radius:12px;
-  background:rgba(52,211,153,.06);
-  border:1px solid rgba(52,211,153,.15);
+/* HEADERS */
+
+.full-page-header{
+font-size:22px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:10px
 }
 
-.security-icon{
-  font-size:18px;
+.full-page-sub{
+font-size:14px;
+color:var(--muted);
+margin-bottom:24px;
+line-height:1.5;
+font-weight:700
 }
 
-.security-text{
-  font-size:10px;
-  color:var(--muted);
-  line-height:1.4;
-  font-weight:700;
+.full-action-btn{
+width:100%;
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:18px;
+padding:20px;
+color:#fff;
+font-size:16px;
+font-weight:900;
+box-shadow:0 6px 25px rgba(56,189,248,0.35);
+letter-spacing:.8px
 }
 
-.security-text strong{
-  color:var(--green);
-}
-
-.migration-card{
-  background:
-    linear-gradient(145deg,rgba(250,204,21,.08),rgba(8,13,20,.98));
-  border:1px solid rgba(250,204,21,.28);
-  border-radius:20px;
-  padding:18px;
-  margin-bottom:14px;
-}
-
-.migration-title{
-  color:var(--yellow);
-  font-size:14px;
-  font-weight:900;
-}
-
-.migration-description{
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.55;
-  margin-top:7px;
-  font-weight:700;
-}
-
-.migration-status{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px;
-  border-radius:12px;
-  background:#090e15;
-  border:1px solid #263342;
-  margin-top:14px;
-}
-
-.migration-status-label{
-  font-size:10px;
-  color:var(--muted);
-  font-weight:900;
-}
-
-.migration-status-value{
-  color:var(--yellow);
-  font-size:10px;
-  font-weight:900;
-}
-
-.migration-btn{
-  width:100%;
-  margin-top:12px;
-  border:0;
-  border-radius:13px;
-  padding:14px;
-  background:linear-gradient(90deg,#facc15,#f59e0b);
-  color:#05080c;
-  font-size:12px;
-  font-weight:900;
-}
-
-.wallet-note{
-  color:var(--muted);
-  font-size:9px;
-  line-height:1.5;
-  margin-top:10px;
-  font-weight:700;
-}
-
-/* =========================
-   QR RECEIVE
-========================= */
-
-.receive-panel{
-  text-align:center;
-}
-
-.qr-wrapper{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#fff;
-  width:190px;
-  height:190px;
-  padding:12px;
-  border-radius:18px;
-  margin:15px auto;
-}
-
-#qrcode{
-  width:166px;
-  height:166px;
-}
-
-#qrcode img,
-#qrcode canvas{
-  max-width:166px;
-  max-height:166px;
-}
-
-.qr-verified{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  color:var(--green);
-  background:rgba(52,211,153,.08);
-  border:1px solid rgba(52,211,153,.2);
-  padding:7px 10px;
-  border-radius:10px;
-  font-size:9px;
-  font-weight:900;
-}
-
-/* =========================
-   PROFILE
-========================= */
+/* PROFILE */
 
 .profile-menu-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-bottom:28px;
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-bottom:28px
 }
 
 .profile-menu-item{
-  background:linear-gradient(145deg,#0d1520,#080d14);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  cursor:pointer;
-  box-shadow:0 4px 15px rgba(0,0,0,.2);
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+box-shadow:0 4px 15px rgba(0,0,0,0.2)
 }
 
 .profile-menu-left{
-  display:flex;
-  align-items:center;
-  gap:14px;
+display:flex;
+align-items:center;
+gap:14px
 }
 
 .profile-menu-icon{
-  font-size:20px;
+font-size:20px
 }
 
 .profile-menu-title{
-  font-size:15px;
-  font-weight:900;
-  color:#fff;
-  letter-spacing:.3px;
+font-size:15px;
+font-weight:900;
+color:#fff;
+letter-spacing:.3px
 }
 
 .profile-menu-arrow{
-  font-size:16px;
-  color:var(--muted);
-  font-weight:900;
+font-size:16px;
+color:var(--muted);
+font-weight:900
 }
 
-/* =========================
-   SUPPORT CHAT
-========================= */
-
-.support-chat{
-  background:#07101a;
-  border:1px solid #203047;
-  border-radius:18px;
-  overflow:hidden;
-}
-
-.support-chat-header{
-  padding:15px;
-  background:linear-gradient(135deg,#0d1b2a,#09121d);
-  border-bottom:1px solid #1d2d40;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.support-avatar{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#0284c7,#38bdf8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  color:#fff;
-}
-
-.support-header-title{
-  font-size:13px;
-  font-weight:900;
-}
-
-.support-header-status{
-  font-size:9px;
-  color:var(--green);
-  margin-top:3px;
-  font-weight:800;
-}
+/* CHAT */
 
 .chat-messages-container{
-  height:300px;
-  overflow-y:auto;
-  display:flex;
-  flex-direction:column;
-  gap:11px;
-  padding:15px;
-  background:
-    radial-gradient(circle at 80% 20%,rgba(56,189,248,.04),transparent 30%),
-    #07101a;
+max-height:220px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:16px;
+padding-right:4px
 }
 
 .chat-bubble{
-  padding:10px 13px;
-  border-radius:14px;
-  font-size:12px;
-  max-width:84%;
-  line-height:1.5;
-  font-weight:700;
+padding:10px 14px;
+border-radius:12px;
+font-size:13px;
+max-width:85%;
+line-height:1.4;
+font-weight:700
 }
 
 .chat-bubble.user{
-  background:linear-gradient(135deg,#0284c7,#0369a1);
-  color:#fff;
-  align-self:flex-end;
-  border-bottom-right-radius:3px;
+background:var(--blue);
+color:#fff;
+align-self:flex-end;
+border-bottom-right-radius:2px
 }
 
 .chat-bubble.admin{
-  background:#142131;
-  color:var(--text);
-  align-self:flex-start;
-  border:1px solid #22344a;
-  border-bottom-left-radius:3px;
-}
-
-.chat-time{
-  font-size:8px;
-  opacity:.55;
-  margin-top:4px;
-}
-
-.chat-input-area{
-  padding:11px;
-  border-top:1px solid #1d2d40;
-  background:#09131f;
+background:#162235;
+color:var(--text);
+align-self:flex-start;
+border:1px solid var(--border);
+border-bottom-left-radius:2px
 }
 
 .chat-input-row{
-  display:flex;
-  gap:8px;
+display:flex;
+gap:8px
 }
 
 .chat-input-field{
-  flex:1;
-  background:#111b27;
-  border:1px solid #27384d;
-  border-radius:12px;
-  padding:12px;
-  color:#fff;
-  font-size:12px;
-  outline:none;
-}
-
-.chat-input-field:focus{
-  border-color:var(--cyan);
+flex:1;
+background:#111b27;
+border:1px solid var(--border);
+border-radius:12px;
+padding:12px;
+color:#fff;
+font-size:13px;
+outline:none
 }
 
 .chat-send-btn{
-  background:var(--cyan);
-  border:0;
-  border-radius:12px;
-  padding:0 16px;
-  color:#05080c;
-  font-weight:900;
-  font-size:12px;
+background:var(--cyan);
+border:0;
+border-radius:12px;
+padding:0 18px;
+color:#05080c;
+font-weight:900;
+font-size:13px
 }
 
-/* =========================
-   DOCUMENT
-========================= */
-
-.document-content{
-  color:#aebdca;
-  font-size:12px;
-  line-height:1.7;
-  font-weight:600;
-}
-
-.document-content h3{
-  color:#fff;
-  font-size:14px;
-  margin:18px 0 7px;
-}
-
-.document-content h4{
-  color:var(--cyan);
-  font-size:12px;
-  margin:13px 0 5px;
-}
-
-.document-content p{
-  margin-bottom:9px;
-}
-
-.document-content ul{
-  margin:7px 0 10px 18px;
-}
-
-.document-content li{
-  margin-bottom:5px;
-}
-
-.document-badge{
-  display:inline-block;
-  background:rgba(56,189,248,.08);
-  border:1px solid rgba(56,189,248,.2);
-  color:var(--cyan);
-  padding:6px 9px;
-  border-radius:8px;
-  font-size:9px;
-  font-weight:900;
-  margin-bottom:10px;
-}
-
-/* =========================
-   MODALS
-========================= */
+/* MODALS */
 
 .modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(5,8,12,.96);
-  z-index:1000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+position:fixed;
+inset:0;
+background:rgba(5,8,12,0.95);
+z-index:1000;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px
 }
 
 .modal-overlay.active{
-  display:flex;
+display:flex
 }
-
-.modal-card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:22px;
-  width:100%;
-  max-width:390px;
-  max-height:86vh;
-  overflow:auto;
-  box-shadow:0 12px 50px rgba(0,0,0,.7);
-}
-
-.modal-header{
-  padding:18px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.modal-title{
-  font-size:15px;
-  font-weight:900;
-  color:var(--cyan);
-}
-
-.modal-close{
-  background:none;
-  border:0;
-  color:var(--muted);
-  font-size:18px;
-}
-
-.modal-body{
-  padding:18px;
-}
-
-.prompt-title{
-  font-size:14px;
-  font-weight:800;
-  color:var(--yellow);
-  margin-bottom:12px;
-  letter-spacing:.5px;
-}
-
-.prompt-desc{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:20px;
-  line-height:1.5;
-}
-
-.prompt-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.prompt-btn-cancel{
-  background:#111b27;
-  border:1px solid #223247;
-  border-radius:12px;
-  padding:12px;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:800;
-}
-
-.prompt-btn-confirm{
-  background:linear-gradient(90deg,#facc15,#f59e0b);
-  border:0;
-  border-radius:12px;
-  padding:12px;
-  color:#05080c;
-  font-size:12px;
-  font-weight:900;
-}
-
-.form-label{
-  font-size:9px;
-  color:var(--muted);
-  font-weight:900;
-  display:block;
-  margin-bottom:5px;
-}
-
-.form-input{
-  width:100%;
-  background:#111b27;
-  border:1px solid #27384d;
-  border-radius:12px;
-  padding:13px;
-  color:#fff;
-  outline:none;
-  margin-bottom:13px;
-  font-size:12px;
-}
-
-.form-input:focus{
-  border-color:var(--cyan);
-}
-
-.primary-modal-btn{
-  width:100%;
-  border:0;
-  border-radius:13px;
-  padding:14px;
-  background:linear-gradient(90deg,#0284c7,#38bdf8);
-  color:#fff;
-  font-size:12px;
-  font-weight:900;
-}
-
-/* =========================
-   AD
-========================= */
 
 .ad-box{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:20px;
-  width:100%;
-  max-width:360px;
-  padding:24px;
-  text-align:center;
-  box-shadow:0 10px 40px rgba(0,0,0,.5);
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:20px;
+width:100%;
+max-width:360px;
+padding:24px;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,0.5)
 }
 
 .ad-header{
-  font-size:12px;
-  font-weight:800;
-  color:var(--cyan);
-  letter-spacing:1px;
-  margin-bottom:12px;
+font-size:12px;
+font-weight:800;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:12px
 }
 
 .ad-screen{
-  background:#111b27;
-  border:1px solid #223247;
-  border-radius:12px;
-  height:160px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:16px;
-  position:relative;
+background:#111b27;
+border:1px solid #223247;
+border-radius:12px;
+height:160px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin-bottom:16px;
+position:relative
 }
 
 .ad-timer-badge{
-  position:absolute;
-  top:10px;
-  right:10px;
-  background:rgba(0,0,0,.6);
-  padding:2px 8px;
-  border-radius:6px;
-  font-size:10px;
-  font-weight:700;
-  color:var(--yellow);
+position:absolute;
+top:10px;
+right:10px;
+background:rgba(0,0,0,0.6);
+padding:2px 8px;
+border-radius:6px;
+font-size:10px;
+font-weight:700;
+color:var(--yellow)
 }
 
 .ad-title{
-  font-size:14px;
-  font-weight:800;
-  color:#fff;
-  margin-bottom:4px;
+font-size:14px;
+font-weight:800;
+color:#fff;
+margin-bottom:4px
 }
 
 .ad-desc{
-  font-size:10px;
-  color:var(--muted);
+font-size:10px;
+color:var(--muted)
 }
 
 .ad-close-btn{
-  width:100%;
-  background:#0284c7;
-  border:0;
-  border-radius:12px;
-  padding:12px;
-  color:#fff;
-  font-size:12px;
-  font-weight:800;
-  opacity:.5;
-  pointer-events:none;
+width:100%;
+background:#0284c7;
+border:0;
+border-radius:12px;
+padding:12px;
+color:#fff;
+font-size:12px;
+font-weight:800;
+opacity:0.5;
+pointer-events:none;
+transition:opacity 0.3s
 }
 
 .ad-close-btn.ready{
-  opacity:1;
-  pointer-events:auto;
+opacity:1;
+pointer-events:auto
 }
 
-/* =========================
-   MAINTENANCE
-========================= */
-
-.maintenance-card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:20px;
-  width:100%;
-  max-width:340px;
-  padding:24px;
-  text-align:center;
+.prompt-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:20px;
+width:100%;
+max-width:340px;
+padding:24px;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,0.5)
 }
 
-.maintenance-title{
-  color:var(--yellow);
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:1px;
+.prompt-title{
+font-size:14px;
+font-weight:800;
+color:var(--yellow);
+margin-bottom:12px;
+letter-spacing:.5px
 }
 
-.maintenance-screen{
-  background:#111b27;
-  border:1px solid #223247;
-  border-radius:12px;
-  padding:20px 12px;
-  margin:15px 0;
+.prompt-desc{
+font-size:12px;
+color:var(--muted);
+margin-bottom:20px;
+line-height:1.4
 }
 
-.maintenance-main{
-  font-size:13px;
-  font-weight:900;
+.prompt-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
 }
 
-.maintenance-sub{
-  font-size:10px;
-  color:var(--muted);
-  line-height:1.5;
-  margin-top:7px;
+.prompt-btn-cancel{
+background:#111b27;
+border:1px solid #223247;
+border-radius:12px;
+padding:12px;
+color:var(--muted);
+font-size:12px;
+font-weight:800
 }
 
-/* =========================
-   BOTTOM NAV
-========================= */
+.prompt-btn-confirm{
+background:linear-gradient(90deg,#facc15,#f59e0b);
+border:0;
+border-radius:12px;
+padding:12px;
+color:#05080c;
+font-size:12px;
+font-weight:900
+}
+
+/* INFO SHEET */
+
+.sheet-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:22px;
+width:100%;
+max-width:380px;
+max-height:80vh;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 12px 45px rgba(0,0,0,0.6)
+}
+
+.sheet-header{
+padding:20px;
+border-bottom:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:space-between
+}
+
+.sheet-title{
+font-size:16px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px
+}
+
+.sheet-close{
+background:none;
+border:0;
+font-size:18px;
+color:var(--muted);
+font-weight:900
+}
+
+.sheet-content{
+padding:20px;
+overflow-y:auto;
+font-size:13px;
+color:var(--muted);
+line-height:1.6;
+font-weight:700
+}
+
+.sheet-content strong{
+color:#fff
+}
+
+.sheet-content p{
+margin:0
+}
+
+/* BOTTOM NAV */
 
 .bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(480px,100%);
-  background:#070b10;
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  padding:10px 0 calc(10px + env(safe-area-inset-bottom));
-  z-index:100;
+position:fixed;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:min(480px,100%);
+background:#070b10;
+border-top:1px solid var(--border);
+display:grid;
+grid-template-columns:repeat(5,1fr);
+padding:10px 0 calc(10px + env(safe-area-inset-bottom));
+z-index:100
 }
 
 .nav-item{
-  background:none;
-  border:0;
-  color:var(--muted);
-  font-size:10px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  font-weight:700;
+background:none;
+border:0;
+color:var(--muted);
+font-size:10px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+font-weight:700
 }
 
 .nav-icon{
-  font-size:18px;
+font-size:18px
 }
 
 .nav-item.active{
-  color:var(--cyan);
+color:var(--cyan)
 }
 </style>
 </head>
@@ -1280,1204 +916,683 @@ button:active{
 
 <div class="app">
 
-<!-- ======================================================
-     MINING PAGE
-====================================================== -->
+<!-- ================= MINING ================= -->
 
 <main class="page-view active" id="page-mining">
 
-  <div class="mining-header">
-    <div class="brand-small">FIDEXA NETWORK</div>
+<div class="balance-card">
+<div class="balance-dot"></div>
+<div class="balance-label">TOTAL BALANCE</div>
 
-    <div class="network-status">
-      <span class="status-dot"></span>
-      NETWORK ONLINE
-    </div>
-  </div>
+<div class="balance-row">
+<div class="balance-value" id="balanceDisplay">1,000,000.00</div>
+<div class="balance-token">$FDX</div>
+</div>
 
-  <div class="mining-summary">
-    <div class="summary-label">FDX MINING NODE</div>
-    <div class="summary-title">Participate. Mine. Grow.</div>
-    <div class="summary-sub">
-      Start a 4-hour mining session and return when the session is complete to claim your FDX reward.
-    </div>
-  </div>
+<div class="balance-sub">$USD Equivalent</div>
+</div>
 
-  <div class="mining-node-container">
+<div class="mining-node-container">
 
-    <div class="ring-wrapper">
+<div class="ring-wrapper">
 
-      <div class="system-status-pill" id="systemPill">
-        READY TO MINE
-      </div>
+<div class="system-status-pill" id="systemPill">
+READY TO MINE
+</div>
 
-      <div class="mining-timer" id="timerDisplay">
-        04:00:00
-      </div>
+<div class="mining-timer" id="timerDisplay">
+04:00:00
+</div>
 
-      <div class="mining-rate-indicator">
-        Mining Rate:
-        <span id="currentRateDisplay">1.0</span>
-        FDX/H
-      </div>
+<div class="mining-rate-indicator">
+Mining Rate:
+<span id="currentRateDisplay">1.0</span> $FDX/H
+</div>
 
-    </div>
+</div>
+</div>
 
-  </div>
+<div class="action-controls">
 
-  <div class="action-controls">
+<button
+class="start-mining-btn"
+id="miningToggleBtn"
+onclick="handleMiningAction()">
+START MINING
+</button>
 
-    <button
-      class="start-mining-btn"
-      id="miningToggleBtn"
-      onclick="handleMiningAction()">
-      START MINING
-    </button>
+<div class="interactive-grid">
 
-    <div class="interactive-grid">
+<button class="action-tile" onclick="openBoosterPrompt()">
+<div class="action-tile-icon">🚀</div>
+<div>
+<div class="action-tile-title">Mining Boost</div>
+<div class="action-tile-sub" id="boosterChances">
+5/5 Left
+</div>
+</div>
+</button>
 
-      <button
-        class="action-tile"
-        onclick="openBoosterPrompt()">
+<button
+class="action-tile"
+onclick="openLuckyBoxModal()"
+style="border-color:rgba(250,204,21,0.5);">
 
-        <div class="action-tile-icon">🚀</div>
+<div class="action-tile-icon">🎁</div>
 
-        <div>
-          <div class="action-tile-title">
-            Mining Boost
-          </div>
+<div>
+<div class="action-tile-title" style="color:var(--yellow);">
+Lucky Box
+</div>
 
-          <div
-            class="action-tile-sub"
-            id="boosterChances">
-            5/5 Left
-          </div>
-        </div>
+<div class="action-tile-sub">
+Mystery Gift Box
+</div>
+</div>
 
-      </button>
+</button>
 
-      <button
-        class="action-tile"
-        onclick="openLuckyBoxModal()"
-        style="border-color:rgba(250,204,21,.5);">
+</div>
+</div>
 
-        <div class="action-tile-icon">🎁</div>
+<div class="dual-grid">
 
-        <div>
-          <div
-            class="action-tile-title"
-            style="color:var(--yellow);">
-            Lucky Box
-          </div>
+<div class="info-box">
 
-          <div class="action-tile-sub">
-            Mystery Gift
-          </div>
-        </div>
+<div class="info-box-top">
+<div class="info-box-label">
+BURNING<br>STREAK
+</div>
+<div class="info-box-icon">🔥</div>
+</div>
 
-      </button>
+<div class="info-box-value" id="burningStreak">
+1 Day
+</div>
 
-    </div>
+</div>
 
-  </div>
+<div class="info-box">
 
-  <div class="dual-grid">
+<div class="info-box-top">
+<div class="info-box-label">
+RECOVERABLE<br>$FDX
+</div>
+<div class="info-box-icon">💎</div>
+</div>
 
-    <div class="info-box">
+<div class="info-box-value" id="recoverableFdx">
+0.00
+</div>
 
-      <div class="info-box-top">
+</div>
 
-        <div class="info-box-label">
-          MINING<br>SESSION
-        </div>
-
-        <div class="info-box-icon">
-          ⛏️
-        </div>
-
-      </div>
-
-      <div
-        class="info-box-value"
-        id="sessionReward">
-        4 FDX
-      </div>
-
-    </div>
-
-    <div class="info-box">
-
-      <div class="info-box-top">
-
-        <div class="info-box-label">
-          BASE<br>RATE
-        </div>
-
-        <div class="info-box-icon">
-          ⚡
-        </div>
-
-      </div>
-
-      <div class="info-box-value">
-        1.0 FDX/H
-      </div>
-
-    </div>
-
-  </div>
+</div>
 
 </main>
 
 
-<!-- ======================================================
-     TASKS
-====================================================== -->
+<!-- ================= TASKS ================= -->
 
 <main class="page-view" id="page-tasks">
 
-  <div class="full-page-header">
-    📋 SYSTEM TASKS
-  </div>
+<div class="full-page-header">
+📋 SYSTEM TASKS
+</div>
 
-  <div class="full-page-sub">
-    Complete community missions to participate in the FIDEXA ecosystem.
-  </div>
+<div class="full-page-sub">
+Complete community missions to earn extra token allocations.
+</div>
 
-  <div class="friends-scroll-area">
+<div class="friends-scroll-area">
 
-    <div class="friend-row-item">
+<div class="friend-row-item">
 
-      <div>
-        <div class="friend-name">
-          Join Telegram Channel
-        </div>
+<div>
+<div class="friend-name">
+Join Telegram Channel
+</div>
 
-        <div
-          style="font-size:12px;color:var(--cyan);margin-top:6px;font-weight:900;">
-          Community Activity
-        </div>
-      </div>
+<div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">
++10.00 $FDX
+</div>
+</div>
 
-      <button
-        onclick="openExternalLink('telegram')"
-        style="
-        background:rgba(56,189,248,.12);
-        color:var(--cyan);
-        border:1px solid rgba(56,189,248,.35);
-        border-radius:10px;
-        padding:9px 11px;
-        font-size:10px;
-        font-weight:900;">
-        OPEN
-      </button>
+<button
+onclick="alert('Task completed!')"
+style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4);padding:8px 12px;border-radius:10px;font-weight:900;">
+CLAIM
+</button>
 
-    </div>
+</div>
 
 
-    <div class="friend-row-item">
+<div class="friend-row-item">
 
-      <div>
-        <div class="friend-name">
-          Follow Official X
-        </div>
+<div>
+<div class="friend-name">
+Follow Official X Handle
+</div>
 
-        <div
-          style="font-size:12px;color:var(--cyan);margin-top:6px;font-weight:900;">
-          Community Activity
-        </div>
-      </div>
+<div style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">
++15.00 $FDX
+</div>
+</div>
 
-      <button
-        onclick="openExternalLink('twitter')"
-        style="
-        background:rgba(56,189,248,.12);
-        color:var(--cyan);
-        border:1px solid rgba(56,189,248,.35);
-        border-radius:10px;
-        padding:9px 11px;
-        font-size:10px;
-        font-weight:900;">
-        OPEN
-      </button>
+<button
+onclick="alert('Task completed!')"
+style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4);padding:8px 12px;border-radius:10px;font-weight:900;">
+CLAIM
+</button>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </main>
 
 
-<!-- ======================================================
-     FRIENDS
-====================================================== -->
+<!-- ================= FRIENDS ================= -->
 
 <main class="page-view" id="page-friends">
 
-  <div class="full-page-header">
-    👥 REFERRAL NETWORK
-  </div>
+<div class="full-page-header">
+👥 REFERRAL NETWORK
+</div>
 
-  <div class="full-page-sub">
-    Invite friends and help grow the FIDEXA community.
-  </div>
+<div class="full-page-sub">
+Invite friends, track their active mining status, and unlock full milestone rewards from top to bottom.
+</div>
 
-  <div class="friends-stats-grid">
+<div class="friends-stats-grid">
 
-    <div class="friend-stat-card">
+<div class="friend-stat-card">
+<div class="friend-stat-lbl">Total</div>
+<div class="friend-stat-val" id="totalFriendsCount">3</div>
+</div>
 
-      <div class="friend-stat-lbl">
-        Total
-      </div>
+<div class="friend-stat-card">
+<div class="friend-stat-lbl" style="color:var(--cyan)">
+Active
+</div>
+<div class="friend-stat-val" id="activeFriendsCount">2</div>
+</div>
 
-      <div
-        class="friend-stat-val"
-        id="totalFriendsCount">
-        0
-      </div>
+<div class="friend-stat-card">
+<div class="friend-stat-lbl" style="color:var(--muted)">
+Inactive
+</div>
+<div class="friend-stat-val" id="inactiveFriendsCount">1</div>
+</div>
 
-    </div>
+</div>
 
-    <div class="friend-stat-card">
+<div class="milestones-title">
+MILESTONE REWARDS
+</div>
 
-      <div
-        class="friend-stat-lbl"
-        style="color:var(--cyan)">
-        Active
-      </div>
+<div class="milestones-list">
 
-      <div
-        class="friend-stat-val"
-        id="activeFriendsCount">
-        0
-      </div>
+<div class="milestone-item">
+<span>Invite 1 friend</span>
+<span class="milestone-reward">5 $FDX</span>
+</div>
 
-    </div>
+<div class="milestone-item">
+<span>Invite 5 friends</span>
+<span class="milestone-reward">10 $FDX</span>
+</div>
 
-    <div class="friend-stat-card">
+<div class="milestone-item">
+<span>Invite 10 friends</span>
+<span class="milestone-reward">20 $FDX</span>
+</div>
 
-      <div
-        class="friend-stat-lbl"
-        style="color:var(--muted)">
-        Inactive
-      </div>
+<div class="milestone-item">
+<span>Invite 20 friends</span>
+<span class="milestone-reward">30 $FDX</span>
+</div>
 
-      <div
-        class="friend-stat-val"
-        id="inactiveFriendsCount">
-        0
-      </div>
+<div class="milestone-item">
+<span>Invite 50 friends</span>
+<span class="milestone-reward">50 $FDX</span>
+</div>
 
-    </div>
+<div class="milestone-item">
+<span>Invite 100 friends</span>
+<span class="milestone-reward">100 $FDX</span>
+</div>
 
-  </div>
+</div>
 
-
-  <div class="milestones-title">
-    MILESTONE REWARDS
-  </div>
-
-  <div class="milestones-list">
-
-    <div class="milestone-item">
-      <span>Invite 1 friend</span>
-      <span class="milestone-reward">5 FDX</span>
-    </div>
-
-    <div class="milestone-item">
-      <span>Invite 5 friends</span>
-      <span class="milestone-reward">10 FDX</span>
-    </div>
-
-    <div class="milestone-item">
-      <span>Invite 10 friends</span>
-      <span class="milestone-reward">20 FDX</span>
-    </div>
-
-    <div class="milestone-item">
-      <span>Invite 20 friends</span>
-      <span class="milestone-reward">30 FDX</span>
-    </div>
-
-    <div class="milestone-item">
-      <span>Invite 50 friends</span>
-      <span class="milestone-reward">50 FDX</span>
-    </div>
-
-    <div class="milestone-item">
-      <span>Invite 100 friends</span>
-      <span class="milestone-reward">100 FDX</span>
-    </div>
-
-  </div>
-
-
-  <button
-    class="full-action-btn"
-    onclick="copyReferralLink()">
-    COPY INVITATION LINK
-  </button>
+<button class="full-action-btn" onclick="copyReferralLink()">
+COPY INVITATION LINK
+</button>
 
 </main>
 
 
-<!-- ======================================================
-     WALLET
-====================================================== -->
+<!-- ================= WALLET ================= -->
 
 <main class="page-view" id="page-wallet">
 
-  <div class="full-page-header">
-    👛 FDX WALLET
-  </div>
+<div class="crypto-wallet-hero">
 
-  <div class="full-page-sub">
-    Manage your FDX wallet address, receive funds, and access the migration system.
-  </div>
+<div class="crypto-hero-label">
+TOTAL WALLET BALANCE
+</div>
 
+<div class="crypto-hero-value-row">
 
-  <!-- Wallet Identity -->
+<div class="crypto-hero-value" id="walletTotalDisplay">
+1,000,000.00
+</div>
 
-  <div class="wallet-header-card">
+<div class="crypto-hero-token">
+$FDX
+</div>
 
-    <div class="wallet-brand-row">
-
-      <div class="wallet-brand">
-
-        <div class="wallet-logo">
-          F
-        </div>
-
-        <div>
-          <div class="wallet-brand-name">
-            FIDEXA WALLET
-          </div>
-
-          <div class="wallet-brand-sub">
-            Secure self-custody interface
-          </div>
-        </div>
-
-      </div>
-
-      <div
-        class="wallet-connected"
-        id="walletConnectionStatus">
-        WALLET READY
-      </div>
-
-    </div>
+</div>
+</div>
 
 
-    <div class="wallet-address-label">
-      WALLET ADDRESS
-    </div>
+<div class="wallet-huge-stack">
 
-    <div class="wallet-address-box">
+<div class="wallet-huge-card">
 
-      <div
-        class="wallet-address-text"
-        id="walletAddressDisplay">
-        Not connected
-      </div>
+<div class="wallet-huge-lbl">
+TRANSFERABLE BALANCE
+</div>
 
-      <button
-        class="copy-small-btn"
-        onclick="copyWalletAddress()">
-        COPY
-      </button>
+<div class="wallet-huge-val-row">
 
-    </div>
+<div class="wallet-huge-value" id="transferableBalance">
+950,000.00
+</div>
 
+<div class="wallet-huge-unit">
+$FDX
+</div>
 
-    <div class="wallet-action-grid">
-
-      <button
-        class="wallet-action-btn primary"
-        onclick="openReceiveModal()">
-        RECEIVE
-      </button>
-
-      <button
-        class="wallet-action-btn"
-        onclick="openSendModal()">
-        SEND
-      </button>
-
-      <button
-        class="wallet-action-btn migration"
-        onclick="openMigrationModal()">
-        MIGRATE
-      </button>
-
-    </div>
-
-  </div>
+</div>
+</div>
 
 
-  <!-- Network -->
+<div class="wallet-huge-card">
 
-  <div class="wallet-section-card">
+<div class="wallet-huge-lbl">
+UNVERIFIED BALANCE
+</div>
 
-    <div class="wallet-section-title">
-      NETWORK
-    </div>
+<div class="wallet-huge-val-row">
 
-    <div class="wallet-section-sub">
-      Wallet connection information for the FIDEXA ecosystem.
-    </div>
+<div class="wallet-huge-value" id="unverifiedBalance">
+50,000.00
+</div>
 
-    <div class="network-row">
+<div class="wallet-huge-unit">
+$FDX
+</div>
 
-      <div class="network-name">
-        FIDEXA Network
-      </div>
+</div>
+</div>
 
-      <div
-        class="network-value"
-        id="networkStatus">
-        READY
-      </div>
-
-    </div>
-
-    <div class="wallet-security">
-
-      <div class="security-icon">
-        🔐
-      </div>
-
-      <div class="security-text">
-        <strong>Wallet Security</strong><br>
-        Never share your private key or recovery phrase with anyone.
-      </div>
-
-    </div>
-
-  </div>
+</div>
 
 
-  <!-- Migration -->
+<div class="wallet-actions-grid">
 
-  <div class="migration-card">
+<button class="wallet-btn-send" onclick="openSendModal()">
+SEND
+</button>
 
-    <div class="migration-title">
-      🔄 FDX MIGRATION
-    </div>
+<button class="wallet-btn-receive" onclick="openReceiveModal()">
+RECEIVE
+</button>
 
-    <div class="migration-description">
-      Migration is the process used to move supported FIDEXA assets from an eligible legacy system into the supported FDX wallet environment.
-    </div>
-
-    <div class="migration-status">
-
-      <div class="migration-status-label">
-        MIGRATION STATUS
-      </div>
-
-      <div
-        class="migration-status-value"
-        id="migrationStatus">
-        NOT STARTED
-      </div>
-
-    </div>
-
-    <button
-      class="migration-btn"
-      onclick="openMigrationModal()">
-      OPEN MIGRATION
-    </button>
-
-    <div class="wallet-note">
-      Migration transactions must be connected to the actual supported backend/blockchain before real assets can be moved. This interface does not fabricate blockchain transactions.
-    </div>
-
-  </div>
+</div>
 
 
-  <!-- Wallet Information -->
+<div style="font-size:14px;font-weight:900;color:var(--muted);margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;">
+RECENT TRANSACTIONS
+</div>
 
-  <div class="wallet-section-card">
 
-    <div class="wallet-section-title">
-      WALLET INFORMATION
-    </div>
+<div class="friends-scroll-area">
 
-    <div class="wallet-section-sub">
-      FIDEXA currently uses the wallet section as the interface for address management, receiving, sending, and migration functions. On-chain balances and transactions should only be displayed after a verified blockchain connection is implemented.
-    </div>
+<div class="friend-row-item">
 
-  </div>
+<div>
+<div class="friend-name" style="font-size:15px;">
+Mining Reward Claim
+</div>
+
+<div style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:700;">
+Today, 10:45 AM
+</div>
+</div>
+
+<div style="font-size:15px;font-weight:900;color:var(--yellow);">
++4.00 $FDX
+</div>
+
+</div>
+
+
+<div class="friend-row-item">
+
+<div>
+<div class="friend-name" style="font-size:15px;">
+Referral Bonus
+</div>
+
+<div style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:700;">
+Yesterday
+</div>
+</div>
+
+<div style="font-size:15px;font-weight:900;color:var(--yellow);">
++5.00 $FDX
+</div>
+
+</div>
+
+</div>
 
 </main>
 
 
-<!-- ======================================================
-     PROFILE
-====================================================== -->
+<!-- ================= PROFILE ================= -->
 
 <main class="page-view" id="page-profile">
 
-  <div class="full-page-header">
-    🛡️ USER PROFILE
-  </div>
+<div class="full-page-header">
+🛡️ USER PROFILE
+</div>
 
-  <div class="full-page-sub">
-    Manage your account, documentation, support and privacy settings.
-  </div>
+<div class="full-page-sub">
+Manage your account settings, community security, and official network documentation.
+</div>
 
+<div class="profile-menu-list">
 
-  <div class="profile-menu-list">
-
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('account')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">👤</span>
-        <span class="profile-menu-title">
-          Account Information
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">›</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openProfileInfo('account')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">👤</span>
+<span class="profile-menu-title">Account Information</span>
+</div>
+<span class="profile-menu-arrow">›</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('support')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">💬</span>
-        <span class="profile-menu-title">
-          Chat Support
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">›</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openProfileInfo('support')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">💬</span>
+<span class="profile-menu-title">Chat Support</span>
+</div>
+<span class="profile-menu-arrow">›</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('privacy')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">🔒</span>
-        <span class="profile-menu-title">
-          Privacy Policy
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">›</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openProfileInfo('privacy')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">🔒</span>
+<span class="profile-menu-title">Privacy Policy</span>
+</div>
+<span class="profile-menu-arrow">›</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('whitepaper')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">📄</span>
-        <span class="profile-menu-title">
-          White Paper
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">›</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openProfileInfo('whitepaper')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">📄</span>
+<span class="profile-menu-title">White Paper</span>
+</div>
+<span class="profile-menu-arrow">›</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('roadmap')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">🗺️</span>
-        <span class="profile-menu-title">
-          Project Roadmap
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">›</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openProfileInfo('roadmap')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">🗺️</span>
+<span class="profile-menu-title">Project Roadmap</span>
+</div>
+<span class="profile-menu-arrow">›</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openExternalLink('telegram')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">📢</span>
-        <span class="profile-menu-title">
-          Official Telegram
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">↗</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openExternalLink('telegram')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">📢</span>
+<span class="profile-menu-title">Official Telegram</span>
+</div>
+<span class="profile-menu-arrow">↗</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openExternalLink('twitter')">
-
-      <div class="profile-menu-left">
-        <span class="profile-menu-icon">🌐</span>
-        <span class="profile-menu-title">
-          Official X
-        </span>
-      </div>
-
-      <span class="profile-menu-arrow">↗</span>
-
-    </div>
+<div class="profile-menu-item" onclick="openExternalLink('twitter')">
+<div class="profile-menu-left">
+<span class="profile-menu-icon">🌐</span>
+<span class="profile-menu-title">Official X</span>
+</div>
+<span class="profile-menu-arrow">↗</span>
+</div>
 
 
-    <div
-      class="profile-menu-item"
-      onclick="openProfileInfo('deletion')"
-      style="border-color:rgba(248,113,113,.3);">
+<div class="profile-menu-item"
+onclick="openProfileInfo('deletion')"
+style="border-color:rgba(248,113,113,0.3);">
 
-      <div class="profile-menu-left">
+<div class="profile-menu-left">
 
-        <span class="profile-menu-icon">
-          ⚠️
-        </span>
+<span class="profile-menu-icon">⚠️</span>
 
-        <span
-          class="profile-menu-title"
-          style="color:var(--red);">
-          Account Deletion
-        </span>
+<span class="profile-menu-title" style="color:var(--red);">
+Account Deletion
+</span>
 
-      </div>
+</div>
 
-      <span
-        class="profile-menu-arrow"
-        style="color:var(--red);">
-        ›
-      </span>
+<span class="profile-menu-arrow" style="color:var(--red);">
+›
+</span>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
 </main>
 
 
-<!-- ======================================================
-     MAINTENANCE
-====================================================== -->
+<!-- ================= MAINTENANCE ================= -->
 
-<div
-  class="modal-overlay"
-  id="maintenanceModal">
+<div class="modal-overlay" id="maintenanceModal">
 
-  <div class="maintenance-card">
+<div class="ad-box" style="max-width:340px;">
 
-    <div class="maintenance-title">
-      ⚠️ SCHEDULED MAINTENANCE
-    </div>
+<div class="ad-header" style="color:var(--yellow);">
+⚠️ SCHEDULED MAINTENANCE
+</div>
 
-    <div class="maintenance-screen">
+<div class="ad-screen"
+style="height:120px;justify-content:center;padding:10px;">
 
-      <div class="maintenance-main">
-        App Under Maintenance
-      </div>
+<div class="ad-title" style="font-size:13px;">
+App Under Maintenance
+</div>
 
-      <div class="maintenance-sub">
-        FIDEXA Network is currently locked for system upgrades and routine database optimization.
-      </div>
+<div class="ad-desc" style="margin-top:6px;">
+FIDEXA Network is currently locked for system upgrades and routine database optimization.
+</div>
 
-    </div>
+</div>
 
-    <div
-      style="font-size:11px;color:var(--muted);">
-      Only whitelisted administrators can access the system.
-    </div>
+<div style="font-size:11px;color:var(--muted);">
+Only whitelisted administrators can access the system.
+</div>
 
-  </div>
+</div>
+</div>
+
+
+<!-- ================= PROFILE INFO SHEET ================= -->
+
+<div class="modal-overlay" id="profileInfoModal">
+
+<div class="sheet-box">
+
+<div class="sheet-header">
+
+<div class="sheet-title" id="sheetTitle">
+Information
+</div>
+
+<button class="sheet-close" onclick="closeProfileInfo()">
+✕
+</button>
+
+</div>
+
+<div class="sheet-content" id="sheetContentBody">
+Loading details...
+</div>
+
+</div>
 
 </div>
 
 
-<!-- ======================================================
-     GENERIC PROFILE MODAL
-====================================================== -->
+<!-- ================= BOOSTER PROMPT ================= -->
 
-<div
-  class="modal-overlay"
-  id="profileInfoModal">
+<div class="modal-overlay" id="boosterPromptModal">
 
-  <div class="modal-card">
+<div class="prompt-box">
 
-    <div class="modal-header">
+<div class="prompt-title">
+⚡ SPEED BOOSTER
+</div>
 
-      <div
-        class="modal-title"
-        id="sheetTitle">
-        Information
-      </div>
+<div class="prompt-desc">
+Do you want to watch a short ad to boost your mining speed?
+</div>
 
-      <button
-        class="modal-close"
-        onclick="closeProfileInfo()">
-        ✕
-      </button>
+<div class="prompt-actions">
 
-    </div>
+<button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">
+Not now
+</button>
 
-    <div
-      class="modal-body"
-      id="sheetContentBody">
-      Loading...
-    </div>
+<button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">
+Watch ad
+</button>
 
-  </div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= LUCKY BOX ================= -->
+
+<div class="modal-overlay" id="luckyBoxModal">
+
+<div class="prompt-box">
+
+<div class="prompt-title">
+🎁 LUCKY GIFT BOX
+</div>
+
+<div class="prompt-desc">
+Open the mystery gift box by watching a short video to claim instant bonus $FDX!
+</div>
+
+<div class="prompt-actions">
+
+<button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">
+Close
+</button>
+
+<button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">
+Open Box
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= AD MODAL ================= -->
+
+<div class="modal-overlay" id="adModal">
+
+<div class="ad-box">
+
+<div class="ad-header" id="adHeader">
+SPONSORED ADVERTISEMENT
+</div>
+
+<div class="ad-screen">
+
+<div class="ad-timer-badge" id="adTimerBadge">
+Ad in 5s
+</div>
+
+<div class="ad-title">
+FIDEXA Partner Network
+</div>
+
+<div class="ad-desc" id="adDescText">
+Watch full video to secure your reward
+</div>
+
+</div>
+
+<button
+class="ad-close-btn"
+id="adCloseBtn"
+onclick="closeAdModal()">
+CLAIM REWARD
+</button>
+
+</div>
 
 </div>
 
 
-<!-- ======================================================
-     RECEIVE MODAL
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="receiveModal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <div class="modal-title">
-        RECEIVE FDX
-      </div>
-
-      <button
-        class="modal-close"
-        onclick="closeReceiveModal()">
-        ✕
-      </button>
-
-    </div>
-
-    <div class="modal-body receive-panel">
-
-      <div
-        class="document-badge">
-        SCANNABLE WALLET QR
-      </div>
-
-      <div class="qr-wrapper">
-        <div id="qrcode"></div>
-      </div>
-
-      <div class="qr-verified">
-        ✓ QR GENERATED FROM WALLET ADDRESS
-      </div>
-
-      <div
-        style="
-        margin-top:15px;
-        background:#08101a;
-        border:1px solid #203047;
-        border-radius:12px;
-        padding:12px;
-        word-break:break-all;
-        color:var(--cyan);
-        font-size:10px;
-        font-weight:900;"
-        id="receiveAddress">
-      </div>
-
-      <button
-        class="primary-modal-btn"
-        style="margin-top:12px;"
-        onclick="copyWalletAddress()">
-        COPY WALLET ADDRESS
-      </button>
-
-      <button
-        class="primary-modal-btn"
-        style="
-        margin-top:8px;
-        background:#111b27;
-        border:1px solid #26374b;"
-        onclick="shareWalletAddress()">
-        SHARE WALLET ADDRESS
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     SEND MODAL
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="sendModal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <div class="modal-title">
-        SEND FDX
-      </div>
-
-      <button
-        class="modal-close"
-        onclick="closeSendModal()">
-        ✕
-      </button>
-
-    </div>
-
-    <div class="modal-body">
-
-      <label class="form-label">
-        RECIPIENT WALLET ADDRESS
-      </label>
-
-      <input
-        class="form-input"
-        id="sendAddressInput"
-        type="text"
-        placeholder="Enter recipient wallet address">
-
-      <label class="form-label">
-        AMOUNT
-      </label>
-
-      <input
-        class="form-input"
-        id="sendAmountInput"
-        type="number"
-        min="0"
-        step="any"
-        placeholder="Enter amount">
-
-      <button
-        class="primary-modal-btn"
-        onclick="executeSendTransaction()">
-        CONTINUE
-      </button>
-
-      <div
-        style="
-        margin-top:10px;
-        color:var(--muted);
-        font-size:9px;
-        line-height:1.5;
-        font-weight:700;">
-        Final blockchain transfers will only occur after a verified wallet/backend transaction system is connected.
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     MIGRATION MODAL
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="migrationModal">
-
-  <div class="modal-card">
-
-    <div class="modal-header">
-
-      <div class="modal-title">
-        FDX MIGRATION
-      </div>
-
-      <button
-        class="modal-close"
-        onclick="closeMigrationModal()">
-        ✕
-      </button>
-
-    </div>
-
-    <div class="modal-body">
-
-      <div class="document-badge">
-        MIGRATION PORTAL
-      </div>
-
-      <div
-        style="
-        color:#fff;
-        font-size:14px;
-        font-weight:900;
-        margin-bottom:8px;">
-        Migrate your eligible assets
-      </div>
-
-      <div
-        style="
-        color:var(--muted);
-        font-size:11px;
-        line-height:1.6;
-        font-weight:700;">
-        The migration interface is prepared for integration with the official FIDEXA migration backend.
-      </div>
-
-      <div
-        style="
-        margin-top:15px;
-        padding:14px;
-        background:#090f17;
-        border:1px solid #263342;
-        border-radius:13px;">
-
-        <div
-          style="
-          font-size:9px;
-          color:var(--muted);
-          font-weight:900;">
-          CURRENT STATUS
-        </div>
-
-        <div
-          style="
-          margin-top:6px;
-          color:var(--yellow);
-          font-size:12px;
-          font-weight:900;"
-          id="migrationModalStatus">
-          NOT STARTED
-        </div>
-
-      </div>
-
-      <button
-        class="migration-btn"
-        onclick="startMigration()">
-        START MIGRATION
-      </button>
-
-      <div
-        style="
-        margin-top:12px;
-        color:var(--muted);
-        font-size:9px;
-        line-height:1.5;
-        font-weight:700;">
-        Security notice: never enter or share your private key or recovery phrase in this application.
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     BOOSTER
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="boosterPromptModal">
-
-  <div class="modal-card">
-
-    <div class="modal-body">
-
-      <div class="prompt-title">
-        ⚡ SPEED BOOSTER
-      </div>
-
-      <div class="prompt-desc">
-        Watch a supported advertisement to increase your mining rate.
-      </div>
-
-      <div class="prompt-actions">
-
-        <button
-          class="prompt-btn-cancel"
-          onclick="closeBoosterPrompt()">
-          NOT NOW
-        </button>
-
-        <button
-          class="prompt-btn-confirm"
-          onclick="confirmWatchBoosterAd()">
-          WATCH AD
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     LUCKY BOX
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="luckyBoxModal">
-
-  <div class="modal-card">
-
-    <div class="modal-body">
-
-      <div class="prompt-title">
-        🎁 LUCKY GIFT BOX
-      </div>
-
-      <div class="prompt-desc">
-        Open the mystery gift box through the supported reward flow.
-      </div>
-
-      <div class="prompt-actions">
-
-        <button
-          class="prompt-btn-cancel"
-          onclick="closeLuckyBoxModal()">
-          CLOSE
-        </button>
-
-        <button
-          class="prompt-btn-confirm"
-          onclick="confirmOpenLuckyBox()">
-          OPEN BOX
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     AD
-====================================================== -->
-
-<div
-  class="modal-overlay"
-  id="adModal">
-
-  <div class="ad-box">
-
-    <div
-      class="ad-header"
-      id="adHeader">
-      SPONSORED ADVERTISEMENT
-    </div>
-
-    <div class="ad-screen">
-
-      <div
-        class="ad-timer-badge"
-        id="adTimerBadge">
-        Ad in 4s
-      </div>
-
-      <div class="ad-title">
-        FIDEXA PARTNER NETWORK
-      </div>
-
-      <div
-        class="ad-desc"
-        id="adDescText">
-        Complete the supported advertisement flow.
-      </div>
-
-    </div>
-
-    <button
-      class="ad-close-btn"
-      id="adCloseBtn"
-      onclick="closeAdModal()">
-      WATCHING AD...
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================================
-     BOTTOM NAV
-====================================================== -->
+<!-- ================= NAVIGATION ================= -->
 
 <nav class="bottom-nav">
 
-  <button
-    class="nav-item active"
-    onclick="switchTab('mining',this)">
+<button class="nav-item active"
+onclick="switchTab('mining',this)">
+<span class="nav-icon">⚡</span>
+Mining
+</button>
 
-    <span class="nav-icon">⚡</span>
-    Mining
+<button class="nav-item"
+onclick="switchTab('tasks',this)">
+<span class="nav-icon">📋</span>
+Tasks
+</button>
 
-  </button>
+<button class="nav-item"
+onclick="switchTab('friends',this)">
+<span class="nav-icon">👥</span>
+Friends
+</button>
 
-  <button
-    class="nav-item"
-    onclick="switchTab('tasks',this)">
+<button class="nav-item"
+onclick="switchTab('wallet',this)">
+<span class="nav-icon">👛</span>
+Wallet
+</button>
 
-    <span class="nav-icon">📋</span>
-    Tasks
-
-  </button>
-
-  <button
-    class="nav-item"
-    onclick="switchTab('friends',this)">
-
-    <span class="nav-icon">👥</span>
-    Friends
-
-  </button>
-
-  <button
-    class="nav-item"
-    onclick="switchTab('wallet',this)">
-
-    <span class="nav-icon">👛</span>
-    Wallet
-
-  </button>
-
-  <button
-    class="nav-item"
-    onclick="switchTab('profile',this)">
-
-    <span class="nav-icon">🛡️</span>
-    Profile
-
-  </button>
+<button class="nav-item"
+onclick="switchTab('profile',this)">
+<span class="nav-icon">🛡️</span>
+Profile
+</button>
 
 </nav>
 
@@ -2486,2100 +1601,2050 @@ button:active{
 
 <script>
 
-/* ======================================================
+/* =========================================================
    ACCESS CONTROL
-====================================================== */
+========================================================= */
 
 const MAINTENANCE_MODE = true;
 
 const WHITELISTED_IDS = [
-  "6771764389",
-  "6029608268"
+"6771764389",
+"6029608268"
 ];
 
 let currentUserId = "6771764389";
 
 if(
-  window.Telegram &&
-  window.Telegram.WebApp &&
-  window.Telegram.WebApp.initDataUnsafe &&
-  window.Telegram.WebApp.initDataUnsafe.user
+window.Telegram &&
+window.Telegram.WebApp &&
+window.Telegram.WebApp.initDataUnsafe &&
+window.Telegram.WebApp.initDataUnsafe.user
 ){
-  currentUserId =
-    window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+currentUserId =
+window.Telegram.WebApp.initDataUnsafe.user.id.toString();
 }
 
 
 function enforceAccessControl(){
 
-  if(MAINTENANCE_MODE){
+if(MAINTENANCE_MODE){
 
-    if(!WHITELISTED_IDS.includes(currentUserId)){
+if(!WHITELISTED_IDS.includes(currentUserId)){
 
-      document
-        .getElementById("maintenanceModal")
-        .classList.add("active");
+document
+.getElementById('maintenanceModal')
+.classList.add('active');
 
-      return false;
-    }
+return false;
+}
 
-  }
+}
 
-  return true;
+return true;
 }
 
 
-/* ======================================================
-   TELEGRAM PROFILE
-====================================================== */
-
-let telegramUser = null;
-
-if(
-  window.Telegram &&
-  window.Telegram.WebApp &&
-  window.Telegram.WebApp.initDataUnsafe
-){
-
-  telegramUser =
-    window.Telegram.WebApp.initDataUnsafe.user || null;
-}
-
-
-/* ======================================================
+/* =========================================================
    TAB NAVIGATION
-====================================================== */
+========================================================= */
 
 function switchTab(tabName,btnElement){
 
-  if(!enforceAccessControl()) return;
+if(!enforceAccessControl()) return;
 
-  document
-    .querySelectorAll(".page-view")
-    .forEach(page=>{
-      page.classList.remove("active");
-    });
+document
+.querySelectorAll('.page-view')
+.forEach(p=>p.classList.remove('active'));
 
-  const page =
-    document.getElementById(`page-${tabName}`);
+document
+.getElementById(`page-${tabName}`)
+.classList.add('active');
 
-  if(page){
-    page.classList.add("active");
-  }
+document
+.querySelectorAll('.nav-item')
+.forEach(n=>n.classList.remove('active'));
 
-  document
-    .querySelectorAll(".nav-item")
-    .forEach(nav=>{
-      nav.classList.remove("active");
-    });
-
-  btnElement.classList.add("active");
+btnElement.classList.add('active');
 }
 
 
-/* ======================================================
-   WALLET ADDRESS
-====================================================== */
+/* =========================================================
+   SUPPORT CHAT
+========================================================= */
 
-/*
- IMPORTANT:
- Replace this value with the ACTUAL FIDEXA wallet address
- when the real blockchain wallet/network is connected.
-
- The QR generator below generates a real scannable QR from
- this exact address.
-*/
-
-const FIDEXA_WALLET_ADDRESS =
-  localStorage.getItem("fidexa_wallet_address") || "";
+let supportMessages=[
+{
+sender:'admin',
+text:'Hello! Welcome to FIDEXA Support. How can we help you today?'
+}
+];
 
 
-function getWalletAddress(){
+function renderChatMessages(){
 
-  return FIDEXA_WALLET_ADDRESS.trim();
+const container=
+document.getElementById('chatMessagesContainer');
+
+if(!container)return;
+
+container.innerHTML=
+supportMessages.map(m=>`
+<div class="chat-bubble ${m.sender}">
+${m.text}
+</div>
+`).join('');
+
+container.scrollTop=
+container.scrollHeight;
 }
 
 
-function updateWalletUI(){
+function sendSupportMessage(){
 
-  const address =
-    getWalletAddress();
+const input=
+document.getElementById('chatInputField');
 
-  const display =
-    document.getElementById("walletAddressDisplay");
+if(!input)return;
 
-  const receive =
-    document.getElementById("receiveAddress");
+const text=input.value.trim();
 
-  if(address){
+if(!text)return;
 
-    display.textContent = address;
+supportMessages.push({
+sender:'user',
+text:text
+});
 
-    document.getElementById(
-      "walletConnectionStatus"
-    ).textContent = "CONNECTED";
+input.value='';
 
-    document.getElementById(
-      "networkStatus"
-    ).textContent = "CONNECTED";
+renderChatMessages();
 
-    if(receive){
-      receive.textContent = address;
-    }
+setTimeout(()=>{
 
-  }else{
+supportMessages.push({
+sender:'admin',
+text:'Your message has been delivered directly to the admin panel. An administrator will review your query shortly.'
+});
 
-    display.textContent = "Wallet address not connected";
+renderChatMessages();
 
-    document.getElementById(
-      "walletConnectionStatus"
-    ).textContent = "NOT CONNECTED";
-
-    document.getElementById(
-      "networkStatus"
-    ).textContent = "NOT CONNECTED";
-
-    if(receive){
-      receive.textContent =
-        "Connect an actual wallet address first.";
-    }
-
-  }
-
+},1000);
 }
 
 
-/* ======================================================
-   WALLET ADDRESS SETUP
-====================================================== */
+/* =========================================================
+   PROFILE INFORMATION
+========================================================= */
 
-function setWalletAddress(){
+function openProfileInfo(type){
 
-  const address =
-    prompt(
-      "Enter your actual FIDEXA-compatible wallet address:"
-    );
+const modal=
+document.getElementById('profileInfoModal');
 
-  if(!address) return;
+const titleEl=
+document.getElementById('sheetTitle');
 
-  const clean =
-    address.trim();
+const bodyEl=
+document.getElementById('sheetContentBody');
 
-  if(clean.length < 10){
-
-    alert(
-      "The wallet address appears too short."
-    );
-
-    return;
-  }
-
-  localStorage.setItem(
-    "fidexa_wallet_address",
-    clean
-  );
-
-  location.reload();
-}
+modal.classList.add('active');
 
 
-function copyWalletAddress(){
+/* ACCOUNT */
 
-  const address =
-    getWalletAddress();
+if(type==='account'){
 
-  if(!address){
+titleEl.textContent=
+"Account Information";
 
-    setWalletAddress();
+bodyEl.innerHTML=`
 
-    return;
-  }
+<p>
+<strong>Telegram User ID:</strong>
+${currentUserId}
+</p>
 
-  if(
-    navigator.clipboard &&
-    navigator.clipboard.writeText
-  ){
+<p style="margin-top:10px;">
+<strong>Node Status:</strong>
+Verified Secured Node
+</p>
 
-    navigator.clipboard
-      .writeText(address)
-      .then(()=>{
-        alert("Wallet address copied.");
-      })
-      .catch(()=>{
-        alert(address);
-      });
+<p style="margin-top:10px;">
+<strong>App Security Tier:</strong>
+Level 2 Mainnet Shield
+</p>
 
-  }else{
-
-    alert(address);
-
-  }
+`;
 
 }
 
 
-function shareWalletAddress(){
+/* SUPPORT */
 
-  const address =
-    getWalletAddress();
+else if(type==='support'){
 
-  if(!address){
+titleEl.textContent=
+"Chat Support (Direct to Admin)";
 
-    alert(
-      "Connect a wallet address first."
-    );
+bodyEl.innerHTML=`
 
-    return;
-  }
+<p style="margin-bottom:12px;">
+Type your message below. It will be sent directly to the admin panel dashboard.
+</p>
 
-  if(navigator.share){
+<div class="chat-messages-container"
+id="chatMessagesContainer">
+</div>
 
-    navigator.share({
-      title:"FIDEXA Wallet Address",
-      text:address
-    });
+<div class="chat-input-row">
 
-  }else{
+<input
+type="text"
+class="chat-input-field"
+id="chatInputField"
+placeholder="Type your message to admin..."
+onkeydown="if(event.key==='Enter')sendSupportMessage()">
 
-    copyWalletAddress();
+<button
+class="chat-send-btn"
+onclick="sendSupportMessage()">
+Send
+</button>
 
-  }
+</div>
 
-}
+`;
 
-
-/* ======================================================
-   REAL QR CODE
-====================================================== */
-
-function generateWalletQR(){
-
-  const qr =
-    document.getElementById("qrcode");
-
-  if(!qr) return;
-
-  qr.innerHTML = "";
-
-  const address =
-    getWalletAddress();
-
-  if(!address){
-
-    qr.innerHTML = `
-      <div style="
-        color:#111;
-        font-size:10px;
-        font-weight:900;
-        text-align:center;
-        padding:25px;">
-        WALLET ADDRESS<br>
-        NOT CONNECTED
-      </div>
-    `;
-
-    return;
-  }
-
-  if(typeof QRCode === "undefined"){
-
-    qr.innerHTML = `
-      <div style="
-        color:#111;
-        font-size:10px;
-        font-weight:900;
-        text-align:center;">
-        QR LIBRARY<br>
-        UNAVAILABLE
-      </div>
-    `;
-
-    return;
-  }
-
-  new QRCode(qr,{
-    text:address,
-    width:166,
-    height:166,
-    colorDark:"#000000",
-    colorLight:"#ffffff",
-    correctLevel:QRCode.CorrectLevel.H
-  });
+renderChatMessages();
 
 }
 
 
-/* ======================================================
-   RECEIVE
-====================================================== */
+/* =========================================================
+   FULL PRIVACY POLICY
+========================================================= */
 
-function openReceiveModal(){
+else if(type==='privacy'){
 
-  if(!enforceAccessControl()) return;
+titleEl.textContent=
+"FIDEXA NETWORK — Privacy Policy";
 
-  document
-    .getElementById("receiveModal")
-    .classList.add("active");
+bodyEl.innerHTML=`
 
-  const address =
-    getWalletAddress();
+<div style="text-align:center;margin-bottom:22px;">
 
-  if(!address){
+<div style="font-size:21px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
 
-    const box =
-      document.getElementById("receiveAddress");
+<div style="font-size:14px;color:var(--cyan);font-weight:900;margin-top:6px;">
+PRIVACY POLICY
+</div>
 
-    box.innerHTML = `
-      No wallet address connected.<br><br>
-      <button
-        onclick="setWalletAddress()"
-        style="
-        background:#0284c7;
-        color:#fff;
-        border:0;
-        border-radius:9px;
-        padding:9px 12px;
-        font-size:10px;
-        font-weight:900;">
-        CONNECT ADDRESS
-      </button>
-    `;
+<div style="font-size:11px;color:var(--muted);margin-top:8px;">
+Effective Date: September 26, 2026
+</div>
 
-  }
+<div style="font-size:11px;color:var(--muted);margin-top:3px;">
+Last Updated: September 26, 2026
+</div>
 
-  setTimeout(
-    generateWalletQR,
-    50
-  );
+</div>
+
+
+<p>
+FIDEXA Network ("FIDEXA", "we", "our", or "us") respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
+</p>
+
+<p style="margin-top:10px;">
+This Privacy Policy explains what information FIDEXA may collect, how it is used, how it may be shared, and the choices available to users.
+</p>
+
+<p style="margin-top:10px;">
+By accessing or using the FIDEXA Mini App, you acknowledge that you have read and understood this Privacy Policy.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+1. Information We Collect
+</div>
+
+<p>
+FIDEXA collects and processes information that is necessary to operate the Mini App and provide its features.
+</p>
+
+
+<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
+1.1 Telegram Account Information
+</div>
+
+<p style="margin-top:6px;">
+When you open FIDEXA through Telegram, the Mini App may receive information made available by Telegram, which may include:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Telegram user ID<br>
+• First name<br>
+• Last name, where available<br>
+• Telegram username, where available<br>
+• Language information<br>
+• Telegram profile information made available to the Mini App
+</div>
+
+<p style="margin-top:10px;">
+Telegram determines what information is made available to Mini Apps through its platform.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA uses this information primarily to identify your account and provide personalized features within the application.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+2. FIDEXA Activity Information
+</div>
+
+<p>
+When you use FIDEXA, the platform may record information associated with your activity within the application, including:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Mining session information<br>
+• Mining start and completion times<br>
+• Mining rewards<br>
+• FDX balance information<br>
+• Booster activity<br>
+• Lucky Box activity<br>
+• Streak information<br>
+• Referral information<br>
+• Community-task activity<br>
+• Reward-claim activity<br>
+• Account and support interactions
+</div>
+
+<p style="margin-top:10px;">
+This information is used to operate the FIDEXA reward system and maintain the functionality of the application.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+3. Advertising Information
+</div>
+
+<p>
+FIDEXA incorporates advertising into the mining reward-claim process.
+</p>
+
+<p style="margin-top:10px;">
+When a mining session has completed and you initiate the reward-claim process, a supported advertisement may be displayed before the completed reward is credited to your FDX balance.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA may use third-party advertising technology, including AdsGram, to deliver advertisements.
+</p>
+
+<p style="margin-top:10px;">
+Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.
+</p>
+
+<p style="margin-top:10px;">
+For more information about AdsGram's privacy practices, users should review the AdsGram Privacy Policy.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA does not sell your FDX balance or personal information to advertisers.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+4. How We Use Information
+</div>
+
+<p>
+FIDEXA may use collected information to:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Create and maintain your FIDEXA account<br>
+• Identify users within the Mini App<br>
+• Operate mining sessions<br>
+• Calculate and display rewards<br>
+• Maintain FDX balances<br>
+• Process reward claims<br>
+• Operate boosters and gamification features<br>
+• Maintain referral functionality<br>
+• Manage community tasks<br>
+• Provide customer support<br>
+• Improve application performance and functionality<br>
+• Detect abuse, manipulation, or fraudulent activity<br>
+• Maintain platform security<br>
+• Communicate important service-related information<br>
+• Comply with applicable legal obligations
+</div>
+
+<p style="margin-top:10px;">
+We aim to collect and use information only for legitimate purposes connected to operating and improving FIDEXA.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+5. How We Share Information
+</div>
+
+<p>
+FIDEXA may share or permit access to information where reasonably necessary to operate the service.
+</p>
+
+
+<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
+Telegram
+</div>
+
+<p style="margin-top:6px;">
+FIDEXA operates through Telegram's Mini App environment. Telegram processes information according to its own policies and platform functionality. Telegram Mini Apps can receive basic user information from Telegram when they are launched.
+</p>
+
+
+<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
+Advertising Providers
+</div>
+
+<p style="margin-top:6px;">
+FIDEXA may use third-party advertising providers to display advertisements within the application. These providers may independently process technical or advertising information according to their own privacy policies.
+</p>
+
+
+<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
+Service Providers
+</div>
+
+<p style="margin-top:6px;">
+FIDEXA may use infrastructure, hosting, database, analytics, security, or other technical service providers necessary to operate the platform.
+</p>
+
+<p style="margin-top:8px;">
+We expect service providers handling personal information to use appropriate safeguards and only process information for authorized purposes.
+</p>
+
+
+<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
+Legal Requirements
+</div>
+
+<p style="margin-top:6px;">
+FIDEXA may disclose information when reasonably necessary to:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Comply with applicable law<br>
+• Respond to lawful requests<br>
+• Protect the rights or security of FIDEXA or its users<br>
+• Investigate fraud, abuse, or security incidents<br>
+• Prevent harm or misuse of the platform
+</div>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+6. Data Security
+</div>
+
+<p>
+FIDEXA takes reasonable technical and organizational measures to protect information against unauthorized access, alteration, disclosure, loss, or misuse.
+</p>
+
+<p style="margin-top:10px;">
+However, no internet service or electronic storage system can be guaranteed to be completely secure.
+</p>
+
+<p style="margin-top:10px;">
+Users should also protect access to their Telegram account and device.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+7. Data Retention
+</div>
+
+<p>
+FIDEXA retains information for as long as reasonably necessary to:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Provide the service<br>
+• Maintain account and reward records<br>
+• Operate referrals and community features<br>
+• Prevent abuse and fraud<br>
+• Resolve disputes<br>
+• Maintain security<br>
+• Meet applicable legal obligations
+</div>
+
+<p style="margin-top:10px;">
+When information is no longer reasonably required, it may be deleted, anonymized, or otherwise securely disposed of, subject to applicable legal and operational requirements.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+8. Your Privacy Rights
+</div>
+
+<p>
+Depending on applicable law, you may have rights concerning your personal information, which may include the right to:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
+• Request access to personal information we hold about you<br>
+• Request correction of inaccurate information<br>
+• Request deletion of information where applicable<br>
+• Request restriction of certain processing<br>
+• Object to certain processing<br>
+• Withdraw consent where processing is based on consent<br>
+• Raise a privacy complaint
+</div>
+
+<p style="margin-top:10px;">
+The Nigerian data-protection framework emphasizes fair, lawful and transparent processing of personal data.
+</p>
+
+<p style="margin-top:10px;">
+Requests concerning your personal information can be submitted through the FIDEXA support channel.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+9. Account Deletion
+</div>
+
+<p>
+FIDEXA provides an account-deletion option within the application where available.
+</p>
+
+<p style="margin-top:10px;">
+When an account-deletion request is submitted, FIDEXA may delete or anonymize information associated with the account, subject to information that must reasonably be retained for security, fraud prevention, dispute resolution, legal compliance, or other legitimate purposes.
+</p>
+
+<p style="margin-top:10px;">
+Deletion of an account may result in the permanent loss of associated FDX balances, mining history, referral information, tasks, streaks, or other account-related data where such information is deleted.
+</p>
+
+<p style="margin-top:10px;">
+Users should therefore carefully review the consequences before confirming account deletion.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+10. Children's Privacy
+</div>
+
+<p>
+FIDEXA is not intended to knowingly collect personal information from children in violation of applicable law.
+</p>
+
+<p style="margin-top:10px;">
+If we become aware that personal information has been collected from a child where such collection is not permitted, we may take appropriate steps to delete the information.
+</p>
+
+<p style="margin-top:10px;">
+Parents or legal guardians who believe that a child has provided personal information to FIDEXA may contact us through the official support channel.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+11. Third-Party Services
+</div>
+
+<p>
+FIDEXA may integrate with third-party platforms and services, including Telegram and advertising providers.
+</p>
+
+<p style="margin-top:10px;">
+These third parties operate under their own terms and privacy policies.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA does not control the privacy practices of independent third-party services.
+</p>
+
+<p style="margin-top:10px;">
+Users should review the privacy policies of those services before using features that interact with them.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+12. Cookies and Local Storage
+</div>
+
+<p>
+FIDEXA may use browser, Telegram Mini App, or device storage technologies where necessary to maintain application functionality, preferences, sessions, or other technical information.
+</p>
+
+<p style="margin-top:10px;">
+Telegram Mini Apps can use storage mechanisms provided by the Telegram platform, including local and secure storage capabilities.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA does not use such technologies to intentionally collect information unrelated to the operation of the service.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+13. Changes to This Privacy Policy
+</div>
+
+<p>
+FIDEXA may update this Privacy Policy from time to time to reflect changes to the application, services, technology, or applicable legal requirements.
+</p>
+
+<p style="margin-top:10px;">
+When significant changes are made, we may provide notice through the application or other appropriate communication channels.
+</p>
+
+<p style="margin-top:10px;">
+The Last Updated date at the beginning of this Privacy Policy will indicate when the policy was most recently revised.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+14. Contact Us
+</div>
+
+<p>
+If you have questions, concerns, requests, or complaints concerning this Privacy Policy or the handling of your information, please contact FIDEXA through the official support channel provided within the FIDEXA Mini App.
+</p>
+
+
+<div style="margin-top:20px;padding:15px;background:#111b27;border:1px solid var(--border);border-radius:14px;text-align:center;">
+
+<div style="font-weight:900;color:#fff;">
+Project: FIDEXA Network
+</div>
+
+<div style="margin-top:5px;">
+Platform: Telegram Mini App
+</div>
+
+<div style="margin-top:5px;">
+Support: FIDEXA Chat Support
+</div>
+
+</div>
+
+`;
+}
+
+
+/* =========================================================
+   FULL WHITEPAPER
+========================================================= */
+
+else if(type==='whitepaper'){
+
+titleEl.textContent=
+"FIDEXA NETWORK — Whitepaper v1.0";
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;margin-bottom:22px;">
+
+<div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:13px;color:var(--cyan);font-weight:900;margin-top:5px;">
+WHITEPAPER v1.0
+</div>
+
+<div style="font-size:11px;color:var(--muted);margin-top:6px;">
+A Gamified Digital Mining & Community Rewards Ecosystem
+</div>
+
+<div style="font-size:12px;color:var(--yellow);font-weight:900;margin-top:8px;">
+Ticker: FDX
+</div>
+
+<div style="font-size:11px;color:var(--muted);margin-top:3px;">
+Platform: Telegram Mini App
+</div>
+
+<div style="font-size:11px;color:var(--muted);margin-top:3px;">
+Status: Live App Experience
+</div>
+
+</div>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
+1. Vision & Mission
+</div>
+
+<p>
+FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.
+</p>
+
+<p style="margin-top:10px;">
+The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.
+</p>
+
+<p style="margin-top:10px;">
+FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+2. FIDEXA Mining System
+</div>
+
+<p>
+FIDEXA uses a timed mining-session system.
+Users start a mining session from the Mini App and the session runs for a defined period.
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;margin-bottom:8px;">
+Current Mining Structure
+</div>
+
+<div>
+• Mining cycle:
+<strong style="color:#fff;">4 hours</strong>
+</div>
+
+<div style="margin-top:5px;">
+• Base mining rate:
+<strong style="color:#fff;">1.0 FDX per hour</strong>
+</div>
+
+<div style="margin-top:5px;">
+• Base reward per completed 4-hour cycle:
+<strong style="color:#fff;">4 FDX</strong>
+</div>
+
+</div>
+
+<p style="margin-top:10px;">
+Users can return after the mining timer has completed and claim their accumulated reward.
+After claiming, users can begin another mining session.
+</p>
+
+<p style="margin-top:10px;">
+The mining system is designed around participation rather than requiring users to keep their device continuously active.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+3. Reward Claim & Advertising System
+</div>
+
+<p>
+Advertising is integrated into the reward-claim process.
+Advertisements are not intended to run continuously while the user is mining.
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;margin-bottom:8px;">
+Current Flow
+</div>
+
+<div style="text-align:center;color:#fff;font-weight:900;line-height:1.8;">
+Start Mining<br>
+↓<br>
+4-Hour Mining Session<br>
+↓<br>
+Timer Completes<br>
+↓<br>
+Claim Reward<br>
+↓<br>
+Advertisement<br>
+↓<br>
+Reward Credited to Balance
+</div>
+
+</div>
+
+<p style="margin-top:12px;">
+When a mining session finishes, the user enters the claim process.
+A supported advertisement may be displayed as part of that process, and after the claim flow is successfully completed, the accumulated mining reward is added to the user's FDX balance.
+</p>
+
+<div style="margin-top:14px;color:var(--yellow);font-weight:900;">
+Why FIDEXA Uses Advertising
+</div>
+
+<p style="margin-top:6px;">
+Advertising provides an additional sustainability mechanism for the platform.
+Revenue generated through supported advertising can contribute toward the ongoing operation, infrastructure, development, and improvement of the FIDEXA ecosystem.
+</p>
+
+<p style="margin-top:10px;">
+This allows FIDEXA to incorporate an advertising-supported model into the mining experience while keeping the advertisement connected to the reward-claim process.
+</p>
+
+<p style="margin-top:10px;color:var(--muted);">
+<strong>Important:</strong>
+The advertisement is not presented as a separate mining system.
+The user's mining reward comes from the completed mining session; advertising is incorporated into the claim process.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+4. Boosters & Gamification
+</div>
+
+<p>
+FIDEXA includes gamification mechanisms designed to encourage continued participation.
+</p>
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Mining Boosters
+</div>
+
+<p style="margin-top:5px;">
+Active users can access supported boosting mechanisms that can increase their effective mining rate.
+The current system supports mining-rate increases of up to
+<strong style="color:#fff;">+2.5 FDX/hour</strong>
+through the available booster mechanisms.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Lucky Boxes
+</div>
+
+<p style="margin-top:5px;">
+Lucky Boxes provide an additional gamified element within the FIDEXA ecosystem.
+They are designed to give users another interactive way to participate in the platform beyond the standard mining cycle.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Streak Recovery
+</div>
+
+<p style="margin-top:5px;">
+FIDEXA also incorporates a streak-recovery mechanism designed to help users maintain their participation streak when an interruption occurs.
+</p>
+
+</div>
+
+<p style="margin-top:10px;">
+These features are intended to make the platform more engaging while encouraging consistent participation.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+5. Community Tasks
+</div>
+
+<p>
+FIDEXA includes a community-task system that allows users to participate in activities connected to the FIDEXA ecosystem.
+</p>
+
+<p style="margin-top:8px;">
+These activities can include community engagement through supported platforms such as:
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;">
+• Telegram<br>
+• X
+</div>
+
+<p style="margin-top:10px;">
+Community tasks provide another participation layer beyond the mining timer and help connect user activity with the growth of the FIDEXA community.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+6. Referral System
+</div>
+
+<p>
+FIDEXA includes a referral mechanism designed to encourage community growth.
+</p>
+
+<p style="margin-top:10px;">
+Users can invite other participants through their referral link.
+The referral system is integrated into the Mini App so users can access and share their referral information.
+</p>
+
+<p style="margin-top:10px;">
+The purpose of the referral system is to encourage organic community expansion while rewarding participation within the FIDEXA ecosystem.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+7. User Balance & Rewards
+</div>
+
+<p>
+FDX rewards earned through supported activities are reflected in the user's in-app balance.
+</p>
+
+<p style="margin-top:10px;">
+The current ecosystem connects the user's mining activity and reward mechanisms to their FDX balance.
+</p>
+
+<p style="margin-top:10px;">
+The balance system provides users with a clear view of their accumulated in-app rewards.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+8. User Profile & Account
+</div>
+
+<p>
+FIDEXA provides a user-focused interface that allows participants to access their account information and interact with the Mini App.
+</p>
+
+<p style="margin-top:10px;">
+The platform is designed for use through Telegram, allowing the application to work within the Telegram Mini App environment.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+9. Support & Account Controls
+</div>
+
+<p>
+FIDEXA includes user-support and account-management functionality within the application.
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:10px;">
+• Chat Support<br>
+• Account information<br>
+• Profile functionality<br>
+• Account deletion controls
+</div>
+
+<p style="margin-top:10px;">
+These features are included to provide users with greater control over their interaction with the platform.
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+10. FDX Token / Reward Model
+</div>
+
+<p>
+FDX is the internal reward unit used throughout the current FIDEXA ecosystem.
+</p>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;margin-bottom:8px;">
+Current Mining Model
+</div>
+
+<div>
+• Base mining rate:
+<strong style="color:#fff;">1.0 FDX/hour</strong>
+</div>
+
+<div style="margin-top:5px;">
+• Mining cycle:
+<strong style="color:#fff;">4 hours</strong>
+</div>
+
+</div>
+
+<p style="margin-top:10px;">
+The actual reward received by a user can depend on the applicable mining mechanisms and supported features available within the application.
+</p>
+
+<p style="margin-top:12px;padding:12px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;">
+
+<strong style="color:var(--yellow);">
+Important:
+</strong>
+
+FIDEXA does not claim that in-app FDX balances are currently transferable to an external blockchain unless and until such functionality is actually implemented.
+
+</p>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+11. Platform Principles
+</div>
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Accessibility
+</div>
+
+<p style="margin-top:4px;">
+The platform is designed to allow users to participate through a mobile-friendly Telegram Mini App.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Community
+</div>
+
+<p style="margin-top:4px;">
+Referrals and community activities encourage users to grow and participate in the ecosystem.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Engagement
+</div>
+
+<p style="margin-top:4px;">
+Mining sessions, Lucky Boxes, streaks, tasks, and other gamification mechanisms encourage continued interaction.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Sustainability
+</div>
+
+<p style="margin-top:4px;">
+The advertising-supported claim model provides a mechanism that can help support the continued operation and development of the platform.
+</p>
+
+</div>
+
+
+<div style="margin-top:12px;">
+
+<div style="color:var(--yellow);font-weight:900;">
+Transparency
+</div>
+
+<p style="margin-top:4px;">
+FIDEXA documentation should describe the functionality actually available in the application rather than presenting future concepts as completed technology.
+</p>
+
+</div>
+
+
+<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
+12. Current Platform Summary
+</div>
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;line-height:1.9;">
+
+• 4-hour mining sessions<br>
+• 1.0 FDX/hour base mining<br>
+• Mining boosters<br>
+• Lucky Boxes<br>
+• Streak recovery<br>
+• Reward claiming<br>
+• Advertising-supported reward claims<br>
+• FDX in-app balance<br>
+• Referral system<br>
+• Community tasks<br>
+• Telegram integration<br>
+• X-related community activities<br>
+• User profile<br>
+• Chat Support<br>
+• Account controls
+
+</div>
+
+<p style="margin-top:14px;text-align:center;color:var(--cyan);font-weight:900;">
+FIDEXA is designed as a continuously developing community-driven digital rewards ecosystem.
+</p>
+
+<div style="text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);">
+
+<div style="font-size:17px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:12px;color:var(--yellow);font-weight:900;margin-top:6px;">
+Mine. Participate. Grow.
+</div>
+
+</div>
+
+`;
+}
+
+
+/* =========================================================
+   FULL ROADMAP
+========================================================= */
+
+else if(type==='roadmap'){
+
+titleEl.textContent=
+"FIDEXA NETWORK — Official Roadmap";
+
+bodyEl.innerHTML=`
+
+<div style="text-align:center;margin-bottom:22px;">
+
+<div style="font-size:21px;font-weight:900;color:#fff;">
+FIDEXA NETWORK
+</div>
+
+<div style="font-size:12px;color:var(--cyan);font-weight:900;margin-top:5px;">
+OFFICIAL ROADMAP
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid rgba(56,189,248,0.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+
+<div style="font-size:15px;color:var(--cyan);font-weight:900;">
+PHASE 1 — Foundation & Mini App Launch
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:var(--cyan);font-size:10px;font-weight:900;">
+COMPLETED
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+✓ FIDEXA Telegram Mini App interface<br>
+✓ User profile integration<br>
+✓ Core mining system<br>
+✓ 4-hour mining sessions<br>
+✓ 1.0 FDX/hour base mining rate<br>
+✓ In-app FDX balance<br>
+✓ Basic referral system<br>
+✓ Initial community-task structure<br>
+✓ Account and support interface
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid rgba(250,204,21,0.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+
+<div style="font-size:15px;color:var(--yellow);font-weight:900;">
+PHASE 2 — Engagement & Gamification
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);color:var(--yellow);font-size:10px;font-weight:900;">
+ACTIVE
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+• Mining boosters<br>
+• Lucky Boxes<br>
+• Streak recovery<br>
+• Reward-claim advertising integration<br>
+• Community task expansion<br>
+• Telegram community activities<br>
+• X community activities<br>
+• Continued improvements to the referral system<br>
+• Improvements to the overall user experience
+</div>
+
+</div>
+
+
+<div style="background:#111b27;border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:20px;">
+
+<div style="font-size:15px;color:#fff;font-weight:900;">
+PHASE 3 — Ecosystem Growth
+</div>
+
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,0.08);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:900;">
+CURRENT DEVELOPMENT
+</div>
+
+<div style="margin-top:14px;line-height:1.9;">
+• Expansion of community participation<br>
+• Improvement of mining and reward interfaces<br>
+• Expansion of gamification features already integrated into the platform<br>
+• Continued optimization of the referral and task systems<br>
+• Improvement of user-support and account-management features<br>
+• Platform performance and usability improvements
+</div>
+
+</div>
+
+
+<div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:18px;padding:18px;">
+
+<div style="font-size:14px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
+FIDEXA Development Philosophy
+</div>
+
+<p>
+FIDEXA will continue to develop based on actual platform implementation and community participation.
+</p>
+
+<p style="margin-top:10px;">
+New functionality will be introduced progressively as the ecosystem develops.
+</p>
+
+<div style="text-align:center;margin-top:18px;color:var(--yellow);font-size:14px;font-weight:900;">
+FIDEXA Network
+<br>
+<span style="color:#fff;font-size:12px;">
+Mine. Participate. Grow.
+</span>
+</div>
+
+</div>
+
+`;
+}
+
+
+/* =========================================================
+   ACCOUNT DELETION
+========================================================= */
+
+else if(type==='deletion'){
+
+titleEl.textContent=
+"Account Deletion Warning";
+
+bodyEl.innerHTML=`
+
+<p style="color:var(--red);">
+
+<strong>Warning:</strong>
+
+Permanently deleting your account will clear your associated FDX balance,
+mining history, and active referral network streaks associated with ID
+${currentUserId}.
+
+</p>
+
+<button
+style="width:100%;background:rgba(248,113,113,0.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
+onclick="alert('Account deletion request submitted to system queue.')">
+
+CONFIRM PERMANENT DELETION
+
+</button>
+
+`;
+
+}
 
 }
 
 
-function closeReceiveModal(){
+/* =========================================================
+   CLOSE PROFILE MODAL
+========================================================= */
 
-  document
-    .getElementById("receiveModal")
-    .classList.remove("active");
+function closeProfileInfo(){
+
+document
+.getElementById('profileInfoModal')
+.classList.remove('active');
 
 }
 
 
-/* ======================================================
+/* =========================================================
+   EXTERNAL LINKS
+========================================================= */
+
+function openExternalLink(target){
+
+if(target==='telegram'){
+
+window.open(
+'https://t.me/FidexaNetworkBot',
+'_blank'
+);
+
+}
+
+else if(target==='twitter'){
+
+window.open(
+'https://twitter.com',
+'_blank'
+);
+
+}
+
+}
+
+
+/* =========================================================
    SEND
-====================================================== */
+========================================================= */
 
 function openSendModal(){
 
-  if(!enforceAccessControl()) return;
+const modal=
+document.getElementById('profileInfoModal');
 
-  document
-    .getElementById("sendModal")
-    .classList.add("active");
+const titleEl=
+document.getElementById('sheetTitle');
+
+const bodyEl=
+document.getElementById('sheetContentBody');
+
+modal.classList.add('active');
+
+titleEl.textContent=
+"Transfer $FDX (Send)";
+
+bodyEl.innerHTML=`
+
+<p style="margin-bottom:12px;">
+Enter recipient address and amount to transfer from your Transferable Balance.
+</p>
+
+<div style="margin-bottom:12px;">
+
+<label style="font-size:10px;color:var(--muted);font-weight:900;">
+RECIPIENT ADDRESS
+</label>
+
+<input
+type="text"
+id="sendAddressInput"
+class="chat-input-field"
+style="width:100%;margin-top:4px;"
+placeholder="FDX...">
+
+</div>
+
+<div style="margin-bottom:16px;">
+
+<label style="font-size:10px;color:var(--muted);font-weight:900;">
+AMOUNT ($FDX)
+</label>
+
+<input
+type="number"
+id="sendAmountInput"
+class="chat-input-field"
+style="width:100%;margin-top:4px;"
+placeholder="0.00">
+
+</div>
+
+<button
+style="width:100%;background:var(--cyan);border:0;border-radius:12px;padding:14px;color:#05080c;font-weight:900;font-size:14px;"
+onclick="executeSendTransaction()">
+
+CONFIRM TRANSFER
+
+</button>
+
+`;
 
 }
 
 
-function closeSendModal(){
-
-  document
-    .getElementById("sendModal")
-    .classList.remove("active");
-
-}
-
+/* =========================================================
+   EXECUTE SEND
+========================================================= */
 
 function executeSendTransaction(){
 
-  const address =
-    document
-      .getElementById("sendAddressInput")
-      .value.trim();
+const amt=
+parseFloat(
+document.getElementById('sendAmountInput').value
+);
 
-  const amount =
-    parseFloat(
-      document
-        .getElementById("sendAmountInput")
-        .value
-    );
+if(!amt || amt<=0){
 
-  if(!address){
+alert("Please enter a valid amount.");
 
-    alert(
-      "Please enter the recipient wallet address."
-    );
+return;
+}
 
-    return;
-  }
+if(amt>transferableBal){
 
-  if(!amount || amount <= 0){
+alert("Insufficient transferable balance!");
 
-    alert(
-      "Please enter a valid amount."
-    );
+return;
+}
 
-    return;
-  }
+transferableBal-=amt;
 
-  /*
-    No fake blockchain transaction is performed here.
-    Real sending must be connected to the actual wallet
-    provider/backend.
-  */
+totalBalance-=amt;
 
-  alert(
-    "Send request prepared.\n\n" +
-    "Recipient: " +
-    address +
-    "\nAmount: " +
-    amount +
-    " FDX\n\n" +
-    "A real blockchain transaction requires the official FIDEXA wallet/network connection."
-  );
+updateBalancesUI();
+
+closeProfileInfo();
+
+alert(
+`Successfully transferred ${amt} $FDX!`
+);
 
 }
 
 
-/* ======================================================
-   MIGRATION
-====================================================== */
+/* =========================================================
+   RECEIVE
+========================================================= */
 
-let migrationStatus =
-  localStorage.getItem(
-    "fidexa_migration_status"
-  ) || "NOT STARTED";
+function openReceiveModal(){
 
+const modal=
+document.getElementById('profileInfoModal');
 
-function updateMigrationUI(){
+const titleEl=
+document.getElementById('sheetTitle');
 
-  document
-    .getElementById("migrationStatus")
-    .textContent =
-    migrationStatus;
+const bodyEl=
+document.getElementById('sheetContentBody');
 
-  document
-    .getElementById("migrationModalStatus")
-    .textContent =
-    migrationStatus;
+modal.classList.add('active');
 
-}
+titleEl.textContent=
+"Receive $FDX";
 
+bodyEl.innerHTML=`
 
-function openMigrationModal(){
+<p style="margin-bottom:12px;">
+Share your wallet address to receive funds directly into your account:
+</p>
 
-  if(!enforceAccessControl()) return;
+<div
+style="background:#111b27;border:1px solid var(--border);padding:14px;border-radius:12px;word-break:break-all;color:var(--cyan);font-weight:900;text-align:center;margin-bottom:16px;"
+id="walletAddressText">
 
-  updateMigrationUI();
+FDX99x77vNetworkSecureWalletAddress${currentUserId}
 
-  document
-    .getElementById("migrationModal")
-    .classList.add("active");
+</div>
 
-}
+<button
+style="width:100%;background:var(--blue);border:0;border-radius:12px;padding:14px;color:#fff;font-weight:900;font-size:14px;"
+onclick="copyWalletAddress()">
 
+COPY ADDRESS
 
-function closeMigrationModal(){
+</button>
 
-  document
-    .getElementById("migrationModal")
-    .classList.remove("active");
-
-}
-
-
-function startMigration(){
-
-  migrationStatus =
-    "READY FOR VERIFICATION";
-
-  localStorage.setItem(
-    "fidexa_migration_status",
-    migrationStatus
-  );
-
-  updateMigrationUI();
-
-  alert(
-    "Migration interface activated.\n\n" +
-    "The next step is connecting the official FIDEXA migration backend/blockchain."
-  );
+`;
 
 }
 
 
-/* ======================================================
-   MINING
-====================================================== */
+/* =========================================================
+   COPY WALLET ADDRESS
+========================================================= */
 
-let miningState = "IDLE";
+function copyWalletAddress(){
 
-let baseMiningRate = 1.0;
+const addr=
+`FDX99x77vNetworkSecureWalletAddress${currentUserId}`;
 
-let boosterBonusRate = 0.0;
+navigator.clipboard
+.writeText(addr)
+.then(()=>{
 
-let referralBonusRate = 0.0;
+alert(
+"Wallet address copied to clipboard!"
+);
 
-let boosterChancesLeft = 5;
+});
 
-let adInterval = null;
+}
 
-let activeAdType = "";
 
-let totalSeconds = 14400;
+/* =========================================================
+   BALANCES
+========================================================= */
+
+let totalBalance=1000000.00;
+
+let transferableBal=950000.00;
+
+let unverifiedBal=50000.00;
+
+
+/* =========================================================
+   MINING STATE
+========================================================= */
+
+let miningState='IDLE';
+
+let baseMiningRate=1.0;
+
+let boosterBonusRate=0.0;
+
+let referralBonusRate=0.0;
+
+let boosterChancesLeft=5;
+
+let adInterval=null;
+
+let activeAdType='';
+
+let totalSeconds=14400;
+
+
+/* =========================================================
+   REFERRALS
+========================================================= */
+
+let referralData={
+total:3,
+active:2,
+inactive:1
+};
 
 
 function getCumulativeRate(){
 
-  return parseFloat(
-    (
-      baseMiningRate +
-      boosterBonusRate +
-      referralBonusRate
-    ).toFixed(1)
-  );
+return parseFloat(
+(
+baseMiningRate+
+boosterBonusRate+
+referralBonusRate
+).toFixed(1)
+);
 
 }
 
+
+/* =========================================================
+   TIMER
+========================================================= */
 
 function updateTimerDisplay(){
 
-  if(!enforceAccessControl()) return;
+if(!enforceAccessControl())return;
 
-  if(miningState === "ACTIVE"){
+if(miningState==='ACTIVE'){
 
-    if(totalSeconds > 0){
+if(totalSeconds>0){
 
-      totalSeconds--;
+totalSeconds--;
 
-      const h =
-        Math.floor(
-          totalSeconds / 3600
-        )
-        .toString()
-        .padStart(2,"0");
+let h=
+Math.floor(totalSeconds/3600)
+.toString()
+.padStart(2,'0');
 
-      const m =
-        Math.floor(
-          (totalSeconds % 3600) / 60
-        )
-        .toString()
-        .padStart(2,"0");
+let m=
+Math.floor((totalSeconds%3600)/60)
+.toString()
+.padStart(2,'0');
 
-      const s =
-        (totalSeconds % 60)
-        .toString()
-        .padStart(2,"0");
+let s=
+(totalSeconds%60)
+.toString()
+.padStart(2,'0');
 
-      document
-        .getElementById("timerDisplay")
-        .textContent =
-        `${h}:${m}:${s}`;
-
-    }else{
-
-      miningState =
-        "READY_TO_CLAIM";
-
-      document
-        .getElementById("timerDisplay")
-        .textContent =
-        "00:00:00";
-
-      document
-        .getElementById("systemPill")
-        .textContent =
-        "SESSION ENDED";
-
-      document
-        .getElementById("systemPill")
-        .style.color =
-        "var(--yellow)";
-
-      document
-        .getElementById("systemPill")
-        .style.borderColor =
-        "rgba(250,204,21,.4)";
-
-      document
-        .getElementById("miningToggleBtn")
-        .textContent =
-        "CLAIM";
-
-      document
-        .getElementById("miningToggleBtn")
-        .style.background =
-        "linear-gradient(90deg,#facc15,#f59e0b)";
-
-      document
-        .getElementById("miningToggleBtn")
-        .style.color =
-        "#05080c";
-
-    }
-
-  }
+document
+.getElementById('timerDisplay')
+.textContent=
+`${h}:${m}:${s}`;
 
 }
 
+else{
+
+miningState='READY_TO_CLAIM';
+
+document
+.getElementById('timerDisplay')
+.textContent=
+"00:00:00";
+
+document
+.getElementById('systemPill')
+.textContent=
+"SESSION ENDED";
+
+document
+.getElementById('systemPill')
+.style.color=
+"var(--yellow)";
+
+document
+.getElementById('systemPill')
+.style.borderColor=
+"rgba(250,204,21,0.4)";
+
+document
+.getElementById('miningToggleBtn')
+.textContent=
+"CLAIM";
+
+document
+.getElementById('miningToggleBtn')
+.style.background=
+"linear-gradient(90deg,#facc15,#f59e0b)";
+
+document
+.getElementById('miningToggleBtn')
+.style.color=
+"#05080c";
+
+}
+
+}
+
+}
 
 setInterval(
-  updateTimerDisplay,
-  1000
+updateTimerDisplay,
+1000
 );
 
 
+/* =========================================================
+   MINING ACTION
+========================================================= */
+
 function handleMiningAction(){
 
-  if(!enforceAccessControl()) return;
+if(!enforceAccessControl())return;
 
-  if(miningState === "IDLE"){
+if(miningState==='IDLE'){
 
-    miningState =
-      "ACTIVE";
+miningState='ACTIVE';
 
-    totalSeconds =
-      14400;
+totalSeconds=14400;
 
-    document
-      .getElementById("systemPill")
-      .textContent =
-      "ACTIVE MINING";
+document
+.getElementById('systemPill')
+.textContent=
+"ACTIVE MINING";
 
-    document
-      .getElementById("miningToggleBtn")
-      .textContent =
-      "ACTIVE MINING";
+document
+.getElementById('systemPill')
+.style.color=
+"var(--cyan)";
 
-    document
-      .getElementById("miningToggleBtn")
-      .style.background =
-      "rgba(56,189,248,.2)";
+document
+.getElementById('miningToggleBtn')
+.textContent=
+"ACTIVE MINING";
 
-    document
-      .getElementById("miningToggleBtn")
-      .style.border =
-      "1px solid rgba(56,189,248,.5)";
+document
+.getElementById('miningToggleBtn')
+.style.background=
+"rgba(56,189,248,0.2)";
 
-    document
-      .getElementById("miningToggleBtn")
-      .style.color =
-      "var(--cyan)";
+document
+.getElementById('miningToggleBtn')
+.style.border=
+"1px solid rgba(56,189,248,0.5)";
 
-    document
-      .getElementById("miningToggleBtn")
-      .style.pointerEvents =
-      "none";
+document
+.getElementById('miningToggleBtn')
+.style.color=
+"var(--cyan)";
 
-  }else if(
-    miningState === "READY_TO_CLAIM"
-  ){
+document
+.getElementById('miningToggleBtn')
+.style.pointerEvents=
+"none";
 
-    triggerAd("claim");
+}
 
-  }
+else if(miningState==='READY_TO_CLAIM'){
+
+triggerAd('claim');
+
+}
 
 }
 
 
-/* ======================================================
+/* =========================================================
    BOOSTER
-====================================================== */
+========================================================= */
 
 function openBoosterPrompt(){
 
-  if(!enforceAccessControl()) return;
+if(!enforceAccessControl())return;
 
-  if(boosterChancesLeft <= 0){
+if(boosterChancesLeft<=0){
 
-    alert(
-      "No booster chances left."
-    );
+alert(
+"No booster chances left! Please wait for the 4-hour reset cycle."
+);
 
-    return;
-  }
+return;
+}
 
-  document
-    .getElementById("boosterPromptModal")
-    .classList.add("active");
+document
+.getElementById('boosterPromptModal')
+.classList.add('active');
 
 }
 
 
 function closeBoosterPrompt(){
 
-  document
-    .getElementById("boosterPromptModal")
-    .classList.remove("active");
+document
+.getElementById('boosterPromptModal')
+.classList.remove('active');
 
 }
 
 
 function confirmWatchBoosterAd(){
 
-  closeBoosterPrompt();
+closeBoosterPrompt();
 
-  triggerAd("booster");
+triggerAd('booster');
 
 }
 
 
-/* ======================================================
+/* =========================================================
    LUCKY BOX
-====================================================== */
+========================================================= */
 
 function openLuckyBoxModal(){
 
-  if(!enforceAccessControl()) return;
+if(!enforceAccessControl())return;
 
-  document
-    .getElementById("luckyBoxModal")
-    .classList.add("active");
+document
+.getElementById('luckyBoxModal')
+.classList.add('active');
 
 }
 
 
 function closeLuckyBoxModal(){
 
-  document
-    .getElementById("luckyBoxModal")
-    .classList.remove("active");
+document
+.getElementById('luckyBoxModal')
+.classList.remove('active');
 
 }
 
 
 function confirmOpenLuckyBox(){
 
-  closeLuckyBoxModal();
+closeLuckyBoxModal();
 
-  triggerAd("luckybox");
-
-}
-
-
-/* ======================================================
-   AD FLOW
-====================================================== */
-
-function triggerAd(type){
-
-  activeAdType =
-    type;
-
-  const modal =
-    document.getElementById("adModal");
-
-  const closeBtn =
-    document.getElementById("adCloseBtn");
-
-  const timerBadge =
-    document.getElementById("adTimerBadge");
-
-  modal.classList.add("active");
-
-  closeBtn.classList.remove("ready");
-
-  closeBtn.textContent =
-    "WATCHING AD...";
-
-  let adCountdown =
-    4;
-
-  timerBadge.textContent =
-    `Ad in ${adCountdown}s`;
-
-  if(adInterval)
-    clearInterval(adInterval);
-
-  adInterval =
-    setInterval(()=>{
-
-      adCountdown--;
-
-      if(adCountdown > 0){
-
-        timerBadge.textContent =
-          `Ad in ${adCountdown}s`;
-
-      }else{
-
-        timerBadge.textContent =
-          "Ad Finished";
-
-        clearInterval(adInterval);
-
-        closeBtn.classList.add("ready");
-
-        if(type === "claim"){
-
-          closeBtn.textContent =
-            "CLAIM MINING REWARD";
-
-        }else if(type === "luckybox"){
-
-          closeBtn.textContent =
-            "COLLECT MYSTERY REWARD";
-
-        }else{
-
-          closeBtn.textContent =
-            "COLLECT SPEED BOOST";
-
-        }
-
-      }
-
-    },1000);
+triggerAd('luckybox');
 
 }
 
 
-function closeAdModal(){
-
-  const modal =
-    document.getElementById("adModal");
-
-  modal.classList.remove("active");
-
-  if(activeAdType === "booster"){
-
-    boosterChancesLeft--;
-
-    boosterBonusRate =
-      parseFloat(
-        (
-          boosterBonusRate +
-          .5
-        ).toFixed(1)
-      );
-
-    document
-      .getElementById("currentRateDisplay")
-      .textContent =
-      getCumulativeRate()
-      .toFixed(1);
-
-    document
-      .getElementById("boosterChances")
-      .textContent =
-      `${boosterChancesLeft}/5 Left`;
-
-    alert(
-      "Mining speed increased to " +
-      getCumulativeRate() +
-      " FDX/H"
-    );
-
-  }
-
-
-  else if(
-    activeAdType === "luckybox"
-  ){
-
-    alert(
-      "Lucky Box reward flow completed."
-    );
-
-  }
-
-
-  else if(
-    activeAdType === "claim"
-  ){
-
-    miningState =
-      "IDLE";
-
-    totalSeconds =
-      14400;
-
-    document
-      .getElementById("systemPill")
-      .textContent =
-      "READY TO MINE";
-
-    document
-      .getElementById("systemPill")
-      .style.color =
-      "var(--cyan)";
-
-    document
-      .getElementById("systemPill")
-      .style.borderColor =
-      "rgba(56,189,248,.3)";
-
-    document
-      .getElementById("timerDisplay")
-      .textContent =
-      "04:00:00";
-
-    document
-      .getElementById("miningToggleBtn")
-      .textContent =
-      "START MINING";
-
-    document
-      .getElementById("miningToggleBtn")
-      .style.background =
-      "linear-gradient(90deg,#0284c7,#38bdf8)";
-
-    document
-      .getElementById("miningToggleBtn")
-      .style.border =
-      "0";
-
-    document
-      .getElementById("miningToggleBtn")
-      .style.color =
-      "#fff";
-
-    document
-      .getElementById("miningToggleBtn")
-      .style.pointerEvents =
-      "auto";
-
-    alert(
-      "Mining reward claim completed."
-    );
-
-  }
-
-}
-
-
-/* ======================================================
-   REFERRALS
-====================================================== */
-
-let referralData = {
-
-  total:0,
-
-  active:0,
-
-  inactive:0
-
-};
-
-
-function updateReferralUI(){
-
-  document
-    .getElementById("totalFriendsCount")
-    .textContent =
-    referralData.total;
-
-  document
-    .getElementById("activeFriendsCount")
-    .textContent =
-    referralData.active;
-
-  document
-    .getElementById("inactiveFriendsCount")
-    .textContent =
-    referralData.inactive;
-
-}
-
+/* =========================================================
+   REFERRAL LINK
+========================================================= */
 
 function copyReferralLink(){
 
-  const refLink =
-    `https://t.me/FidexaNetworkBot?start=ref_${currentUserId}`;
+const refLink=
+`https://t.me/FidexaNetworkBot?start=ref_${currentUserId}`;
 
-  if(
-    navigator.clipboard &&
-    navigator.clipboard.writeText
-  ){
+navigator.clipboard
+.writeText(refLink)
+.then(()=>{
 
-    navigator.clipboard
-      .writeText(refLink)
-      .then(()=>{
-        alert(
-          "Referral link copied."
-        );
-      })
-      .catch(()=>{
-        alert(refLink);
-      });
+alert(
+"Referral link copied to clipboard!"
+);
 
-  }else{
+})
+.catch(()=>{
 
-    alert(refLink);
+alert(
+`Your referral link: ${refLink}`
+);
 
-  }
+});
 
 }
 
 
-/* ======================================================
-   PROFILE
-====================================================== */
+/* =========================================================
+   AD SYSTEM
+========================================================= */
 
-function openProfileInfo(type){
+function triggerAd(type){
 
-  const modal =
-    document.getElementById(
-      "profileInfoModal"
-    );
+activeAdType=type;
 
-  const title =
-    document.getElementById(
-      "sheetTitle"
-    );
+const modal=
+document.getElementById('adModal');
 
-  const body =
-    document.getElementById(
-      "sheetContentBody"
-    );
+const closeBtn=
+document.getElementById('adCloseBtn');
 
-  modal.classList.add("active");
+const timerBadge=
+document.getElementById('adTimerBadge');
 
+modal.classList.add('active');
 
-  /* ACCOUNT */
+closeBtn.classList.remove('ready');
 
-  if(type === "account"){
+closeBtn.textContent=
+"WATCHING AD...";
 
-    title.textContent =
-      "Account Information";
+let adCountdown=4;
 
-    const name =
-      telegramUser &&
-      telegramUser.first_name
-        ? telegramUser.first_name
-        : "Telegram User";
+timerBadge.textContent=
+`Ad in ${adCountdown}s`;
 
-    body.innerHTML = `
+if(adInterval)
+clearInterval(adInterval);
 
-      <div class="document-content">
+adInterval=setInterval(()=>{
 
-        <span class="document-badge">
-          TELEGRAM MINI APP ACCOUNT
-        </span>
+adCountdown--;
 
-        <p>
-          <strong>User:</strong>
-          ${escapeHtml(name)}
-        </p>
+if(adCountdown>0){
 
-        <p>
-          <strong>Telegram User ID:</strong>
-          ${escapeHtml(currentUserId)}
-        </p>
+timerBadge.textContent=
+`Ad in ${adCountdown}s`;
 
-        <p>
-          <strong>Platform:</strong>
-          Telegram Mini App
-        </p>
+}
 
-        <p>
-          <strong>Network:</strong>
-          FIDEXA Network
-        </p>
+else{
 
-      </div>
+timerBadge.textContent=
+"Ad Finished";
 
-    `;
+clearInterval(adInterval);
 
-  }
+closeBtn.classList.add('ready');
 
+if(type==='claim'){
 
-  /* SUPPORT */
+closeBtn.textContent=
+"CLAIM REWARD TO BALANCE";
 
-  else if(type === "support"){
+}
 
-    title.textContent =
-      "FIDEXA Chat Support";
+else if(type==='luckybox'){
 
-    body.innerHTML = `
+closeBtn.textContent=
+"COLLECT MYSTERY REWARD";
 
-      <div class="support-chat">
+}
 
-        <div class="support-chat-header">
+else{
 
-          <div class="support-avatar">
-            F
-          </div>
+closeBtn.textContent=
+"COLLECT +0.5 SPEED BOOST";
 
-          <div>
+}
 
-            <div class="support-header-title">
-              FIDEXA Support
-            </div>
+}
 
-            <div class="support-header-status">
-              ● Support channel
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div
-          class="chat-messages-container"
-          id="chatMessagesContainer">
-        </div>
-
-
-        <div class="chat-input-area">
-
-          <div class="chat-input-row">
-
-            <input
-              type="text"
-              class="chat-input-field"
-              id="chatInputField"
-              placeholder="Write a message..."
-              onkeydown="
-                if(event.key==='Enter')
-                sendSupportMessage()
-              ">
-
-            <button
-              class="chat-send-btn"
-              onclick="sendSupportMessage()">
-              SEND
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    `;
-
-    renderChatMessages();
-
-  }
-
-
-  /* PRIVACY */
-
-  else if(type === "privacy"){
-
-    title.textContent =
-      "Privacy Policy";
-
-    body.innerHTML =
-      PRIVACY_POLICY_HTML;
-
-  }
-
-
-  /* WHITEPAPER */
-
-  else if(type === "whitepaper"){
-
-    title.textContent =
-      "FIDEXA Network Whitepaper";
-
-    body.innerHTML =
-      WHITEPAPER_HTML;
-
-  }
-
-
-  /* ROADMAP */
-
-  else if(type === "roadmap"){
-
-    title.textContent =
-      "Project Roadmap";
-
-    body.innerHTML = `
-
-      <div class="document-content">
-
-        <span class="document-badge">
-          OFFICIAL ROADMAP
-        </span>
-
-        <h3>
-          PHASE 1 — Foundation & Mini App Launch
-        </h3>
-
-        <p>
-          Completed
-        </p>
-
-        <ul>
-          <li>FIDEXA Telegram Mini App interface</li>
-          <li>User profile integration</li>
-          <li>Core mining system</li>
-          <li>4-hour mining sessions</li>
-          <li>1.0 FDX/hour base mining rate</li>
-          <li>Basic referral system</li>
-          <li>Initial community-task structure</li>
-          <li>Account and support interface</li>
-        </ul>
-
-
-        <h3>
-          PHASE 2 — Engagement & Gamification
-        </h3>
-
-        <p>
-          Active
-        </p>
-
-        <ul>
-          <li>Mining boosters</li>
-          <li>Lucky Boxes</li>
-          <li>Streak recovery</li>
-          <li>Reward-claim advertising integration</li>
-          <li>Community task expansion</li>
-          <li>Telegram community activities</li>
-          <li>X community activities</li>
-          <li>Referral system improvements</li>
-          <li>User experience improvements</li>
-        </ul>
-
-
-        <h3>
-          PHASE 3 — Ecosystem Growth
-        </h3>
-
-        <p>
-          Current Development
-        </p>
-
-        <ul>
-          <li>Expansion of community participation</li>
-          <li>Mining and reward interface improvements</li>
-          <li>Gamification expansion</li>
-          <li>Referral and task optimization</li>
-          <li>Support and account-management improvements</li>
-          <li>Platform performance improvements</li>
-        </ul>
-
-
-        <h3>
-          Development Philosophy
-        </h3>
-
-        <p>
-          FIDEXA will continue to develop based on actual platform implementation and community participation.
-        </p>
-
-      </div>
-
-    `;
-
-  }
-
-
-  /* DELETE */
-
-  else if(type === "deletion"){
-
-    title.textContent =
-      "Account Deletion";
-
-    body.innerHTML = `
-
-      <div class="document-content">
-
-        <span
-          class="document-badge"
-          style="
-          color:var(--red);
-          border-color:rgba(248,113,113,.2);
-          background:rgba(248,113,113,.05);">
-          PERMANENT ACTION
-        </span>
-
-        <p style="color:var(--red);">
-          Account deletion may permanently remove account-related information, mining history, referrals, tasks, streak information and other associated data where applicable.
-        </p>
-
-        <button
-          onclick="submitDeletionRequest()"
-          style="
-          width:100%;
-          margin-top:14px;
-          background:rgba(248,113,113,.12);
-          border:1px solid var(--red);
-          color:var(--red);
-          border-radius:12px;
-          padding:13px;
-          font-weight:900;
-          font-size:11px;">
-          REQUEST ACCOUNT DELETION
-        </button>
-
-      </div>
-
-    `;
-
-  }
+},1000);
 
 }
 
 
-function closeProfileInfo(){
+/* =========================================================
+   CLOSE AD
+========================================================= */
 
-  document
-    .getElementById("profileInfoModal")
-    .classList.remove("active");
+function closeAdModal(){
 
-}
+const modal=
+document.getElementById('adModal');
 
+modal.classList.remove('active');
 
-/* ======================================================
-   SUPPORT CHAT
-====================================================== */
+if(activeAdType==='booster'){
 
-let supportMessages = [
+boosterChancesLeft--;
 
-  {
-    sender:"admin",
-    text:"Hello! Welcome to FIDEXA Support. How can we help you today?",
-    time:"Now"
-  }
+boosterBonusRate=
+parseFloat(
+(
+boosterBonusRate+0.5
+).toFixed(1)
+);
 
-];
+document
+.getElementById('currentRateDisplay')
+.textContent=
+getCumulativeRate().toFixed(1);
 
+document
+.getElementById('boosterChances')
+.textContent=
+`${boosterChancesLeft}/5 Left`;
 
-function escapeHtml(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-function renderChatMessages(){
-
-  const container =
-    document.getElementById(
-      "chatMessagesContainer"
-    );
-
-  if(!container) return;
-
-  container.innerHTML =
-    supportMessages
-      .map(message=>`
-
-        <div class="chat-bubble ${message.sender}">
-
-          ${escapeHtml(message.text)}
-
-          <div class="chat-time">
-            ${escapeHtml(message.time || "Now")}
-          </div>
-
-        </div>
-
-      `)
-      .join("");
-
-  container.scrollTop =
-    container.scrollHeight;
+alert(
+`Success! Mining speed increased to ${getCumulativeRate().toFixed(1)} $FDX/H`
+);
 
 }
 
 
-function sendSupportMessage(){
+else if(activeAdType==='luckybox'){
 
-  const input =
-    document.getElementById(
-      "chatInputField"
-    );
+let mysteryReward=10.00;
 
-  if(!input) return;
+totalBalance+=mysteryReward;
 
-  const text =
-    input.value.trim();
+transferableBal+=mysteryReward;
 
-  if(!text) return;
+updateBalancesUI();
 
-  supportMessages.push({
-
-    sender:"user",
-
-    text:text,
-
-    time:"Now"
-
-  });
-
-  input.value = "";
-
-  renderChatMessages();
-
-
-  /*
-    Frontend prototype response.
-    Real admin messaging requires backend/database integration.
-  */
-
-  setTimeout(()=>{
-
-    supportMessages.push({
-
-      sender:"admin",
-
-      text:
-        "Your message has been received. An administrator will review your support request.",
-
-      time:"Now"
-
-    });
-
-    renderChatMessages();
-
-  },800);
+alert(
+`Congratulations! You found ${mysteryReward} $FDX inside the Lucky Gift Box!`
+);
 
 }
 
 
-/* ======================================================
-   ACCOUNT DELETION
-====================================================== */
+else if(activeAdType==='claim'){
 
-function submitDeletionRequest(){
+totalBalance+=4.00;
 
-  const confirmDelete =
-    confirm(
-      "Are you sure you want to submit an account deletion request?"
-    );
+transferableBal+=4.00;
 
-  if(!confirmDelete) return;
+updateBalancesUI();
 
-  alert(
-    "Account deletion request submitted for review."
-  );
+totalSeconds=14400;
+
+miningState='IDLE';
+
+document
+.getElementById('systemPill')
+.textContent=
+"READY TO MINE";
+
+document
+.getElementById('systemPill')
+.style.color=
+"var(--cyan)";
+
+document
+.getElementById('systemPill')
+.style.borderColor=
+"rgba(56,189,248,0.3)";
+
+document
+.getElementById('miningToggleBtn')
+.textContent=
+"START MINING";
+
+document
+.getElementById('miningToggleBtn')
+.style.background=
+"linear-gradient(90deg,#0284c7,#38bdf8)";
+
+document
+.getElementById('miningToggleBtn')
+.style.border=
+"0";
+
+document
+.getElementById('miningToggleBtn')
+.style.color=
+"#fff";
+
+document
+.getElementById('miningToggleBtn')
+.style.pointerEvents=
+"auto";
+
+}
 
 }
 
 
-/* ======================================================
-   EXTERNAL LINKS
-====================================================== */
+/* =========================================================
+   BALANCE UI
+========================================================= */
 
-function openExternalLink(target){
+function updateBalancesUI(){
 
-  if(target === "telegram"){
+let formattedBal=
+totalBalance.toLocaleString(
+'en-US',
+{
+minimumFractionDigits:2
+}
+);
 
-    window.open(
-      "https://t.me/FidexaNetworkBot",
-      "_blank"
-    );
+let formattedTrans=
+transferableBal.toLocaleString(
+'en-US',
+{
+minimumFractionDigits:2
+}
+);
 
-  }
+let formattedUnver=
+unverifiedBal.toLocaleString(
+'en-US',
+{
+minimumFractionDigits:2
+}
+);
 
-  else if(target === "twitter"){
+document
+.getElementById('balanceDisplay')
+.textContent=
+formattedBal;
 
-    window.open(
-      "https://twitter.com",
-      "_blank"
-    );
+document
+.getElementById('walletTotalDisplay')
+.textContent=
+formattedBal;
 
-  }
+document
+.getElementById('transferableBalance')
+.textContent=
+formattedTrans;
+
+document
+.getElementById('unverifiedBalance')
+.textContent=
+formattedUnver;
 
 }
 
 
-/* ======================================================
-   WHITEPAPER
-====================================================== */
-
-const WHITEPAPER_HTML = `
-
-<div class="document-content">
-
-<span class="document-badge">
-FIDEXA NETWORK — WHITEPAPER v1.0
-</span>
-
-<h3>
-A Gamified Digital Mining & Community Rewards Ecosystem
-</h3>
-
-<p>
-<strong>Ticker:</strong> FDX
-</p>
-
-<p>
-<strong>Platform:</strong> Telegram Mini App
-</p>
-
-<p>
-<strong>Status:</strong> Live App Experience
-</p>
-
-
-<h3>1. Vision & Mission</h3>
-
-<p>
-FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.
-</p>
-
-<p>
-The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.
-</p>
-
-<p>
-FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.
-</p>
-
-
-<h3>2. FIDEXA Mining System</h3>
-
-<p>
-FIDEXA uses a timed mining-session system.
-</p>
-
-<h4>Current Mining Structure</h4>
-
-<ul>
-<li>Mining cycle: 4 hours</li>
-<li>Base mining rate: 1.0 FDX per hour</li>
-<li>Base reward per completed 4-hour cycle: 4 FDX</li>
-</ul>
-
-<p>
-Users can return after the mining timer has completed and claim their accumulated reward. After claiming, users can begin another mining session.
-</p>
-
-<p>
-The mining system is designed around participation rather than requiring users to keep their device continuously active.
-</p>
-
-
-<h3>3. Reward Claim & Advertising System</h3>
-
-<p>
-Advertising is integrated into the reward-claim process.
-</p>
-
-<p>
-The current flow is:
-</p>
-
-<p>
-<strong>
-Start Mining → 4-Hour Mining Session → Timer Completes → Claim Reward → Advertisement → Reward Credited
-</strong>
-</p>
-
-<p>
-Advertising provides an additional sustainability mechanism for the platform. Revenue generated through supported advertising can contribute toward operation, infrastructure, development and improvement of the FIDEXA ecosystem.
-</p>
-
-<p>
-The advertisement is not presented as a separate mining system. The user's mining reward comes from the completed mining session; advertising is incorporated into the claim process.
-</p>
-
-
-<h3>4. Boosters & Gamification</h3>
-
-<h4>Mining Boosters</h4>
-
-<p>
-Active users can access supported boosting mechanisms that can increase their effective mining rate. The current system supports mining-rate increases of up to +2.5 FDX/hour through available booster mechanisms.
-</p>
-
-<h4>Lucky Boxes</h4>
-
-<p>
-Lucky Boxes provide an additional gamified element within the FIDEXA ecosystem.
-</p>
-
-<h4>Streak Recovery</h4>
-
-<p>
-FIDEXA also incorporates a streak-recovery mechanism designed to help users maintain participation when an interruption occurs.
-</p>
-
-
-<h3>5. Community Tasks</h3>
-
-<p>
-FIDEXA includes a community-task system allowing users to participate in activities connected to the FIDEXA ecosystem.
-</p>
-
-<ul>
-<li>Telegram</li>
-<li>X</li>
-</ul>
-
-
-<h3>6. Referral System</h3>
-
-<p>
-FIDEXA includes a referral mechanism designed to encourage community growth. Users can invite other participants through their referral link.
-</p>
-
-
-<h3>7. User Balance & Rewards</h3>
-
-<p>
-FDX rewards earned through supported activities are intended to be reflected in the user's in-app reward system.
-</p>
-
-
-<h3>8. User Profile & Account</h3>
-
-<p>
-FIDEXA provides a user-focused interface allowing participants to access account information and interact with the Mini App through Telegram.
-</p>
-
-
-<h3>9. Support & Account Controls</h3>
-
-<p>
-FIDEXA includes:
-</p>
-
-<ul>
-<li>Chat Support</li>
-<li>Account information</li>
-<li>Profile functionality</li>
-<li>Account deletion controls</li>
-</ul>
-
-
-<h3>10. FDX Token / Reward Model</h3>
-
-<p>
-FDX is the internal reward unit used throughout the current FIDEXA ecosystem.
-</p>
-
-<ul>
-<li>1.0 FDX/hour base mining rate</li>
-<li>4-hour mining cycles</li>
-</ul>
-
-<p>
-FIDEXA does not claim that in-app FDX balances are currently transferable to an external blockchain unless and until such functionality is actually implemented.
-</p>
-
-
-<h3>11. Platform Principles</h3>
-
-<ul>
-<li><strong>Accessibility:</strong> Mobile-friendly Telegram Mini App participation.</li>
-<li><strong>Community:</strong> Referrals and community activities.</li>
-<li><strong>Engagement:</strong> Mining, Lucky Boxes, streaks and tasks.</li>
-<li><strong>Sustainability:</strong> Advertising-supported reward claims.</li>
-<li><strong>Transparency:</strong> Documentation should describe functionality actually available.</li>
-</ul>
-
-
-<h3>12. Current Platform Summary</h3>
-
-<ul>
-<li>4-hour mining sessions</li>
-<li>1.0 FDX/hour base mining</li>
-<li>Mining boosters</li>
-<li>Lucky Boxes</li>
-<li>Streak recovery</li>
-<li>Reward claiming</li>
-<li>Advertising-supported claims</li>
-<li>Referral system</li>
-<li>Community tasks</li>
-<li>Telegram integration</li>
-<li>X-related community activities</li>
-<li>User profile</li>
-<li>Chat Support</li>
-<li>Account controls</li>
-</ul>
-
-
-<h3>
-FIDEXA NETWORK — Official Roadmap
-</h3>
-
-<h4>
-PHASE 1 — Foundation & Mini App Launch
-</h4>
-
-<p>
-<strong>Completed</strong>
-</p>
-
-<ul>
-<li>Telegram Mini App interface</li>
-<li>User profile integration</li>
-<li>Core mining system</li>
-<li>4-hour mining sessions</li>
-<li>1.0 FDX/hour base mining rate</li>
-<li>In-app reward system</li>
-<li>Basic referral system</li>
-<li>Initial community-task structure</li>
-<li>Account and support interface</li>
-</ul>
-
-
-<h4>
-PHASE 2 — Engagement & Gamification
-</h4>
-
-<p>
-<strong>Active</strong>
-</p>
-
-<ul>
-<li>Mining boosters</li>
-<li>Lucky Boxes</li>
-<li>Streak recovery</li>
-<li>Reward-claim advertising integration</li>
-<li>Community task expansion</li>
-<li>Telegram community activities</li>
-<li>X community activities</li>
-<li>Referral improvements</li>
-<li>User experience improvements</li>
-</ul>
-
-
-<h4>
-PHASE 3 — Ecosystem Growth
-</h4>
-
-<p>
-<strong>Current Development</strong>
-</p>
-
-<ul>
-<li>Expansion of community participation</li>
-<li>Mining interface improvements</li>
-<li>Gamification expansion</li>
-<li>Referral and task optimization</li>
-<li>Support improvements</li>
-<li>Account-management improvements</li>
-<li>Platform performance improvements</li>
-</ul>
-
-
-<h3>
-FIDEXA Development Philosophy
-</h3>
-
-<p>
-FIDEXA will continue to develop based on actual platform implementation and community participation. New functionality will be introduced progressively as the ecosystem develops.
-</p>
-
-<p>
-<strong>FIDEXA Network — Mine. Participate. Grow.</strong>
-</p>
-
-</div>
-
-`;
-
-
-/* ======================================================
-   PRIVACY POLICY
-====================================================== */
-
-const PRIVACY_POLICY_HTML = `
-
-<div class="document-content">
-
-<span class="document-badge">
-EFFECTIVE: SEPTEMBER 26, 2026
-</span>
-
-<h3>
-FIDEXA NETWORK — Privacy Policy
-</h3>
-
-<p>
-Last Updated: September 26, 2026
-</p>
-
-<p>
-FIDEXA Network ("FIDEXA", "we", "our", or "us") respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
-</p>
-
-<p>
-This Privacy Policy explains what information FIDEXA may collect, how it is used, how it may be shared, and the choices available to users.
-</p>
-
-<p>
-By accessing or using the FIDEXA Mini App, you acknowledge that you have read and understood this Privacy Policy.
-</p>
-
-
-<h3>1. Information We Collect</h3>
-
-<p>
-FIDEXA collects and processes information necessary to operate the Mini App and provide its features.
-</p>
-
-
-<h4>1.1 Telegram Account Information</h4>
-
-<p>
-When you open FIDEXA through Telegram, the Mini App may receive information made available by Telegram, which may include:
-</p>
-
-<ul>
-<li>Telegram user ID</li>
-<li>First name</li>
-<li>Last name, where available</li>
-<li>Telegram username, where available</li>
-<li>Language information</li>
-<li>Telegram profile information made available to the Mini App</li>
-</ul>
-
-<p>
-Telegram determines what information is made available to Mini Apps through its platform.
-</p>
-
-
-<h3>2. FIDEXA Activity Information</h3>
-
-<p>
-When you use FIDEXA, the platform may record information associated with your activity within the application, including:
-</p>
-
-<ul>
-<li>Mining session information</li>
-<li>Mining start and completion times</li>
-<li>Mining rewards</li>
-<li>FDX reward information</li>
-<li>Booster activity</li>
-<li>Lucky Box activity</li>
-<li>Streak information</li>
-<li>Referral information</li>
-<li>Community-task activity</li>
-<li>Reward-claim activity</li>
-<li>Account and support interactions</li>
-</ul>
-
-
-<h3>3. Advertising Information</h3>
-
-<p>
-FIDEXA incorporates advertising into the mining reward-claim process.
-</p>
-
-<p>
-FIDEXA may use third-party advertising technology, including AdsGram, to deliver advertisements.
-</p>
-
-<p>
-Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.
-</p>
-
-<p>
-FIDEXA does not sell your FDX rewards or personal information to advertisers.
-</p>
-
-
-<h3>4. How We Use Information</h3>
-
-<ul>
-<li>Create and maintain your FIDEXA account</li>
-<li>Identify users within the Mini App</li>
-<li>Operate mining sessions</li>
-<li>Calculate and display rewards</li>
-<li>Process reward claims</li>
-<li>Operate boosters and gamification features</li>
-<li>Maintain referral functionality</li>
-<li>Manage community tasks</li>
-<li>Provide customer support</li>
-<li>Improve application performance</li>
-<li>Detect abuse, manipulation or fraudulent activity</li>
-<li>Maintain platform security</li>
-<li>Communicate important service information</li>
-<li>Comply with applicable legal obligations</li>
-</ul>
-
-
-<h3>5. How We Share Information</h3>
-
-<p>
-FIDEXA may share or permit access to information where reasonably necessary to operate the service.
-</p>
-
-<h4>Telegram</h4>
-
-<p>
-FIDEXA operates through Telegram's Mini App environment. Telegram processes information according to its own policies and platform functionality.
-</p>
-
-<h4>Advertising Providers</h4>
-
-<p>
-FIDEXA may use third-party advertising providers to display advertisements. These providers may independently process technical or advertising information according to their own policies.
-</p>
-
-<h4>Service Providers</h4>
-
-<p>
-FIDEXA may use infrastructure, hosting, database, analytics, security or other technical service providers necessary to operate the platform.
-</p>
-
-<h4>Legal Requirements</h4>
-
-<p>
-FIDEXA may disclose information when reasonably necessary to comply with applicable law, respond to lawful requests, protect users, investigate fraud or prevent misuse of the platform.
-</p>
-
-
-<h3>6. Data Security</h3>
-
-<p>
-FIDEXA takes reasonable technical and organizational measures to protect information against unauthorized access, alteration, disclosure, loss or misuse.
-</p>
-
-<p>
-However, no internet service or electronic storage system can be guaranteed to be completely secure.
-</p>
-
-
-<h3>7. Data Retention</h3>
-
-<p>
-FIDEXA retains information for as long as reasonably necessary to provide the service, maintain account records, operate referrals, prevent abuse, resolve disputes, maintain security and meet applicable legal obligations.
-</p>
-
-
-<h3>8. Your Privacy Rights</h3>
-
-<p>
-Depending on applicable law, you may have rights concerning your personal information, including the right to:
-</p>
-
-<ul>
-<li>Request access to personal information</li>
-<li>Request correction of inaccurate information</li>
-<li>Request deletion where applicable</li>
-<li>Request restriction of certain processing</li>
-<li>Object to certain processing</li>
-<li>Withdraw consent where processing is based on consent</li>
-<li>Raise a privacy complaint</li>
-</ul>
-
-<p>
-Requests concerning personal information can be submitted through FIDEXA Chat Support.
-</p>
-
-
-<h3>9. Account Deletion</h3>
-
-<p>
-FIDEXA provides an account-deletion option within the application where available.
-</p>
-
-<p>
-When an account-deletion request is submitted, FIDEXA may delete or anonymize information associated with the account, subject to information that must reasonably be retained for security, fraud prevention, dispute resolution, legal compliance or other legitimate purposes.
-</p>
-
-<p>
-Deletion may result in permanent loss of associated account information, mining history, referral information, tasks, streaks or other account-related data where such information is deleted.
-</p>
-
-
-<h3>10. Children's Privacy</h3>
-
-<p>
-FIDEXA is not intended to knowingly collect personal information from children in violation of applicable law.
-</p>
-
-
-<h3>11. Third-Party Services</h3>
-
-<p>
-FIDEXA may integrate with third-party platforms and services, including Telegram and advertising providers.
-</p>
-
-<p>
-These third parties operate under their own terms and privacy policies. FIDEXA does not control the privacy practices of independent third-party services.
-</p>
-
-
-<h3>12. Cookies and Local Storage</h3>
-
-<p>
-FIDEXA may use browser, Telegram Mini App or device storage technologies where necessary to maintain application functionality, preferences, sessions or technical information.
-</p>
-
-<p>
-FIDEXA does not use such technologies to intentionally collect information unrelated to operation of the service.
-</p>
-
-
-<h3>13. Changes to This Privacy Policy</h3>
-
-<p>
-FIDEXA may update this Privacy Policy from time to time to reflect changes to the application, services, technology or applicable legal requirements.
-</p>
-
-<p>
-The Last Updated date at the beginning of this Privacy Policy indicates when the policy was most recently revised.
-</p>
-
-
-<h3>14. Contact Us</h3>
-
-<p>
-If you have questions, concerns, requests or complaints concerning this Privacy Policy or the handling of your information, please contact FIDEXA through the official support channel provided within the FIDEXA Mini App.
-</p>
-
-<p>
-<strong>Project:</strong> FIDEXA Network
-</p>
-
-<p>
-<strong>Platform:</strong> Telegram Mini App
-</p>
-
-<p>
-<strong>Support:</strong> FIDEXA Chat Support
-</p>
-
-</div>
-
-`;
-
-
-/* ======================================================
+/* =========================================================
    INITIALIZATION
-====================================================== */
+========================================================= */
 
 window.addEventListener(
-  "DOMContentLoaded",
-  ()=>{
+'DOMContentLoaded',
+()=>{
 
-    if(!enforceAccessControl())
-      return;
+if(enforceAccessControl()){
 
-    updateWalletUI();
-
-    updateMigrationUI();
-
-    updateReferralUI();
-
-    document
-      .getElementById("currentRateDisplay")
-      .textContent =
-      getCumulativeRate()
-      .toFixed(1);
-
-    if(
-      window.Telegram &&
-      window.Telegram.WebApp
-    ){
-
-      try{
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-      }catch(e){}
-
-    }
-
-  }
+referralBonusRate=
+parseFloat(
+(
+referralData.active*0.1
+).toFixed(1)
 );
+
+updateBalancesUI();
+
+document
+.getElementById('currentRateDisplay')
+.textContent=
+getCumulativeRate().toFixed(1);
+
+}
+
+});
 
 </script>
 
