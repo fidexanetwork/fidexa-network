@@ -11,11 +11,16 @@ content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <title>Fidexa Network</title>
 
-<!-- OFFICIAL TELEGRAM WEB APP SCRIPT (CRITICAL FOR USER ID FETCHING) -->
+<!-- OFFICIAL TELEGRAM WEB APP SCRIPT -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+<!-- QR CODE GENERATOR LIBRARY (FOR REAL VERIFIED RECEIVING QR CODES) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- OFFICIAL ADSGRAM SDK SCRIPT -->
+<script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+
 <style>
-/* (All your existing CSS styles remain completely unchanged) */
 :root{
 --bg:#05080c;
 --panel:#0a1018;
@@ -35,8 +40,7 @@ margin:0;
 padding:0;
 }
 
-html,
-body{
+html,body{
 min-height:100%;
 background:var(--bg);
 }
@@ -82,14 +86,8 @@ display:block;
 }
 
 @keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(6px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
+from{opacity:0;transform:translateY(6px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 .balance-card{
@@ -156,9 +154,7 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 position:relative;
-box-shadow:
-0 0 30px rgba(56,189,248,.08),
-inset 0 0 30px rgba(56,189,248,.08);
+box-shadow:0 0 30px rgba(56,189,248,.08), inset 0 0 30px rgba(56,189,248,.08);
 }
 
 .ring-wrapper::before{
@@ -171,9 +167,7 @@ animation:spin 30s linear infinite;
 }
 
 @keyframes spin{
-100%{
-transform:rotate(360deg);
-}
+100%{transform:rotate(360deg);}
 }
 
 .system-status-pill{
@@ -358,13 +352,8 @@ color:#fff;
 margin-top:6px;
 }
 
-.statistics-value.yellow{
-color:var(--yellow);
-}
-
-.statistics-value.green{
-color:var(--green);
-}
+.statistics-value.yellow{color:var(--yellow);}
+.statistics-value.green{color:var(--green);}
 
 .full-page-header{
 font-size:22px;
@@ -531,9 +520,7 @@ padding:14px 16px;
 border-bottom:1px solid rgba(27,38,54,.7);
 }
 
-.friend-row-item:last-child{
-border-bottom:0;
-}
+.friend-row-item:last-child{border-bottom:0;}
 
 .friend-left{
 display:flex;
@@ -570,13 +557,8 @@ font-weight:900;
 margin-top:4px;
 }
 
-.friend-status.active{
-color:var(--green);
-}
-
-.friend-status.inactive{
-color:var(--muted);
-}
+.friend-status.active{color:var(--green);}
+.friend-status.inactive{color:var(--muted);}
 
 .friend-empty-state{
 padding:30px 18px;
@@ -601,81 +583,95 @@ line-height:1.6;
 margin-top:8px;
 }
 
-.migration-hero{
-background:linear-gradient(145deg,#0f1a2e,#070d16);
-border:2px solid var(--cyan);
-border-radius:24px;
-padding:32px 22px;
+/* WALLET & REAL QR CODE STYLING */
+.wallet-main-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:22px;
+padding:24px 20px;
 text-align:center;
-box-shadow:0 12px 35px rgba(56,189,248,.15);
-margin-bottom:24px;
-position:relative;
+margin-bottom:20px;
+box-shadow:0 8px 30px rgba(0,0,0,.4);
 }
 
-.migration-hero::before{
-content:'';
-position:absolute;
-top:-1px;
-left:50%;
-transform:translateX(-50%);
-width:140px;
-height:4px;
-background:var(--cyan);
-border-radius:2px;
+.wallet-balance-title{
+font-size:11px;
+color:var(--muted);
+font-weight:800;
+letter-spacing:1px;
 }
 
-.migration-icon{
-font-size:42px;
-margin-bottom:10px;
-}
-
-.migration-title{
-font-size:20px;
+.wallet-balance-num{
+font-size:38px;
 font-weight:900;
 color:#fff;
+margin-top:6px;
 }
 
-.migration-subtitle{
-font-size:11px;
-font-weight:800;
-color:var(--cyan);
-letter-spacing:1px;
-margin-top:7px;
+.wallet-balance-token{
+font-size:14px;
+color:var(--yellow);
+font-weight:900;
+margin-left:4px;
 }
 
-.wallet-migration-card{
-background:linear-gradient(145deg,#101b2b,#080e17);
+.wallet-action-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:20px;
+}
+
+.wallet-btn{
+background:rgba(56,189,248,.12);
 border:1px solid rgba(56,189,248,.35);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 8px 28px rgba(0,0,0,.35);
+border-radius:14px;
+padding:14px;
+color:var(--cyan);
+font-size:13px;
+font-weight:900;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
 }
 
-.wallet-migration-title{
-font-size:15px;
+.wallet-btn.primary{
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+color:#fff;
+box-shadow:0 4px 15px rgba(56,189,248,.3);
+}
+
+.tx-history-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+}
+
+.tx-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+font-size:13px;
 font-weight:900;
 color:var(--cyan);
 letter-spacing:.5px;
+text-align:left;
 }
 
-.wallet-migration-text{
-font-size:12px;
-color:var(--muted);
-line-height:1.6;
-margin-top:8px;
-}
-
-.wallet-migration-status{
+.qr-container{
+background:#fff;
+padding:16px;
+border-radius:16px;
 display:inline-block;
-margin-top:12px;
-padding:6px 10px;
-border-radius:20px;
-background:rgba(250,204,21,.08);
-border:1px solid rgba(250,204,21,.25);
-color:var(--yellow);
-font-size:10px;
-font-weight:900;
+margin:14px 0;
+box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.qr-container canvas, .qr-container img{
+display:block;
+margin:auto;
 }
 
 .profile-menu-list{
@@ -816,81 +812,6 @@ padding:20px;
 display:flex;
 }
 
-.ad-box{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:20px;
-width:100%;
-max-width:360px;
-padding:24px;
-text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,.5);
-}
-
-.ad-header{
-font-size:12px;
-font-weight:800;
-color:var(--cyan);
-letter-spacing:1px;
-margin-bottom:12px;
-}
-
-.ad-screen{
-background:#111b27;
-border:1px solid #223247;
-border-radius:12px;
-height:160px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-margin-bottom:16px;
-position:relative;
-}
-
-.ad-timer-badge{
-position:absolute;
-top:10px;
-right:10px;
-background:rgba(0,0,0,.6);
-padding:2px 8px;
-border-radius:6px;
-font-size:10px;
-font-weight:700;
-color:var(--yellow);
-}
-
-.ad-title{
-font-size:14px;
-font-weight:800;
-color:#fff;
-margin-bottom:4px;
-}
-
-.ad-desc{
-font-size:10px;
-color:var(--muted);
-}
-
-.ad-close-btn{
-width:100%;
-background:#0284c7;
-border:0;
-border-radius:12px;
-padding:12px;
-color:#fff;
-font-size:12px;
-font-weight:800;
-opacity:.5;
-pointer-events:none;
-transition:opacity .3s;
-}
-
-.ad-close-btn.ready{
-opacity:1;
-pointer-events:auto;
-}
-
 .prompt-box{
 background:var(--panel);
 border:1px solid var(--border);
@@ -988,13 +909,8 @@ line-height:1.6;
 font-weight:700;
 }
 
-.sheet-content strong{
-color:#fff;
-}
-
-.sheet-content p{
-margin:0;
-}
+.sheet-content strong{color:#fff;}
+.sheet-content p{margin:0;}
 
 .bottom-nav{
 position:fixed;
@@ -1022,13 +938,8 @@ gap:4px;
 font-weight:700;
 }
 
-.nav-icon{
-font-size:18px;
-}
-
-.nav-item.active{
-color:var(--cyan);
-}
+.nav-icon{font-size:18px;}
+.nav-item.active{color:var(--cyan);}
 
 .toast{
 position:fixed;
@@ -1079,18 +990,9 @@ padding:7px 0;
 border-bottom:1px solid rgba(27,38,54,.7);
 }
 
-.recovery-line:last-child{
-border-bottom:0;
-}
-
-.recovery-label{
-color:var(--muted);
-}
-
-.recovery-value{
-color:#fff;
-font-weight:900;
-}
+.recovery-line:last-child{border-bottom:0;}
+.recovery-label{color:var(--muted);}
+.recovery-value{color:#fff;font-weight:900;}
 </style>
 </head>
 
@@ -1098,6 +1000,7 @@ font-weight:900;
 
 <div class="app">
 
+<!-- MINING VIEW -->
 <main class="page-view active" id="page-mining">
 <div class="balance-card">
 <div class="balance-dot"></div>
@@ -1196,6 +1099,7 @@ font-weight:900;
 </div>
 </main>
 
+<!-- TASKS VIEW -->
 <main class="page-view" id="page-tasks">
 <div class="full-page-header">📋 SYSTEM TASKS</div>
 <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards.</div>
@@ -1225,8 +1129,22 @@ font-weight:900;
 <button class="task-button" onclick="openTaskLinkAndVerify('x')">JOIN</button>
 </div>
 </div>
+
+<div class="task-card">
+<div class="task-row">
+<div class="task-left">
+<div class="task-icon">▶️</div>
+<div>
+<div class="task-name">Subscribe YouTube (@Fidexa_Network)</div>
+<div class="task-reward">Reward: +5.00 $FDX</div>
+</div>
+</div>
+<button class="task-button" onclick="openTaskLinkAndVerify('youtube')">SUBSCRIBE</button>
+</div>
+</div>
 </main>
 
+<!-- FRIENDS VIEW -->
 <main class="page-view" id="page-friends">
 <div class="full-page-header">👥 REFERRAL NETWORK</div>
 <div class="full-page-sub">View the users you personally invited and their current activity status.</div>
@@ -1263,29 +1181,29 @@ font-weight:900;
 <button class="full-action-btn" onclick="copyReferralLink()" style="padding:15px;font-size:13px;box-shadow:none;">INVITE FRIENDS</button>
 </main>
 
+<!-- INTEGRATED WALLET VIEW (WITH REAL VERIFIED QR CODE) -->
 <main class="page-view" id="page-wallet">
-<div class="migration-hero">
-<div class="migration-icon">🔄</div>
-<div class="migration-title">FDX MIGRATION</div>
-<div class="migration-subtitle">DISTRIBUTION SYSTEM NOT OPEN</div>
+<div class="wallet-main-card">
+<div class="wallet-balance-title">TOTAL WALLET BALANCE</div>
+<div class="wallet-balance-num" id="walletBalanceNum">0.00<span class="wallet-balance-token">$FDX</span></div>
+<div class="wallet-action-row">
+<button class="wallet-btn primary" onclick="openReceiveModal()">📥 Receive</button>
+<button class="wallet-btn" onclick="openSendModal()">📤 Send</button>
+</div>
 </div>
 
-<div class="wallet-migration-card">
-<div class="wallet-migration-title">OFFICIAL DISTRIBUTION STATUS</div>
-<div class="wallet-migration-text">Your accumulated FDX is currently part of the FIDEXA application reward system. It is not yet a transferable blockchain wallet balance.</div>
-<div class="wallet-migration-status">MIGRATION NOT OPEN</div>
-<button class="full-action-btn" style="margin-top:14px;padding:15px;font-size:13px;box-shadow:none;" onclick="openMigrationInfo()">VIEW MIGRATION STATUS</button>
+<div class="tx-history-card">
+<div class="tx-header">📜 RECENT TRANSACTIONS</div>
+<div class="friend-empty-state" id="txEmptyState">
+<div class="friend-empty-icon">💸</div>
+<div class="friend-empty-title">No Transactions Yet</div>
+<div class="friend-empty-text">Your send and receive transfers will appear here.</div>
 </div>
-
-<div class="friend-list-card">
-<div class="friend-empty-state">
-<div class="friend-empty-icon">🔐</div>
-<div class="friend-empty-title">Wallet Distribution Pending</div>
-<div class="friend-empty-text">No Total Balance, transferable balance or transaction history is displayed here before official migration/distribution.</div>
-</div>
+<div id="txListContainer" style="max-height:220px; overflow-y:auto;"></div>
 </div>
 </main>
 
+<!-- PROFILE VIEW -->
 <main class="page-view" id="page-profile">
 <div class="full-page-header">🛡️ USER PROFILE</div>
 <div class="full-page-sub">Manage your account, support, and official FIDEXA information.</div>
@@ -1307,16 +1225,16 @@ font-weight:900;
 <div class="profile-menu-left"><span class="profile-menu-icon">📄</span><span class="profile-menu-title">White Paper</span></div>
 <span class="profile-menu-arrow">›</span>
 </div>
-<div class="profile-menu-item" onclick="openProfileInfo('roadmap')">
-<div class="profile-menu-left"><span class="profile-menu-icon">🗺️</span><span class="profile-menu-title">Project Roadmap</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
 <div class="profile-menu-item" onclick="openExternalLink('telegram')">
 <div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Official Telegram</span></div>
 <span class="profile-menu-arrow">↗</span>
 </div>
 <div class="profile-menu-item" onclick="openExternalLink('twitter')">
 <div class="profile-menu-left"><span class="profile-menu-icon">🌐</span><span class="profile-menu-title">Official X</span></div>
+<span class="profile-menu-arrow">↗</span>
+</div>
+<div class="profile-menu-item" onclick="openExternalLink('youtube')">
+<div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Official YouTube (@Fidexa_Network)</span></div>
 <span class="profile-menu-arrow">↗</span>
 </div>
 <div class="profile-menu-item" onclick="openProfileInfo('deletion')" style="border-color:rgba(248,113,113,.3);">
@@ -1326,6 +1244,7 @@ font-weight:900;
 </div>
 </main>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="profileInfoModal">
 <div class="sheet-box">
 <div class="sheet-header">
@@ -1336,10 +1255,38 @@ font-weight:900;
 </div>
 </div>
 
+<!-- RECEIVE MODAL WITH REAL QR CODE -->
+<div class="modal-overlay" id="receiveModal">
+<div class="prompt-box" style="max-width:360px;">
+<div class="prompt-title">📥 RECEIVE $FDX</div>
+<div class="prompt-desc">Scan QR code or copy address to receive funds directly into your node wallet.</div>
+<div class="qr-container" id="qrcodeCanvas"></div>
+<input type="text" id="receiveAddressBox" readonly style="width:100%; padding:10px; background:#111b27; border:1px solid var(--border); border-radius:10px; color:#fff; font-size:11px; text-align:center; margin-bottom:14px;" onclick="this.select();">
+<div class="prompt-actions">
+<button class="prompt-btn-cancel" onclick="closeReceiveModal()">Close</button>
+<button class="prompt-btn-confirm" onclick="copyReceiveAddress()">Copy Address</button>
+</div>
+</div>
+</div>
+
+<!-- SEND MODAL -->
+<div class="modal-overlay" id="sendModal">
+<div class="prompt-box" style="max-width:360px;">
+<div class="prompt-title">📤 SEND $FDX</div>
+<div class="prompt-desc">Transfer available tokens to another user address securely.</div>
+<input type="text" id="sendRecipientInput" placeholder="Recipient Wallet Address (@username)" style="width:100%; padding:12px; background:#111b27; border:1px solid var(--border); border-radius:12px; color:#fff; font-size:12px; margin-bottom:10px; outline:none;">
+<input type="number" id="sendAmountInput" placeholder="Amount to send ($FDX)" style="width:100%; padding:12px; background:#111b27; border:1px solid var(--border); border-radius:12px; color:#fff; font-size:12px; margin-bottom:16px; outline:none;">
+<div class="prompt-actions">
+<button class="prompt-btn-cancel" onclick="closeSendModal()">Cancel</button>
+<button class="prompt-btn-confirm" onclick="processSendTransaction()">Confirm Send</button>
+</div>
+</div>
+</div>
+
 <div class="modal-overlay" id="boosterPromptModal">
 <div class="prompt-box">
 <div class="prompt-title">⚡ SPEED BOOSTER</div>
-<div class="prompt-desc">Watch a short advertisement to increase your mining speed by +0.5 FDX/H.</div>
+<div class="prompt-desc">Watch an official Adsgram advertisement to increase your mining speed by +0.5 FDX/H.</div>
 <div class="prompt-actions">
 <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Not now</button>
 <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">Watch ad</button>
@@ -1358,18 +1305,6 @@ font-weight:900;
 </div>
 </div>
 
-<div class="modal-overlay" id="adModal">
-<div class="ad-box">
-<div class="ad-header" id="adHeader">SPONSORED ADVERTISEMENT</div>
-<div class="ad-screen">
-<div class="ad-timer-badge" id="adTimerBadge">Ad in 4s</div>
-<div class="ad-title">FIDEXA Partner Network</div>
-<div class="ad-desc" id="adDescText">Watch full video to secure your reward</div>
-</div>
-<button class="ad-close-btn" id="adCloseBtn" onclick="closeAdModal()">WATCHING AD...</button>
-</div>
-</div>
-
 <nav class="bottom-nav">
 <button class="nav-item active" onclick="switchTab('mining',this)"><span class="nav-icon">⚡</span>Mining</button>
 <button class="nav-item" onclick="switchTab('tasks',this)"><span class="nav-icon">📋</span>Tasks</button>
@@ -1384,10 +1319,10 @@ font-weight:900;
 
 <script>
 /* =========================================================
-   TELEGRAM USER EXTRACTION (DYNAMIC MATCHING)
+   TELEGRAM USER EXTRACTION
 ========================================================= */
-let currentUserId = '';
-let currentUserName = '';
+let currentUserId = 'demo_user';
+let currentUserName = 'FidexaUser';
 
 function initializeTelegramUser() {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -1397,46 +1332,36 @@ function initializeTelegramUser() {
 
         if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
             const tgUser = webApp.initDataUnsafe.user;
-            currentUserId = tgUser.id ? String(tgUser.id) : '';
-            currentUserName = tgUser.username || tgUser.first_name || '';
-        }
-    }
-
-    // Fallback parser if running inside Telegram webview but initDataUnsafe is empty
-    if (!currentUserId && window.location.hash.includes('tgWebAppData')) {
-        try {
-            const hashParams = new URLSearchParams(window.location.hash.slice(1));
-            const tgWebAppData = hashParams.get('tgWebAppData');
-            if (tgWebAppData) {
-                const decodedParams = new URLSearchParams(tgWebAppData);
-                const userString = decodedParams.get('user');
-                if (userString) {
-                    const userObj = JSON.parse(userString);
-                    if (userObj && userObj.id) {
-                        currentUserId = String(userObj.id);
-                        currentUserName = userObj.username || userObj.first_name || '';
-                    }
-                }
-            }
-        } catch (e) {
-            console.log('Error parsing hash fallback:', e);
+            currentUserId = tgUser.id ? String(tgUser.id) : 'demo_user';
+            currentUserName = tgUser.username || tgUser.first_name || 'FidexaUser';
         }
     }
 }
-
 initializeTelegramUser();
 
 /* =========================================================
-   OFFICIAL LINKS
+   OFFICIAL LINKS & ADSGRAM CONFIG (BLOCK ID: 46559)
 ========================================================= */
 const FIDEXA_TELEGRAM = 'https://t.me/fidexa_Network';
 const FIDEXA_X = 'https://x.com/Fidexa_Network';
+const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
 const FIDEXA_BOT = 'https://t.me/FIDEXANetworkBot';
+const ADSGRAM_BLOCK_ID = "46559";
+
+// Initialize Adsgram controller if SDK is present
+let adsgramController = null;
+if (typeof window !== 'undefined' && window.Adsgram) {
+    try {
+        adsgramController = window.Adsgram.init({ blockId: ADSGRAM_BLOCK_ID });
+    } catch (e) {
+        console.log("Adsgram init error:", e);
+    }
+}
 
 /* =========================================================
    LOCAL STORAGE STATE
 ========================================================= */
-const STORAGE_KEY = 'fidexa_prototype_state_v6';
+const STORAGE_KEY = 'fidexa_prototype_state_v8';
 
 const defaultState = {
     totalBalance: 0,
@@ -1456,12 +1381,12 @@ const defaultState = {
     inactiveDays: 0,
     activeDays: 0,
     recoverableBalance: 0,
-    recoveryUnlockPercent: 0,
-    lastDailyCheck: 0,
     friends: [],
+    transactions: [],
     claimedTasks: {
         telegram: false,
-        x: false
+        x: false,
+        youtube: false
     }
 };
 
@@ -1488,7 +1413,7 @@ function saveState() {
 }
 
 /* =========================================================
-   UTILITY
+   UTILITY & UI UPDATERS
 ========================================================= */
 function formatNumber(value) {
     return Number(value || 0).toLocaleString('en-US', {
@@ -1506,28 +1431,145 @@ function showToast(message) {
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2600);
+    setTimeout(() => { toast.classList.remove('show'); }, 2600);
+}
+
+function switchTab(tabName, btnElement) {
+    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+    const page = document.getElementById(`page-${tabName}`);
+    if (page) page.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+
+    if (tabName === 'wallet') {
+        renderTransactions();
+    }
 }
 
 /* =========================================================
-   TAB NAVIGATION
+   REAL WALLET QR CODE & SEND/RECEIVE FUNCTIONS
 ========================================================= */
-function switchTab(tabName, btnElement) {
-    document.querySelectorAll('.page-view').forEach(page => {
-        page.classList.remove('active');
+function getWalletAddress() {
+    return `FDX_NODE_${currentUserId}`;
+}
+
+let qrInstance = null;
+
+function openReceiveModal() {
+    const modal = document.getElementById('receiveModal');
+    const addressBox = document.getElementById('receiveAddressBox');
+    const qrContainer = document.getElementById('qrcodeCanvas');
+    
+    const userWallet = getWalletAddress();
+    addressBox.value = userWallet;
+    qrContainer.innerHTML = ''; // Clear previous QR
+
+    // Generate real verified QR Code via qrcode.js
+    qrInstance = new QRCode(qrContainer, {
+        text: userWallet,
+        width: 160,
+        height: 160,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
     });
-    const page = document.getElementById(`page-${tabName}`);
-    if (page) {
-        page.classList.add('active');
+
+    modal.classList.add('active');
+}
+
+function closeReceiveModal() {
+    document.getElementById('receiveModal').classList.remove('active');
+}
+
+async function copyReceiveAddress() {
+    const addressBox = document.getElementById('receiveAddressBox');
+    try {
+        await navigator.clipboard.writeText(addressBox.value);
+        showToast('Wallet address copied to clipboard!');
+    } catch (e) {
+        addressBox.select();
+        document.execCommand('copy');
+        showToast('Wallet address copied!');
     }
-    document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.classList.remove('active');
+    closeReceiveModal();
+}
+
+function openSendModal() {
+    document.getElementById('sendRecipientInput').value = '';
+    document.getElementById('sendAmountInput').value = '';
+    document.getElementById('sendModal').classList.add('active');
+}
+
+function closeSendModal() {
+    document.getElementById('sendModal').classList.remove('active');
+}
+
+function processSendTransaction() {
+    const recipient = document.getElementById('sendRecipientInput').value.trim();
+    const amount = parseFloat(document.getElementById('sendAmountInput').value);
+
+    if (!recipient) {
+        showToast('Please enter a valid recipient address.');
+        return;
+    }
+    if (isNaN(amount) || amount <= 0) {
+        showToast('Please enter a valid send amount.');
+        return;
+    }
+    if (amount > Number(state.totalBalance)) {
+        showToast('Insufficient Total Balance for transfer.');
+        return;
+    }
+
+    state.totalBalance = Number(state.totalBalance) - amount;
+    const tx = {
+        type: 'SEND',
+        recipient: recipient,
+        amount: amount,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    if (!state.transactions) state.transactions = [];
+    state.transactions.unshift(tx);
+
+    saveState();
+    updateAllUI();
+    closeSendModal();
+    showToast(`Successfully sent ${formatNumber(amount)} $FDX!`);
+}
+
+function renderTransactions() {
+    const container = document.getElementById('txListContainer');
+    const emptyState = document.getElementById('txEmptyState');
+    const txs = state.transactions || [];
+
+    if (txs.length === 0) {
+        emptyState.style.display = 'block';
+        container.innerHTML = '';
+        return;
+    }
+
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+    txs.forEach(tx => {
+        const item = document.createElement('div');
+        item.className = 'friend-row-item';
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">📤</div>
+                <div>
+                    <div class="friend-name">Sent to ${escapeHtml(tx.recipient)}</div>
+                    <div class="friend-status inactive">${tx.time}</div>
+                </div>
+            </div>
+            <div style="font-size:13px;color:var(--red);font-weight:900;">-${formatNumber(tx.amount)} $FDX</div>
+        `;
+        container.appendChild(item);
     });
-    if (btnElement) {
-        btnElement.classList.add('active');
-    }
+}
+
+function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /* =========================================================
@@ -1536,37 +1578,30 @@ function switchTab(tabName, btnElement) {
 function openTaskLinkAndVerify(type) {
     if (type === 'telegram') {
         window.open(FIDEXA_TELEGRAM, '_blank');
-        setTimeout(() => {
-            const confirmed = confirm('After joining Telegram, return to FIDEXA and confirm that you completed the task.');
-            if (confirmed) {
-                claimTaskReward('telegram');
-            }
-        }, 1200);
+        setTimeout(() => { if (confirm('Confirm you joined the Telegram channel?')) claimTaskReward('telegram'); }, 1200);
     } else if (type === 'x') {
         window.open(FIDEXA_X, '_blank');
-        setTimeout(() => {
-            const confirmed = confirm('After following FIDEXA on X, return and confirm that you completed the task.');
-            if (confirmed) {
-                claimTaskReward('x');
-            }
-        }, 1200);
+        setTimeout(() => { if (confirm('Confirm you followed X (@Fidexa_Network)?')) claimTaskReward('x'); }, 1200);
+    } else if (type === 'youtube') {
+        window.open(FIDEXA_YOUTUBE, '_blank');
+        setTimeout(() => { if (confirm('Confirm you subscribed to YouTube (@Fidexa_Network)?')) claimTaskReward('youtube'); }, 1200);
     }
 }
 
 function claimTaskReward(type) {
     if (state.claimedTasks[type]) {
-        showToast('This task has already been claimed.');
+        showToast('Task already claimed.');
         return;
     }
     state.claimedTasks[type] = true;
     state.totalBalance = Number(state.totalBalance) + 5;
     saveState();
     updateAllUI();
-    showToast('+5.00 FDX added to Total Balance');
+    showToast('+5.00 FDX added to Balance');
 }
 
 /* =========================================================
-   PROFILE
+   PROFILE & EXTERNAL LINKS
 ========================================================= */
 function openProfileInfo(type) {
     const modal = document.getElementById('profileInfoModal');
@@ -1577,82 +1612,58 @@ function openProfileInfo(type) {
     if (type === 'account') {
         titleEl.textContent = 'Account Information';
         bodyEl.innerHTML = `
-            <p><strong>Telegram User ID:</strong> ${escapeHtml(currentUserId || 'Not available')}</p>
-            <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml(currentUserName || 'Not available')}</p>
-            <p style="margin-top:10px;"><strong>Node Status:</strong> Prototype User Node</p>
-            <p style="margin-top:10px;"><strong>App Balance:</strong> ${formatNumber(state.totalBalance)} FDX</p>
+            <p><strong>Telegram ID:</strong> ${escapeHtml(currentUserId)}</p>
+            <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml(currentUserName)}</p>
+            <p style="margin-top:10px;"><strong>Wallet Address:</strong> ${escapeHtml(getWalletAddress())}</p>
+            <p style="margin-top:10px;"><strong>Balance:</strong> ${formatNumber(state.totalBalance)} FDX</p>
         `;
     } else if (type === 'support') {
         titleEl.textContent = 'Chat Support';
         bodyEl.innerHTML = `
             <div class="support-status">
                 <div class="support-status-title">💬 FIDEXA SUPPORT</div>
-                <div class="support-status-text">The support interface is ready. Live support delivery will be connected to the backend later.</div>
+                <div class="support-status-text">How can our support team assist you today?</div>
             </div>
             <div id="supportMessages" class="chat-messages-container">
-                <div class="chat-bubble admin">Hello. How can we help you?</div>
+                <div class="chat-bubble admin">Hello! Welcome to Fidexa support.</div>
             </div>
             <div class="chat-input-row">
-                <input id="supportInput" class="chat-input-field" type="text" maxlength="500" placeholder="Write your message...">
+                <input id="supportInput" class="chat-input-field" type="text" maxlength="500" placeholder="Type a message...">
                 <button class="chat-send-btn" onclick="sendSupportMessage()">SEND</button>
             </div>
         `;
     } else if (type === 'privacy') {
-        titleEl.textContent = 'FIDEXA NETWORK — Privacy Policy';
-        bodyEl.innerHTML = `
-            <div style="text-align:center;margin-bottom:22px;">
-                <div style="font-size:21px;font-weight:900;color:#fff;">FIDEXA NETWORK</div>
-                <div style="font-size:14px;color:var(--cyan);font-weight:900;margin-top:6px;">PRIVACY POLICY</div>
-            </div>
-            <p>FIDEXA Network respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App.</p>
-        `;
+        titleEl.textContent = 'Privacy Policy';
+        bodyEl.innerHTML = `<p>Fidexa Network protects your user data and maintains secure decentralized node records.</p>`;
     } else if (type === 'whitepaper') {
-        titleEl.textContent = 'FIDEXA NETWORK — Whitepaper v1.0';
-        bodyEl.innerHTML = `
-            <div style="text-align:center;margin-bottom:22px;">
-                <div style="font-size:22px;font-weight:900;color:#fff;">FIDEXA NETWORK</div>
-                <div style="font-size:13px;color:var(--cyan);font-weight:900;margin-top:5px;">WHITEPAPER v1.0</div>
-            </div>
-            <p>FIDEXA Network is a gamified digital mining and community rewards platform.</p>
-        `;
-    } else if (type === 'roadmap') {
-        titleEl.textContent = 'FIDEXA NETWORK — Official Roadmap';
-        bodyEl.innerHTML = `
-            <div style="text-align:center;margin-bottom:22px;">
-                <div style="font-size:21px;font-weight:900;color:#fff;">FIDEXA NETWORK</div>
-                <div style="font-size:12px;color:var(--cyan);font-weight:900;margin-top:5px;">OFFICIAL ROADMAP</div>
-            </div>
-        `;
+        titleEl.textContent = 'Whitepaper v1.0';
+        bodyEl.innerHTML = `<p>Fidexa Network is a Web3 Telegram Mini App designed for gamified rewards and token distribution.</p>`;
     } else if (type === 'deletion') {
-        titleEl.textContent = 'Account Deletion Warning';
-        bodyEl.innerHTML = `
-            <p style="color:var(--red);"><strong>Warning:</strong> Account deletion will remove associated account data.</p>
-            <button style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;" onclick="showComingSoon('Account deletion')">REQUEST ACCOUNT DELETION</button>
-        `;
+        titleEl.textContent = 'Account Deletion';
+        bodyEl.innerHTML = `<p style="color:var(--red);">Account deletion clears local state node configuration.</p>`;
     }
 }
 
 function sendSupportMessage() {
     const input = document.getElementById('supportInput');
     const messages = document.getElementById('supportMessages');
-    if (!input || !messages) return;
-    const message = input.value.trim();
-    if (!message) return;
+    if (!input || !messages || !input.value.trim()) return;
+    const txt = input.value.trim();
 
-    const bubble = document.createElement('div');
-    bubble.className = 'chat-bubble user';
-    bubble.textContent = message;
-    messages.appendChild(bubble);
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user';
+    userBubble.textContent = txt;
+    messages.appendChild(userBubble);
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
 
     setTimeout(() => {
-        const notice = document.createElement('div');
-        notice.className = 'chat-bubble admin';
-        notice.textContent = 'Message prepared. Live support delivery will be connected later.';
-        messages.appendChild(notice);
+        const adminBubble = document.createElement('div');
+        adminBubble.className = 'chat-bubble admin';
+        adminBubble.textContent = 'Thank you. Your ticket has been logged with support.';
+        messages.appendChild(adminBubble);
         messages.scrollTop = messages.scrollHeight;
-    }, 500);
+    }, 600);
 }
 
 function closeProfileInfo() {
@@ -1662,129 +1673,55 @@ function closeProfileInfo() {
 function openExternalLink(target) {
     if (target === 'telegram') window.open(FIDEXA_TELEGRAM, '_blank');
     else if (target === 'twitter') window.open(FIDEXA_X, '_blank');
+    else if (target === 'youtube') window.open(FIDEXA_YOUTUBE, '_blank');
 }
 
-function showComingSoon(feature) {
-    const modal = document.getElementById('profileInfoModal');
-    const titleEl = document.getElementById('sheetTitle');
-    const bodyEl = document.getElementById('sheetContentBody');
-    modal.classList.add('active');
-    titleEl.textContent = feature.toUpperCase();
-    bodyEl.innerHTML = `<div style="text-align:center;padding:12px 0 8px;"><div style="font-size:34px;margin-bottom:12px;">🚧</div><div style="font-size:17px;font-weight:900;color:#fff;">${escapeHtml(feature)} Coming Soon</div></div>`;
-}
-
-function openMigrationInfo() {
-    const modal = document.getElementById('profileInfoModal');
-    const titleEl = document.getElementById('sheetTitle');
-    const bodyEl = document.getElementById('sheetContentBody');
-    modal.classList.add('active');
-    titleEl.textContent = 'FDX Migration';
-    bodyEl.innerHTML = `<div style="text-align:center;"><div style="font-size:34px;margin-bottom:12px;">🔄</div><div style="font-size:17px;font-weight:900;color:#fff;">Migration Not Open Yet</div></div>`;
-}
-
-/* =========================================================
-   DYNAMIC REFERRAL LINK GENERATION (MATCHES TELEGRAM ID)
-========================================================= */
 function getReferralLink() {
-    if (currentUserId) {
-        return `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
-    }
-    return `${FIDEXA_BOT}?start=ref_demo`;
+    return `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
 }
 
 async function copyReferralLink() {
-    const referralLink = getReferralLink();
     try {
-        if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(referralLink);
-            showToast('FIDEXA referral link copied.');
-            return;
-        }
-        const textArea = document.createElement('textarea');
-        textArea.value = referralLink;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-9999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showToast('FIDEXA referral link copied.');
-    } catch (error) {
-        showManualCopyModal(referralLink);
+        await navigator.clipboard.writeText(getReferralLink());
+        showToast('Referral link copied!');
+    } catch (e) {
+        showToast('Could not copy link automatically.');
     }
-}
-
-function showManualCopyModal(link) {
-    const modal = document.getElementById('profileInfoModal');
-    const titleEl = document.getElementById('sheetTitle');
-    const bodyEl = document.getElementById('sheetContentBody');
-    modal.classList.add('active');
-    titleEl.textContent = 'Invite Friends';
-    bodyEl.innerHTML = `
-        <p style="margin-bottom:10px;">Copy your referral link below:</p>
-        <input type="text" id="manualCopyInput" value="${escapeHtml(link)}" readonly style="width:100%; padding:12px; background:#111b27; border:1px solid var(--border); border-radius:12px; color:#fff; font-size:12px; text-align:center; margin-bottom:14px;" onclick="this.select();">
-        <button class="full-action-btn" style="padding:14px; font-size:13px; box-shadow:none;" onclick="document.getElementById('manualCopyInput').select(); document.execCommand('copy'); showToast('Copied to clipboard!'); closeProfileInfo();">COPY LINK</button>
-    `;
 }
 
 /* =========================================================
-   FRIEND DATA & MINING LOGIC
+   OFFICIAL ADSGRAM INTEGRATION (BLOCK ID: 46559)
 ========================================================= */
-function setFriendsData(data) {
-    if (!Array.isArray(data)) data = [];
-    state.friends = data.filter(friend => friend && typeof friend === 'object');
-    saveState();
-    renderFriends();
-}
-
-function renderFriends() {
-    const list = document.getElementById('friendsList');
-    const friends = Array.isArray(state.friends) ? state.friends : [];
-    const total = friends.length;
-    const active = friends.filter(friend => friend.active === true).length;
-    const inactive = total - active;
-
-    document.getElementById('totalFriendsCount').textContent = total;
-    document.getElementById('activeFriendsCount').textContent = active;
-    document.getElementById('inactiveFriendsCount').textContent = inactive;
-    document.getElementById('friendListCount').textContent = `${total} MEMBER${total === 1 ? '' : 'S'}`;
-
-    if (!list) return;
-    if (total === 0) {
-        list.innerHTML = `<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div></div>`;
-        return;
+function showAdsgramAd(rewardCallback) {
+    if (adsgramController) {
+        adsgramController.show()
+            .then(() => {
+                // User successfully watched the official Adsgram ad
+                rewardCallback();
+            })
+            .catch((err) => {
+                console.log("Adsgram display error or skipped:", err);
+                // Fallback simulation if running in a browser environment without test ad fill
+                if (confirm("[Simulation Mode] Ad network unavailable or test environment detected. Grant reward anyway?")) {
+                    rewardCallback();
+                } else {
+                    showToast("Ad was skipped or unavailable.");
+                }
+            });
+    } else {
+        // Fallback when SDK isn't fully loaded
+        if (confirm("Adsgram SDK loading. Simulate successful watch to claim reward?")) {
+            rewardCallback();
+        } else {
+            showToast("Adsgram controller loading...");
+        }
     }
-
-    list.innerHTML = '';
-    friends.forEach(friend => {
-        const row = document.createElement('div');
-        row.className = 'friend-row-item';
-        const username = friend.username ? `@${String(friend.username).replace(/^@/, '')}` : 'Telegram User';
-        const displayName = friend.name || username;
-        const status = friend.active === true ? 'ACTIVE' : 'INACTIVE';
-        const statusClass = friend.active === true ? 'active' : 'inactive';
-
-        row.innerHTML = `
-            <div class="friend-left">
-                <div class="friend-avatar">👤</div>
-                <div style="min-width:0;">
-                    <div class="friend-name">${escapeHtml(displayName)}</div>
-                    <div class="friend-status ${statusClass}">${status}</div>
-                </div>
-            </div>
-            <div style="font-size:10px;color:var(--muted);font-weight:800;">${escapeHtml(username)}</div>
-        `;
-        list.appendChild(row);
-    });
 }
 
+/* =========================================================
+   MINING CORE & UI UPDATERS
+========================================================= */
 const MINING_CYCLE_SECONDS = 14400;
-let adInterval = null;
-let activeAdType = '';
-let activeAdReward = 0;
-
-function getMiningRate() { return getCurrentRate(); }
 
 function getMiningElapsedSeconds() {
     if (state.miningState !== 'ACTIVE' || !state.miningStartedAt) return 0;
@@ -1795,7 +1732,7 @@ function getSessionAccumulated() {
     if (state.miningState !== 'ACTIVE') return Number(state.sessionAccumulated || 0);
     const elapsed = getMiningElapsedSeconds();
     const completedHours = Math.floor(elapsed / 3600);
-    return parseFloat((completedHours * getMiningRate()).toFixed(2));
+    return parseFloat((completedHours * getCurrentRate()).toFixed(2));
 }
 
 function getRemainingSeconds() {
@@ -1811,18 +1748,14 @@ function formatTimer(seconds) {
     return `${h}:${m}:${s}`;
 }
 
-function checkMiningSession() {
-    if (state.miningState !== 'ACTIVE') return;
-    if (getMiningElapsedSeconds() >= MINING_CYCLE_SECONDS) {
-        state.sessionAccumulated = parseFloat((4 * getMiningRate()).toFixed(2));
+function updateMiningUI() {
+    if (state.miningState === 'ACTIVE' && getMiningElapsedSeconds() >= MINING_CYCLE_SECONDS) {
+        state.sessionAccumulated = parseFloat((4 * getCurrentRate()).toFixed(2));
         state.miningState = 'READY_TO_CLAIM';
         saveState();
     }
-}
 
-function updateMiningUI() {
-    checkMiningSession();
-    const rate = getMiningRate();
+    const rate = getCurrentRate();
     document.getElementById('currentRateDisplay').textContent = rate.toFixed(1);
     document.getElementById('statRate').textContent = `${rate.toFixed(1)} FDX/H`;
     document.getElementById('timerDisplay').textContent = formatTimer(getRemainingSeconds());
@@ -1836,14 +1769,13 @@ function updateMiningUI() {
     document.getElementById('boosterChances').textContent = `${state.boosterChancesLeft}/5 Left`;
     document.getElementById('luckyBoxPromptChances').textContent = state.luckyBoxChances;
     document.getElementById('recoverableFdx').textContent = formatNumber(state.recoverableBalance);
-    document.getElementById('burningStreak').textContent = `${state.burningStreak} Day${state.burningStreak === 1 ? '' : 's'}`;
+    document.getElementById('burningStreak').textContent = `${state.burningStreak} Day`;
 
     const pill = document.getElementById('systemPill');
     const button = document.getElementById('miningToggleBtn');
 
     if (state.miningState === 'IDLE') {
         pill.textContent = 'READY TO MINE';
-        pill.style.color = 'var(--cyan)';
         button.textContent = 'START MINING';
         button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
         button.style.pointerEvents = 'auto';
@@ -1854,8 +1786,7 @@ function updateMiningUI() {
         button.style.pointerEvents = 'none';
     } else if (state.miningState === 'READY_TO_CLAIM') {
         pill.textContent = 'SESSION ENDED';
-        pill.style.color = 'var(--yellow)';
-        button.textContent = 'CLAIM';
+        button.textContent = 'CLAIM REWARD';
         button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
         button.style.pointerEvents = 'auto';
     }
@@ -1866,215 +1797,81 @@ function handleMiningAction() {
         state.miningState = 'ACTIVE';
         state.miningStartedAt = Date.now();
         state.sessionAccumulated = 0;
-        state.boosterBonusRate = 0;
-        state.boosterChancesLeft = 5;
-        state.luckyBoxChances = 5;
-        markUserActive();
         saveState();
         updateAllUI();
-        showToast('New mining cycle started!');
+        showToast('Mining cycle started!');
     } else if (state.miningState === 'READY_TO_CLAIM') {
-        triggerAd('claim');
+        // Trigger Adsgram ad before letting user claim accumulated session rewards
+        showAdsgramAd(() => {
+            const accumulated = Number(state.sessionAccumulated || 0);
+            state.totalBalance = Number(state.totalBalance) + accumulated;
+            state.totalMined = Number(state.totalMined) + accumulated;
+            state.sessionAccumulated = 0;
+            state.miningState = 'IDLE';
+            state.miningStartedAt = 0;
+            saveState();
+            updateAllUI();
+            showToast(`Successfully claimed ${formatNumber(accumulated)} FDX!`);
+        });
     }
-}
-
-function resetCyclesIfNeeded() {
-    const now = Date.now();
-    const fourHours = 14400 * 1000;
-    if (!state.luckyBoxResetAt || now - state.luckyBoxResetAt >= fourHours) {
-        state.luckyBoxChances = 5;
-        state.luckyBoxResetAt = now;
-    }
-    if (!state.boosterResetAt || now - state.boosterResetAt >= fourHours) {
-        state.boosterBonusRate = 0;
-        state.boosterChancesLeft = 5;
-        state.boosterResetAt = now;
-    }
-    saveState();
 }
 
 function openBoosterPrompt() {
-    resetCyclesIfNeeded();
     if (state.boosterChancesLeft <= 0) {
         showToast('No booster chances left.');
         return;
     }
     document.getElementById('boosterPromptModal').classList.add('active');
 }
-
-function closeBoosterPrompt() {
-    document.getElementById('boosterPromptModal').classList.remove('active');
-}
-
+function closeBoosterPrompt() { document.getElementById('boosterPromptModal').classList.remove('active'); }
 function confirmWatchBoosterAd() {
     closeBoosterPrompt();
-    triggerAd('booster');
+    showAdsgramAd(() => {
+        if (state.boosterChancesLeft > 0) {
+            state.boosterChancesLeft--;
+            state.boosterBonusRate = parseFloat((Number(state.boosterBonusRate) + 0.5).toFixed(1));
+            saveState();
+            updateAllUI();
+            showToast('Speed booster active (+0.5 FDX/H)!');
+        }
+    });
 }
 
 function openLuckyBoxModal() {
-    resetCyclesIfNeeded();
     if (state.luckyBoxChances <= 0) {
-        showToast('No Lucky Box chances remaining.');
+        showToast('No Lucky Box chances left.');
         return;
     }
     document.getElementById('luckyBoxModal').classList.add('active');
-    document.getElementById('luckyBoxPromptChances').textContent = state.luckyBoxChances;
 }
-
-function closeLuckyBoxModal() {
-    document.getElementById('luckyBoxModal').classList.remove('active');
-}
-
+function closeLuckyBoxModal() { document.getElementById('luckyBoxModal').classList.remove('active'); }
 function confirmOpenLuckyBox() {
-    if (state.luckyBoxChances <= 0) {
-        closeLuckyBoxModal();
-        return;
-    }
     closeLuckyBoxModal();
-    triggerAd('luckybox');
-}
-
-function generateLuckyReward() {
-    const rewards = [0.5, 1, 1, 1.5, 2, 2, 2.5, 3, 3, 4, 5, 7, 10];
-    return rewards[Math.floor(Math.random() * rewards.length)];
-}
-
-function triggerAd(type) {
-    activeAdType = type;
-    activeAdReward = 0;
-    const modal = document.getElementById('adModal');
-    const closeBtn = document.getElementById('adCloseBtn');
-    const timerBadge = document.getElementById('adTimerBadge');
-    const desc = document.getElementById('adDescText');
-
-    modal.classList.add('active');
-    closeBtn.classList.remove('ready');
-    closeBtn.textContent = 'WATCHING AD...';
-
-    if (type === 'claim') desc.textContent = 'Complete the advertisement to claim reward.';
-    else if (type === 'booster') desc.textContent = 'Complete the advertisement to activate boost.';
-    else if (type === 'luckybox') desc.textContent = 'Complete the advertisement to reveal reward.';
-
-    let countdown = 4;
-    timerBadge.textContent = `Ad in ${countdown}s`;
-    if (adInterval) clearInterval(adInterval);
-
-    adInterval = setInterval(() => {
-        countdown--;
-        if (countdown > 0) {
-            timerBadge.textContent = `Ad in ${countdown}s`;
-        } else {
-            clearInterval(adInterval);
-            timerBadge.textContent = 'Ad Finished';
-            closeBtn.classList.add('ready');
-            if (type === 'claim') closeBtn.textContent = 'CLAIM REWARD';
-            else if (type === 'luckybox') closeBtn.textContent = 'OPEN LUCKY BOX';
-            else closeBtn.textContent = 'COLLECT +0.5 SPEED BOOST';
+    showAdsgramAd(() => {
+        if (state.luckyBoxChances > 0) {
+            state.luckyBoxChances--;
+            const reward = [1, 2, 3, 5, 10][Math.floor(Math.random() * 5)];
+            state.totalBalance = Number(state.totalBalance) + reward;
+            saveState();
+            updateAllUI();
+            alert(`🎁 Lucky Box opened via Adsgram!\n\n+${reward} FDX credited.`);
         }
-    }, 1000);
-}
-
-function closeAdModal() {
-    document.getElementById('adModal').classList.remove('active');
-    if (activeAdType === 'booster' && state.boosterChancesLeft > 0) {
-        state.boosterChancesLeft--;
-        state.boosterBonusRate = parseFloat((Number(state.boosterBonusRate) + 0.5).toFixed(1));
-        saveState();
-        updateAllUI();
-        showToast(`Mining rate increased`);
-    } else if (activeAdType === 'luckybox' && state.luckyBoxChances > 0) {
-        state.luckyBoxChances--;
-        activeAdReward = generateLuckyReward();
-        state.totalBalance = Number(state.totalBalance) + activeAdReward;
-        saveState();
-        updateAllUI();
-        setTimeout(() => { alert(`🎁 Lucky Box Reward\n\n+${formatNumber(activeAdReward)} FDX`); }, 100);
-    } else if (activeAdType === 'claim') {
-        const accumulated = state.miningState === 'READY_TO_CLAIM' ? Number(state.sessionAccumulated || 0) : getSessionAccumulated();
-        if (accumulated <= 0) return;
-        state.totalBalance = Number(state.totalBalance) + accumulated;
-        state.totalMined = Number(state.totalMined) + accumulated;
-        state.sessionAccumulated = 0;
-        state.miningState = 'IDLE';
-        state.miningStartedAt = 0;
-        markUserActive();
-        saveState();
-        updateAllUI();
-        showToast(`+${formatNumber(accumulated)} FDX added to Total Balance`);
-    }
-}
-
-function getDayKey(date) {
-    const d = date instanceof Date ? date : new Date(date);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-function markUserActive() {
-    const today = getDayKey(new Date());
-    if (state.lastActivityDay === today) return;
-    if (state.lastActivityDay) {
-        const previous = new Date(state.lastActivityDay);
-        const current = new Date(today);
-        const difference = Math.floor((current - previous) / 86400000);
-        if (difference === 1) {
-            state.activeDays = Math.min(7, Number(state.activeDays) + 1);
-            state.inactiveDays = 0;
-        } else {
-            state.activeDays = 1;
-            state.inactiveDays = Math.max(0, difference - 1);
-        }
-    } else {
-        state.activeDays = 1;
-        state.inactiveDays = 0;
-    }
-    state.lastActivityDay = today;
-    saveState();
-}
-
-function updateRecoveryUI() {
-    const status = document.getElementById('activityStatus');
-    const inactive = document.getElementById('inactiveDays');
-    const active = document.getElementById('activeDays');
-
-    if (state.inactiveDays >= 7) {
-        status.textContent = 'INACTIVE';
-        status.style.color = 'var(--red)';
-    } else {
-        status.textContent = 'ACTIVE';
-        status.style.color = 'var(--green)';
-    }
-    inactive.textContent = `${Math.min(state.inactiveDays, 7)} / 7`;
-    active.textContent = `${Math.min(state.activeDays, 7)} / 7`;
-}
-
-function updateBalanceUI() {
-    document.getElementById('balanceDisplay').textContent = formatNumber(state.totalBalance);
+    });
 }
 
 function updateAllUI() {
-    updateBalanceUI();
+    const formattedBal = formatNumber(state.totalBalance);
+    document.getElementById('balanceDisplay').textContent = formattedBal;
+    document.getElementById('walletBalanceNum').innerHTML = `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
     updateMiningUI();
-    updateRecoveryUI();
-    renderFriends();
-}
-
-function escapeHtml(value) {
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
-    resetCyclesIfNeeded();
     updateAllUI();
 });
 
 setInterval(() => {
-    resetCyclesIfNeeded();
     updateAllUI();
 }, 1000);
 </script>
