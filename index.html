@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1153,34 +1152,19 @@ font-weight:900;
 
 <div class="app">
 
-<!-- =========================================================
-     MINING
-========================================================= -->
+<!-- MINING -->
 
 <main class="page-view active" id="page-mining">
 
 <div class="balance-card">
-
 <div class="balance-dot"></div>
-
-<div class="balance-label">
-TOTAL BALANCE
-</div>
+<div class="balance-label">TOTAL BALANCE</div>
 
 <div class="balance-row">
-
-<div class="balance-value" id="balanceDisplay">
-0.00
+<div class="balance-value" id="balanceDisplay">0.00</div>
+<div class="balance-token">$FDX</div>
 </div>
-
-<div class="balance-token">
-$FDX
 </div>
-
-</div>
-
-</div>
-
 
 <div class="mining-node-container">
 
@@ -1201,9 +1185,7 @@ $FDX/H
 </div>
 
 </div>
-
 </div>
-
 
 <div class="action-controls">
 
@@ -1211,11 +1193,8 @@ $FDX/H
 class="start-mining-btn"
 id="miningToggleBtn"
 onclick="handleMiningAction()">
-
 START MINING
-
 </button>
-
 
 <div class="interactive-grid">
 
@@ -1223,64 +1202,43 @@ START MINING
 class="action-tile"
 onclick="openBoosterPrompt()">
 
-<div class="action-tile-icon">
-🚀
-</div>
+<div class="action-tile-icon">🚀</div>
 
 <div>
-
-<div class="action-tile-title">
-Mining Boost
-</div>
+<div class="action-tile-title">Mining Boost</div>
 
 <div
 class="action-tile-sub"
 id="boosterChances">
-
 5/5 Left
-
 </div>
-
 </div>
 
 </button>
-
 
 <button
 class="action-tile"
 onclick="openLuckyBoxModal()"
 style="border-color:rgba(250,204,21,.5);">
 
-<div class="action-tile-icon">
-🎁
-</div>
+<div class="action-tile-icon">🎁</div>
 
 <div>
-
 <div
 class="action-tile-title"
 style="color:var(--yellow);">
-
 Lucky Box
-
 </div>
 
 <div class="action-tile-sub">
 5 chances / 4 hours
 </div>
-
 </div>
 
 </button>
 
 </div>
-
 </div>
-
-
-<!-- =====================================================
-     MINING STATISTICS (MOVED DIRECTLY UNDER CIRCLE/CONTROLS)
-===================================================== -->
 
 <div class="statistics-card">
 
@@ -1291,76 +1249,47 @@ Lucky Box
 <div class="statistics-grid">
 
 <div class="statistics-item">
-
-<div class="statistics-label">
-Current Rate
-</div>
+<div class="statistics-label">Current Rate</div>
 
 <div
 class="statistics-value yellow"
 id="statRate">
-
 1.0 FDX/H
-
 </div>
-
 </div>
-
 
 <div class="statistics-item">
-
-<div class="statistics-label">
-Session Accumulated
-</div>
+<div class="statistics-label">Session Accumulated</div>
 
 <div
 class="statistics-value"
 id="sessionAccumulated">
-
 0.00 FDX
-
 </div>
-
 </div>
-
 
 <div class="statistics-item">
-
-<div class="statistics-label">
-Completed Hours
-</div>
+<div class="statistics-label">Completed Hours</div>
 
 <div
 class="statistics-value"
 id="completedHours">
-
 0 / 4
-
 </div>
-
 </div>
-
 
 <div class="statistics-item">
-
-<div class="statistics-label">
-Total Mined
-</div>
+<div class="statistics-label">Total Mined</div>
 
 <div
 class="statistics-value green"
 id="totalMined">
-
 0.00 FDX
-
+</div>
 </div>
 
 </div>
-
 </div>
-
-</div>
-
 
 <div class="dual-grid">
 
@@ -1372,22 +1301,17 @@ id="totalMined">
 BURNING<br>STREAK
 </div>
 
-<div class="info-box-icon">
-🔥
-</div>
+<div class="info-box-icon">🔥</div>
 
 </div>
 
 <div
 class="info-box-value"
 id="burningStreak">
-
 1 Day
-
 </div>
 
 </div>
-
 
 <div class="info-box">
 
@@ -1397,28 +1321,19 @@ id="burningStreak">
 RECOVERABLE<br>$FDX
 </div>
 
-<div class="info-box-icon">
-💎
-</div>
+<div class="info-box-icon">💎</div>
 
 </div>
 
 <div
 class="info-box-value"
 id="recoverableFdx">
-
 0.00
-
 </div>
 
 </div>
 
 </div>
-
-
-<!-- =====================================================
-     RECOVERY STATUS
-===================================================== -->
 
 <div class="recovery-card">
 
@@ -1435,13 +1350,10 @@ Activity Status
 <div
 class="recovery-value"
 id="activityStatus">
-
 ACTIVE
-
 </div>
 
 </div>
-
 
 <div class="recovery-line">
 
@@ -1452,13 +1364,10 @@ Inactive Days
 <div
 class="recovery-value"
 id="inactiveDays">
-
 0 / 7
-
 </div>
 
 </div>
-
 
 <div class="recovery-line">
 
@@ -1469,13 +1378,10 @@ Active Days
 <div
 class="recovery-value"
 id="activeDays">
-
 0 / 7
-
 </div>
 
 </div>
-
 
 <div class="recovery-line">
 
@@ -1485,7 +1391,6 @@ Daily Unlock
 
 <div class="recovery-value">
 10%
-
 </div>
 
 </div>
@@ -1495,9 +1400,7 @@ Daily Unlock
 </main>
 
 
-<!-- =========================================================
-     TASKS
-========================================================= -->
+<!-- TASKS -->
 
 <main class="page-view" id="page-tasks">
 
@@ -1509,16 +1412,13 @@ Daily Unlock
 Complete official FIDEXA community tasks to earn rewards.
 </div>
 
-
 <div class="task-card">
 
 <div class="task-row">
 
 <div class="task-left">
 
-<div class="task-icon">
-📢
-</div>
+<div class="task-icon">📢</div>
 
 <div>
 
@@ -1534,19 +1434,15 @@ Reward: +5.00 $FDX
 
 </div>
 
-
 <button
 class="task-button"
 onclick="openTaskLinkAndVerify('telegram')">
-
 JOIN
-
 </button>
 
 </div>
 
 </div>
-
 
 <div class="task-card">
 
@@ -1554,9 +1450,7 @@ JOIN
 
 <div class="task-left">
 
-<div class="task-icon">
-𝕏
-</div>
+<div class="task-icon">𝕏</div>
 
 <div>
 
@@ -1572,13 +1466,10 @@ Reward: +5.00 $FDX
 
 </div>
 
-
 <button
 class="task-button"
 onclick="openTaskLinkAndVerify('x')">
-
 JOIN
-
 </button>
 
 </div>
@@ -1588,9 +1479,7 @@ JOIN
 </main>
 
 
-<!-- =========================================================
-     FRIENDS
-========================================================= -->
+<!-- FRIENDS -->
 
 <main class="page-view" id="page-friends">
 
@@ -1602,7 +1491,6 @@ JOIN
 View the users you personally invited and their current activity status.
 </div>
 
-
 <div class="friends-stats-grid">
 
 <div class="friend-stat-card">
@@ -1610,9 +1498,7 @@ View the users you personally invited and their current activity status.
 <div
 class="friend-stat-value"
 id="totalFriendsCount">
-
 0
-
 </div>
 
 <div class="friend-stat-label">
@@ -1621,16 +1507,13 @@ Invited
 
 </div>
 
-
 <div class="friend-stat-card">
 
 <div
 class="friend-stat-value"
 id="activeFriendsCount"
 style="color:var(--green);">
-
 0
-
 </div>
 
 <div class="friend-stat-label">
@@ -1639,15 +1522,12 @@ Active
 
 </div>
 
-
 <div class="friend-stat-card">
 
 <div
 class="friend-stat-value"
 id="inactiveFriendsCount">
-
 0
-
 </div>
 
 <div class="friend-stat-label">
@@ -1657,7 +1537,6 @@ Inactive
 </div>
 
 </div>
-
 
 <div class="friend-list-card">
 
@@ -1670,13 +1549,10 @@ My Invited Members
 <div
 class="friend-list-count"
 id="friendListCount">
-
 0 MEMBERS
-
 </div>
 
 </div>
-
 
 <div
 class="friends-scroll-area"
@@ -1693,7 +1569,7 @@ No Invited Members
 </div>
 
 <div class="friend-empty-text">
-Your real invited members will appear here when referral data is connected.
+Your invited members will appear here when referral data is connected to the backend.
 </div>
 
 </div>
@@ -1701,23 +1577,18 @@ Your real invited members will appear here when referral data is connected.
 </div>
 
 </div>
-
 
 <button
 class="full-action-btn"
 onclick="copyReferralLink()"
 style="padding:15px;font-size:13px;box-shadow:none;">
-
 INVITE FRIENDS
-
 </button>
 
 </main>
 
 
-<!-- =========================================================
-     WALLET
-========================================================= -->
+<!-- WALLET -->
 
 <main class="page-view" id="page-wallet">
 
@@ -1737,7 +1608,6 @@ DISTRIBUTION SYSTEM NOT OPEN
 
 </div>
 
-
 <div class="wallet-migration-card">
 
 <div class="wallet-migration-title">
@@ -1754,23 +1624,18 @@ Migration and distribution will become available when the official FIDEXA distri
 
 </div>
 
-
 <div class="wallet-migration-status">
 MIGRATION NOT OPEN
 </div>
-
 
 <button
 class="full-action-btn"
 style="margin-top:14px;padding:15px;font-size:13px;box-shadow:none;"
 onclick="openMigrationInfo()">
-
 VIEW MIGRATION STATUS
-
 </button>
 
 </div>
-
 
 <div class="friend-list-card">
 
@@ -1785,9 +1650,7 @@ Wallet Distribution Pending
 </div>
 
 <div class="friend-empty-text">
-
-No Total Balance, transferable balance or transaction history is displayed here before official migration/distribution.
-
+No transferable balance or transaction history is displayed here before official migration/distribution.
 </div>
 
 </div>
@@ -1797,9 +1660,7 @@ No Total Balance, transferable balance or transaction history is displayed here 
 </main>
 
 
-<!-- =========================================================
-     PROFILE
-========================================================= -->
+<!-- PROFILE -->
 
 <main class="page-view" id="page-profile">
 
@@ -1811,170 +1672,98 @@ No Total Balance, transferable balance or transaction history is displayed here 
 Manage your account, support, and official FIDEXA information.
 </div>
 
-
 <div class="profile-menu-list">
-
 
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('account')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-👤
-</span>
-
-<span class="profile-menu-title">
-Account Information
-</span>
-
+<span class="profile-menu-icon">👤</span>
+<span class="profile-menu-title">Account Information</span>
 </div>
 
-<span class="profile-menu-arrow">
-›
-</span>
+<span class="profile-menu-arrow">›</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('support')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-💬
-</span>
-
-<span class="profile-menu-title">
-Chat Support
-</span>
-
+<span class="profile-menu-icon">💬</span>
+<span class="profile-menu-title">Chat Support</span>
 </div>
 
-<span class="profile-menu-arrow">
-›
-</span>
+<span class="profile-menu-arrow">›</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('privacy')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-🔒
-</span>
-
-<span class="profile-menu-title">
-Privacy Policy
-</span>
-
+<span class="profile-menu-icon">🔒</span>
+<span class="profile-menu-title">Privacy Policy</span>
 </div>
 
-<span class="profile-menu-arrow">
-›
-</span>
+<span class="profile-menu-arrow">›</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('whitepaper')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-📄
-</span>
-
-<span class="profile-menu-title">
-White Paper
-</span>
-
+<span class="profile-menu-icon">📄</span>
+<span class="profile-menu-title">White Paper</span>
 </div>
 
-<span class="profile-menu-arrow">
-›
-</span>
+<span class="profile-menu-arrow">›</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('roadmap')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-🗺️
-</span>
-
-<span class="profile-menu-title">
-Project Roadmap
-</span>
-
+<span class="profile-menu-icon">🗺️</span>
+<span class="profile-menu-title">Project Roadmap</span>
 </div>
 
-<span class="profile-menu-arrow">
-›
-</span>
+<span class="profile-menu-arrow">›</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openExternalLink('telegram')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-📢
-</span>
-
-<span class="profile-menu-title">
-Official Telegram
-</span>
-
+<span class="profile-menu-icon">📢</span>
+<span class="profile-menu-title">Official Telegram</span>
 </div>
 
-<span class="profile-menu-arrow">
-↗
-</span>
+<span class="profile-menu-arrow">↗</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
 onclick="openExternalLink('twitter')">
 
 <div class="profile-menu-left">
-
-<span class="profile-menu-icon">
-🌐
-</span>
-
-<span class="profile-menu-title">
-Official X
-</span>
-
+<span class="profile-menu-icon">🌐</span>
+<span class="profile-menu-title">Official X</span>
 </div>
 
-<span class="profile-menu-arrow">
-↗
-</span>
+<span class="profile-menu-arrow">↗</span>
 
 </div>
-
 
 <div
 class="profile-menu-item"
@@ -1983,16 +1772,12 @@ style="border-color:rgba(248,113,113,.3);">
 
 <div class="profile-menu-left">
 
-<span class="profile-menu-icon">
-⚠️
-</span>
+<span class="profile-menu-icon">⚠️</span>
 
 <span
 class="profile-menu-title"
 style="color:var(--red);">
-
 Account Deletion
-
 </span>
 
 </div>
@@ -2000,9 +1785,7 @@ Account Deletion
 <span
 class="profile-menu-arrow"
 style="color:var(--red);">
-
 ›
-
 </span>
 
 </div>
@@ -2012,9 +1795,7 @@ style="color:var(--red);">
 </main>
 
 
-<!-- =========================================================
-     PROFILE INFO MODAL
-========================================================= -->
+<!-- PROFILE INFO -->
 
 <div
 class="modal-overlay"
@@ -2027,28 +1808,21 @@ id="profileInfoModal">
 <div
 class="sheet-title"
 id="sheetTitle">
-
 Information
-
 </div>
 
 <button
 class="sheet-close"
 onclick="closeProfileInfo()">
-
 ✕
-
 </button>
 
 </div>
 
-
 <div
 class="sheet-content"
 id="sheetContentBody">
-
 Loading details...
-
 </div>
 
 </div>
@@ -2056,9 +1830,7 @@ Loading details...
 </div>
 
 
-<!-- =========================================================
-     BOOSTER
-========================================================= -->
+<!-- BOOSTER -->
 
 <div
 class="modal-overlay"
@@ -2071,9 +1843,7 @@ id="boosterPromptModal">
 </div>
 
 <div class="prompt-desc">
-
 Watch a short advertisement to increase your mining speed by +0.5 FDX/H.
-
 </div>
 
 <div class="prompt-actions">
@@ -2081,17 +1851,13 @@ Watch a short advertisement to increase your mining speed by +0.5 FDX/H.
 <button
 class="prompt-btn-cancel"
 onclick="closeBoosterPrompt()">
-
 Not now
-
 </button>
 
 <button
 class="prompt-btn-confirm"
 onclick="confirmWatchBoosterAd()">
-
 Watch ad
-
 </button>
 
 </div>
@@ -2101,9 +1867,7 @@ Watch ad
 </div>
 
 
-<!-- =========================================================
-     LUCKY BOX
-========================================================= -->
+<!-- LUCKY BOX -->
 
 <div
 class="modal-overlay"
@@ -2121,9 +1885,7 @@ You have
 <strong
 style="color:#fff;"
 id="luckyBoxPromptChances">
-
 5
-
 </strong>
 Lucky Box chances.
 
@@ -2138,17 +1900,13 @@ Maximum reward: 10 FDX.
 <button
 class="prompt-btn-cancel"
 onclick="closeLuckyBoxModal()">
-
 Close
-
 </button>
 
 <button
 class="prompt-btn-confirm"
 onclick="confirmOpenLuckyBox()">
-
 Open Box
-
 </button>
 
 </div>
@@ -2158,9 +1916,7 @@ Open Box
 </div>
 
 
-<!-- =========================================================
-     AD MODAL
-========================================================= -->
+<!-- AD -->
 
 <div
 class="modal-overlay"
@@ -2171,46 +1927,34 @@ id="adModal">
 <div
 class="ad-header"
 id="adHeader">
-
 SPONSORED ADVERTISEMENT
-
 </div>
-
 
 <div class="ad-screen">
 
 <div
 class="ad-timer-badge"
 id="adTimerBadge">
-
 Ad in 4s
-
 </div>
-
 
 <div class="ad-title">
 FIDEXA Partner Network
 </div>
 
-
 <div
 class="ad-desc"
 id="adDescText">
-
 Watch full video to secure your reward
-
 </div>
 
 </div>
-
 
 <button
 class="ad-close-btn"
 id="adCloseBtn"
 onclick="closeAdModal()">
-
 WATCHING AD...
-
 </button>
 
 </div>
@@ -2218,9 +1962,7 @@ WATCHING AD...
 </div>
 
 
-<!-- =========================================================
-     NAVIGATION
-========================================================= -->
+<!-- NAVIGATION -->
 
 <nav class="bottom-nav">
 
@@ -2228,61 +1970,47 @@ WATCHING AD...
 class="nav-item active"
 onclick="switchTab('mining',this)">
 
-<span class="nav-icon">
-⚡
-</span>
+<span class="nav-icon">⚡</span>
 
 Mining
 
 </button>
 
-
 <button
 class="nav-item"
 onclick="switchTab('tasks',this)">
 
-<span class="nav-icon">
-📋
-</span>
+<span class="nav-icon">📋</span>
 
 Tasks
 
 </button>
 
-
 <button
 class="nav-item"
 onclick="switchTab('friends',this)">
 
-<span class="nav-icon">
-👥
-</span>
+<span class="nav-icon">👥</span>
 
 Friends
 
 </button>
 
-
 <button
 class="nav-item"
 onclick="switchTab('wallet',this)">
 
-<span class="nav-icon">
-👛
-</span>
+<span class="nav-icon">👛</span>
 
 Wallet
 
 </button>
 
-
 <button
 class="nav-item"
 onclick="switchTab('profile',this)">
 
-<span class="nav-icon">
-🛡️
-</span>
+<span class="nav-icon">🛡️</span>
 
 Profile
 
@@ -2296,7 +2024,6 @@ Profile
 <div
 class="toast"
 id="toast">
-
 </div>
 
 
@@ -2304,8 +2031,8 @@ id="toast">
 
 /* =========================================================
    FIDEXA NETWORK
-   FRONTEND PROTOTYPE
-   DATABASE NOT CONNECTED
+   CORRECTED FRONTEND PROTOTYPE
+   BACKEND NOT YET CONNECTED
 ========================================================= */
 
 
@@ -2315,6 +2042,8 @@ id="toast">
 
 let currentUserId='';
 let currentUserName='';
+let referralCode='';
+
 
 if(
 window.Telegram &&
@@ -2340,6 +2069,78 @@ tgUser.first_name ||
 
 
 /* =========================================================
+   REFERRAL START PARAMETER
+========================================================= */
+
+function getTelegramStartParameter(){
+
+try{
+
+if(
+window.Telegram &&
+window.Telegram.WebApp &&
+window.Telegram.WebApp.initDataUnsafe
+){
+
+const startParam=
+window.Telegram.WebApp.initDataUnsafe.start_param;
+
+if(startParam){
+
+return String(startParam);
+
+}
+
+}
+
+}
+catch(error){
+
+console.log(
+'Telegram start parameter error',
+error
+);
+
+}
+
+return '';
+
+}
+
+
+function extractReferralCode(){
+
+const startParam=
+getTelegramStartParameter();
+
+
+if(
+startParam &&
+startParam.indexOf('ref_')===0
+){
+
+const code=
+startParam.substring(4).trim();
+
+if(code){
+
+return code;
+
+}
+
+}
+
+
+return '';
+
+}
+
+
+referralCode=
+extractReferralCode();
+
+
+/* =========================================================
    OFFICIAL LINKS
 ========================================================= */
 
@@ -2357,7 +2158,8 @@ const FIDEXA_BOT=
    LOCAL STORAGE
 ========================================================= */
 
-const STORAGE_KEY='fidexa_prototype_state_v5';
+const STORAGE_KEY=
+'fidexa_prototype_state_v6';
 
 
 const defaultState={
@@ -2371,6 +2173,8 @@ miningState:'IDLE',
 miningStartedAt:0,
 
 miningCycleDuration:14400,
+
+sessionAccumulated:0,
 
 baseMiningRate:1.0,
 
@@ -2408,13 +2212,23 @@ telegram:false,
 
 x:false
 
-}
+},
+
+referralCode:'',
+
+referralCapturedAt:0
 
 };
 
 
-let state={...defaultState};
+let state={
+...defaultState
+};
 
+
+/* =========================================================
+   LOAD STATE
+========================================================= */
 
 function loadState(){
 
@@ -2430,7 +2244,18 @@ JSON.parse(saved);
 
 state={
 ...defaultState,
-...parsed
+...parsed,
+
+claimedTasks:{
+...defaultState.claimedTasks,
+...(parsed.claimedTasks || {})
+},
+
+friends:
+Array.isArray(parsed.friends) ?
+parsed.friends :
+[]
+
 };
 
 }
@@ -2438,12 +2263,19 @@ state={
 }
 catch(error){
 
-console.log('State load error',error);
+console.log(
+'State load error',
+error
+);
 
 }
 
 }
 
+
+/* =========================================================
+   SAVE STATE
+========================================================= */
 
 function saveState(){
 
@@ -2457,7 +2289,10 @@ JSON.stringify(state)
 }
 catch(error){
 
-console.log('State save error',error);
+console.log(
+'State save error',
+error
+);
 
 }
 
@@ -2483,14 +2318,22 @@ maximumFractionDigits:2
 
 function getCurrentRate(){
 
+const base=
+Number(state.baseMiningRate || 0);
+
+const booster=
+Number(state.boosterBonusRate || 0);
+
+const referral=
+Number(state.referralBonusRate || 0);
+
 return parseFloat(
 (
-Number(state.baseMiningRate)+
-Number(state.boosterBonusRate)+
-Number(state.referralBonusRate)
+base+
+booster+
+referral
 ).toFixed(1)
 );
-
 
 }
 
@@ -2538,6 +2381,7 @@ document.getElementById(
 `page-${tabName}`
 );
 
+
 if(page){
 
 page.classList.add('active');
@@ -2571,9 +2415,8 @@ function openTaskLinkAndVerify(type){
 
 if(type==='telegram'){
 
-window.open(
-FIDEXA_TELEGRAM,
-'_blank'
+openTelegramOrWeb(
+FIDEXA_TELEGRAM
 );
 
 setTimeout(
@@ -2599,9 +2442,8 @@ claimTaskReward('telegram');
 
 else if(type==='x'){
 
-window.open(
-FIDEXA_X,
-'_blank'
+openTelegramOrWeb(
+FIDEXA_X
 );
 
 setTimeout(
@@ -2629,11 +2471,34 @@ claimTaskReward('x');
 
 function claimTaskReward(type){
 
+if(
+!state.claimedTasks ||
+typeof state.claimedTasks!=='object'
+){
+
+state.claimedTasks={
+telegram:false,
+x:false
+};
+
+}
+
+
 if(state.claimedTasks[type]){
 
 showToast(
 'This task has already been claimed.'
 );
+
+return;
+
+}
+
+
+if(
+type!=='telegram' &&
+type!=='x'
+){
 
 return;
 
@@ -2651,6 +2516,59 @@ updateAllUI();
 
 showToast(
 '+5.00 FDX added to Total Balance'
+);
+
+}
+
+
+/* =========================================================
+   TELEGRAM / EXTERNAL LINK HANDLER
+========================================================= */
+
+function openTelegramOrWeb(url){
+
+try{
+
+if(
+window.Telegram &&
+window.Telegram.WebApp &&
+typeof window.Telegram.WebApp.openTelegramLink==='function' &&
+url.indexOf('https://t.me/')===0
+){
+
+window.Telegram.WebApp.openTelegramLink(url);
+
+return;
+
+}
+
+
+if(
+window.Telegram &&
+window.Telegram.WebApp &&
+typeof window.Telegram.WebApp.openLink==='function'
+){
+
+window.Telegram.WebApp.openLink(url);
+
+return;
+
+}
+
+}
+catch(error){
+
+console.log(
+'Telegram link error',
+error
+);
+
+}
+
+
+window.open(
+url,
+'_blank'
 );
 
 }
@@ -2700,12 +2618,17 @@ ${escapeHtml(currentUserName || 'Not available')}
 
 <p style="margin-top:10px;">
 <strong>Node Status:</strong>
-Prototype User Node
+Frontend Prototype
 </p>
 
 <p style="margin-top:10px;">
 <strong>App Balance:</strong>
 ${formatNumber(state.totalBalance)} FDX
+</p>
+
+<p style="margin-top:10px;">
+<strong>Referral Code:</strong>
+${escapeHtml(currentUserId ? 'ref_'+currentUserId : 'Not available')}
 </p>
 
 `;
@@ -2727,10 +2650,8 @@ bodyEl.innerHTML=`
 </div>
 
 <div class="support-status-text">
-
 The support interface is ready.
 Live support delivery will be connected to the backend later.
-
 </div>
 
 </div>
@@ -2757,9 +2678,7 @@ placeholder="Write your message...">
 <button
 class="chat-send-btn"
 onclick="sendSupportMessage()">
-
 SEND
-
 </button>
 
 </div>
@@ -3032,9 +2951,7 @@ Account deletion will remove associated account data when the live account-manag
 <button
 style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
 onclick="showComingSoon('Account deletion')">
-
 REQUEST ACCOUNT DELETION
-
 </button>
 
 `;
@@ -3069,7 +2986,6 @@ input.value.trim();
 if(!message)
 return;
 
-
 const bubble=
 document.createElement('div');
 
@@ -3085,7 +3001,6 @@ input.value='';
 
 messages.scrollTop=
 messages.scrollHeight;
-
 
 setTimeout(
 ()=>{
@@ -3132,18 +3047,16 @@ function openExternalLink(target){
 
 if(target==='telegram'){
 
-window.open(
-FIDEXA_TELEGRAM,
-'_blank'
+openTelegramOrWeb(
+FIDEXA_TELEGRAM
 );
 
 }
 
 else if(target==='twitter'){
 
-window.open(
-FIDEXA_X,
-'_blank'
+openTelegramOrWeb(
+FIDEXA_X
 );
 
 }
@@ -3275,11 +3188,11 @@ function getReferralLink(){
 
 if(currentUserId){
 
-return `${FIDEXA_BOT}?start=ref_${currentUserId}`;
+return `${FIDEXA_BOT}?startapp=ref_${encodeURIComponent(currentUserId)}`;
 
 }
 
-return `${FIDEXA_BOT}?start=ref_demo`;
+return `${FIDEXA_BOT}?startapp=ref_demo`;
 
 }
 
@@ -3332,6 +3245,52 @@ referralLink
 
 
 /* =========================================================
+   REFERRAL START DATA
+========================================================= */
+
+function captureReferralStart(){
+
+if(!referralCode)
+return;
+
+
+if(!currentUserId)
+return;
+
+
+/*
+   Prevent self-referral.
+*/
+
+if(
+String(referralCode)===
+String(currentUserId)
+){
+
+referralCode='';
+
+return;
+
+}
+
+
+/*
+   Save the captured referral information locally
+   until the backend is connected.
+*/
+
+state.referralCode=
+referralCode;
+
+state.referralCapturedAt=
+Date.now();
+
+saveState();
+
+}
+
+
+/* =========================================================
    FRIEND DATA
 ========================================================= */
 
@@ -3369,43 +3328,68 @@ Array.isArray(state.friends) ?
 state.friends :
 [];
 
-
 const total=
 friends.length;
 
-
 const active=
 friends.filter(
-friend=>friend.active===true
+friend=>
+friend &&
+friend.active===true
 ).length;
-
 
 const inactive=
 total-active;
 
 
+const totalEl=
 document.getElementById(
 'totalFriendsCount'
-).textContent=
-total;
+);
 
-
+const activeEl=
 document.getElementById(
 'activeFriendsCount'
-).textContent=
-active;
+);
 
-
+const inactiveEl=
 document.getElementById(
 'inactiveFriendsCount'
-).textContent=
-inactive;
+);
 
-
+const countEl=
 document.getElementById(
 'friendListCount'
-).textContent=
+);
+
+
+if(totalEl){
+
+totalEl.textContent=
+total;
+
+}
+
+if(activeEl){
+
+activeEl.textContent=
+active;
+
+}
+
+if(inactiveEl){
+
+inactiveEl.textContent=
+inactive;
+
+}
+
+if(countEl){
+
+countEl.textContent=
 `${total} MEMBER${total===1?'':'S'}`;
+
+}
 
 
 if(!list)
@@ -3427,7 +3411,7 @@ No Invited Members
 </div>
 
 <div class="friend-empty-text">
-Your real invited members will appear here when referral data is connected.
+Your invited members will appear here when referral data is connected to the backend.
 </div>
 
 </div>
@@ -3458,8 +3442,17 @@ friend.username ?
 'Telegram User';
 
 
+/*
+   FIX:
+   The previous version contained invalid JavaScript:
+   [friend.name](http://friend.name/)
+
+   Correct version:
+*/
+
 const displayName=
 friend.name ||
+friend.first_name ||
 username;
 
 
@@ -3544,7 +3537,9 @@ return getCurrentRate();
 
 function getMiningElapsedSeconds(){
 
-if(state.miningState!=='ACTIVE')
+if(
+state.miningState!=='ACTIVE'
+)
 return 0;
 
 
@@ -3556,10 +3551,17 @@ const now=
 Date.now();
 
 
+const duration=
+Number(
+state.miningCycleDuration ||
+MINING_CYCLE_SECONDS
+);
+
+
 return Math.max(
 0,
 Math.min(
-MINING_CYCLE_SECONDS,
+duration,
 Math.floor(
 (now-state.miningStartedAt)/1000
 )
@@ -3575,8 +3577,15 @@ Math.floor(
 
 function getSessionAccumulated(){
 
-if(state.miningState!=='ACTIVE')
-return Number(state.sessionAccumulated || 0);
+if(
+state.miningState!=='ACTIVE'
+){
+
+return Number(
+state.sessionAccumulated || 0
+);
+
+}
 
 
 const elapsed=
@@ -3584,14 +3593,18 @@ getMiningElapsedSeconds();
 
 
 const completedHours=
-Math.floor(elapsed/3600);
+Math.floor(
+elapsed/3600
+);
+
+
+const amount=
+completedHours*
+getMiningRate();
 
 
 return parseFloat(
-(
-completedHours*
-getMiningRate()
-).toFixed(2)
+amount.toFixed(2)
 );
 
 }
@@ -3603,8 +3616,15 @@ getMiningRate()
 
 function getRemainingSeconds(){
 
+const duration=
+Number(
+state.miningCycleDuration ||
+MINING_CYCLE_SECONDS
+);
+
+
 if(state.miningState==='IDLE')
-return MINING_CYCLE_SECONDS;
+return duration;
 
 
 if(state.miningState==='READY_TO_CLAIM')
@@ -3617,7 +3637,7 @@ getMiningElapsedSeconds();
 
 return Math.max(
 0,
-MINING_CYCLE_SECONDS-elapsed
+duration-elapsed
 );
 
 }
@@ -3640,7 +3660,7 @@ Math.floor(
 
 
 const s=
-(seconds%60)
+Math.floor(seconds%60)
 .toString()
 .padStart(2,'0');
 
@@ -3666,12 +3686,23 @@ const elapsed=
 getMiningElapsedSeconds();
 
 
-if(elapsed>=MINING_CYCLE_SECONDS){
+const duration=
+Number(
+state.miningCycleDuration ||
+MINING_CYCLE_SECONDS
+);
+
+
+if(elapsed>=duration){
+
+const hours=
+duration/3600;
+
 
 state.sessionAccumulated=
 parseFloat(
 (
-4*
+hours*
 getMiningRate()
 ).toFixed(2)
 );
@@ -3701,32 +3732,57 @@ const rate=
 getMiningRate();
 
 
+const rateDisplay=
 document.getElementById(
 'currentRateDisplay'
-).textContent=
-rate.toFixed(1);
+);
 
-
+const statRate=
 document.getElementById(
 'statRate'
-).textContent=
+);
+
+
+if(rateDisplay){
+
+rateDisplay.textContent=
+rate.toFixed(1);
+
+}
+
+
+if(statRate){
+
+statRate.textContent=
 `${rate.toFixed(1)} FDX/H`;
+
+}
 
 
 const remaining=
 getRemainingSeconds();
 
 
+const timerDisplay=
 document.getElementById(
 'timerDisplay'
-).textContent=
+);
+
+
+if(timerDisplay){
+
+timerDisplay.textContent=
 formatTimer(remaining);
+
+}
 
 
 let sessionAmount=0;
 
 
-if(state.miningState==='ACTIVE'){
+if(
+state.miningState==='ACTIVE'
+){
 
 sessionAmount=
 getSessionAccumulated();
@@ -3735,23 +3791,42 @@ getSessionAccumulated();
 else{
 
 sessionAmount=
-Number(state.sessionAccumulated || 0);
+Number(
+state.sessionAccumulated || 0
+);
 
 }
 
 
+const sessionEl=
 document.getElementById(
 'sessionAccumulated'
-).textContent=
+);
+
+
+if(sessionEl){
+
+sessionEl.textContent=
 `${formatNumber(sessionAmount)} FDX`;
+
+}
+
+
+const duration=
+Number(
+state.miningCycleDuration ||
+MINING_CYCLE_SECONDS
+);
 
 
 const elapsed=
 state.miningState==='ACTIVE' ?
 getMiningElapsedSeconds() :
-(state.miningState==='READY_TO_CLAIM' ?
-MINING_CYCLE_SECONDS :
-0);
+(
+state.miningState==='READY_TO_CLAIM' ?
+duration :
+0
+);
 
 
 const completedHours=
@@ -3761,42 +3836,90 @@ Math.floor(elapsed/3600)
 );
 
 
+const completedHoursEl=
 document.getElementById(
 'completedHours'
-).textContent=
+);
+
+
+if(completedHoursEl){
+
+completedHoursEl.textContent=
 `${completedHours} / 4`;
 
+}
 
+
+const totalMinedEl=
 document.getElementById(
 'totalMined'
-).textContent=
+);
+
+
+if(totalMinedEl){
+
+totalMinedEl.textContent=
 `${formatNumber(state.totalMined)} FDX`;
 
+}
 
+
+const boosterEl=
 document.getElementById(
 'boosterChances'
-).textContent=
+);
+
+
+if(boosterEl){
+
+boosterEl.textContent=
 `${state.boosterChancesLeft}/5 Left`;
 
+}
 
+
+const luckyEl=
 document.getElementById(
 'luckyBoxPromptChances'
-).textContent=
+);
+
+
+if(luckyEl){
+
+luckyEl.textContent=
 state.luckyBoxChances;
 
+}
 
+
+const recoverableEl=
 document.getElementById(
 'recoverableFdx'
-).textContent=
+);
+
+
+if(recoverableEl){
+
+recoverableEl.textContent=
 formatNumber(
 state.recoverableBalance
 );
 
+}
 
+
+const streakEl=
 document.getElementById(
 'burningStreak'
-).textContent=
+);
+
+
+if(streakEl){
+
+streakEl.textContent=
 `${state.burningStreak} Day${state.burningStreak===1?'':'s'}`;
+
+}
 
 
 const pill=
@@ -3804,11 +3927,14 @@ document.getElementById(
 'systemPill'
 );
 
-
 const button=
 document.getElementById(
 'miningToggleBtn'
 );
+
+
+if(!pill || !button)
+return;
 
 
 if(state.miningState==='IDLE'){
@@ -3945,7 +4071,7 @@ triggerAd('claim');
 
 
 /* =========================================================
-   BOOSTER & CYCLES RESET (4-HOUR INTERVAL)
+   BOOSTER & CYCLES RESET
 ========================================================= */
 
 function resetCyclesIfNeeded(){
@@ -3957,34 +4083,56 @@ const fourHours=
 4*60*60*1000;
 
 
-// Lucky Box 4-Hour Reset
-if(!state.luckyBoxResetAt || now-state.luckyBoxResetAt>=fourHours){
+let changed=false;
 
-state.luckyBoxChances=5;
+
+if(
+!state.luckyBoxResetAt ||
+now-state.luckyBoxResetAt>=fourHours
+){
+
+state.luckyBoxChances=
+5;
 
 state.luckyBoxResetAt=
 now;
 
+changed=true;
+
 }
 
 
-// Mining Booster 4-Hour Reset (Resets accumulated boost rate to 0 and chances to 5)
-if(!state.boosterResetAt || now-state.boosterResetAt>=fourHours){
+if(
+!state.boosterResetAt ||
+now-state.boosterResetAt>=fourHours
+){
 
-state.boosterBonusRate=0;
+state.boosterBonusRate=
+0;
 
-state.boosterChancesLeft=5;
+state.boosterChancesLeft=
+5;
 
 state.boosterResetAt=
 now;
 
+changed=true;
+
 }
 
+
+if(changed){
 
 saveState();
 
 }
 
+}
+
+
+/* =========================================================
+   BOOSTER
+========================================================= */
 
 function openBoosterPrompt(){
 
@@ -4140,23 +4288,24 @@ document.getElementById(
 'adModal'
 );
 
-
 const closeBtn=
 document.getElementById(
 'adCloseBtn'
 );
-
 
 const timerBadge=
 document.getElementById(
 'adTimerBadge'
 );
 
-
 const desc=
 document.getElementById(
 'adDescText'
 );
+
+
+if(!modal || !closeBtn || !timerBadge || !desc)
+return;
 
 
 modal.classList.add('active');
@@ -4174,14 +4323,12 @@ desc.textContent=
 
 }
 
-
 else if(type==='booster'){
 
 desc.textContent=
 'Complete the advertisement to activate your +0.5 FDX/H mining boost.';
 
 }
-
 
 else if(type==='luckybox'){
 
@@ -4219,10 +4366,11 @@ timerBadge.textContent=
 
 }
 
-
 else{
 
 clearInterval(adInterval);
+
+adInterval=null;
 
 timerBadge.textContent=
 'Ad Finished';
@@ -4272,7 +4420,20 @@ document.getElementById(
 );
 
 
+if(modal){
+
 modal.classList.remove('active');
+
+}
+
+
+if(adInterval){
+
+clearInterval(adInterval);
+
+adInterval=null;
+
+}
 
 
 if(activeAdType==='booster'){
@@ -4442,12 +4603,10 @@ new Date(
 state.lastActivityDay
 );
 
-
 const current=
 new Date(
 today
 );
-
 
 const difference=
 Math.floor(
@@ -4572,11 +4731,15 @@ return;
 
 
 let recoverable=
-Number(state.recoverableBalance || 0);
+Number(
+state.recoverableBalance || 0
+);
 
 
 let balance=
-Number(state.totalBalance || 0);
+Number(
+state.totalBalance || 0
+);
 
 
 for(
@@ -4649,17 +4812,19 @@ document.getElementById(
 'activityStatus'
 );
 
-
 const inactive=
 document.getElementById(
 'inactiveDays'
 );
 
-
 const active=
 document.getElementById(
 'activeDays'
 );
+
+
+if(!status || !inactive || !active)
+return;
 
 
 if(
@@ -4706,12 +4871,20 @@ state.activeDays,
 
 function updateBalanceUI(){
 
+const balance=
 document.getElementById(
 'balanceDisplay'
-).textContent=
+);
+
+
+if(balance){
+
+balance.textContent=
 formatNumber(
 state.totalBalance
 );
+
+}
 
 }
 
@@ -4758,6 +4931,8 @@ window.addEventListener(
 ()=>{
 
 loadState();
+
+captureReferralStart();
 
 resetCyclesIfNeeded();
 
@@ -4815,4 +4990,3 @@ error
 
 </body>
 </html>
-
