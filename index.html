@@ -16,7 +16,8 @@
 --cyan:#38bdf8;
 --blue:#0284c7;
 --yellow:#facc15;
---red:#f87171
+--red:#f87171;
+--green:#4ade80
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -67,7 +68,9 @@ from{opacity:0;transform:translateY(6px)}
 to{opacity:1;transform:translateY(0)}
 }
 
-/* BALANCE */
+/* =========================================================
+   BALANCE
+========================================================= */
 
 .balance-card{
 background:linear-gradient(145deg,#0d1520,#080d14);
@@ -123,7 +126,9 @@ border-radius:50%;
 box-shadow:0 0 8px var(--cyan)
 }
 
-/* WALLET */
+/* =========================================================
+   WALLET
+========================================================= */
 
 .crypto-wallet-hero{
 background:linear-gradient(145deg,#0f1a2e,#070d16);
@@ -168,7 +173,7 @@ margin-top:12px
 font-size:42px;
 font-weight:900;
 color:#fff;
-letter-spacing:-0.5px
+letter-spacing:-.5px
 }
 
 .crypto-hero-token{
@@ -224,7 +229,7 @@ background:linear-gradient(145deg,#0c141f,#070b12);
 border:1px solid #22324a;
 border-radius:20px;
 padding:20px 16px;
-box-shadow:0 8px 30px rgba(0,0,0,0.4);
+box-shadow:0 8px 30px rgba(0,0,0,.4);
 position:relative;
 overflow:hidden;
 display:flex;
@@ -263,7 +268,7 @@ gap:4px
 font-size:24px;
 font-weight:900;
 color:#fff;
-letter-spacing:-0.5px
+letter-spacing:-.5px
 }
 
 .wallet-huge-unit{
@@ -287,7 +292,7 @@ padding:18px;
 color:var(--cyan);
 font-size:15px;
 font-weight:900;
-box-shadow:0 6px 20px rgba(0,0,0,0.3)
+box-shadow:0 6px 20px rgba(0,0,0,.3)
 }
 
 .wallet-btn-receive{
@@ -298,50 +303,159 @@ padding:18px;
 color:#fff;
 font-size:15px;
 font-weight:900;
-box-shadow:0 6px 25px rgba(56,189,248,0.35)
+box-shadow:0 6px 25px rgba(56,189,248,.35)
 }
 
-/* FRIENDS */
+/* =========================================================
+   FRIENDS
+========================================================= */
 
-.friends-empty{
+.friends-stats-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:18px
+}
+
+.friend-stat-card{
 background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
-border-radius:20px;
-padding:28px 20px;
-text-align:center;
-box-shadow:0 6px 20px rgba(0,0,0,.3)
+border-radius:16px;
+padding:15px 8px;
+text-align:center
 }
 
-.friends-empty-icon{
-font-size:34px;
-margin-bottom:12px
-}
-
-.friends-empty-title{
-font-size:16px;
+.friend-stat-value{
+font-size:22px;
 font-weight:900;
 color:#fff
 }
 
-.friends-empty-text{
-font-size:12px;
+.friend-stat-label{
+font-size:9px;
+color:var(--muted);
+font-weight:900;
+margin-top:5px;
+text-transform:uppercase;
+letter-spacing:.4px
+}
+
+.friend-list-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:18px
+}
+
+.friend-list-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center
+}
+
+.friend-list-title{
+font-size:14px;
+font-weight:900;
+color:#fff
+}
+
+.friend-list-count{
+font-size:10px;
+font-weight:900;
+color:var(--cyan)
+}
+
+.friends-scroll-area{
+max-height:330px;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch
+}
+
+.friend-row-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:14px 16px;
+border-bottom:1px solid rgba(27,38,54,.7)
+}
+
+.friend-row-item:last-child{
+border-bottom:0
+}
+
+.friend-left{
+display:flex;
+align-items:center;
+gap:11px;
+min-width:0
+}
+
+.friend-avatar{
+width:38px;
+height:38px;
+border-radius:50%;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:17px;
+flex-shrink:0
+}
+
+.friend-name{
+font-size:13px;
+font-weight:900;
+color:#fff;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
+
+.friend-status{
+font-size:9px;
+font-weight:900;
+margin-top:4px
+}
+
+.friend-status.active{
+color:var(--green)
+}
+
+.friend-status.inactive{
+color:var(--muted)
+}
+
+.friend-empty-state{
+padding:30px 18px;
+text-align:center
+}
+
+.friend-empty-icon{
+font-size:32px;
+margin-bottom:10px
+}
+
+.friend-empty-title{
+font-size:15px;
+font-weight:900;
+color:#fff
+}
+
+.friend-empty-text{
+font-size:11px;
 color:var(--muted);
 line-height:1.6;
 margin-top:8px
 }
 
-.referral-status{
-margin-top:16px;
-padding:12px;
-border:1px solid rgba(56,189,248,.2);
-background:rgba(56,189,248,.05);
-border-radius:12px;
-font-size:11px;
-color:var(--muted);
-line-height:1.5
-}
-
-/* MINING */
+/* =========================================================
+   MINING
+========================================================= */
 
 .mining-node-container{
 display:flex;
@@ -355,15 +469,15 @@ margin:15px 0 20px
 width:260px;
 height:260px;
 border-radius:50%;
-border:2px solid rgba(56,189,248,0.25);
+border:2px solid rgba(56,189,248,.25);
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 position:relative;
 box-shadow:
-0 0 30px rgba(56,189,248,0.08),
-inset 0 0 30px rgba(56,189,248,0.08)
+0 0 30px rgba(56,189,248,.08),
+inset 0 0 30px rgba(56,189,248,.08)
 }
 
 .ring-wrapper::before{
@@ -371,7 +485,7 @@ content:'';
 position:absolute;
 inset:-6px;
 border-radius:50%;
-border:2px dashed rgba(56,189,248,0.4);
+border:2px dashed rgba(56,189,248,.4);
 animation:spin 30s linear infinite
 }
 
@@ -380,8 +494,8 @@ animation:spin 30s linear infinite
 }
 
 .system-status-pill{
-background:rgba(56,189,248,0.12);
-border:1px solid rgba(56,189,248,0.3);
+background:rgba(56,189,248,.12);
+border:1px solid rgba(56,189,248,.3);
 padding:4px 14px;
 border-radius:20px;
 font-size:10px;
@@ -427,7 +541,7 @@ color:#fff;
 font-size:14px;
 font-weight:800;
 letter-spacing:1px;
-box-shadow:0 4px 20px rgba(56,189,248,0.3)
+box-shadow:0 4px 20px rgba(56,189,248,.3)
 }
 
 .interactive-grid{
@@ -437,7 +551,7 @@ gap:10px
 }
 
 .action-tile{
-background:rgba(10,16,24,0.9);
+background:rgba(10,16,24,.9);
 border:1px solid var(--border);
 border-radius:14px;
 padding:12px;
@@ -445,7 +559,7 @@ display:flex;
 align-items:center;
 gap:10px;
 text-align:left;
-box-shadow:0 4px 15px rgba(0,0,0,0.2)
+box-shadow:0 4px 15px rgba(0,0,0,.2)
 }
 
 .action-tile-icon{
@@ -517,7 +631,9 @@ color:#fff;
 margin-top:16px
 }
 
-/* HEADERS */
+/* =========================================================
+   HEADERS
+========================================================= */
 
 .full-page-header{
 font-size:22px;
@@ -547,11 +663,13 @@ padding:20px;
 color:#fff;
 font-size:16px;
 font-weight:900;
-box-shadow:0 6px 25px rgba(56,189,248,0.35);
+box-shadow:0 6px 25px rgba(56,189,248,.35);
 letter-spacing:.8px
 }
 
-/* PROFILE */
+/* =========================================================
+   PROFILE
+========================================================= */
 
 .profile-menu-list{
 display:flex;
@@ -569,7 +687,7 @@ display:flex;
 align-items:center;
 justify-content:space-between;
 cursor:pointer;
-box-shadow:0 4px 15px rgba(0,0,0,0.2)
+box-shadow:0 4px 15px rgba(0,0,0,.2)
 }
 
 .profile-menu-left{
@@ -595,7 +713,9 @@ color:var(--muted);
 font-weight:900
 }
 
-/* CHAT */
+/* =========================================================
+   CHAT
+========================================================= */
 
 .chat-messages-container{
 max-height:220px;
@@ -657,12 +777,35 @@ font-weight:900;
 font-size:13px
 }
 
-/* MODALS */
+.support-status{
+padding:13px;
+background:#111b27;
+border:1px solid rgba(56,189,248,.25);
+border-radius:13px;
+margin-bottom:14px
+}
+
+.support-status-title{
+font-size:12px;
+font-weight:900;
+color:var(--cyan)
+}
+
+.support-status-text{
+font-size:11px;
+color:var(--muted);
+line-height:1.5;
+margin-top:5px
+}
+
+/* =========================================================
+   MODALS
+========================================================= */
 
 .modal-overlay{
 position:fixed;
 inset:0;
-background:rgba(5,8,12,0.95);
+background:rgba(5,8,12,.95);
 z-index:1000;
 display:none;
 align-items:center;
@@ -682,7 +825,7 @@ width:100%;
 max-width:360px;
 padding:24px;
 text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,0.5)
+box-shadow:0 10px 40px rgba(0,0,0,.5)
 }
 
 .ad-header{
@@ -710,7 +853,7 @@ position:relative
 position:absolute;
 top:10px;
 right:10px;
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,.6);
 padding:2px 8px;
 border-radius:6px;
 font-size:10px;
@@ -739,9 +882,9 @@ padding:12px;
 color:#fff;
 font-size:12px;
 font-weight:800;
-opacity:0.5;
+opacity:.5;
 pointer-events:none;
-transition:opacity 0.3s
+transition:opacity .3s
 }
 
 .ad-close-btn.ready{
@@ -757,7 +900,7 @@ width:100%;
 max-width:340px;
 padding:24px;
 text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,0.5)
+box-shadow:0 10px 40px rgba(0,0,0,.5)
 }
 
 .prompt-title{
@@ -801,7 +944,9 @@ font-size:12px;
 font-weight:900
 }
 
-/* INFO SHEET */
+/* =========================================================
+   INFO SHEET
+========================================================= */
 
 .sheet-box{
 background:var(--panel);
@@ -813,7 +958,7 @@ max-height:80vh;
 display:flex;
 flex-direction:column;
 overflow:hidden;
-box-shadow:0 12px 45px rgba(0,0,0,0.6)
+box-shadow:0 12px 45px rgba(0,0,0,.6)
 }
 
 .sheet-header{
@@ -856,7 +1001,9 @@ color:#fff
 margin:0
 }
 
-/* BOTTOM NAV */
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
 
 .bottom-nav{
 position:fixed;
@@ -898,11 +1045,14 @@ color:var(--cyan)
 
 <div class="app">
 
-<!-- ================= MINING ================= -->
+<!-- =========================================================
+     MINING
+========================================================= -->
 
 <main class="page-view active" id="page-mining">
 
 <div class="balance-card">
+
 <div class="balance-dot"></div>
 
 <div class="balance-label">
@@ -910,6 +1060,7 @@ TOTAL BALANCE
 </div>
 
 <div class="balance-row">
+
 <div class="balance-value" id="balanceDisplay">
 0.00
 </div>
@@ -917,6 +1068,7 @@ TOTAL BALANCE
 <div class="balance-token">
 $FDX
 </div>
+
 </div>
 
 <div class="balance-sub">
@@ -943,6 +1095,7 @@ Mining Rate:
 </div>
 
 </div>
+
 </div>
 
 <div class="action-controls">
@@ -956,7 +1109,9 @@ START MINING
 
 <div class="interactive-grid">
 
-<button class="action-tile" onclick="openBoosterPrompt()">
+<button
+class="action-tile"
+onclick="openBoosterPrompt()">
 
 <div class="action-tile-icon">
 🚀
@@ -976,11 +1131,10 @@ Mining Boost
 
 </button>
 
-
 <button
 class="action-tile"
 onclick="openLuckyBoxModal()"
-style="border-color:rgba(250,204,21,0.5);">
+style="border-color:rgba(250,204,21,.5);">
 
 <div class="action-tile-icon">
 🎁
@@ -1003,6 +1157,7 @@ Mystery Gift Box
 </button>
 
 </div>
+
 </div>
 
 <div class="dual-grid">
@@ -1026,7 +1181,6 @@ BURNING<br>STREAK
 </div>
 
 </div>
-
 
 <div class="info-box">
 
@@ -1053,7 +1207,9 @@ RECOVERABLE<br>$FDX
 </main>
 
 
-<!-- ================= TASKS ================= -->
+<!-- =========================================================
+     TASKS
+========================================================= -->
 
 <main class="page-view" id="page-tasks">
 
@@ -1062,54 +1218,96 @@ RECOVERABLE<br>$FDX
 </div>
 
 <div class="full-page-sub">
-Complete community missions to earn extra token allocations.
+Complete official FIDEXA community missions.
 </div>
 
-<div class="friends-scroll-area">
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+Telegram
+</div>
+
+<div class="friend-list-count">
+@fidexa_Network
+</div>
+
+</div>
 
 <div class="friend-row-item">
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+📢
+</div>
 
 <div>
 
 <div class="friend-name">
-Join Telegram Channel
+Join Official Telegram
 </div>
 
-<div
-style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">
-+10.00 $FDX
+<div class="friend-status active">
+OFFICIAL CHANNEL
+</div>
+
 </div>
 
 </div>
 
 <button
-onclick="showComingSoon('Task rewards')"
-style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4);padding:8px 12px;border-radius:10px;font-weight:900;">
-CLAIM
+onclick="openTaskLink('telegram')"
+style="background:rgba(56,189,248,.2);color:var(--cyan);border:1px solid rgba(56,189,248,.4);padding:8px 12px;border-radius:10px;font-weight:900;">
+JOIN
 </button>
 
 </div>
 
+</div>
+
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+X / TWITTER
+</div>
+
+<div class="friend-list-count">
+@Fidexa_Network
+</div>
+
+</div>
 
 <div class="friend-row-item">
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+𝕏
+</div>
 
 <div>
 
 <div class="friend-name">
-Follow Official X Handle
+Follow Official X
 </div>
 
-<div
-style="font-size:13px;color:var(--yellow);margin-top:6px;font-weight:900;">
-+15.00 $FDX
+<div class="friend-status active">
+OFFICIAL ACCOUNT
+</div>
+
 </div>
 
 </div>
 
 <button
-onclick="showComingSoon('Task rewards')"
-style="background:rgba(56,189,248,0.2);color:var(--cyan);border:1px solid rgba(56,189,248,0.4);padding:8px 12px;border-radius:10px;font-weight:900;">
-CLAIM
+onclick="openTaskLink('x')"
+style="background:rgba(56,189,248,.2);color:var(--cyan);border:1px solid rgba(56,189,248,.4);padding:8px 12px;border-radius:10px;font-weight:900;">
+FOLLOW
 </button>
 
 </div>
@@ -1119,7 +1317,9 @@ CLAIM
 </main>
 
 
-<!-- ================= FRIENDS ================= -->
+<!-- =========================================================
+     FRIENDS
+========================================================= -->
 
 <main class="page-view" id="page-friends">
 
@@ -1128,34 +1328,112 @@ CLAIM
 </div>
 
 <div class="full-page-sub">
-Your real referral activity will appear here when the referral system is connected to the backend.
+View the users you personally invited and their current activity status.
 </div>
 
-<div class="friends-empty">
+<div class="friends-stats-grid">
 
-<div class="friends-empty-icon">
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="totalFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Invited
+</div>
+
+</div>
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="activeFriendsCount"
+style="color:var(--green);">
+0
+</div>
+
+<div class="friend-stat-label">
+Active
+</div>
+
+</div>
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="inactiveFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Inactive
+</div>
+
+</div>
+
+</div>
+
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+My Invited Members
+</div>
+
+<div
+class="friend-list-count"
+id="friendListCount">
+0 MEMBERS
+</div>
+
+</div>
+
+<div
+class="friends-scroll-area"
+id="friendsList">
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
 👥
 </div>
 
-<div class="friends-empty-title">
-Referral Data
+<div class="friend-empty-title">
+No Invited Members
 </div>
 
-<div class="friends-empty-text">
-No referral statistics are being displayed yet.
-FIDEXA will show your actual referral network here when real referral data is available.
-</div>
-
-<div class="referral-status">
-No fake referral users, active counts, inactive counts, or fabricated rewards are displayed.
+<div class="friend-empty-text">
+Your real invited members will appear here when referral data is available.
+No fake users are displayed.
 </div>
 
 </div>
+
+</div>
+
+</div>
+
+
+<button
+class="full-action-btn"
+onclick="copyReferralLink()"
+style="padding:15px;font-size:13px;box-shadow:none;">
+INVITE FRIENDS
+</button>
 
 </main>
 
 
-<!-- ================= WALLET ================= -->
+<!-- =========================================================
+     WALLET
+========================================================= -->
 
 <main class="page-view" id="page-wallet">
 
@@ -1182,8 +1460,6 @@ $FDX
 </div>
 
 
-<!-- MIGRATION -->
-
 <div class="wallet-migration-card">
 
 <div class="wallet-migration-title">
@@ -1195,7 +1471,7 @@ Your accumulated $FDX will be eligible for migration when the official FIDEXA di
 </div>
 
 <div class="wallet-migration-text">
-The migration system will use your actual accumulated balance. No artificial balance is displayed or created by this interface.
+The migration process will use your actual accumulated FDX balance recorded by the live platform.
 </div>
 
 <div class="wallet-migration-status">
@@ -1285,18 +1561,22 @@ RECENT TRANSACTIONS
 </div>
 
 
-<div class="friends-empty">
+<div class="friend-list-card">
 
-<div class="friends-empty-icon">
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
 📭
 </div>
 
-<div class="friends-empty-title">
+<div class="friend-empty-title">
 No Transactions
 </div>
 
-<div class="friends-empty-text">
-Real wallet transactions will appear here after the live wallet and migration systems are connected.
+<div class="friend-empty-text">
+Real wallet transactions will appear here when the live wallet and migration systems are connected.
+</div>
+
 </div>
 
 </div>
@@ -1304,7 +1584,9 @@ Real wallet transactions will appear here after the live wallet and migration sy
 </main>
 
 
-<!-- ================= PROFILE ================= -->
+<!-- =========================================================
+     PROFILE
+========================================================= -->
 
 <main class="page-view" id="page-profile">
 
@@ -1313,12 +1595,13 @@ Real wallet transactions will appear here after the live wallet and migration sy
 </div>
 
 <div class="full-page-sub">
-Manage your account settings, community security, and official network documentation.
+Manage your account, support, and official FIDEXA information.
 </div>
 
 <div class="profile-menu-list">
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openProfileInfo('account')">
 
 <div class="profile-menu-left">
@@ -1340,7 +1623,8 @@ Account Information
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openProfileInfo('support')">
 
 <div class="profile-menu-left">
@@ -1362,7 +1646,8 @@ Chat Support
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openProfileInfo('privacy')">
 
 <div class="profile-menu-left">
@@ -1384,7 +1669,8 @@ Privacy Policy
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openProfileInfo('whitepaper')">
 
 <div class="profile-menu-left">
@@ -1406,7 +1692,8 @@ White Paper
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openProfileInfo('roadmap')">
 
 <div class="profile-menu-left">
@@ -1428,7 +1715,8 @@ Project Roadmap
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openExternalLink('telegram')">
 
 <div class="profile-menu-left">
@@ -1450,7 +1738,8 @@ Official Telegram
 </div>
 
 
-<div class="profile-menu-item"
+<div
+class="profile-menu-item"
 onclick="openExternalLink('twitter')">
 
 <div class="profile-menu-left">
@@ -1475,7 +1764,7 @@ Official X
 <div
 class="profile-menu-item"
 onclick="openProfileInfo('deletion')"
-style="border-color:rgba(248,113,113,0.3);">
+style="border-color:rgba(248,113,113,.3);">
 
 <div class="profile-menu-left">
 
@@ -1504,7 +1793,9 @@ style="color:var(--red);">
 </main>
 
 
-<!-- ================= PROFILE INFO SHEET ================= -->
+<!-- =========================================================
+     PROFILE INFO MODAL
+========================================================= -->
 
 <div
 class="modal-overlay"
@@ -1539,7 +1830,9 @@ Loading details...
 </div>
 
 
-<!-- ================= BOOSTER PROMPT ================= -->
+<!-- =========================================================
+     BOOSTER
+========================================================= -->
 
 <div
 class="modal-overlay"
@@ -1576,7 +1869,9 @@ Watch ad
 </div>
 
 
-<!-- ================= LUCKY BOX ================= -->
+<!-- =========================================================
+     LUCKY BOX
+========================================================= -->
 
 <div
 class="modal-overlay"
@@ -1589,7 +1884,8 @@ id="luckyBoxModal">
 </div>
 
 <div class="prompt-desc">
-Open the mystery gift box by watching a short video to claim instant bonus $FDX!
+Open the mystery gift box by watching a short video.
+The actual reward will come from the live reward system.
 </div>
 
 <div class="prompt-actions">
@@ -1613,7 +1909,9 @@ Open Box
 </div>
 
 
-<!-- ================= AD MODAL ================= -->
+<!-- =========================================================
+     AD MODAL
+========================================================= -->
 
 <div
 class="modal-overlay"
@@ -1659,7 +1957,9 @@ CLAIM REWARD
 </div>
 
 
-<!-- ================= NAVIGATION ================= -->
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
 
 <nav class="bottom-nav">
 
@@ -1739,6 +2039,7 @@ Profile
 ========================================================= */
 
 let currentUserId='';
+let currentUserName='';
 
 if(
 window.Telegram &&
@@ -1747,8 +2048,18 @@ window.Telegram.WebApp.initDataUnsafe &&
 window.Telegram.WebApp.initDataUnsafe.user
 ){
 
+const tgUser=
+window.Telegram.WebApp.initDataUnsafe.user;
+
 currentUserId=
-window.Telegram.WebApp.initDataUnsafe.user.id.toString();
+tgUser.id ?
+tgUser.id.toString() :
+'';
+
+currentUserName=
+tgUser.username ||
+tgUser.first_name ||
+'';
 
 }
 
@@ -1786,6 +2097,40 @@ btnElement.classList.add('active');
 
 
 /* =========================================================
+   OFFICIAL TASK LINKS
+========================================================= */
+
+const FIDEXA_TELEGRAM=
+'https://t.me/fidexa_Network';
+
+const FIDEXA_X=
+'https://x.com/Fidexa_Network';
+
+
+function openTaskLink(type){
+
+if(type==='telegram'){
+
+window.open(
+FIDEXA_TELEGRAM,
+'_blank'
+);
+
+}
+
+else if(type==='x'){
+
+window.open(
+FIDEXA_X,
+'_blank'
+);
+
+}
+
+}
+
+
+/* =========================================================
    PROFILE INFORMATION
 ========================================================= */
 
@@ -1808,23 +2153,23 @@ modal.classList.add('active');
 if(type==='account'){
 
 titleEl.textContent=
-"Account Information";
+'Account Information';
 
 bodyEl.innerHTML=`
 
 <p>
 <strong>Telegram User ID:</strong>
-${currentUserId || 'Not available'}
+${escapeHtml(currentUserId || 'Not available')}
+</p>
+
+<p style="margin-top:10px;">
+<strong>Username:</strong>
+${escapeHtml(currentUserName || 'Not available')}
 </p>
 
 <p style="margin-top:10px;">
 <strong>Node Status:</strong>
-Verified Secured Node
-</p>
-
-<p style="margin-top:10px;">
-<strong>App Security Tier:</strong>
-Level 2 Mainnet Shield
+Verified User Node
 </p>
 
 `;
@@ -1832,41 +2177,59 @@ Level 2 Mainnet Shield
 }
 
 
-/* SUPPORT */
+/* =========================================================
+   CHAT SUPPORT
+========================================================= */
 
 else if(type==='support'){
 
 titleEl.textContent=
-"Chat Support";
+'Chat Support';
 
 bodyEl.innerHTML=`
 
-<p style="margin-bottom:14px;">
-FIDEXA Chat Support is being prepared for the live support backend.
-</p>
+<div class="support-status">
 
-<div
-style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;">
-
-<div style="font-size:28px;margin-bottom:10px;">
-💬
+<div class="support-status-title">
+💬 FIDEXA SUPPORT
 </div>
 
-<div style="font-size:15px;font-weight:900;color:#fff;">
-Support System
+<div class="support-status-text">
+Send your support message below. The interface is ready for connection to the live FIDEXA support backend.
+</div>
+
 </div>
 
 <div
-style="font-size:12px;color:var(--muted);margin-top:7px;line-height:1.5;">
-The current frontend will not pretend that messages have been delivered to an administrator.
-Live support messaging will be enabled when the official support backend is connected.
+id="supportMessages"
+class="chat-messages-container">
+
+<div class="chat-bubble admin">
+Hello. How can we help you?
+</div>
+
+</div>
+
+<div class="chat-input-row">
+
+<input
+id="supportInput"
+class="chat-input-field"
+type="text"
+maxlength="500"
+placeholder="Write your message...">
+
+<button
+class="chat-send-btn"
+onclick="sendSupportMessage()">
+SEND
+</button>
+
 </div>
 
 <div
-style="display:inline-block;margin-top:14px;padding:6px 12px;border-radius:20px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25);color:var(--yellow);font-size:10px;font-weight:900;">
-COMING SOON
-</div>
-
+style="font-size:10px;color:var(--muted);margin-top:10px;line-height:1.5;">
+Messages are not marked as delivered unless the live support backend confirms delivery.
 </div>
 
 `;
@@ -1879,7 +2242,7 @@ COMING SOON
 else if(type==='privacy'){
 
 titleEl.textContent=
-"FIDEXA NETWORK — Privacy Policy";
+'FIDEXA NETWORK — Privacy Policy';
 
 bodyEl.innerHTML=`
 
@@ -1897,71 +2260,26 @@ PRIVACY POLICY
 Effective Date: September 26, 2026
 </div>
 
-<div style="font-size:11px;color:var(--muted);margin-top:3px;">
-Last Updated: September 26, 2026
-</div>
-
 </div>
 
 <p>
-FIDEXA Network ("FIDEXA", "we", "our", or "us") respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
+FIDEXA Network respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
 </p>
 
 <p style="margin-top:10px;">
-This Privacy Policy explains what information FIDEXA may collect, how it is used, how it may be shared, and the choices available to users.
-</p>
-
-<p style="margin-top:10px;">
-By accessing or using the FIDEXA Mini App, you acknowledge that you have read and understood this Privacy Policy.
+The Mini App may process Telegram account information, application activity, mining sessions, balances, referrals, tasks, rewards, support interactions, and technical information necessary to operate the platform.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-1. Information We Collect
+Information We Collect
 </div>
 
 <p>
-FIDEXA collects and processes information that is necessary to operate the Mini App and provide its features.
-</p>
-
-<div style="color:var(--yellow);font-weight:900;margin-top:14px;">
-Telegram Account Information
-</div>
-
-<p style="margin-top:6px;">
-When you open FIDEXA through Telegram, the Mini App may receive information made available by Telegram, which may include:
-</p>
-
-<div style="background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:8px;line-height:1.9;">
-• Telegram user ID<br>
-• First name<br>
-• Last name, where available<br>
-• Telegram username, where available<br>
-• Language information<br>
-• Telegram profile information made available to the Mini App
-</div>
-
-<p style="margin-top:10px;">
-FIDEXA uses this information primarily to identify your account and provide personalized features within the application.
+Information made available by Telegram may include Telegram user ID, first name, last name, username, language information, and other profile information made available to the Mini App.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-2. FIDEXA Activity Information
-</div>
-
-<p>
-FIDEXA may process information associated with activity inside the application, including mining sessions, rewards, balances, boosters, Lucky Boxes, streaks, referrals, community tasks, reward claims, and account interactions.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-3. Advertising Information
-</div>
-
-<p>
-FIDEXA may incorporate third-party advertising technology into supported reward-claim processes. Third-party providers may process technical or advertising-related information according to their own policies.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-4. How We Use Information
+How We Use Information
 </div>
 
 <p>
@@ -1969,59 +2287,11 @@ FIDEXA may use information to operate accounts, mining sessions, rewards, referr
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-5. Data Security
+Account Deletion
 </div>
 
 <p>
-FIDEXA takes reasonable technical and organizational measures to protect information. However, no internet service or electronic storage system can be guaranteed to be completely secure.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-6. Data Retention
-</div>
-
-<p>
-Information may be retained for as long as reasonably necessary to provide the service, maintain records, prevent abuse, resolve disputes, maintain security, and meet applicable legal obligations.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-7. Your Privacy Rights
-</div>
-
-<p>
-Depending on applicable law, users may have rights concerning access, correction, deletion, restriction, objection, consent withdrawal, and privacy complaints.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-8. Account Deletion
-</div>
-
-<p>
-FIDEXA provides account-deletion controls where available. Deletion may result in permanent loss of associated account data, subject to information that must reasonably be retained for security, fraud prevention, disputes, or legal compliance.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-9. Third-Party Services
-</div>
-
-<p>
-FIDEXA may integrate with Telegram, advertising providers, hosting services, databases, and other technical services required to operate the platform.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-10. Changes
-</div>
-
-<p>
-FIDEXA may update this Privacy Policy when the application, services, technology, or applicable legal requirements change.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-11. Contact
-</div>
-
-<p>
-Privacy questions and requests can be submitted through the official FIDEXA support channel when available.
+Users may request account deletion where the live account-management system supports the request. Certain information may need to be retained for security, fraud prevention, disputes, or legal compliance.
 </p>
 
 `;
@@ -2034,7 +2304,7 @@ Privacy questions and requests can be submitted through the official FIDEXA supp
 else if(type==='whitepaper'){
 
 titleEl.textContent=
-"FIDEXA NETWORK — Whitepaper v1.0";
+'FIDEXA NETWORK — Whitepaper v1.0';
 
 bodyEl.innerHTML=`
 
@@ -2056,10 +2326,6 @@ A Gamified Digital Mining & Community Rewards Ecosystem
 Ticker: FDX
 </div>
 
-<div style="font-size:11px;color:var(--muted);margin-top:3px;">
-Platform: Telegram Mini App
-</div>
-
 </div>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
@@ -2067,11 +2333,7 @@ Platform: Telegram Mini App
 </div>
 
 <p>
-FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.
-</p>
-
-<p style="margin-top:10px;">
-The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a mobile-friendly experience.
+FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple and accessible.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
@@ -2079,7 +2341,7 @@ The platform combines timed mining sessions, community participation, referrals,
 </div>
 
 <p>
-FIDEXA uses a timed mining-session system. Users start a mining session from the Mini App and the session runs for a defined period.
+FIDEXA uses timed mining sessions. Users start a mining session from the Mini App and the session runs for a defined period.
 </p>
 
 <div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
@@ -2098,66 +2360,34 @@ Current Mining Structure
 <strong style="color:#fff;">1.0 FDX per hour</strong>
 </div>
 
-<div style="margin-top:5px;">
-• Base reward per completed cycle:
-<strong style="color:#fff;">4 FDX</strong>
 </div>
-
-</div>
-
-<p style="margin-top:10px;">
-The mining system is designed around participation rather than requiring users to keep their device continuously active.
-</p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-3. Reward Claim & Advertising
+3. Boosters & Lucky Boxes
 </div>
 
 <p>
-Advertising may be incorporated into supported reward-claim processes. Advertising is not intended to run continuously while a user is mining.
+FIDEXA includes gamification features such as mining boosters, Lucky Boxes and streak-related features. Actual rewards must be determined by the live reward backend.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-4. Boosters & Gamification
+4. Community Tasks
 </div>
 
 <p>
-FIDEXA includes gamification mechanisms such as mining boosters, Lucky Boxes and streak-related features designed to encourage continued participation.
+FIDEXA includes community activities connected to official Telegram and X accounts.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-5. Community Tasks
+5. Referral System
 </div>
 
 <p>
-FIDEXA includes community activities connected to supported platforms such as Telegram and X.
+The referral interface is designed to display actual users invited by an account. Referral statistics and member information must come from the live referral backend.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-6. Referral System
-</div>
-
-<p>
-FIDEXA includes a referral mechanism designed to encourage community growth. Actual referral information will be displayed from the live referral system when that backend functionality is available.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-7. FDX Reward Model
-</div>
-
-<p>
-FDX is the internal reward unit used throughout the current FIDEXA ecosystem.
-</p>
-
-<p style="margin-top:10px;padding:12px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;">
-<strong style="color:var(--yellow);">
-Important:
-</strong>
-In-app FDX balances should not be represented as externally transferable unless and until the required live functionality is implemented.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-8. Migration & Distribution
+6. Migration & Distribution
 </div>
 
 <p>
@@ -2165,33 +2395,16 @@ FIDEXA plans to migrate users' accumulated FDX when the official distribution pr
 </p>
 
 <p style="margin-top:10px;">
-The migration process will be based on the user's actual accumulated FDX balance recorded by the live platform.
-</p>
-
-<p style="margin-top:10px;">
-The current frontend does not fabricate migration balances or perform a false blockchain transaction.
-Migration functionality will become active when the official distribution and migration infrastructure is ready.
+Migration will use the user's actual accumulated FDX balance recorded by the live platform.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-9. Transparency
+7. Transparency
 </div>
 
 <p>
-FIDEXA documentation should describe functionality that is actually available rather than presenting future concepts as completed technology.
+FIDEXA should display actual implemented information rather than fabricated balances, users, transactions, or rewards.
 </p>
-
-<div style="text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);">
-
-<div style="font-size:17px;font-weight:900;color:#fff;">
-FIDEXA NETWORK
-</div>
-
-<div style="font-size:12px;color:var(--yellow);font-weight:900;margin-top:6px;">
-Mine. Participate. Grow.
-</div>
-
-</div>
 
 `;
 
@@ -2203,7 +2416,7 @@ Mine. Participate. Grow.
 else if(type==='roadmap'){
 
 titleEl.textContent=
-"FIDEXA NETWORK — Official Roadmap";
+'FIDEXA NETWORK — Official Roadmap';
 
 bodyEl.innerHTML=`
 
@@ -2219,98 +2432,64 @@ OFFICIAL ROADMAP
 
 </div>
 
-
-<div style="background:#111b27;border:1px solid rgba(56,189,248,0.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+<div style="background:#111b27;border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
 
 <div style="font-size:15px;color:var(--cyan);font-weight:900;">
-PHASE 1 — Foundation & Mini App Launch
+PHASE 1 — Foundation & Mini App
 </div>
 
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:var(--cyan);font-size:10px;font-weight:900;">
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:var(--cyan);font-size:10px;font-weight:900;">
 COMPLETED
 </div>
 
 <div style="margin-top:14px;line-height:1.9;">
 ✓ FIDEXA Telegram Mini App interface<br>
 ✓ User profile integration<br>
-✓ Core mining system<br>
-✓ 4-hour mining sessions<br>
-✓ 1.0 FDX/hour base mining rate<br>
-✓ In-app FDX balance<br>
-✓ Basic referral system<br>
-✓ Initial community-task structure<br>
-✓ Account and support interface
+✓ Core mining interface<br>
+✓ Community task structure<br>
+✓ Wallet interface<br>
+✓ Account interface
 </div>
 
 </div>
 
-
-<div style="background:#111b27;border:1px solid rgba(250,204,21,0.35);border-radius:18px;padding:18px;margin-bottom:16px;">
+<div style="background:#111b27;border:1px solid rgba(250,204,21,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
 
 <div style="font-size:15px;color:var(--yellow);font-weight:900;">
 PHASE 2 — Engagement & Gamification
 </div>
 
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);color:var(--yellow);font-size:10px;font-weight:900;">
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(250,204,21,.1);border:1px solid rgba(250,204,21,.3);color:var(--yellow);font-size:10px;font-weight:900;">
 ACTIVE
 </div>
 
 <div style="margin-top:14px;line-height:1.9;">
 • Mining boosters<br>
 • Lucky Boxes<br>
-• Reward-claim advertising integration<br>
-• Community task expansion<br>
-• Telegram community activities<br>
-• X community activities<br>
-• Improvements to the overall user experience
+• Community tasks<br>
+• Referral activity<br>
+• Support system<br>
+• User experience improvements
 </div>
 
 </div>
 
-
-<div style="background:#111b27;border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:20px;">
+<div style="background:#111b27;border:1px solid var(--border);border-radius:18px;padding:18px;">
 
 <div style="font-size:15px;color:#fff;font-weight:900;">
 PHASE 3 — Ecosystem Growth
 </div>
 
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,0.08);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:900;">
-CURRENT DEVELOPMENT
+<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.08);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:900;">
+DEVELOPMENT
 </div>
 
 <div style="margin-top:14px;line-height:1.9;">
-• Expansion of community participation<br>
-• Improvement of mining and reward interfaces<br>
-• Expansion of gamification features<br>
-• Continued optimization of referral and task systems<br>
+• Referral backend expansion<br>
 • Migration and distribution infrastructure<br>
-• Improvement of support and account-management features<br>
+• Wallet infrastructure<br>
+• Support backend<br>
 • Platform performance improvements
-</div>
-
-</div>
-
-
-<div style="background:rgba(56,189,248,0.06);border:1px solid rgba(56,189,248,0.2);border-radius:18px;padding:18px;">
-
-<div style="font-size:14px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
-FIDEXA Development Philosophy
-</div>
-
-<p>
-FIDEXA will continue to develop based on actual platform implementation and community participation.
-</p>
-
-<p style="margin-top:10px;">
-New functionality will be introduced progressively as the ecosystem develops.
-</p>
-
-<div style="text-align:center;margin-top:18px;color:var(--yellow);font-size:14px;font-weight:900;">
-FIDEXA Network
-<br>
-<span style="color:#fff;font-size:12px;">
-Mine. Participate. Grow.
-</span>
 </div>
 
 </div>
@@ -2325,7 +2504,7 @@ Mine. Participate. Grow.
 else if(type==='deletion'){
 
 titleEl.textContent=
-"Account Deletion Warning";
+'Account Deletion Warning';
 
 bodyEl.innerHTML=`
 
@@ -2333,14 +2512,12 @@ bodyEl.innerHTML=`
 
 <strong>Warning:</strong>
 
-Permanently deleting your account will remove associated account data,
-subject to information that must be retained for security, legal, or
-fraud-prevention purposes.
+Account deletion will remove associated account data where supported by the live account system.
 
 </p>
 
 <button
-style="width:100%;background:rgba(248,113,113,0.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
+style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
 onclick="showComingSoon('Account deletion')">
 
 REQUEST ACCOUNT DELETION
@@ -2350,6 +2527,67 @@ REQUEST ACCOUNT DELETION
 `;
 
 }
+
+}
+
+
+/* =========================================================
+   SEND SUPPORT MESSAGE
+========================================================= */
+
+function sendSupportMessage(){
+
+const input=
+document.getElementById('supportInput');
+
+const messages=
+document.getElementById('supportMessages');
+
+if(!input || !messages)
+return;
+
+const message=
+input.value.trim();
+
+if(!message)
+return;
+
+
+/*
+ IMPORTANT:
+ The frontend does not falsely claim delivery.
+ A real backend endpoint must be connected here.
+*/
+
+const bubble=
+document.createElement('div');
+
+bubble.className=
+'chat-bubble user';
+
+bubble.textContent=
+message;
+
+messages.appendChild(bubble);
+
+input.value='';
+
+messages.scrollTop=
+messages.scrollHeight;
+
+const notice=
+document.createElement('div');
+
+notice.className=
+'chat-bubble admin';
+
+notice.textContent=
+'Message prepared. Live support delivery requires the FIDEXA support backend.';
+
+messages.appendChild(notice);
+
+messages.scrollTop=
+messages.scrollHeight;
 
 }
 
@@ -2376,7 +2614,7 @@ function openExternalLink(target){
 if(target==='telegram'){
 
 window.open(
-'https://t.me/FidexaNetworkBot',
+FIDEXA_TELEGRAM,
 '_blank'
 );
 
@@ -2385,7 +2623,7 @@ window.open(
 else if(target==='twitter'){
 
 window.open(
-'https://twitter.com/',
+FIDEXA_X,
 '_blank'
 );
 
@@ -2423,7 +2661,7 @@ bodyEl.innerHTML=`
 </div>
 
 <div style="font-size:17px;font-weight:900;color:#fff;">
-${feature} Coming Soon
+${escapeHtml(feature)} Coming Soon
 </div>
 
 <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px;">
@@ -2443,7 +2681,7 @@ COMING SOON
 
 
 /* =========================================================
-   MIGRATION INFORMATION
+   MIGRATION
 ========================================================= */
 
 function openMigrationInfo(){
@@ -2460,7 +2698,7 @@ document.getElementById('sheetContentBody');
 modal.classList.add('active');
 
 titleEl.textContent=
-"FDX Migration";
+'FDX Migration';
 
 bodyEl.innerHTML=`
 
@@ -2506,15 +2744,15 @@ NOT YET OPEN
 ========================================================= */
 
 /*
-   IMPORTANT:
-   No fake starting balances are used here.
-   The live backend should populate these values later.
+ IMPORTANT:
+ All balances start at ZERO.
+
+ A live backend must populate these values.
+ No artificial starting balance is created.
 */
 
 let totalBalance=0;
-
 let transferableBal=0;
-
 let unverifiedBal=0;
 
 
@@ -2560,16 +2798,247 @@ const unverified=
 document.getElementById('unverifiedBalance');
 
 if(balance)
-balance.textContent=formattedBal;
+balance.textContent=
+formattedBal;
 
 if(wallet)
-wallet.textContent=formattedBal;
+wallet.textContent=
+formattedBal;
 
 if(transferable)
-transferable.textContent=formattedTrans;
+transferable.textContent=
+formattedTrans;
 
 if(unverified)
-unverified.textContent=formattedUnver;
+unverified.textContent=
+formattedUnver;
+
+}
+
+
+/* =========================================================
+   REAL FRIEND DATA INTERFACE
+========================================================= */
+
+/*
+ The backend should call:
+
+ setFriendsData([
+   {
+      username:'example',
+      name:'Example User',
+      active:true
+   }
+ ]);
+
+ No fake members are created here.
+*/
+
+let friendsData=[];
+
+
+function setFriendsData(data){
+
+if(!Array.isArray(data))
+data=[];
+
+friendsData=
+data.filter(
+friend=>
+friend &&
+typeof friend==='object'
+);
+
+renderFriends();
+
+}
+
+
+function renderFriends(){
+
+const list=
+document.getElementById('friendsList');
+
+const total=
+friendsData.length;
+
+const active=
+friendsData.filter(
+friend=>friend.active===true
+).length;
+
+const inactive=
+total-active;
+
+document
+.getElementById('totalFriendsCount')
+.textContent=
+total;
+
+document
+.getElementById('activeFriendsCount')
+.textContent=
+active;
+
+document
+.getElementById('inactiveFriendsCount')
+.textContent=
+inactive;
+
+document
+.getElementById('friendListCount')
+.textContent=
+`${total} MEMBER${total===1?'':'S'}`;
+
+if(!list)
+return;
+
+if(total===0){
+
+list.innerHTML=`
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">
+👥
+</div>
+
+<div class="friend-empty-title">
+No Invited Members
+</div>
+
+<div class="friend-empty-text">
+Your real invited members will appear here when referral data is available.
+No fake users are displayed.
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+list.innerHTML='';
+
+friendsData.forEach(
+friend=>{
+
+const row=
+document.createElement('div');
+
+row.className=
+'friend-row-item';
+
+const username=
+friend.username ?
+`@${String(friend.username).replace(/^@/,'')}` :
+'Telegram User';
+
+const displayName=
+friend.name ||
+username;
+
+const status=
+friend.active===true ?
+'ACTIVE' :
+'INACTIVE';
+
+const statusClass=
+friend.active===true ?
+'active' :
+'inactive';
+
+row.innerHTML=`
+
+<div class="friend-left">
+
+<div class="friend-avatar">
+👤
+</div>
+
+<div style="min-width:0;">
+
+<div class="friend-name">
+${escapeHtml(displayName)}
+</div>
+
+<div class="friend-status ${statusClass}">
+${status}
+</div>
+
+</div>
+
+</div>
+
+<div style="font-size:10px;color:var(--muted);font-weight:800;">
+${escapeHtml(username)}
+</div>
+
+`;
+
+list.appendChild(row);
+
+});
+
+}
+
+
+/* =========================================================
+   INVITE
+========================================================= */
+
+function copyReferralLink(){
+
+if(!currentUserId){
+
+showComingSoon('Referral invitation');
+
+return;
+
+}
+
+const botUsername=
+'FIDEXANetworkBot';
+
+const referralLink=
+`https://t.me/${botUsername}?start=ref_${currentUserId}`;
+
+if(
+navigator.clipboard &&
+navigator.clipboard.writeText
+){
+
+navigator.clipboard
+.writeText(referralLink)
+.then(()=>{
+
+alert(
+'Your FIDEXA referral link has been copied.'
+);
+
+})
+.catch(()=>{
+
+prompt(
+'Copy your FIDEXA referral link:',
+referralLink
+);
+
+});
+
+}
+
+else{
+
+prompt(
+'Copy your FIDEXA referral link:',
+referralLink
+);
+
+}
 
 }
 
@@ -2648,42 +3117,43 @@ document
 
 else{
 
-miningState='READY_TO_CLAIM';
+miningState=
+'READY_TO_CLAIM';
 
 document
 .getElementById('timerDisplay')
 .textContent=
-"00:00:00";
+'00:00:00';
 
 document
 .getElementById('systemPill')
 .textContent=
-"SESSION ENDED";
+'SESSION ENDED';
 
 document
 .getElementById('systemPill')
 .style.color=
-"var(--yellow)";
+'var(--yellow)';
 
 document
 .getElementById('systemPill')
 .style.borderColor=
-"rgba(250,204,21,0.4)";
+'rgba(250,204,21,.4)';
 
 document
 .getElementById('miningToggleBtn')
 .textContent=
-"CLAIM";
+'CLAIM';
 
 document
 .getElementById('miningToggleBtn')
 .style.background=
-"linear-gradient(90deg,#facc15,#f59e0b)";
+'linear-gradient(90deg,#facc15,#f59e0b)';
 
 document
 .getElementById('miningToggleBtn')
 .style.color=
-"#05080c";
+'#05080c';
 
 }
 
@@ -2705,44 +3175,46 @@ function handleMiningAction(){
 
 if(miningState==='IDLE'){
 
-miningState='ACTIVE';
+miningState=
+'ACTIVE';
 
-totalSeconds=14400;
+totalSeconds=
+14400;
 
 document
 .getElementById('systemPill')
 .textContent=
-"ACTIVE MINING";
+'ACTIVE MINING';
 
 document
 .getElementById('systemPill')
 .style.color=
-"var(--cyan)";
+'var(--cyan)';
 
 document
 .getElementById('miningToggleBtn')
 .textContent=
-"ACTIVE MINING";
+'ACTIVE MINING';
 
 document
 .getElementById('miningToggleBtn')
 .style.background=
-"rgba(56,189,248,0.2)";
+'rgba(56,189,248,.2)';
 
 document
 .getElementById('miningToggleBtn')
 .style.border=
-"1px solid rgba(56,189,248,0.5)";
+'1px solid rgba(56,189,248,.5)';
 
 document
 .getElementById('miningToggleBtn')
 .style.color=
-"var(--cyan)";
+'var(--cyan)';
 
 document
 .getElementById('miningToggleBtn')
 .style.pointerEvents=
-"none";
+'none';
 
 }
 
@@ -2764,10 +3236,11 @@ function openBoosterPrompt(){
 if(boosterChancesLeft<=0){
 
 alert(
-"No booster chances left! Please wait for the reset cycle."
+'No booster chances left! Please wait for the reset cycle.'
 );
 
 return;
+
 }
 
 document
@@ -2832,7 +3305,8 @@ triggerAd('luckybox');
 
 function triggerAd(type){
 
-activeAdType=type;
+activeAdType=
+type;
 
 const modal=
 document.getElementById('adModal');
@@ -2848,7 +3322,7 @@ modal.classList.add('active');
 closeBtn.classList.remove('ready');
 
 closeBtn.textContent=
-"WATCHING AD...";
+'WATCHING AD...';
 
 let adCountdown=4;
 
@@ -2858,7 +3332,9 @@ timerBadge.textContent=
 if(adInterval)
 clearInterval(adInterval);
 
-adInterval=setInterval(()=>{
+adInterval=
+setInterval(
+()=>{
 
 adCountdown--;
 
@@ -2872,7 +3348,7 @@ timerBadge.textContent=
 else{
 
 timerBadge.textContent=
-"Ad Finished";
+'Ad Finished';
 
 clearInterval(adInterval);
 
@@ -2881,27 +3357,29 @@ closeBtn.classList.add('ready');
 if(type==='claim'){
 
 closeBtn.textContent=
-"CLAIM REWARD";
+'CLAIM REWARD';
 
 }
 
 else if(type==='luckybox'){
 
 closeBtn.textContent=
-"COLLECT MYSTERY REWARD";
+'COLLECT MYSTERY REWARD';
 
 }
 
 else{
 
 closeBtn.textContent=
-"COLLECT +0.5 SPEED BOOST";
+'COLLECT +0.5 SPEED BOOST';
 
 }
 
 }
 
-},1000);
+},
+1000
+);
 
 }
 
@@ -2932,7 +3410,8 @@ boosterBonusRate+0.5
 document
 .getElementById('currentRateDisplay')
 .textContent=
-getCumulativeRate().toFixed(1);
+getCumulativeRate()
+.toFixed(1);
 
 document
 .getElementById('boosterChances')
@@ -2949,11 +3428,14 @@ alert(
 else if(activeAdType==='luckybox'){
 
 /*
-   Lucky Box no longer fabricates an FDX balance.
-   The actual reward must come from the live backend.
+ IMPORTANT:
+ Lucky Box does not fabricate an FDX reward.
+ The real backend must determine the reward.
 */
 
-showComingSoon('Lucky Box reward');
+showComingSoon(
+'Lucky Box reward'
+);
 
 }
 
@@ -2961,58 +3443,78 @@ showComingSoon('Lucky Box reward');
 else if(activeAdType==='claim'){
 
 /*
-   IMPORTANT:
-   No fake balance is added here.
-   A real claim must be connected to the backend.
+ IMPORTANT:
+ No fake balance is added.
+ The real backend must process the claim.
 */
 
-miningState='IDLE';
+miningState=
+'IDLE';
 
-totalSeconds=14400;
+totalSeconds=
+14400;
 
 document
 .getElementById('systemPill')
 .textContent=
-"READY TO MINE";
+'READY TO MINE';
 
 document
 .getElementById('systemPill')
 .style.color=
-"var(--cyan)";
+'var(--cyan)';
 
 document
 .getElementById('systemPill')
 .style.borderColor=
-"rgba(56,189,248,0.3)";
+'rgba(56,189,248,.3)';
 
 document
 .getElementById('miningToggleBtn')
 .textContent=
-"START MINING";
+'START MINING';
 
 document
 .getElementById('miningToggleBtn')
 .style.background=
-"linear-gradient(90deg,#0284c7,#38bdf8)";
+'linear-gradient(90deg,#0284c7,#38bdf8)';
 
 document
 .getElementById('miningToggleBtn')
 .style.border=
-"0";
+'0';
 
 document
 .getElementById('miningToggleBtn')
 .style.color=
-"#fff";
+'#fff';
 
 document
 .getElementById('miningToggleBtn')
 .style.pointerEvents=
-"auto";
+'auto';
 
-showComingSoon('Reward claim');
+showComingSoon(
+'Reward claim'
+);
 
 }
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+return String(value)
+.replace(/&/g,'&amp;')
+.replace(/</g,'&lt;')
+.replace(/>/g,'&gt;')
+.replace(/"/g,'&quot;')
+.replace(/'/g,'&#039;');
 
 }
 
@@ -3026,18 +3528,22 @@ window.addEventListener(
 ()=>{
 
 /*
-   No maintenance mode.
-   No whitelist.
-   No fake balances.
-   No fake referral data.
+ No maintenance mode.
+ No fake whitelist.
+ No fake balances.
+ No fake referral users.
+ No fake referral rewards.
 */
 
 updateBalancesUI();
 
+renderFriends();
+
 document
 .getElementById('currentRateDisplay')
 .textContent=
-getCumulativeRate().toFixed(1);
+getCumulativeRate()
+.toFixed(1);
 
 });
 
