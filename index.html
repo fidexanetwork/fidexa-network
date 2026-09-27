@@ -1277,62 +1277,8 @@ Lucky Box
 </div>
 
 
-<div class="dual-grid">
-
-<div class="info-box">
-
-<div class="info-box-top">
-
-<div class="info-box-label">
-BURNING<br>STREAK
-</div>
-
-<div class="info-box-icon">
-🔥
-</div>
-
-</div>
-
-<div
-class="info-box-value"
-id="burningStreak">
-
-1 Day
-
-</div>
-
-</div>
-
-
-<div class="info-box">
-
-<div class="info-box-top">
-
-<div class="info-box-label">
-RECOVERABLE<br>$FDX
-</div>
-
-<div class="info-box-icon">
-💎
-</div>
-
-</div>
-
-<div
-class="info-box-value"
-id="recoverableFdx">
-
-0.00
-
-</div>
-
-</div>
-
-</div>
-
-
 <!-- =====================================================
-     MINING STATISTICS
+     MINING STATISTICS (MOVED DIRECTLY UNDER CIRCLE/CONTROLS)
 ===================================================== -->
 
 <div class="statistics-card">
@@ -1407,6 +1353,60 @@ id="totalMined">
 0.00 FDX
 
 </div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="dual-grid">
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+BURNING<br>STREAK
+</div>
+
+<div class="info-box-icon">
+🔥
+</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="burningStreak">
+
+1 Day
+
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+RECOVERABLE<br>$FDX
+</div>
+
+<div class="info-box-icon">
+💎
+</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="recoverableFdx">
+
+0.00
 
 </div>
 
@@ -2356,7 +2356,7 @@ const FIDEXA_BOT=
    LOCAL STORAGE
 ========================================================= */
 
-const STORAGE_KEY='fidexa_prototype_state_v4';
+const STORAGE_KEY='fidexa_prototype_state_v5';
 
 
 const defaultState={
@@ -2374,6 +2374,8 @@ miningCycleDuration:14400,
 baseMiningRate:1.0,
 
 boosterBonusRate:0,
+
+boosterResetAt:0,
 
 referralBonusRate:0,
 
@@ -3276,12 +3278,6 @@ return `${FIDEXA_BOT}?start=ref_${currentUserId}`;
 
 }
 
-
-/*
-   Browser testing fallback.
-   This prevents the old "Coming Soon" error.
-*/
-
 return `${FIDEXA_BOT}?start=ref_demo`;
 
 }
@@ -3948,15 +3944,55 @@ triggerAd('claim');
 
 
 /* =========================================================
-   BOOSTER
+   BOOSTER & CYCLES RESET (4-HOUR INTERVAL)
 ========================================================= */
 
+function resetCyclesIfNeeded(){
+
+const now=
+Date.now();
+
+const fourHours=
+4*60*60*1000;
+
+
+// Lucky Box 4-Hour Reset
+if(!state.luckyBoxResetAt || now-state.luckyBoxResetAt>=fourHours){
+
+state.luckyBoxChances=5;
+
+state.luckyBoxResetAt=
+now;
+
+}
+
+
+// Mining Booster 4-Hour Reset (Resets accumulated boost rate to 0 and chances to 5)
+if(!state.boosterResetAt || now-state.boosterResetAt>=fourHours){
+
+state.boosterBonusRate=0;
+
+state.boosterChancesLeft=5;
+
+state.boosterResetAt=
+now;
+
+}
+
+
+saveState();
+
+}
+
+
 function openBoosterPrompt(){
+
+resetCyclesIfNeeded();
 
 if(state.boosterChancesLeft<=0){
 
 showToast(
-'No booster chances left.'
+'No booster chances left. Resets every 4 hours.'
 );
 
 return;
@@ -3992,47 +4028,9 @@ triggerAd('booster');
    LUCKY BOX
 ========================================================= */
 
-function resetLuckyBoxIfNeeded(){
-
-const now=
-Date.now();
-
-
-if(!state.luckyBoxResetAt){
-
-state.luckyBoxResetAt=
-now;
-
-saveState();
-
-return;
-
-}
-
-
-const fourHours=
-4*60*60*1000;
-
-
-if(
-now-state.luckyBoxResetAt>=fourHours
-){
-
-state.luckyBoxChances=5;
-
-state.luckyBoxResetAt=
-now;
-
-saveState();
-
-}
-
-}
-
-
 function openLuckyBoxModal(){
 
-resetLuckyBoxIfNeeded();
+resetCyclesIfNeeded();
 
 
 if(state.luckyBoxChances<=0){
@@ -4095,13 +4093,6 @@ triggerAd('luckybox');
 ========================================================= */
 
 function generateLuckyReward(){
-
-/*
-   Maximum reward = 10 FDX.
-
-   The weighted list makes smaller rewards
-   more common while still allowing larger rewards.
-*/
 
 const rewards=[
 0.5,
@@ -4503,12 +4494,6 @@ state.lastActivityDay=
 today;
 
 
-/*
-   Once the user maintains 7 active days,
-   recoverable balance starts unlocking
-   at 10% per day.
-*/
-
 if(
 state.activeDays>=7 &&
 Number(state.recoverableBalance)>0
@@ -4548,13 +4533,6 @@ saveState();
 }
 
 
-/*
-   Prototype inactivity processor.
-
-   The real backend should perform this securely
-   using server-side timestamps.
-*/
-
 function processRecovery(){
 
 if(!state.lastActivityDay)
@@ -4580,15 +4558,6 @@ Math.floor(
 if(daysSince<7)
 return;
 
-
-/*
-   User inactive for at least 7 days.
-   10% of the current app balance becomes
-   recoverable each inactivity day.
-
-   This is intentionally kept separate from
-   transferable wallet balance.
-*/
 
 const daysToProcess=
 Math.max(
@@ -4789,7 +4758,7 @@ window.addEventListener(
 
 loadState();
 
-resetLuckyBoxIfNeeded();
+resetCyclesIfNeeded();
 
 processRecovery();
 
@@ -4805,7 +4774,7 @@ updateAllUI();
 setInterval(
 ()=>{
 
-resetLuckyBoxIfNeeded();
+resetCyclesIfNeeded();
 
 updateAllUI();
 
