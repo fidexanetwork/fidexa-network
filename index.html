@@ -475,6 +475,13 @@ font-weight:900;
 white-space:nowrap;
 }
 
+.task-button.claimed{
+background:rgba(74,222,128,.15);
+border-color:rgba(74,222,128,.4);
+color:var(--green);
+pointer-events:none;
+}
+
 /* =========================================================
    FRIENDS
 ========================================================= */
@@ -620,6 +627,13 @@ font-size:11px;
 color:var(--muted);
 line-height:1.6;
 margin-top:8px;
+}
+
+.friends-actions-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:14px;
 }
 
 /* =========================================================
@@ -1278,7 +1292,7 @@ Lucky Box
 
 
 <!-- =====================================================
-     MINING STATISTICS (MOVED DIRECTLY UNDER CIRCLE/CONTROLS)
+     MINING STATISTICS
 ===================================================== -->
 
 <div class="statistics-card">
@@ -1536,7 +1550,8 @@ Reward: +5.00 $FDX
 
 <button
 class="task-button"
-onclick="openTaskLinkAndVerify('telegram')">
+id="taskBtn-telegram"
+onclick="handleTaskAction('telegram')">
 
 JOIN
 
@@ -1574,7 +1589,47 @@ Reward: +5.00 $FDX
 
 <button
 class="task-button"
-onclick="openTaskLinkAndVerify('x')">
+id="taskBtn-x"
+onclick="handleTaskAction('x')">
+
+JOIN
+
+</button>
+
+</div>
+
+</div>
+
+
+<div class="task-card">
+
+<div class="task-row">
+
+<div class="task-left">
+
+<div class="task-icon">
+▶️
+</div>
+
+<div>
+
+<div class="task-name">
+Join YouTube
+</div>
+
+<div class="task-reward">
+Reward: +5.00 $FDX
+</div>
+
+</div>
+
+</div>
+
+
+<button
+class="task-button"
+id="taskBtn-youtube"
+onclick="handleTaskAction('youtube')">
 
 JOIN
 
@@ -1702,14 +1757,27 @@ Your real invited members will appear here when referral data is connected.
 </div>
 
 
+<div class="friends-actions-grid">
+
 <button
 class="full-action-btn"
 onclick="copyReferralLink()"
 style="padding:15px;font-size:13px;box-shadow:none;">
 
-INVITE FRIENDS
+COPY LINK
 
 </button>
+
+<button
+class="full-action-btn"
+onclick="shareReferralLink()"
+style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90deg,#0ea5e9,#2563eb);">
+
+SHARE ON TELEGRAM
+
+</button>
+
+</div>
 
 </main>
 
@@ -2309,11 +2377,12 @@ id="toast">
 
 
 /* =========================================================
-   TELEGRAM USER
+   TELEGRAM USER & REFERRAL PARSING FROM URL
 ========================================================= */
 
 let currentUserId='';
 let currentUserName='';
+let referrerId='';
 
 if(
 window.Telegram &&
@@ -2337,6 +2406,34 @@ tgUser.first_name ||
 
 }
 
+// Fallback or read startapp parameter from Telegram WebApp / URL search
+try{
+let startParam = '';
+if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.start_param){
+startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+} else {
+const urlParams = new URLSearchParams(window.location.search);
+const startQuery = urlParams.get('start');
+if(startQuery) startParam = startQuery;
+}
+
+if(startParam && startParam.startsWith('ref_')){
+referrerId = startParam.replace('ref_', '');
+}
+} catch(e){
+console.log('Referrer parse error', e);
+}
+
+// If no Telegram user ID exists in prototype simulation, fallback to a random session ID or generate one for testing
+if(!currentUserId){
+let storedId = localStorage.getItem('fidexa_simulated_id');
+if(!storedId){
+storedId = 'user_' + Math.floor(100000 + Math.random() * 900000);
+localStorage.setItem('fidexa_simulated_id', storedId);
+}
+currentUserId = storedId;
+}
+
 
 /* =========================================================
    OFFICIAL LINKS
@@ -2348,15 +2445,18 @@ const FIDEXA_TELEGRAM=
 const FIDEXA_X=
 'https://x.com/Fidexa_Network';
 
-const FIDEXA_BOT=
-'https://t.me/FIDEXANetworkBot';
+const FIDEXA_YOUTUBE=
+'https://youtube.com/@Fidexa_Network';
+
+const FIDEXA_BASE_REF_LINK=
+'https://t.me/FIDEXANetworkBot/Fidexa?start=ref_';
 
 
 /* =========================================================
    LOCAL STORAGE
 ========================================================= */
 
-const STORAGE_KEY='fidexa_prototype_state_v5';
+const STORAGE_KEY='fidexa_prototype_state_v6';
 
 
 const defaultState={
@@ -2405,8 +2505,16 @@ claimedTasks:{
 
 telegram:false,
 
-x:false
+x:false,
 
+youtube:false
+
+},
+
+taskInProgress: {
+telegram: false,
+x: false,
+youtube: false
 }
 
 };
@@ -2563,66 +2671,39 @@ btnElement.classList.add('active');
 
 
 /* =========================================================
-   TASK SYSTEM
+   TASK SYSTEM (COMPULSORY VERIFICATION FLOW)
 ========================================================= */
 
-function openTaskLinkAndVerify(type){
-
-if(type==='telegram'){
-
-window.open(
-FIDEXA_TELEGRAM,
-'_blank'
-);
-
-setTimeout(
-()=>{
-
-const confirmed=
-confirm(
-'After joining Telegram, return to FIDEXA and confirm that you completed the task.'
-);
-
-if(confirmed){
-
-claimTaskReward('telegram');
-
+function handleTaskAction(type){
+if(state.claimedTasks[type]){
+return;
 }
 
-},
-1200
-);
+const btn = document.getElementById(`taskBtn-${type}`);
 
+if(!state.taskInProgress[type]){
+// Step 1: User clicks JOIN -> Opens channel/link and changes button to CLAIM
+state.taskInProgress[type] = true;
+saveState();
+
+let targetUrl = FIDEXA_TELEGRAM;
+if(type === 'x') targetUrl = FIDEXA_X;
+if(type === 'youtube') targetUrl = FIDEXA_YOUTUBE;
+
+window.open(targetUrl, '_blank');
+
+if(btn){
+btn.textContent = 'CLAIM';
+btn.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+btn.style.borderColor = 'transparent';
+btn.style.color = '#05080c';
 }
 
-
-else if(type==='x'){
-
-window.open(
-FIDEXA_X,
-'_blank'
-);
-
-setTimeout(
-()=>{
-
-const confirmed=
-confirm(
-'After following FIDEXA on X, return and confirm that you completed the task.'
-);
-
-if(confirmed){
-
-claimTaskReward('x');
-
+showToast('Please complete joining, then tap Claim!');
+} else {
+// Step 2: User comes back and taps CLAIM -> Verifies completion
+claimTaskReward(type);
 }
-
-},
-1200
-);
-
-}
-
 }
 
 
@@ -2640,6 +2721,7 @@ return;
 
 
 state.claimedTasks[type]=true;
+state.taskInProgress[type]=false;
 
 state.totalBalance=
 Number(state.totalBalance)+5;
@@ -2652,6 +2734,29 @@ showToast(
 '+5.00 FDX added to Total Balance'
 );
 
+}
+
+function updateTaskUI(){
+['telegram', 'x', 'youtube'].forEach(type => {
+const btn = document.getElementById(`taskBtn-${type}`);
+if(!btn) return;
+
+if(state.claimedTasks[type]){
+btn.textContent = 'CLAIMED';
+btn.className = 'task-button claimed';
+} else if(state.taskInProgress[type]){
+btn.textContent = 'CLAIM';
+btn.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+btn.style.borderColor = 'transparent';
+btn.style.color = '#05080c';
+} else {
+btn.textContent = 'JOIN';
+btn.className = 'task-button';
+btn.style.background = '';
+btn.style.borderColor = '';
+btn.style.color = '';
+}
+});
 }
 
 
@@ -2902,7 +3007,7 @@ Mining boosters can increase the mining rate. Lucky Boxes provide randomly selec
 </div>
 
 <p>
-FIDEXA includes community activities connected to official Telegram and X accounts.
+FIDEXA includes community activities connected to official Telegram, X, and YouTube accounts.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
@@ -2910,7 +3015,7 @@ FIDEXA includes community activities connected to official Telegram and X accoun
 </div>
 
 <p>
-The referral system is designed to track users invited through FIDEXA referral links.
+The referral system is designed to track users invited through FIDEXA unique referral links containing merged Telegram IDs.
 </p>
 
 <div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
@@ -2979,8 +3084,8 @@ ACTIVE
 <div style="margin-top:14px;line-height:1.9;">
 • Mining boosters<br>
 • Lucky Boxes<br>
-• Community tasks<br>
-• Referral activity<br>
+• Community tasks & YouTube integration<br>
+• Referral activity with merged Telegram IDs<br>
 • Support system<br>
 • User experience improvements
 </div>
@@ -2998,7 +3103,7 @@ DEVELOPMENT
 </div>
 
 <div style="margin-top:14px;line-height:1.9;">
-• Firebase backend<br>
+• Firebase backend & automatic ID merging<br>
 • Referral backend expansion<br>
 • Migration infrastructure<br>
 • Distribution infrastructure<br>
@@ -3267,18 +3372,18 @@ NOT YET OPEN
 
 
 /* =========================================================
-   REFERRAL
+   REFERRAL SYSTEM (FIREBASE ID MERGING & DUAL OPTIONS)
 ========================================================= */
 
 function getReferralLink(){
 
 if(currentUserId){
 
-return `${FIDEXA_BOT}?start=ref_${currentUserId}`;
+return `${FIDEXA_BASE_REF_LINK}${currentUserId}`;
 
 }
 
-return `${FIDEXA_BOT}?start=ref_demo`;
+return `${FIDEXA_BASE_REF_LINK}demo`;
 
 }
 
@@ -3325,6 +3430,24 @@ prompt(
 referralLink
 );
 
+}
+
+}
+
+
+function shareReferralLink(){
+
+const referralLink=
+getReferralLink();
+
+const shareText = encodeURIComponent("Join Fidexa Network and start mining $FDX! Use my link to join:");
+
+const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${shareText}`;
+
+if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
+window.Telegram.WebApp.openTelegramLink(telegramShareUrl);
+} else {
+window.open(telegramShareUrl, '_blank');
 }
 
 }
@@ -4728,6 +4851,8 @@ updateMiningUI();
 updateRecoveryUI();
 
 renderFriends();
+
+updateTaskUI();
 
 }
 
