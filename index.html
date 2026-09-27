@@ -2337,13 +2337,6 @@ tgUser.first_name ||
 const FIDEXA_TELEGRAM='https://t.me/fidexa_Network';
 const FIDEXA_X='https://x.com/Fidexa_Network';
 
-/*
-   IMPORTANT:
-   This must be the plain bot URL.
-   Do NOT add /fidexa
-   Do NOT use ?startapp=
-*/
-
 const FIDEXA_BOT=
 'https://t.me/FIDEXANetworkBot';
 
@@ -3262,7 +3255,7 @@ NOT YET OPEN
 
 
 /* =========================================================
-   REFERRAL (FIXED DIRECT CLIPBOARD COPY)
+   REFERRAL (BULLETPROOF CLIPBOARD COPY + FALLBACK MODAL)
 ========================================================= */
 
 function getReferralLink(){
@@ -3282,7 +3275,6 @@ async function copyReferralLink(){
 
 const referralLink=
 getReferralLink();
-
 
 try{
 
@@ -3363,15 +3355,56 @@ showToast(
 catch(error){
 
 console.log(
-'Referral copy error:',
+'Referral copy error, opening manual modal:',
 error
 );
 
-showToast(
-'Failed to copy link. Please try again.'
-);
+showManualCopyModal(referralLink);
 
 }
+
+}
+
+
+function showManualCopyModal(link){
+
+const modal=
+document.getElementById('profileInfoModal');
+
+const titleEl=
+document.getElementById('sheetTitle');
+
+const bodyEl=
+document.getElementById('sheetContentBody');
+
+
+modal.classList.add('active');
+
+titleEl.textContent=
+'Invite Friends';
+
+bodyEl.innerHTML=`
+
+<p style="margin-bottom:10px;">Copy your referral link below:</p>
+
+<input
+type="text"
+id="manualCopyInput"
+value="${escapeHtml(link)}"
+readonly
+style="width:100%; padding:12px; background:#111b27; border:1px solid var(--border); border-radius:12px; color:#fff; font-size:12px; text-align:center; margin-bottom:14px;"
+onclick="this.select();">
+
+<button
+class="full-action-btn"
+style="padding:14px; font-size:13px; box-shadow:none;"
+onclick="document.getElementById('manualCopyInput').select(); document.execCommand('copy'); showToast('Copied to clipboard!'); closeProfileInfo();">
+
+COPY LINK
+
+</button>
+
+`;
 
 }
 
