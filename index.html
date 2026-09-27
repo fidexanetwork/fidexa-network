@@ -2,5274 +2,2047 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#05080c">
-
 <title>Fidexa Network</title>
-
 <style>
-
 :root{
---bg:#05080c;
---panel:#0a1018;
---border:#1b2636;
---text:#f1f5f9;
---muted:#8899a6;
---cyan:#38bdf8;
---blue:#0284c7;
---yellow:#facc15;
---red:#f87171;
---green:#4ade80;
+    --bg:#05080c;
+    --panel:#0a1018;
+    --border:#1b2636;
+    --text:#f1f5f9;
+    --muted:#8899a6;
+    --cyan:#38bdf8;
+    --blue:#0284c7;
+    --yellow:#facc15;
+    --red:#f87171;
+    --green:#4ade80;
 }
-
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
-
-html,
+html, body{
+    min-height:100%;
+    background:var(--bg);
+}
 body{
-min-height:100%;
-background:var(--bg);
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+    -webkit-user-select:none;
+    user-select:none;
 }
-
-body{
-font-family:Arial,Helvetica,sans-serif;
-color:var(--text);
--webkit-tap-highlight-color:transparent;
--webkit-user-select:none;
-user-select:none;
-}
-
 button{
-font:inherit;
-cursor:pointer;
+    font:inherit;
+    cursor:pointer;
 }
-
 button:active{
-transform:scale(.98);
+    transform:scale(.98);
 }
-
 input{
-font:inherit;
+    font:inherit;
 }
-
 .app{
-max-width:480px;
-min-height:100vh;
-margin:auto;
-padding-bottom:95px;
-position:relative;
+    max-width:480px;
+    min-height:100vh;
+    margin:auto;
+    padding-bottom:95px;
+    position:relative;
 }
-
 .page-view{
-display:none;
-padding:24px 20px;
-min-height:calc(100vh - 95px);
-animation:fadeIn .2s ease-in-out;
+    display:none;
+    padding:24px 20px;
+    min-height:calc(100vh - 95px);
+    animation:fadeIn .2s ease-in-out;
 }
-
 .page-view.active{
-display:block;
+    display:block;
 }
-
 @keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(6px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
 }
 
-/* =========================================================
-   BALANCE
-========================================================= */
-
+/* ========================================================= BALANCE ========================================================= */
 .balance-card{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid #1b2636;
-border-radius:18px;
-padding:18px;
-position:relative;
-margin-bottom:18px;
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid #1b2636;
+    border-radius:18px;
+    padding:18px;
+    position:relative;
+    margin-bottom:18px;
 }
-
 .balance-label{
-font-size:10px;
-color:var(--muted);
-letter-spacing:.8px;
-font-weight:700;
+    font-size:10px;
+    color:var(--muted);
+    letter-spacing:.8px;
+    font-weight:700;
 }
-
 .balance-row{
-display:flex;
-align-items:baseline;
-gap:8px;
-margin-top:6px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-top:6px;
 }
-
 .balance-value{
-font-size:32px;
-font-weight:900;
-color:#fff;
+    font-size:32px;
+    font-weight:900;
+    color:#fff;
 }
-
 .balance-token{
-font-size:18px;
-font-weight:800;
-color:var(--yellow);
+    font-size:18px;
+    font-weight:800;
+    color:var(--yellow);
 }
-
 .balance-dot{
-position:absolute;
-top:18px;
-right:18px;
-width:8px;
-height:8px;
-background:var(--cyan);
-border-radius:50%;
-box-shadow:0 0 8px var(--cyan);
+    position:absolute;
+    top:18px;
+    right:18px;
+    width:8px;
+    height:8px;
+    background:var(--cyan);
+    border-radius:50%;
+    box-shadow:0 0 8px var(--cyan);
 }
 
-/* =========================================================
-   MINING
-========================================================= */
-
+/* ========================================================= MINING ========================================================= */
 .mining-node-container{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-margin:15px 0 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin:15px 0 20px;
 }
-
 .ring-wrapper{
-width:260px;
-height:260px;
-border-radius:50%;
-border:2px solid rgba(56,189,248,.25);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-position:relative;
-box-shadow:
-0 0 30px rgba(56,189,248,.08),
-inset 0 0 30px rgba(56,189,248,.08);
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    border:2px solid rgba(56,189,248,.25);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    box-shadow:0 0 30px rgba(56,189,248,.08), inset 0 0 30px rgba(56,189,248,.08);
 }
-
 .ring-wrapper::before{
-content:'';
-position:absolute;
-inset:-6px;
-border-radius:50%;
-border:2px dashed rgba(56,189,248,.4);
-animation:spin 30s linear infinite;
+    content:'';
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    border:2px dashed rgba(56,189,248,.4);
+    animation:spin 30s linear infinite;
 }
-
 @keyframes spin{
-100%{
-transform:rotate(360deg);
+    100%{ transform:rotate(360deg); }
 }
-}
-
 .system-status-pill{
-background:rgba(56,189,248,.12);
-border:1px solid rgba(56,189,248,.3);
-padding:4px 14px;
-border-radius:20px;
-font-size:10px;
-font-weight:800;
-color:var(--cyan);
-letter-spacing:1px;
-margin-bottom:4px;
+    background:rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.3);
+    padding:4px 14px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:800;
+    color:var(--cyan);
+    letter-spacing:1px;
+    margin-bottom:4px;
 }
-
 .mining-timer{
-font-size:34px;
-font-weight:900;
-letter-spacing:2px;
-color:#fff;
+    font-size:34px;
+    font-weight:900;
+    letter-spacing:2px;
+    color:#fff;
 }
-
 .mining-rate-indicator{
-font-size:11px;
-color:var(--muted);
-font-weight:700;
-margin-top:6px;
+    font-size:11px;
+    color:var(--muted);
+    font-weight:700;
+    margin-top:6px;
 }
-
 .mining-rate-indicator span{
-color:var(--yellow);
-font-weight:900;
+    color:var(--yellow);
+    font-weight:900;
 }
-
 .action-controls{
-display:flex;
-flex-direction:column;
-gap:10px;
-margin-bottom:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:18px;
 }
-
 .start-mining-btn{
-width:100%;
-background:linear-gradient(90deg,#0284c7,#38bdf8);
-border:0;
-border-radius:14px;
-padding:16px;
-color:#fff;
-font-size:14px;
-font-weight:800;
-letter-spacing:1px;
-box-shadow:0 4px 20px rgba(56,189,248,.3);
+    width:100%;
+    background:linear-gradient(90deg,#0284c7,#38bdf8);
+    border:0;
+    border-radius:14px;
+    padding:16px;
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:1px;
+    box-shadow:0 4px 20px rgba(56,189,248,.3);
 }
-
 .interactive-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
-
 .action-tile{
-background:rgba(10,16,24,.9);
-border:1px solid var(--border);
-border-radius:14px;
-padding:12px;
-display:flex;
-align-items:center;
-gap:10px;
-text-align:left;
-box-shadow:0 4px 15px rgba(0,0,0,.2);
+    background:rgba(10,16,24,.9);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-align:left;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
 }
-
 .action-tile-icon{
-font-size:22px;
+    font-size:22px;
 }
-
 .action-tile-title{
-font-size:11px;
-font-weight:800;
-color:#fff;
-letter-spacing:.3px;
+    font-size:11px;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:.3px;
 }
-
 .action-tile-sub{
-font-size:9px;
-color:var(--muted);
-margin-top:2px;
-font-weight:600;
+    font-size:9px;
+    color:var(--muted);
+    margin-top:2px;
+    font-weight:600;
 }
-
 .dual-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
-margin-top:14px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:14px;
 }
-
 .info-box{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:16px;
-padding:16px;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-position:relative;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    position:relative;
 }
-
 .info-box-top{
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
 }
-
 .info-box-label{
-font-size:10px;
-color:var(--muted);
-font-weight:700;
-line-height:1.3;
-letter-spacing:.5px;
+    font-size:10px;
+    color:var(--muted);
+    font-weight:700;
+    line-height:1.3;
+    letter-spacing:.5px;
 }
-
 .info-box-icon{
-width:28px;
-height:28px;
-border-radius:8px;
-background:#111b27;
-border:1px solid #223247;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:13px;
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    background:#111b27;
+    border:1px solid #223247;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
 }
-
 .info-box-value{
-font-size:18px;
-font-weight:800;
-color:#fff;
-margin-top:16px;
+    font-size:18px;
+    font-weight:800;
+    color:#fff;
+    margin-top:16px;
 }
 
-/* =========================================================
-   MINING STATISTICS
-========================================================= */
-
+/* ========================================================= MINING STATISTICS ========================================================= */
 .statistics-card{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid var(--border);
-border-radius:20px;
-padding:17px;
-margin-top:18px;
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:17px;
+    margin-top:18px;
 }
-
 .statistics-title{
-font-size:14px;
-font-weight:900;
-color:var(--cyan);
-letter-spacing:.7px;
-margin-bottom:14px;
+    font-size:14px;
+    font-weight:900;
+    color:var(--cyan);
+    letter-spacing:.7px;
+    margin-bottom:14px;
 }
-
 .statistics-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
-
 .statistics-item{
-background:#0a111a;
-border:1px solid #1a2838;
-border-radius:13px;
-padding:13px;
+    background:#0a111a;
+    border:1px solid #1a2838;
+    border-radius:13px;
+    padding:13px;
 }
-
 .statistics-label{
-font-size:9px;
-font-weight:800;
-color:var(--muted);
-text-transform:uppercase;
-letter-spacing:.5px;
+    font-size:9px;
+    font-weight:800;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.5px;
 }
-
 .statistics-value{
-font-size:17px;
-font-weight:900;
-color:#fff;
-margin-top:6px;
+    font-size:17px;
+    font-weight:900;
+    color:#fff;
+    margin-top:6px;
 }
-
 .statistics-value.yellow{
-color:var(--yellow);
+    color:var(--yellow);
 }
-
 .statistics-value.green{
-color:var(--green);
+    color:var(--green);
 }
 
-/* =========================================================
-   HEADERS
-========================================================= */
-
+/* ========================================================= HEADERS ========================================================= */
 .full-page-header{
-font-size:22px;
-font-weight:900;
-color:var(--cyan);
-letter-spacing:1px;
-margin-bottom:8px;
-display:flex;
-align-items:center;
-gap:10px;
+    font-size:22px;
+    font-weight:900;
+    color:var(--cyan);
+    letter-spacing:1px;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
-
 .full-page-sub{
-font-size:14px;
-color:var(--muted);
-margin-bottom:24px;
-line-height:1.5;
-font-weight:700;
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:24px;
+    line-height:1.5;
+    font-weight:700;
 }
-
 .full-action-btn{
-width:100%;
-background:linear-gradient(90deg,#0284c7,#38bdf8);
-border:0;
-border-radius:18px;
-padding:20px;
-color:#fff;
-font-size:16px;
-font-weight:900;
-box-shadow:0 6px 25px rgba(56,189,248,.35);
-letter-spacing:.8px;
+    width:100%;
+    background:linear-gradient(90deg,#0284c7,#38bdf8);
+    border:0;
+    border-radius:18px;
+    padding:20px;
+    color:#fff;
+    font-size:16px;
+    font-weight:900;
+    box-shadow:0 6px 25px rgba(56,189,248,.35);
+    letter-spacing:.8px;
 }
 
-/* =========================================================
-   TASKS
-========================================================= */
-
+/* ========================================================= TASKS ========================================================= */
 .task-card{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid var(--border);
-border-radius:18px;
-overflow:hidden;
-margin-bottom:14px;
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+    margin-bottom:14px;
 }
-
 .task-row{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-padding:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:16px;
 }
-
 .task-left{
-display:flex;
-align-items:center;
-gap:12px;
-min-width:0;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
 }
-
 .task-icon{
-width:42px;
-height:42px;
-border-radius:50%;
-background:#111b27;
-border:1px solid #223247;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:20px;
-flex-shrink:0;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:#111b27;
+    border:1px solid #223247;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    flex-shrink:0;
 }
-
 .task-name{
-font-size:15px;
-font-weight:900;
-color:#fff;
+    font-size:15px;
+    font-weight:900;
+    color:#fff;
 }
-
 .task-reward{
-font-size:10px;
-font-weight:800;
-color:var(--yellow);
-margin-top:4px;
+    font-size:10px;
+    font-weight:800;
+    color:var(--yellow);
+    margin-top:4px;
 }
-
 .task-button{
-background:rgba(56,189,248,.15);
-border:1px solid rgba(56,189,248,.4);
-color:var(--cyan);
-border-radius:11px;
-padding:10px 15px;
-font-size:12px;
-font-weight:900;
-white-space:nowrap;
+    background:rgba(56,189,248,.15);
+    border:1px solid rgba(56,189,248,.4);
+    color:var(--cyan);
+    border-radius:11px;
+    padding:10px 15px;
+    font-size:12px;
+    font-weight:900;
+    white-space:nowrap;
 }
-
 .task-button.claimed{
-background:rgba(74,222,128,.15);
-border-color:rgba(74,222,128,.4);
-color:var(--green);
-pointer-events:none;
+    background:rgba(74,222,128,.15);
+    border-color:rgba(74,222,128,.4);
+    color:var(--green);
+    pointer-events:none;
 }
 
-/* =========================================================
-   FRIENDS
-========================================================= */
-
+/* ========================================================= FRIENDS ========================================================= */
 .friends-stats-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:18px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:18px;
 }
-
 .friend-stat-card{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid var(--border);
-border-radius:16px;
-padding:15px 8px;
-text-align:center;
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:15px 8px;
+    text-align:center;
 }
-
 .friend-stat-value{
-font-size:22px;
-font-weight:900;
-color:#fff;
+    font-size:22px;
+    font-weight:900;
+    color:#fff;
 }
-
 .friend-stat-label{
-font-size:9px;
-color:var(--muted);
-font-weight:900;
-margin-top:5px;
-text-transform:uppercase;
-letter-spacing:.4px;
+    font-size:9px;
+    color:var(--muted);
+    font-weight:900;
+    margin-top:5px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
 }
-
 .friend-list-card{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid var(--border);
-border-radius:20px;
-overflow:hidden;
-margin-bottom:18px;
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:18px;
 }
-
 .friend-list-header{
-padding:16px;
-border-bottom:1px solid var(--border);
-display:flex;
-justify-content:space-between;
-align-items:center;
+    padding:16px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
-
 .friend-list-title{
-font-size:14px;
-font-weight:900;
-color:#fff;
+    font-size:14px;
+    font-weight:900;
+    color:#fff;
 }
-
 .friend-list-count{
-font-size:10px;
-font-weight:900;
-color:var(--cyan);
+    font-size:10px;
+    font-weight:900;
+    color:var(--cyan);
 }
-
 .friends-scroll-area{
-max-height:330px;
-overflow-y:auto;
--webkit-overflow-scrolling:touch;
+    max-height:330px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
 }
-
 .friend-row-item{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-padding:14px 16px;
-border-bottom:1px solid rgba(27,38,54,.7);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:14px 16px;
+    border-bottom:1px solid rgba(27,38,54,.7);
 }
-
 .friend-row-item:last-child{
-border-bottom:0;
+    border-bottom:0;
 }
-
 .friend-left{
-display:flex;
-align-items:center;
-gap:11px;
-min-width:0;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
 }
-
 .friend-avatar{
-width:38px;
-height:38px;
-border-radius:50%;
-background:#111b27;
-border:1px solid #223247;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:17px;
-flex-shrink:0;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#111b27;
+    border:1px solid #223247;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:17px;
+    flex-shrink:0;
 }
-
 .friend-name{
-font-size:13px;
-font-weight:900;
-color:#fff;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
+    font-size:13px;
+    font-weight:900;
+    color:#fff;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
-
 .friend-status{
-font-size:9px;
-font-weight:900;
-margin-top:4px;
+    font-size:9px;
+    font-weight:900;
+    margin-top:4px;
 }
-
 .friend-status.active{
-color:var(--green);
+    color:var(--green);
 }
-
 .friend-status.inactive{
-color:var(--muted);
+    color:var(--muted);
 }
-
 .friend-empty-state{
-padding:30px 18px;
-text-align:center;
+    padding:30px 18px;
+    text-align:center;
 }
-
 .friend-empty-icon{
-font-size:32px;
-margin-bottom:10px;
+    font-size:32px;
+    margin-bottom:10px;
 }
-
 .friend-empty-title{
-font-size:15px;
-font-weight:900;
-color:#fff;
+    font-size:15px;
+    font-weight:900;
+    color:#fff;
 }
-
 .friend-empty-text{
-font-size:11px;
-color:var(--muted);
-line-height:1.6;
-margin-top:8px;
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:8px;
 }
-
 .friends-actions-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-margin-bottom:14px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
 }
 
-/* =========================================================
-   WALLET
-========================================================= */
-
+/* ========================================================= WALLET ========================================================= */
 .migration-hero{
-background:linear-gradient(145deg,#0f1a2e,#070d16);
-border:2px solid var(--cyan);
-border-radius:24px;
-padding:32px 22px;
-text-align:center;
-box-shadow:0 12px 35px rgba(56,189,248,.15);
-margin-bottom:24px;
-position:relative;
+    background:linear-gradient(145deg,#0f1a2e,#070d16);
+    border:2px solid var(--cyan);
+    border-radius:24px;
+    padding:32px 22px;
+    text-align:center;
+    box-shadow:0 12px 35px rgba(56,189,248,.15);
+    margin-bottom:24px;
+    position:relative;
 }
-
 .migration-hero::before{
-content:'';
-position:absolute;
-top:-1px;
-left:50%;
-transform:translateX(-50%);
-width:140px;
-height:4px;
-background:var(--cyan);
-border-radius:2px;
+    content:'';
+    position:absolute;
+    top:-1px;
+    left:50%;
+    transform:translateX(-50%);
+    width:140px;
+    height:4px;
+    background:var(--cyan);
+    border-radius:2px;
 }
-
 .migration-icon{
-font-size:42px;
-margin-bottom:10px;
+    font-size:42px;
+    margin-bottom:10px;
 }
-
 .migration-title{
-font-size:20px;
-font-weight:900;
-color:#fff;
+    font-size:20px;
+    font-weight:900;
+    color:#fff;
 }
-
 .migration-subtitle{
-font-size:11px;
-font-weight:800;
-color:var(--cyan);
-letter-spacing:1px;
-margin-top:7px;
+    font-size:11px;
+    font-weight:800;
+    color:var(--cyan);
+    letter-spacing:1px;
+    margin-top:7px;
 }
-
 .wallet-migration-card{
-background:linear-gradient(145deg,#101b2b,#080e17);
-border:1px solid rgba(56,189,248,.35);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 8px 28px rgba(0,0,0,.35);
+    background:linear-gradient(145deg,#101b2b,#080e17);
+    border:1px solid rgba(56,189,248,.35);
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 8px 28px rgba(0,0,0,.35);
 }
-
 .wallet-migration-title{
-font-size:15px;
-font-weight:900;
-color:var(--cyan);
-letter-spacing:.5px;
+    font-size:15px;
+    font-weight:900;
+    color:var(--cyan);
+    letter-spacing:.5px;
 }
-
 .wallet-migration-text{
-font-size:12px;
-color:var(--muted);
-line-height:1.6;
-margin-top:8px;
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:8px;
 }
-
 .wallet-migration-status{
-display:inline-block;
-margin-top:12px;
-padding:6px 10px;
-border-radius:20px;
-background:rgba(250,204,21,.08);
-border:1px solid rgba(250,204,21,.25);
-color:var(--yellow);
-font-size:10px;
-font-weight:900;
+    display:inline-block;
+    margin-top:12px;
+    padding:6px 10px;
+    border-radius:20px;
+    background:rgba(250,204,21,.08);
+    border:1px solid rgba(250,204,21,.25);
+    color:var(--yellow);
+    font-size:10px;
+    font-weight:900;
 }
 
-/* =========================================================
-   PROFILE
-========================================================= */
-
+/* ========================================================= PROFILE ========================================================= */
 .profile-menu-list{
-display:flex;
-flex-direction:column;
-gap:12px;
-margin-bottom:28px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:28px;
 }
-
 .profile-menu-item{
-background:linear-gradient(145deg,#0d1520,#080d14);
-border:1px solid var(--border);
-border-radius:18px;
-padding:18px 20px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-cursor:pointer;
-box-shadow:0 4px 15px rgba(0,0,0,.2);
+    background:linear-gradient(145deg,#0d1520,#080d14);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
 }
-
 .profile-menu-left{
-display:flex;
-align-items:center;
-gap:14px;
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
-
 .profile-menu-icon{
-font-size:20px;
+    font-size:20px;
 }
-
 .profile-menu-title{
-font-size:15px;
-font-weight:900;
-color:#fff;
-letter-spacing:.3px;
+    font-size:15px;
+    font-weight:900;
+    color:#fff;
+    letter-spacing:.3px;
 }
-
 .profile-menu-arrow{
-font-size:16px;
-color:var(--muted);
-font-weight:900;
+    font-size:16px;
+    color:var(--muted);
+    font-weight:900;
 }
 
-/* =========================================================
-   CHAT
-========================================================= */
-
+/* ========================================================= CHAT ========================================================= */
 .chat-messages-container{
-max-height:220px;
-overflow-y:auto;
-display:flex;
-flex-direction:column;
-gap:10px;
-margin-bottom:16px;
-padding-right:4px;
+    max-height:220px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:16px;
+    padding-right:4px;
 }
-
 .chat-bubble{
-padding:10px 14px;
-border-radius:12px;
-font-size:13px;
-max-width:85%;
-line-height:1.4;
-font-weight:700;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:13px;
+    max-width:85%;
+    line-height:1.4;
+    font-weight:700;
 }
-
 .chat-bubble.user{
-background:var(--blue);
-color:#fff;
-align-self:flex-end;
-border-bottom-right-radius:2px;
+    background:var(--blue);
+    color:#fff;
+    align-self:flex-end;
+    border-bottom-right-radius:2px;
 }
-
 .chat-bubble.admin{
-background:#162235;
-color:var(--text);
-align-self:flex-start;
-border:1px solid var(--border);
-border-bottom-left-radius:2px;
+    background:#162235;
+    color:var(--text);
+    align-self:flex-start;
+    border:1px solid var(--border);
+    border-bottom-left-radius:2px;
 }
-
 .chat-input-row{
-display:flex;
-gap:8px;
+    display:flex;
+    gap:8px;
 }
-
 .chat-input-field{
-flex:1;
-background:#111b27;
-border:1px solid var(--border);
-border-radius:12px;
-padding:12px;
-color:#fff;
-font-size:13px;
-outline:none;
+    flex:1;
+    background:#111b27;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    color:#fff;
+    font-size:13px;
+    outline:none;
 }
-
 .chat-send-btn{
-background:var(--cyan);
-border:0;
-border-radius:12px;
-padding:0 18px;
-color:#05080c;
-font-weight:900;
-font-size:13px;
+    background:var(--cyan);
+    border:0;
+    border-radius:12px;
+    padding:0 18px;
+    color:#05080c;
+    font-weight:900;
+    font-size:13px;
 }
-
 .support-status{
-padding:13px;
-background:#111b27;
-border:1px solid rgba(56,189,248,.25);
-border-radius:13px;
-margin-bottom:14px;
+    padding:13px;
+    background:#111b27;
+    border:1px solid rgba(56,189,248,.25);
+    border-radius:13px;
+    margin-bottom:14px;
 }
-
 .support-status-title{
-font-size:12px;
-font-weight:900;
-color:var(--cyan);
+    font-size:12px;
+    font-weight:900;
+    color:var(--cyan);
 }
-
 .support-status-text{
-font-size:11px;
-color:var(--muted);
-line-height:1.5;
-margin-top:5px;
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.5;
+    margin-top:5px;
 }
 
-/* =========================================================
-   MODALS
-========================================================= */
-
+/* ========================================================= MODALS ========================================================= */
 .modal-overlay{
-position:fixed;
-inset:0;
-background:rgba(5,8,12,.95);
-z-index:1000;
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
+    position:fixed;
+    inset:0;
+    background:rgba(5,8,12,.95);
+    z-index:1000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
-
 .modal-overlay.active{
-display:flex;
+    display:flex;
 }
-
 .ad-box{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:20px;
-width:100%;
-max-width:360px;
-padding:24px;
-text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,.5);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    width:100%;
+    max-width:360px;
+    padding:24px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
 }
-
 .ad-header{
-font-size:12px;
-font-weight:800;
-color:var(--cyan);
-letter-spacing:1px;
-margin-bottom:12px;
+    font-size:12px;
+    font-weight:800;
+    color:var(--cyan);
+    letter-spacing:1px;
+    margin-bottom:12px;
 }
-
 .ad-screen{
-background:#111b27;
-border:1px solid #223247;
-border-radius:12px;
-height:160px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-margin-bottom:16px;
-position:relative;
+    background:#111b27;
+    border:1px solid #223247;
+    border-radius:12px;
+    height:160px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:16px;
+    position:relative;
 }
-
 .ad-timer-badge{
-position:absolute;
-top:10px;
-right:10px;
-background:rgba(0,0,0,.6);
-padding:2px 8px;
-border-radius:6px;
-font-size:10px;
-font-weight:700;
-color:var(--yellow);
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:rgba(0,0,0,.6);
+    padding:2px 8px;
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+    color:var(--yellow);
 }
-
 .ad-title{
-font-size:14px;
-font-weight:800;
-color:#fff;
-margin-bottom:4px;
+    font-size:14px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:4px;
 }
-
 .ad-desc{
-font-size:10px;
-color:var(--muted);
+    font-size:10px;
+    color:var(--muted);
 }
-
 .ad-close-btn{
-width:100%;
-background:#0284c7;
-border:0;
-border-radius:12px;
-padding:12px;
-color:#fff;
-font-size:12px;
-font-weight:800;
-opacity:.5;
-pointer-events:none;
-transition:opacity .3s;
+    width:100%;
+    background:#0284c7;
+    border:0;
+    border-radius:12px;
+    padding:12px;
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    opacity:.5;
+    pointer-events:none;
+    transition:opacity .3s;
 }
-
 .ad-close-btn.ready{
-opacity:1;
-pointer-events:auto;
+    opacity:1;
+    pointer-events:auto;
 }
-
 .prompt-box{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:20px;
-width:100%;
-max-width:340px;
-padding:24px;
-text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,.5);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    width:100%;
+    max-width:340px;
+    padding:24px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
 }
-
 .prompt-title{
-font-size:14px;
-font-weight:800;
-color:var(--yellow);
-margin-bottom:12px;
-letter-spacing:.5px;
+    font-size:14px;
+    font-weight:800;
+    color:var(--yellow);
+    margin-bottom:12px;
+    letter-spacing:.5px;
 }
-
 .prompt-desc{
-font-size:12px;
-color:var(--muted);
-margin-bottom:20px;
-line-height:1.4;
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:20px;
+    line-height:1.4;
 }
-
 .prompt-actions{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
 }
-
 .prompt-btn-cancel{
-background:#111b27;
-border:1px solid #223247;
-border-radius:12px;
-padding:12px;
-color:var(--muted);
-font-size:12px;
-font-weight:800;
+    background:#111b27;
+    border:1px solid #223247;
+    border-radius:12px;
+    padding:12px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:800;
 }
-
 .prompt-btn-confirm{
-background:linear-gradient(90deg,#facc15,#f59e0b);
-border:0;
-border-radius:12px;
-padding:12px;
-color:#05080c;
-font-size:12px;
-font-weight:900;
+    background:linear-gradient(90deg,#facc15,#f59e0b);
+    border:0;
+    border-radius:12px;
+    padding:12px;
+    color:#05080c;
+    font-size:12px;
+    font-weight:900;
 }
 
-/* =========================================================
-   INFO SHEET
-========================================================= */
-
+/* ========================================================= INFO SHEET ========================================================= */
 .sheet-box{
-background:var(--panel);
-border:1px solid var(--border);
-border-radius:22px;
-width:100%;
-max-width:380px;
-max-height:80vh;
-display:flex;
-flex-direction:column;
-overflow:hidden;
-box-shadow:0 12px 45px rgba(0,0,0,.6);
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:22px;
+    width:100%;
+    max-width:380px;
+    max-height:80vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 12px 45px rgba(0,0,0,.6);
 }
-
 .sheet-header{
-padding:20px;
-border-bottom:1px solid var(--border);
-display:flex;
-align-items:center;
-justify-content:space-between;
+    padding:20px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
-
 .sheet-title{
-font-size:16px;
-font-weight:900;
-color:var(--cyan);
-letter-spacing:.5px;
+    font-size:16px;
+    font-weight:900;
+    color:var(--cyan);
+    letter-spacing:.5px;
 }
-
 .sheet-close{
-background:none;
-border:0;
-font-size:18px;
-color:var(--muted);
-font-weight:900;
+    background:none;
+    border:0;
+    font-size:18px;
+    color:var(--muted);
+    font-weight:900;
 }
-
 .sheet-content{
-padding:20px;
-overflow-y:auto;
-font-size:13px;
-color:var(--muted);
-line-height:1.6;
-font-weight:700;
+    padding:20px;
+    overflow-y:auto;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+    font-weight:700;
 }
-
 .sheet-content strong{
-color:#fff;
+    color:#fff;
 }
-
 .sheet-content p{
-margin:0;
+    margin:0;
 }
 
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
+/* ========================================================= BOTTOM NAV ========================================================= */
 .bottom-nav{
-position:fixed;
-bottom:0;
-left:50%;
-transform:translateX(-50%);
-width:min(480px,100%);
-background:#070b10;
-border-top:1px solid var(--border);
-display:grid;
-grid-template-columns:repeat(5,1fr);
-padding:10px 0 calc(10px + env(safe-area-inset-bottom));
-z-index:100;
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(480px,100%);
+    background:#070b10;
+    border-top:1px solid var(--border);
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    padding:10px 0 calc(10px + env(safe-area-inset-bottom));
+    z-index:100;
 }
-
 .nav-item{
-background:none;
-border:0;
-color:var(--muted);
-font-size:10px;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:4px;
-font-weight:700;
+    background:none;
+    border:0;
+    color:var(--muted);
+    font-size:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-weight:700;
 }
-
 .nav-icon{
-font-size:18px;
+    font-size:18px;
 }
-
 .nav-item.active{
-color:var(--cyan);
+    color:var(--cyan);
 }
 
-/* =========================================================
-   TOAST
-========================================================= */
-
+/* ========================================================= TOAST ========================================================= */
 .toast{
-position:fixed;
-left:50%;
-bottom:105px;
-transform:translateX(-50%) translateY(20px);
-background:#111b27;
-border:1px solid var(--cyan);
-color:#fff;
-padding:12px 18px;
-border-radius:12px;
-font-size:12px;
-font-weight:800;
-z-index:2000;
-opacity:0;
-pointer-events:none;
-transition:.25s;
-max-width:90%;
-text-align:center;
+    position:fixed;
+    left:50%;
+    bottom:105px;
+    transform:translateX(-50%) translateY(20px);
+    background:#111b27;
+    border:1px solid var(--cyan);
+    color:#fff;
+    padding:12px 18px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:800;
+    z-index:2000;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    max-width:90%;
+    text-align:center;
 }
-
 .toast.show{
-opacity:1;
-transform:translateX(-50%) translateY(0);
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
 }
 
-/* =========================================================
-   RECOVERY
-========================================================= */
-
+/* ========================================================= RECOVERY ========================================================= */
 .recovery-card{
-margin-top:18px;
-background:linear-gradient(145deg,#101722,#080d14);
-border:1px solid rgba(250,204,21,.25);
-border-radius:20px;
-padding:17px;
+    margin-top:18px;
+    background:linear-gradient(145deg,#101722,#080d14);
+    border:1px solid rgba(250,204,21,.25);
+    border-radius:20px;
+    padding:17px;
 }
-
 .recovery-title{
-font-size:14px;
-font-weight:900;
-color:var(--yellow);
-margin-bottom:12px;
+    font-size:14px;
+    font-weight:900;
+    color:var(--yellow);
+    margin-bottom:12px;
 }
-
 .recovery-line{
-display:flex;
-justify-content:space-between;
-gap:10px;
-font-size:11px;
-padding:7px 0;
-border-bottom:1px solid rgba(27,38,54,.7);
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:11px;
+    padding:7px 0;
+    border-bottom:1px solid rgba(27,38,54,.7);
 }
-
 .recovery-line:last-child{
-border-bottom:0;
+    border-bottom:0;
 }
-
 .recovery-label{
-color:var(--muted);
+    color:var(--muted);
 }
-
 .recovery-value{
-color:#fff;
-font-weight:900;
+    color:#fff;
+    font-weight:900;
 }
-
 </style>
 </head>
-
 <body>
-
 <div class="app">
-
-<!-- =========================================================
-     MINING
-========================================================= -->
-
-<main class="page-view active" id="page-mining">
-
-<div class="balance-card">
-<div class="balance-dot"></div>
-<div class="balance-label">TOTAL BALANCE</div>
-
-<div class="balance-row">
-<div class="balance-value" id="balanceDisplay">0.00</div>
-<div class="balance-token">$FDX</div>
-</div>
-</div>
-
-<div class="mining-node-container">
-
-<div class="ring-wrapper">
-
-<div class="system-status-pill" id="systemPill">
-READY TO MINE
-</div>
-
-<div class="mining-timer" id="timerDisplay">
-04:00:00
-</div>
-
-<div class="mining-rate-indicator">
-Mining Rate:
-<span id="currentRateDisplay">1.0</span>
-$FDX/H
-</div>
-
-</div>
-
-</div>
-
-<div class="action-controls">
-
-<button
-class="start-mining-btn"
-id="miningToggleBtn"
-onclick="handleMiningAction()">
-START MINING
-</button>
-
-<div class="interactive-grid">
-
-<button
-class="action-tile"
-onclick="openBoosterPrompt()">
-
-<div class="action-tile-icon">🚀</div>
-
-<div>
-<div class="action-tile-title">Mining Boost</div>
-
-<div
-class="action-tile-sub"
-id="boosterChances">
-5/5 Left
-</div>
-</div>
-
-</button>
-
-<button
-class="action-tile"
-onclick="openLuckyBoxModal()"
-style="border-color:rgba(250,204,21,.5);">
-
-<div class="action-tile-icon">🎁</div>
-
-<div>
-
-<div
-class="action-tile-title"
-style="color:var(--yellow);">
-Lucky Box
-</div>
-
-<div class="action-tile-sub">
-5 chances / 4 hours
-</div>
-
-</div>
-
-</button>
-
-</div>
-
-</div>
-
-<div class="statistics-card">
-
-<div class="statistics-title">
-📊 MINING STATISTICS
-</div>
-
-<div class="statistics-grid">
-
-<div class="statistics-item">
-<div class="statistics-label">Current Rate</div>
-
-<div
-class="statistics-value yellow"
-id="statRate">
-1.0 FDX/H
-</div>
-</div>
-
-<div class="statistics-item">
-<div class="statistics-label">Session Accumulated</div>
-
-<div
-class="statistics-value"
-id="sessionAccumulated">
-0.00 FDX
-</div>
-</div>
-
-<div class="statistics-item">
-<div class="statistics-label">Completed Hours</div>
-
-<div
-class="statistics-value"
-id="completedHours">
-0 / 4
-</div>
-</div>
-
-<div class="statistics-item">
-<div class="statistics-label">Total Mined</div>
-
-<div
-class="statistics-value green"
-id="totalMined">
-0.00 FDX
-</div>
-</div>
-
-</div>
-</div>
-
-<div class="dual-grid">
-
-<div class="info-box">
-
-<div class="info-box-top">
-
-<div class="info-box-label">
-BURNING<br>STREAK
-</div>
-
-<div class="info-box-icon">🔥</div>
-
-</div>
-
-<div
-class="info-box-value"
-id="burningStreak">
-1 Day
-</div>
-
-</div>
-
-<div class="info-box">
-
-<div class="info-box-top">
-
-<div class="info-box-label">
-RECOVERABLE<br>$FDX
-</div>
-
-<div class="info-box-icon">💎</div>
-
-</div>
-
-<div
-class="info-box-value"
-id="recoverableFdx">
-0.00
-</div>
-
-</div>
-
-</div>
-
-<div class="recovery-card">
-
-<div class="recovery-title">
-🔐 RECOVERY STATUS
-</div>
-
-<div class="recovery-line">
-
-<div class="recovery-label">
-Activity Status
-</div>
-
-<div
-class="recovery-value"
-id="activityStatus">
-ACTIVE
-</div>
-
-</div>
-
-<div class="recovery-line">
-
-<div class="recovery-label">
-Inactive Days
-</div>
-
-<div
-class="recovery-value"
-id="inactiveDays">
-0 / 7
-</div>
-
-</div>
-
-<div class="recovery-line">
-
-<div class="recovery-label">
-Active Days
-</div>
-
-<div
-class="recovery-value"
-id="activeDays">
-0 / 7
-</div>
-
-</div>
-
-<div class="recovery-line">
-
-<div class="recovery-label">
-Daily Unlock
-</div>
-
-<div class="recovery-value">
-10%
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-
-<!-- =========================================================
-     TASKS
-========================================================= -->
-
-<main class="page-view" id="page-tasks">
-
-<div class="full-page-header">
-📋 SYSTEM TASKS
-</div>
-
-<div class="full-page-sub">
-Complete official FIDEXA community tasks to earn rewards.
-</div>
-
-<div class="task-card">
-
-<div class="task-row">
-
-<div class="task-left">
-
-<div class="task-icon">📢</div>
-
-<div>
-
-<div class="task-name">
-Join Telegram
-</div>
-
-<div class="task-reward">
-Reward: +5.00 $FDX
-</div>
-
-</div>
-
-</div>
-
-<button
-class="task-button"
-id="taskBtn-telegram"
-onclick="handleTaskAction('telegram')">
-JOIN
-</button>
-
-</div>
-
-</div>
-
-<div class="task-card">
-
-<div class="task-row">
-
-<div class="task-left">
-
-<div class="task-icon">𝕏</div>
-
-<div>
-
-<div class="task-name">
-Join X
-</div>
-
-<div class="task-reward">
-Reward: +5.00 $FDX
-</div>
-
-</div>
-
-</div>
-
-<button
-class="task-button"
-id="taskBtn-x"
-onclick="handleTaskAction('x')">
-JOIN
-</button>
-
-</div>
-
-</div>
-
-<div class="task-card">
-
-<div class="task-row">
-
-<div class="task-left">
-
-<div class="task-icon">▶️</div>
-
-<div>
-
-<div class="task-name">
-Join YouTube
-</div>
-
-<div class="task-reward">
-Reward: +5.00 $FDX
-</div>
-
-</div>
-
-</div>
-
-<button
-class="task-button"
-id="taskBtn-youtube"
-onclick="handleTaskAction('youtube')">
-JOIN
-</button>
-
-</div>
-
-</div>
-
-</main>
-
-
-<!-- =========================================================
-     FRIENDS
-========================================================= -->
-
-<main class="page-view" id="page-friends">
-
-<div class="full-page-header">
-👥 REFERRAL NETWORK
-</div>
-
-<div class="full-page-sub">
-View the users you personally invited and their current activity status.
-</div>
-
-<div class="friends-stats-grid">
-
-<div class="friend-stat-card">
-
-<div
-class="friend-stat-value"
-id="totalFriendsCount">
-0
-</div>
-
-<div class="friend-stat-label">
-Invited
-</div>
-
-</div>
-
-<div class="friend-stat-card">
-
-<div
-class="friend-stat-value"
-id="activeFriendsCount"
-style="color:var(--green);">
-0
-</div>
-
-<div class="friend-stat-label">
-Active
-</div>
-
-</div>
-
-<div class="friend-stat-card">
-
-<div
-class="friend-stat-value"
-id="inactiveFriendsCount">
-0
-</div>
-
-<div class="friend-stat-label">
-Inactive
-</div>
-
-</div>
-
-</div>
-
-<div class="friend-list-card">
-
-<div class="friend-list-header">
-
-<div class="friend-list-title">
-My Invited Members
-</div>
-
-<div
-class="friend-list-count"
-id="friendListCount">
-0 MEMBERS
-</div>
-
-</div>
-
-<div
-class="friends-scroll-area"
-id="friendsList">
-
-<div class="friend-empty-state">
-
-<div class="friend-empty-icon">👥</div>
-
-<div class="friend-empty-title">
-No Invited Members
-</div>
-
-<div class="friend-empty-text">
-Your real invited members will appear here when referral data is connected.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="friends-actions-grid">
-
-<button
-class="full-action-btn"
-onclick="copyReferralLink()"
-style="padding:15px;font-size:13px;box-shadow:none;">
-COPY LINK
-</button>
-
-<button
-class="full-action-btn"
-onclick="shareReferralLink()"
-style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90deg,#0ea5e9,#2563eb);">
-SHARE ON TELEGRAM
-</button>
-
-</div>
-
-</main>
-
-
-<!-- =========================================================
-     WALLET
-========================================================= -->
-
-<main class="page-view" id="page-wallet">
-
-<div class="migration-hero">
-
-<div class="migration-icon">🔄</div>
-
-<div class="migration-title">
-FDX MIGRATION
-</div>
-
-<div class="migration-subtitle">
-DISTRIBUTION SYSTEM NOT OPEN
-</div>
-
-</div>
-
-<div class="wallet-migration-card">
-
-<div class="wallet-migration-title">
-OFFICIAL DISTRIBUTION STATUS
-</div>
-
-<div class="wallet-migration-text">
-
-Your accumulated FDX is currently part of the FIDEXA application reward system.
-
-It is not yet a transferable blockchain wallet balance.
-
-Migration and distribution will become available when the official FIDEXA distribution process begins.
-
-</div>
-
-<div class="wallet-migration-status">
-MIGRATION NOT OPEN
-</div>
-
-<button
-class="full-action-btn"
-style="margin-top:14px;padding:15px;font-size:13px;box-shadow:none;"
-onclick="openMigrationInfo()">
-VIEW MIGRATION STATUS
-</button>
-
-</div>
-
-<div class="friend-list-card">
-
-<div class="friend-empty-state">
-
-<div class="friend-empty-icon">🔐</div>
-
-<div class="friend-empty-title">
-Wallet Distribution Pending
-</div>
-
-<div class="friend-empty-text">
-No Total Balance, transferable balance or transaction history is displayed here before official migration/distribution.
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-
-<!-- =========================================================
-     PROFILE
-========================================================= -->
-
-<main class="page-view" id="page-profile">
-
-<div class="full-page-header">
-🛡️ USER PROFILE
-</div>
-
-<div class="full-page-sub">
-Manage your account, support, and official FIDEXA information.
-</div>
-
-<div class="profile-menu-list">
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('account')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">👤</span>
-
-<span class="profile-menu-title">
-Account Information
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">›</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('support')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">💬</span>
-
-<span class="profile-menu-title">
-Chat Support
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">›</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('privacy')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">🔒</span>
-
-<span class="profile-menu-title">
-Privacy Policy
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">›</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('whitepaper')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">📄</span>
-
-<span class="profile-menu-title">
-White Paper
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">›</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('roadmap')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">🗺️</span>
-
-<span class="profile-menu-title">
-Project Roadmap
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">›</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openExternalLink('telegram')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">📢</span>
-
-<span class="profile-menu-title">
-Official Telegram
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">↗</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openExternalLink('twitter')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">𝕏</span>
-
-<span class="profile-menu-title">
-Official X
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">↗</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openExternalLink('youtube')">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">▶️</span>
-
-<span class="profile-menu-title">
-Official YouTube
-</span>
-
-</div>
-
-<span class="profile-menu-arrow">↗</span>
-
-</div>
-
-<div
-class="profile-menu-item"
-onclick="openProfileInfo('deletion')"
-style="border-color:rgba(248,113,113,.3);">
-
-<div class="profile-menu-left">
-
-<span class="profile-menu-icon">⚠️</span>
-
-<span
-class="profile-menu-title"
-style="color:var(--red);">
-Account Deletion
-</span>
-
-</div>
-
-<span
-class="profile-menu-arrow"
-style="color:var(--red);">
-›
-</span>
-
-</div>
-
-</div>
-
-</main>
-
-
-<!-- =========================================================
-     PROFILE INFO MODAL
-========================================================= -->
-
-<div
-class="modal-overlay"
-id="profileInfoModal">
-
-<div class="sheet-box">
-
-<div class="sheet-header">
-
-<div
-class="sheet-title"
-id="sheetTitle">
-Information
-</div>
-
-<button
-class="sheet-close"
-onclick="closeProfileInfo()">
-✕
-</button>
-
-</div>
-
-<div
-class="sheet-content"
-id="sheetContentBody">
-Loading details...
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================================================
-     BOOSTER
-========================================================= -->
-
-<div
-class="modal-overlay"
-id="boosterPromptModal">
-
-<div class="prompt-box">
-
-<div class="prompt-title">
-⚡ SPEED BOOSTER
-</div>
-
-<div class="prompt-desc">
-Watch a short advertisement to increase your mining speed by +0.5 FDX/H.
-</div>
-
-<div class="prompt-actions">
-
-<button
-class="prompt-btn-cancel"
-onclick="closeBoosterPrompt()">
-Not now
-</button>
-
-<button
-class="prompt-btn-confirm"
-onclick="confirmWatchBoosterAd()">
-Watch ad
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================================================
-     LUCKY BOX
-========================================================= -->
-
-<div
-class="modal-overlay"
-id="luckyBoxModal">
-
-<div class="prompt-box">
-
-<div class="prompt-title">
-🎁 LUCKY BOX
-</div>
-
-<div class="prompt-desc">
-
-You have
-<strong
-style="color:#fff;"
-id="luckyBoxPromptChances">
-5
-</strong>
-Lucky Box chances.
-
-Each 4-hour cycle gives 5 chances.
-
-Maximum reward: 10 FDX.
-
-</div>
-
-<div class="prompt-actions">
-
-<button
-class="prompt-btn-cancel"
-onclick="closeLuckyBoxModal()">
-Close
-</button>
-
-<button
-class="prompt-btn-confirm"
-onclick="confirmOpenLuckyBox()">
-Open Box
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================================================
-     AD MODAL
-========================================================= -->
-
-<div
-class="modal-overlay"
-id="adModal">
-
-<div class="ad-box">
-
-<div
-class="ad-header"
-id="adHeader">
-SPONSORED ADVERTISEMENT
-</div>
-
-<div class="ad-screen">
-
-<div
-class="ad-timer-badge"
-id="adTimerBadge">
-Ad in 4s
-</div>
-
-<div class="ad-title">
-FIDEXA Partner Network
-</div>
-
-<div
-class="ad-desc"
-id="adDescText">
-Watch full video to secure your reward
-</div>
-
-</div>
-
-<button
-class="ad-close-btn"
-id="adCloseBtn"
-onclick="closeAdModal()">
-WATCHING AD...
-</button>
-
-</div>
-
-</div>
-
-
-<!-- =========================================================
-     NAVIGATION
-========================================================= -->
-
-<nav class="bottom-nav">
-
-<button
-class="nav-item active"
-onclick="switchTab('mining',this)">
-
-<span class="nav-icon">⚡</span>
-Mining
-
-</button>
-
-<button
-class="nav-item"
-onclick="switchTab('tasks',this)">
-
-<span class="nav-icon">📋</span>
-Tasks
-
-</button>
-
-<button
-class="nav-item"
-onclick="switchTab('friends',this)">
-
-<span class="nav-icon">👥</span>
-Friends
-
-</button>
-
-<button
-class="nav-item"
-onclick="switchTab('wallet',this)">
-
-<span class="nav-icon">👛</span>
-Wallet
-
-</button>
-
-<button
-class="nav-item"
-onclick="switchTab('profile',this)">
-
-<span class="nav-icon">🛡️</span>
-Profile
-
-</button>
-
-</nav>
-
-</div>
-
-<div
-class="toast"
-id="toast">
-</div>
-
+    <!-- ========================================================= MINING ========================================================= -->
+    <main class="page-view active" id="page-mining">
+        <div class="balance-card">
+            <div class="balance-dot"></div>
+            <div class="balance-label">TOTAL BALANCE</div>
+            <div class="balance-row">
+                <div class="balance-value" id="balanceDisplay">0.00</div>
+                <div class="balance-token">$FDX</div>
+            </div>
+        </div>
+        <div class="mining-node-container">
+            <div class="ring-wrapper">
+                <div class="system-status-pill" id="systemPill"> READY TO MINE </div>
+                <div class="mining-timer" id="timerDisplay"> 04:00:00 </div>
+                <div class="mining-rate-indicator"> Mining Rate: <span id="currentRateDisplay">1.0</span> $FDX/H </div>
+            </div>
+        </div>
+        <div class="action-controls">
+            <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()"> START MINING </button>
+            <div class="interactive-grid">
+                <button class="action-tile" onclick="openBoosterPrompt()">
+                    <div class="action-tile-icon">🚀</div>
+                    <div>
+                        <div class="action-tile-title">Mining Boost</div>
+                        <div class="action-tile-sub" id="boosterChances"> 5/5 Left </div>
+                    </div>
+                </button>
+                <button class="action-tile" onclick="openLuckyBoxModal()" style="border-color:rgba(250,204,21,.5);">
+                    <div class="action-tile-icon">🎁</div>
+                    <div>
+                        <div class="action-tile-title" style="color:var(--yellow);"> Lucky Box </div>
+                        <div class="action-tile-sub"> 5 chances / 4 hours </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <div class="statistics-card">
+            <div class="statistics-title"> 📊 MINING STATISTICS </div>
+            <div class="statistics-grid">
+                <div class="statistics-item">
+                    <div class="statistics-label">Current Rate</div>
+                    <div class="statistics-value yellow" id="statRate"> 1.0 FDX/H </div>
+                </div>
+                <div class="statistics-item">
+                    <div class="statistics-label">Session Accumulated</div>
+                    <div class="statistics-value" id="sessionAccumulated"> 0.00 FDX </div>
+                </div>
+                <div class="statistics-item">
+                    <div class="statistics-label">Completed Hours</div>
+                    <div class="statistics-value" id="completedHours"> 0 / 4 </div>
+                </div>
+                <div class="statistics-item">
+                    <div class="statistics-label">Total Mined</div>
+                    <div class="statistics-value green" id="totalMined"> 0.00 FDX </div>
+                </div>
+            </div>
+        </div>
+        <div class="dual-grid">
+            <div class="info-box">
+                <div class="info-box-top">
+                    <div class="info-box-label"> BURNING<br>STREAK </div>
+                    <div class="info-box-icon">🔥</div>
+                </div>
+                <div class="info-box-value" id="burningStreak"> 1 Day </div>
+            </div>
+            <div class="info-box">
+                <div class="info-box-top">
+                    <div class="info-box-label"> RECOVERABLE<br>$FDX </div>
+                    <div class="info-box-icon">💎</div>
+                </div>
+                <div class="info-box-value" id="recoverableFdx"> 0.00 </div>
+            </div>
+        </div>
+        <div class="recovery-card">
+            <div class="recovery-title"> 🔐 RECOVERY STATUS </div>
+            <div class="recovery-line">
+                <div class="recovery-label"> Activity Status </div>
+                <div class="recovery-value" id="activityStatus"> ACTIVE </div>
+            </div>
+            <div class="recovery-line">
+                <div class="recovery-label"> Inactive Days </div>
+                <div class="recovery-value" id="inactiveDays"> 0 / 7 </div>
+            </div>
+            <div class="recovery-line">
+                <div class="recovery-label"> Active Days </div>
+                <div class="recovery-value" id="activeDays"> 0 / 7 </div>
+            </div>
+            <div class="recovery-line">
+                <div class="recovery-label"> Daily Unlock </div>
+                <div class="recovery-value"> 10% </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================================= TASKS ========================================================= -->
+    <main class="page-view" id="page-tasks">
+        <div class="full-page-header"> 📋 SYSTEM TASKS </div>
+        <div class="full-page-sub"> Complete official FIDEXA community tasks to earn rewards. </div>
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon">📢</div>
+                    <div>
+                        <div class="task-name"> Join Telegram </div>
+                        <div class="task-reward"> Reward: +5.00 $FDX </div>
+                    </div>
+                </div>
+                <button class="task-button" id="taskBtn-telegram" onclick="handleTaskAction('telegram')"> JOIN </button>
+            </div>
+        </div>
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon">𝕏</div>
+                    <div>
+                        <div class="task-name"> Join X </div>
+                        <div class="task-reward"> Reward: +5.00 $FDX </div>
+                    </div>
+                </div>
+                <button class="task-button" id="taskBtn-x" onclick="handleTaskAction('x')"> JOIN </button>
+            </div>
+        </div>
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon">▶️</div>
+                    <div>
+                        <div class="task-name"> Join YouTube </div>
+                        <div class="task-reward"> Reward: +5.00 $FDX </div>
+                    </div>
+                </div>
+                <button class="task-button" id="taskBtn-youtube" onclick="handleTaskAction('youtube')"> JOIN </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================================= FRIENDS ========================================================= -->
+    <main class="page-view" id="page-friends">
+        <div class="full-page-header"> 👥 REFERRAL NETWORK </div>
+        <div class="full-page-sub"> View the users you personally invited and their current activity status. </div>
+        <div class="friends-stats-grid">
+            <div class="friend-stat-card">
+                <div class="friend-stat-value" id="totalFriendsCount"> 0 </div>
+                <div class="friend-stat-label"> Invited </div>
+            </div>
+            <div class="friend-stat-card">
+                <div class="friend-stat-value" id="activeFriendsCount" style="color:var(--green);"> 0 </div>
+                <div class="friend-stat-label"> Active </div>
+            </div>
+            <div class="friend-stat-card">
+                <div class="friend-stat-value" id="inactiveFriendsCount"> 0 </div>
+                <div class="friend-stat-label"> Inactive </div>
+            </div>
+        </div>
+        <div class="friend-list-card">
+            <div class="friend-list-header">
+                <div class="friend-list-title"> My Invited Members </div>
+                <div class="friend-list-count" id="friendListCount"> 0 MEMBERS </div>
+            </div>
+            <div class="friends-scroll-area" id="friendsList">
+                <div class="friend-empty-state">
+                    <div class="friend-empty-icon">👥</div>
+                    <div class="friend-empty-title"> No Invited Members </div>
+                    <div class="friend-empty-text"> Your real invited members will appear here when referral data is connected. </div>
+                </div>
+            </div>
+        </div>
+        <div class="friends-actions-grid">
+            <button class="full-action-btn" onclick="copyReferralLink()" style="padding:15px;font-size:13px;box-shadow:none;"> COPY LINK </button>
+            <button class="full-action-btn" onclick="shareReferralLink()" style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90deg,#0ea5e9,#2563eb);"> SHARE ON TELEGRAM </button>
+        </div>
+    </main>
+
+    <!-- ========================================================= WALLET ========================================================= -->
+    <main class="page-view" id="page-wallet">
+        <div class="migration-hero">
+            <div class="migration-icon">🔄</div>
+            <div class="migration-title"> FDX MIGRATION </div>
+            <div class="migration-subtitle"> DISTRIBUTION SYSTEM NOT OPEN </div>
+        </div>
+        <div class="wallet-migration-card">
+            <div class="wallet-migration-title"> OFFICIAL DISTRIBUTION STATUS </div>
+            <div class="wallet-migration-text"> Your accumulated FDX is currently part of the FIDEXA application reward system. It is not yet a transferable blockchain wallet balance. Migration and distribution will become available when the official FIDEXA distribution process begins. </div>
+            <div class="wallet-migration-status"> MIGRATION NOT OPEN </div>
+            <button class="full-action-btn" style="margin-top:14px;padding:15px;font-size:13px;box-shadow:none;" onclick="openMigrationInfo()"> VIEW MIGRATION STATUS </button>
+        </div>
+        <div class="friend-list-card">
+            <div class="friend-empty-state">
+                <div class="friend-empty-icon">🔐</div>
+                <div class="friend-empty-title"> Wallet Distribution Pending </div>
+                <div class="friend-empty-text"> No Total Balance, transferable balance or transaction history is displayed here before official migration/distribution. </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================================= PROFILE ========================================================= -->
+    <main class="page-view" id="page-profile">
+        <div class="full-page-header"> 🛡️ USER PROFILE </div>
+        <div class="full-page-sub"> Manage your account, support, and official FIDEXA information. </div>
+        <div class="profile-menu-list">
+            <div class="profile-menu-item" onclick="openProfileInfo('account')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">👤</span>
+                    <span class="profile-menu-title"> Account Information </span>
+                </div>
+                <span class="profile-menu-arrow">›</span>
+            </div>
+            <div class="profile-menu-item" onclick="openProfileInfo('support')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">💬</span>
+                    <span class="profile-menu-title"> Chat Support </span>
+                </div>
+                <span class="profile-menu-arrow">›</span>
+            </div>
+            <div class="profile-menu-item" onclick="openProfileInfo('privacy')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">🔒</span>
+                    <span class="profile-menu-title"> Privacy Policy </span>
+                </div>
+                <span class="profile-menu-arrow">›</span>
+            </div>
+            <div class="profile-menu-item" onclick="openProfileInfo('whitepaper')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">📄</span>
+                    <span class="profile-menu-title"> White Paper </span>
+                </div>
+                <span class="profile-menu-arrow">›</span>
+            </div>
+            <div class="profile-menu-item" onclick="openProfileInfo('roadmap')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">🗺️</span>
+                    <span class="profile-menu-title"> Project Roadmap </span>
+                </div>
+                <span class="profile-menu-arrow">›</span>
+            </div>
+            <div class="profile-menu-item" onclick="openExternalLink('telegram')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">📢</span>
+                    <span class="profile-menu-title"> Official Telegram </span>
+                </div>
+                <span class="profile-menu-arrow">↗</span>
+            </div>
+            <div class="profile-menu-item" onclick="openExternalLink('twitter')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">𝕏</span>
+                    <span class="profile-menu-title"> Official X </span>
+                </div>
+                <span class="profile-menu-arrow">↗</span>
+            </div>
+            <div class="profile-menu-item" onclick="openExternalLink('youtube')">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">▶️</span>
+                    <span class="profile-menu-title"> Official YouTube </span>
+                </div>
+                <span class="profile-menu-arrow">↗</span>
+            </div>
+            <div class="profile-menu-item" onclick="openProfileInfo('deletion')" style="border-color:rgba(248,113,113,.3);">
+                <div class="profile-menu-left">
+                    <span class="profile-menu-icon">⚠️</span>
+                    <span class="profile-menu-title" style="color:var(--red);"> Account Deletion </span>
+                </div>
+                <span class="profile-menu-arrow" style="color:var(--red);"> › </span>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================================= PROFILE INFO MODAL ========================================================= -->
+    <div class="modal-overlay" id="profileInfoModal">
+        <div class="sheet-box">
+            <div class="sheet-header">
+                <div class="sheet-title" id="sheetTitle"> Information </div>
+                <button class="sheet-close" onclick="closeProfileInfo()"> ✕ </button>
+            </div>
+            <div class="sheet-content" id="sheetContentBody"> Loading details... </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= BOOSTER ========================================================= -->
+    <div class="modal-overlay" id="boosterPromptModal">
+        <div class="prompt-box">
+            <div class="prompt-title"> ⚡ SPEED BOOSTER </div>
+            <div class="prompt-desc"> Watch a short advertisement to increase your mining speed by +0.5 FDX/H. </div>
+            <div class="prompt-actions">
+                <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()"> Not now </button>
+                <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()"> Watch ad </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= LUCKY BOX ========================================================= -->
+    <div class="modal-overlay" id="luckyBoxModal">
+        <div class="prompt-box">
+            <div class="prompt-title"> 🎁 LUCKY BOX </div>
+            <div class="prompt-desc"> You have <strong style="color:#fff;" id="luckyBoxPromptChances"> 5 </strong> Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 FDX. </div>
+            <div class="prompt-actions">
+                <button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()"> Close </button>
+                <button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()"> Open Box </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= AD MODAL ========================================================= -->
+    <div class="modal-overlay" id="adModal">
+        <div class="ad-box">
+            <div class="ad-header" id="adHeader"> SPONSORED ADVERTISEMENT </div>
+            <div class="ad-screen">
+                <div class="ad-timer-badge" id="adTimerBadge"> Ad in 4s </div>
+                <div class="ad-title"> FIDEXA Partner Network </div>
+                <div class="ad-desc" id="adDescText"> Watch full video to secure your reward </div>
+            </div>
+            <button class="ad-close-btn" id="adCloseBtn" onclick="closeAdModal()"> WATCHING AD... </button>
+        </div>
+    </div>
+
+    <!-- ========================================================= NAVIGATION ========================================================= -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('mining',this)"> <span class="nav-icon">⚡</span> Mining </button>
+        <button class="nav-item" onclick="switchTab('tasks',this)"> <span class="nav-icon">📋</span> Tasks </button>
+        <button class="nav-item" onclick="switchTab('friends',this)"> <span class="nav-icon">👥</span> Friends </button>
+        <button class="nav-item" onclick="switchTab('wallet',this)"> <span class="nav-icon">👛</span> Wallet </button>
+        <button class="nav-item" onclick="switchTab('profile',this)"> <span class="nav-icon">🛡️</span> Profile </button>
+    </nav>
+</div>
+<div class="toast" id="toast"></div>
 
 <script>
+/* ========================================================= UTILITY & HELPERS ========================================================= */
+function escapeHtml(value){
+    return String(value)
+        .replace( /&/g, '&amp;' )
+        .replace( /</g, '&lt;' )
+        .replace( />/g, '&gt;' )
+        .replace( /"/g, '&quot;' )
+        .replace( /'/g, '&#039;' );
+}
 
-/* =========================================================
-   FIDEXA NETWORK
-   FRONTEND PROTOTYPE
-========================================================= */
+function formatNumber(value){
+    return Number( value || 0 ).toLocaleString( 'en-US', { minimumFractionDigits:2, maximumFractionDigits:2 } );
+}
 
+function showToast(message){
+    const toast = document.getElementById( 'toast' );
+    if(!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout( ()=>{ 
+        toast.classList.remove('show'); 
+    }, 2600 );
+}
 
-/* =========================================================
-   TELEGRAM USER & REFERRAL PARSING
-========================================================= */
-
+/* ========================================================= TELEGRAM USER & REFERRAL PARSING ========================================================= */
 let currentUserId = '';
 let currentUserName = '';
 let referrerId = '';
 
-
-if (
-window.Telegram &&
-window.Telegram.WebApp &&
-window.Telegram.WebApp.initDataUnsafe &&
-window.Telegram.WebApp.initDataUnsafe.user
-) {
-
-const tgUser =
-window.Telegram.WebApp.initDataUnsafe.user;
-
-currentUserId =
-tgUser.id ?
-String(tgUser.id) :
-'';
-
-currentUserName =
-tgUser.username ||
-tgUser.first_name ||
-'';
-
+if ( window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user ) {
+    const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+    currentUserId = tgUser.id ? String(tgUser.id) : '';
+    currentUserName = tgUser.username || tgUser.first_name || '';
 }
-
-
-/* =========================================================
-   READ TELEGRAM MINI APP START PARAMETER
-========================================================= */
 
 try {
-
-let startParam = '';
-
-
-if (
-window.Telegram &&
-window.Telegram.WebApp &&
-window.Telegram.WebApp.initDataUnsafe &&
-window.Telegram.WebApp.initDataUnsafe.start_param
-) {
-
-startParam =
-window.Telegram.WebApp.initDataUnsafe.start_param;
-
+    let startParam = '';
+    if ( window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.start_param ) {
+        startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+    } else {
+        const urlParams = new URLSearchParams( window.location.search );
+        startParam = urlParams.get('startapp') || urlParams.get('start') || '';
+    }
+    if ( startParam && startParam.startsWith('ref_') ) {
+        referrerId = startParam.substring(4);
+    }
+} catch(error) {
+    console.log( 'Referrer parse error:', error );
 }
-else {
-
-const urlParams =
-new URLSearchParams(
-window.location.search
-);
-
-startParam =
-urlParams.get('startapp') ||
-urlParams.get('start') ||
-'';
-
-}
-
-
-/*
-Expected referral parameter:
-
-ref_123456789
-*/
-
-if (
-startParam &&
-startParam.startsWith('ref_')
-) {
-
-referrerId =
-startParam.substring(4);
-
-console.log(
-'FIDEXA Referrer ID:',
-referrerId
-);
-
-}
-
-}
-catch(error) {
-
-console.log(
-'Referrer parse error:',
-error
-);
-
-}
-
-
-/* =========================================================
-   PROTOTYPE USER ID FALLBACK
-========================================================= */
 
 if(!currentUserId){
-
-let storedId =
-localStorage.getItem(
-'fidexa_simulated_id'
-);
-
-if(!storedId){
-
-storedId =
-'user_' +
-Math.floor(
-100000 +
-Math.random()*900000
-);
-
-localStorage.setItem(
-'fidexa_simulated_id',
-storedId
-);
-
+    let storedId = localStorage.getItem( 'fidexa_simulated_id' );
+    if(!storedId){
+        storedId = 'user_' + Math.floor( 100000 + Math.random()*900000 );
+        localStorage.setItem( 'fidexa_simulated_id', storedId );
+    }
+    currentUserId = storedId;
 }
 
-currentUserId =
-storedId;
+/* ========================================================= OFFICIAL LINKS ========================================================= */
+const FIDEXA_TELEGRAM = 'https://t.me/Fidexa_Network';
+const FIDEXA_X = 'https://x.com/Fidexa_Network';
+const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
+const FIDEXA_BASE_REF_LINK = 'https://t.me/FIDEXANetworkBot/Fidexa?startapp=ref_';
 
-}
-
-
-/* =========================================================
-   OFFICIAL LINKS
-========================================================= */
-
-const FIDEXA_TELEGRAM =
-'https://t.me/Fidexa_Network';
-
-const FIDEXA_X =
-'https://x.com/Fidexa_Network';
-
-const FIDEXA_YOUTUBE =
-'https://youtube.com/@Fidexa_Network';
-
-
-/*
-Telegram Mini App referral link.
-
-IMPORTANT:
-startapp is used for Mini App parameters.
-*/
-
-const FIDEXA_BASE_REF_LINK =
-'https://t.me/FIDEXANetworkBot/Fidexa?startapp=ref_';
-
-
-/* =========================================================
-   LOCAL STORAGE
-========================================================= */
-
-const STORAGE_KEY =
-'fidexa_prototype_state_v6';
-
-
+/* ========================================================= LOCAL STORAGE STATE ========================================================= */
+const STORAGE_KEY = 'fidexa_prototype_state_v6';
 const defaultState = {
-
-totalBalance:0,
-
-totalMined:0,
-
-miningState:'IDLE',
-
-miningStartedAt:0,
-
-miningCycleDuration:14400,
-
-baseMiningRate:1.0,
-
-boosterBonusRate:0,
-
-boosterResetAt:0,
-
-referralBonusRate:0,
-
-boosterChancesLeft:5,
-
-luckyBoxChances:5,
-
-luckyBoxResetAt:0,
-
-burningStreak:1,
-
-lastActivityDay:'',
-
-inactiveDays:0,
-
-activeDays:0,
-
-recoverableBalance:0,
-
-recoveryUnlockPercent:0,
-
-lastDailyCheck:0,
-
-friends:[],
-
-claimedTasks:{
-
-telegram:false,
-
-x:false,
-
-youtube:false
-
-},
-
-taskInProgress:{
-
-telegram:false,
-
-x:false,
-
-youtube:false
-
-}
-
+    totalBalance:0,
+    totalMined:0,
+    miningState:'IDLE',
+    miningStartedAt:0,
+    miningCycleDuration:14400,
+    baseMiningRate:1.0,
+    boosterBonusRate:0,
+    boosterResetAt:0,
+    referralBonusRate:0,
+    boosterChancesLeft:5,
+    luckyBoxChances:5,
+    luckyBoxResetAt:0,
+    burningStreak:1,
+    lastActivityDay:'',
+    inactiveDays:0,
+    activeDays:0,
+    recoverableBalance:0,
+    recoveryUnlockPercent:0,
+    lastDailyCheck:0,
+    friends:[],
+    claimedTasks:{ telegram:false, x:false, youtube:false },
+    taskInProgress:{ telegram:false, x:false, youtube:false }
 };
 
-
-let state = {
-...defaultState
-};
-
+let state = { ...defaultState };
 
 function loadState(){
-
-try{
-
-const saved =
-localStorage.getItem(
-STORAGE_KEY
-);
-
-if(saved){
-
-const parsed =
-JSON.parse(saved);
-
-state = {
-...defaultState,
-...parsed
-};
-
+    try{
+        const saved = localStorage.getItem( STORAGE_KEY );
+        if(saved){
+            const parsed = JSON.parse(saved);
+            state = { ...defaultState, ...parsed };
+        }
+    }catch(error){
+        console.log( 'State load error', error );
+    }
 }
-
-}
-catch(error){
-
-console.log(
-'State load error',
-error
-);
-
-}
-
-}
-
 
 function saveState(){
-
-try{
-
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(state)
-);
-
+    try{
+        localStorage.setItem( STORAGE_KEY, JSON.stringify(state) );
+    }catch(error){
+        console.log( 'State save error', error );
+    }
 }
-catch(error){
-
-console.log(
-'State save error',
-error
-);
-
-}
-
-}
-
-
-/* =========================================================
-   UTILITY
-========================================================= */
-
-function formatNumber(value){
-
-return Number(
-value || 0
-).toLocaleString(
-'en-US',
-{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-}
-);
-
-}
-
 
 function getCurrentRate(){
-
-return parseFloat(
-(
-Number(state.baseMiningRate) +
-Number(state.boosterBonusRate) +
-Number(state.referralBonusRate)
-).toFixed(1)
-);
-
+    return parseFloat( ( Number(state.baseMiningRate) + Number(state.boosterBonusRate) + Number(state.referralBonusRate) ).toFixed(1) );
 }
 
+/* ========================================================= TAB NAVIGATION ========================================================= */
+function switchTab( tabName, btnElement ){
+    document.querySelectorAll('.page-view').forEach( page => page.classList.remove( 'active' ) );
+    const page = document.getElementById( `page-${tabName}` );
+    if(page) page.classList.add( 'active' );
 
-function showToast(message){
-
-const toast =
-document.getElementById(
-'toast'
-);
-
-if(!toast)
-return;
-
-toast.textContent =
-message;
-
-toast.classList.add('show');
-
-setTimeout(
-()=>{
-toast.classList.remove('show');
-},
-2600
-);
-
+    document.querySelectorAll('.nav-item').forEach( nav => nav.classList.remove( 'active' ) );
+    if(btnElement) btnElement.classList.add( 'active' );
 }
 
-
-/* =========================================================
-   TAB NAVIGATION
-========================================================= */
-
-function switchTab(
-tabName,
-btnElement
-){
-
-document
-.querySelectorAll('.page-view')
-.forEach(
-page=>{
-page.classList.remove(
-'active'
-);
-}
-);
-
-
-const page =
-document.getElementById(
-`page-${tabName}`
-);
-
-
-if(page){
-
-page.classList.add(
-'active'
-);
-
-}
-
-
-document
-.querySelectorAll('.nav-item')
-.forEach(
-nav=>{
-nav.classList.remove(
-'active'
-);
-}
-);
-
-
-if(btnElement){
-
-btnElement.classList.add(
-'active'
-);
-
-}
-
-}
-
-
-/* =========================================================
-   TASK SYSTEM
-========================================================= */
-
+/* ========================================================= TASK SYSTEM ========================================================= */
 function handleTaskAction(type){
+    if( state.claimedTasks[type] ) return;
+    const btn = document.getElementById( `taskBtn-${type}` );
+    if( !state.taskInProgress[type] ){
+        state.taskInProgress[type] = true;
+        saveState();
+        let targetUrl = FIDEXA_TELEGRAM;
+        if(type==='x') targetUrl = FIDEXA_X;
+        if(type==='youtube') targetUrl = FIDEXA_YOUTUBE;
 
-if(
-state.claimedTasks[type]
-){
+        if( type==='telegram' && window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink ){
+            window.Telegram.WebApp.openTelegramLink( targetUrl );
+        } else {
+            window.open( targetUrl, '_blank' );
+        }
 
-return;
-
+        if(btn){
+            btn.textContent = 'CLAIM';
+            btn.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+            btn.style.borderColor = 'transparent';
+            btn.style.color = '#05080c';
+        }
+        showToast( 'Please complete the task, then tap Claim!' );
+    } else {
+        claimTaskReward(type);
+    }
 }
-
-
-const btn =
-document.getElementById(
-`taskBtn-${type}`
-);
-
-
-if(
-!state.taskInProgress[type]
-){
-
-/*
-Step 1:
-User clicks JOIN.
-The official platform is opened.
-*/
-
-state.taskInProgress[type] =
-true;
-
-saveState();
-
-
-let targetUrl =
-FIDEXA_TELEGRAM;
-
-
-if(type==='x'){
-
-targetUrl =
-FIDEXA_X;
-
-}
-
-
-if(type==='youtube'){
-
-targetUrl =
-FIDEXA_YOUTUBE;
-
-}
-
-
-/* =====================================================
-   TELEGRAM
-===================================================== */
-
-if(
-type==='telegram' &&
-window.Telegram &&
-window.Telegram.WebApp &&
-window.Telegram.WebApp.openTelegramLink
-){
-
-window.Telegram.WebApp.openTelegramLink(
-targetUrl
-);
-
-}
-
-
-/* =====================================================
-   X / YOUTUBE
-===================================================== */
-
-else{
-
-window.open(
-targetUrl,
-'_blank'
-);
-
-}
-
-
-if(btn){
-
-btn.textContent =
-'CLAIM';
-
-btn.style.background =
-'linear-gradient(90deg,#facc15,#f59e0b)';
-
-btn.style.borderColor =
-'transparent';
-
-btn.style.color =
-'#05080c';
-
-}
-
-
-showToast(
-'Please complete the task, then tap Claim!'
-);
-
-}
-else{
-
-/*
-Prototype claim flow.
-
-Actual membership/subscription
-verification requires backend/API integration.
-*/
-
-claimTaskReward(type);
-
-}
-
-}
-
 
 function claimTaskReward(type){
-
-if(
-state.claimedTasks[type]
-){
-
-showToast(
-'This task has already been claimed.'
-);
-
-return;
-
+    if( state.claimedTasks[type] ){
+        showToast( 'This task has already been claimed.' );
+        return;
+    }
+    state.claimedTasks[type] = true;
+    state.taskInProgress[type] = false;
+    state.totalBalance = Number(state.totalBalance) + 5;
+    saveState();
+    updateAllUI();
+    showToast( '+5.00 FDX added to Total Balance' );
 }
-
-
-state.claimedTasks[type] =
-true;
-
-state.taskInProgress[type] =
-false;
-
-
-state.totalBalance =
-Number(state.totalBalance) + 5;
-
-
-saveState();
-
-updateAllUI();
-
-
-showToast(
-'+5.00 FDX added to Total Balance'
-);
-
-}
-
 
 function updateTaskUI(){
-
-[
-'telegram',
-'x',
-'youtube'
-].forEach(
-type=>{
-
-const btn =
-document.getElementById(
-`taskBtn-${type}`
-);
-
-if(!btn)
-return;
-
-
-if(
-state.claimedTasks[type]
-){
-
-btn.textContent =
-'CLAIMED';
-
-btn.className =
-'task-button claimed';
-
-}
-else if(
-state.taskInProgress[type]
-){
-
-btn.textContent =
-'CLAIM';
-
-btn.className =
-'task-button';
-
-btn.style.background =
-'linear-gradient(90deg,#facc15,#f59e0b)';
-
-btn.style.borderColor =
-'transparent';
-
-btn.style.color =
-'#05080c';
-
-}
-else{
-
-btn.textContent =
-'JOIN';
-
-btn.className =
-'task-button';
-
-btn.style.background =
-'';
-
-btn.style.borderColor =
-'';
-
-btn.style.color =
-'';
-
+    [ 'telegram', 'x', 'youtube' ].forEach( type=>{
+        const btn = document.getElementById( `taskBtn-${type}` );
+        if(!btn) return;
+        if( state.claimedTasks[type] ){
+            btn.textContent = 'CLAIMED';
+            btn.className = 'task-button claimed';
+        } else if( state.taskInProgress[type] ){
+            btn.textContent = 'CLAIM';
+            btn.className = 'task-button';
+            btn.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+            btn.style.borderColor = 'transparent';
+            btn.style.color = '#05080c';
+        } else {
+            btn.textContent = 'JOIN';
+            btn.className = 'task-button';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+        }
+    });
 }
 
-}
-);
-
-}
-
-
-/* =========================================================
-   PROFILE
-========================================================= */
-
+/* ========================================================= PROFILE & MODALS ========================================================= */
 function openProfileInfo(type){
+    const modal = document.getElementById( 'profileInfoModal' );
+    const titleEl = document.getElementById( 'sheetTitle' );
+    const bodyEl = document.getElementById( 'sheetContentBody' );
+    modal.classList.add( 'active' );
 
-const modal =
-document.getElementById(
-'profileInfoModal'
-);
-
-const titleEl =
-document.getElementById(
-'sheetTitle'
-);
-
-const bodyEl =
-document.getElementById(
-'sheetContentBody'
-);
-
-
-modal.classList.add(
-'active'
-);
-
-
-if(type==='account'){
-
-titleEl.textContent =
-'Account Information';
-
-
-bodyEl.innerHTML = `
-
-<p>
-<strong>Telegram User ID:</strong>
-${escapeHtml(
-currentUserId ||
-'Not available'
-)}
-</p>
-
-<p style="margin-top:10px;">
-<strong>Username:</strong>
-${escapeHtml(
-currentUserName ||
-'Not available'
-)}
-</p>
-
-<p style="margin-top:10px;">
-<strong>Node Status:</strong>
-Prototype User Node
-</p>
-
-<p style="margin-top:10px;">
-<strong>App Balance:</strong>
-${formatNumber(
-state.totalBalance
-)} FDX
-</p>
-
-`;
-
+    if(type==='account'){
+        titleEl.textContent = 'Account Information';
+        bodyEl.innerHTML = `
+            <p><strong>Telegram User ID:</strong> ${escapeHtml( currentUserId || 'Not available' )} </p>
+            <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml( currentUserName || 'Not available' )} </p>
+            <p style="margin-top:10px;"><strong>Node Status:</strong> Prototype User Node </p>
+            <p style="margin-top:10px;"><strong>App Balance:</strong> ${formatNumber( state.totalBalance )} FDX </p>
+        `;
+    } else if(type==='support'){
+        titleEl.textContent = 'Chat Support';
+        bodyEl.innerHTML = `
+            <div class="support-status">
+                <div class="support-status-title">💬 FIDEXA SUPPORT</div>
+                <div class="support-status-text">The support interface is ready. Live support delivery will be connected to the backend later.</div>
+            </div>
+            <div id="supportMessages" class="chat-messages-container">
+                <div class="chat-bubble admin">Hello. How can we help you?</div>
+            </div>
+            <div class="chat-input-row">
+                <input id="supportInput" class="chat-input-field" type="text" maxlength="500" placeholder="Write your message...">
+                <button class="chat-send-btn" onclick="sendSupportMessage()">SEND</button>
+            </div>
+        `;
+    } else if(type==='privacy'){
+        titleEl.textContent = 'FIDEXA NETWORK — Privacy Policy';
+        bodyEl.innerHTML = `
+            <div style="text-align:center;margin-bottom:22px;">
+                <div style="font-size:21px;font-weight:900;color:#fff;"> FIDEXA NETWORK </div>
+                <div style="font-size:14px;color:var(--cyan);font-weight:900;margin-top:6px;"> PRIVACY POLICY </div>
+            </div>
+            <p>FIDEXA Network respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App.</p>
+        `;
+    } else if(type==='whitepaper'){
+        titleEl.textContent = 'FIDEXA NETWORK — Whitepaper v1.0';
+        bodyEl.innerHTML = `
+            <div style="text-align:center;margin-bottom:22px;">
+                <div style="font-size:22px;font-weight:900;color:#fff;"> FIDEXA NETWORK </div>
+                <div style="font-size:13px;color:var(--cyan);font-weight:900;margin-top:5px;"> WHITEPAPER v1.0 </div>
+            </div>
+            <p>FIDEXA Network is a gamified digital mining and community rewards platform.</p>
+        `;
+    } else if(type==='roadmap'){
+        titleEl.textContent = 'FIDEXA NETWORK — Official Roadmap';
+        bodyEl.innerHTML = `
+            <div style="text-align:center;margin-bottom:22px;">
+                <div style="font-size:21px;font-weight:900;color:#fff;"> FIDEXA NETWORK </div>
+                <div style="font-size:12px;color:var(--cyan);font-weight:900;margin-top:5px;"> OFFICIAL ROADMAP </div>
+            </div>
+            <p>Phases detailing ecosystem growth and distribution infrastructure.</p>
+        `;
+    } else if(type==='deletion'){
+        titleEl.textContent = 'Account Deletion Warning';
+        bodyEl.innerHTML = `
+            <p style="color:var(--red);"><strong>Warning:</strong> Account deletion will remove associated account data.</p>
+            <button style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;" onclick="showComingSoon('Account deletion')">REQUEST ACCOUNT DELETION</button>
+        `;
+    }
 }
-
-
-else if(type==='support'){
-
-titleEl.textContent =
-'Chat Support';
-
-
-bodyEl.innerHTML = `
-
-<div class="support-status">
-
-<div class="support-status-title">
-💬 FIDEXA SUPPORT
-</div>
-
-<div class="support-status-text">
-
-The support interface is ready.
-Live support delivery will be connected to the backend later.
-
-</div>
-
-</div>
-
-<div
-id="supportMessages"
-class="chat-messages-container">
-
-<div class="chat-bubble admin">
-Hello. How can we help you?
-</div>
-
-</div>
-
-<div class="chat-input-row">
-
-<input
-id="supportInput"
-class="chat-input-field"
-type="text"
-maxlength="500"
-placeholder="Write your message...">
-
-<button
-class="chat-send-btn"
-onclick="sendSupportMessage()">
-SEND
-</button>
-
-</div>
-
-`;
-
-}
-
-
-else if(type==='privacy'){
-
-titleEl.textContent =
-'FIDEXA NETWORK — Privacy Policy';
-
-
-bodyEl.innerHTML = `
-
-<div style="text-align:center;margin-bottom:22px;">
-
-<div style="font-size:21px;font-weight:900;color:#fff;">
-FIDEXA NETWORK
-</div>
-
-<div style="font-size:14px;color:var(--cyan);font-weight:900;margin-top:6px;">
-PRIVACY POLICY
-</div>
-
-<div style="font-size:11px;color:var(--muted);margin-top:8px;">
-Effective Date: September 26, 2026
-</div>
-
-</div>
-
-<p>
-FIDEXA Network respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.
-</p>
-
-<p style="margin-top:10px;">
-The Mini App may process Telegram account information, application activity, mining sessions, balances, referrals, tasks, rewards, support interactions, and technical information necessary to operate the platform.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-Information We Collect
-</div>
-
-<p>
-Information made available by Telegram may include Telegram user ID, first name, last name, username, language information, and other profile information made available to the Mini App.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-How We Use Information
-</div>
-
-<p>
-FIDEXA may use information to operate accounts, mining sessions, rewards, referrals, community features, support, security, fraud prevention, platform improvement, and applicable legal obligations.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-Account Deletion
-</div>
-
-<p>
-Users may request account deletion when the live account-management system supports the request.
-</p>
-
-`;
-
-}
-
-
-else if(type==='whitepaper'){
-
-titleEl.textContent =
-'FIDEXA NETWORK — Whitepaper v1.0';
-
-
-bodyEl.innerHTML = `
-
-<div style="text-align:center;margin-bottom:22px;">
-
-<div style="font-size:22px;font-weight:900;color:#fff;">
-FIDEXA NETWORK
-</div>
-
-<div style="font-size:13px;color:var(--cyan);font-weight:900;margin-top:5px;">
-WHITEPAPER v1.0
-</div>
-
-<div style="font-size:11px;color:var(--muted);margin-top:6px;">
-A Gamified Digital Mining & Community Rewards Ecosystem
-</div>
-
-<div style="font-size:12px;color:var(--yellow);font-weight:900;margin-top:8px;">
-Ticker: FDX
-</div>
-
-</div>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin-bottom:8px;">
-1. Vision & Mission
-</div>
-
-<p>
-FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple and accessible.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-2. Mining System
-</div>
-
-<p>
-FIDEXA uses timed four-hour mining sessions. Mining accumulation is calculated according to the user's active mining rate.
-</p>
-
-<div style="background:#111b27;border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px;">
-
-<div style="color:var(--yellow);font-weight:900;margin-bottom:8px;">
-Current Mining Structure
-</div>
-
-<div>
-• Mining cycle:
-<strong style="color:#fff;">
-4 hours
-</strong>
-</div>
-
-<div style="margin-top:5px;">
-• Base mining rate:
-<strong style="color:#fff;">
-1.0 FDX per hour
-</strong>
-</div>
-
-</div>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-3. Boosters & Lucky Boxes
-</div>
-
-<p>
-Mining boosters can increase the mining rate. Lucky Boxes provide randomly selected rewards with a maximum reward of 10 FDX.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-4. Community Tasks
-</div>
-
-<p>
-FIDEXA includes community activities connected to official Telegram, X, and YouTube accounts.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-5. Referral System
-</div>
-
-<p>
-The referral system is designed to track users invited through FIDEXA unique referral links containing Telegram IDs.
-</p>
-
-<div style="font-size:16px;color:var(--cyan);font-weight:900;margin:22px 0 8px;">
-6. Migration & Distribution
-</div>
-
-<p>
-Accumulated application rewards are not represented as transferable blockchain assets before official migration and distribution.
-</p>
-
-`;
-
-}
-
-
-else if(type==='roadmap'){
-
-titleEl.textContent =
-'FIDEXA NETWORK — Official Roadmap';
-
-
-bodyEl.innerHTML = `
-
-<div style="text-align:center;margin-bottom:22px;">
-
-<div style="font-size:21px;font-weight:900;color:#fff;">
-FIDEXA NETWORK
-</div>
-
-<div style="font-size:12px;color:var(--cyan);font-weight:900;margin-top:5px;">
-OFFICIAL ROADMAP
-</div>
-
-</div>
-
-<div style="background:#111b27;border:1px solid rgba(56,189,248,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
-
-<div style="font-size:15px;color:var(--cyan);font-weight:900;">
-PHASE 1 — Foundation & Mini App
-</div>
-
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:var(--cyan);font-size:10px;font-weight:900;">
-COMPLETED
-</div>
-
-<div style="margin-top:14px;line-height:1.9;">
-✓ FIDEXA Telegram Mini App interface<br>
-✓ User profile integration<br>
-✓ Core mining interface<br>
-✓ Community task structure<br>
-✓ Wallet migration interface<br>
-✓ Account interface
-</div>
-
-</div>
-
-<div style="background:#111b27;border:1px solid rgba(250,204,21,.35);border-radius:18px;padding:18px;margin-bottom:16px;">
-
-<div style="font-size:15px;color:var(--yellow);font-weight:900;">
-PHASE 2 — Engagement & Gamification
-</div>
-
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(250,204,21,.1);border:1px solid rgba(250,204,21,.3);color:var(--yellow);font-size:10px;font-weight:900;">
-ACTIVE
-</div>
-
-<div style="margin-top:14px;line-height:1.9;">
-• Mining boosters<br>
-• Lucky Boxes<br>
-• Community tasks & YouTube integration<br>
-• Referral activity with Telegram IDs<br>
-• Support system<br>
-• User experience improvements
-</div>
-
-</div>
-
-<div style="background:#111b27;border:1px solid var(--border);border-radius:18px;padding:18px;">
-
-<div style="font-size:15px;color:#fff;font-weight:900;">
-PHASE 3 — Ecosystem Growth
-</div>
-
-<div style="display:inline-block;margin-top:8px;padding:4px 10px;border-radius:20px;background:rgba(56,189,248,.08);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:900;">
-DEVELOPMENT
-</div>
-
-<div style="margin-top:14px;line-height:1.9;">
-• Firebase backend & automatic ID merging<br>
-• Referral backend expansion<br>
-• Migration infrastructure<br>
-• Distribution infrastructure<br>
-• Support backend<br>
-• Platform performance improvements
-</div>
-
-</div>
-
-`;
-
-}
-
-
-else if(type==='deletion'){
-
-titleEl.textContent =
-'Account Deletion Warning';
-
-
-bodyEl.innerHTML = `
-
-<p style="color:var(--red);">
-
-<strong>Warning:</strong>
-
-Account deletion will remove associated account data when the live account-management system is connected.
-
-</p>
-
-<button
-style="width:100%;background:rgba(248,113,113,.2);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px;font-weight:900;margin-top:16px;"
-onclick="showComingSoon('Account deletion')">
-REQUEST ACCOUNT DELETION
-</button>
-
-`;
-
-}
-
-}
-
-
-/* =========================================================
-   SUPPORT
-========================================================= */
-
-function sendSupportMessage(){
-
-const input =
-document.getElementById(
-'supportInput'
-);
-
-const messages =
-document.getElementById(
-'supportMessages'
-);
-
-if(!input || !messages)
-return;
-
-const message =
-input.value.trim();
-
-if(!message)
-return;
-
-
-const bubble =
-document.createElement('div');
-
-bubble.className =
-'chat-bubble user';
-
-bubble.textContent =
-message;
-
-messages.appendChild(
-bubble
-);
-
-input.value = '';
-
-messages.scrollTop =
-messages.scrollHeight;
-
-
-setTimeout(
-()=>{
-
-const notice =
-document.createElement('div');
-
-notice.className =
-'chat-bubble admin';
-
-notice.textContent =
-'Message prepared. Live support delivery will be connected later.';
-
-messages.appendChild(
-notice
-);
-
-messages.scrollTop =
-messages.scrollHeight;
-
-},
-500
-);
-
-}
-
-
-/* =========================================================
-   CLOSE PROFILE
-========================================================= */
 
 function closeProfileInfo(){
-
-document
-.getElementById(
-'profileInfoModal'
-)
-.classList.remove(
-'active'
-);
-
+    document.getElementById( 'profileInfoModal' ).classList.remove( 'active' );
 }
 
+function sendSupportMessage(){
+    const input = document.getElementById( 'supportInput' );
+    const messages = document.getElementById( 'supportMessages' );
+    if(!input || !messages) return;
+    const message = input.value.trim();
+    if(!message) return;
 
-/* =========================================================
-   EXTERNAL LINKS
-========================================================= */
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble user';
+    bubble.textContent = message;
+    messages.appendChild( bubble );
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
+
+    setTimeout( ()=>{
+        const notice = document.createElement('div');
+        notice.className = 'chat-bubble admin';
+        notice.textContent = 'Message prepared. Live support delivery will be connected later.';
+        messages.appendChild( notice );
+        messages.scrollTop = messages.scrollHeight;
+    }, 500 );
+}
 
 function openExternalLink(target){
-
-if(target==='telegram'){
-
-if(
-window.Telegram &&
-window.Telegram.WebApp &&
-window.Telegram.WebApp.openTelegramLink
-){
-
-window.Telegram.WebApp.openTelegramLink(
-FIDEXA_TELEGRAM
-);
-
+    if(target==='telegram'){
+        if( window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink ){
+            window.Telegram.WebApp.openTelegramLink( FIDEXA_TELEGRAM );
+        } else { window.open( FIDEXA_TELEGRAM, '_blank' ); }
+    } else if(target==='twitter'){
+        window.open( FIDEXA_X, '_blank' );
+    } else if(target==='youtube'){
+        window.open( FIDEXA_YOUTUBE, '_blank' );
+    }
 }
-else{
-
-window.open(
-FIDEXA_TELEGRAM,
-'_blank'
-);
-
-}
-
-}
-
-
-else if(target==='twitter'){
-
-window.open(
-FIDEXA_X,
-'_blank'
-);
-
-}
-
-
-else if(target==='youtube'){
-
-window.open(
-FIDEXA_YOUTUBE,
-'_blank'
-);
-
-}
-
-}
-
-
-/* =========================================================
-   COMING SOON
-========================================================= */
 
 function showComingSoon(feature){
-
-const modal =
-document.getElementById(
-'profileInfoModal'
-);
-
-const titleEl =
-document.getElementById(
-'sheetTitle'
-);
-
-const bodyEl =
-document.getElementById(
-'sheetContentBody'
-);
-
-modal.classList.add(
-'active'
-);
-
-titleEl.textContent =
-feature.toUpperCase();
-
-bodyEl.innerHTML = `
-
-<div style="text-align:center;padding:12px 0 8px;">
-
-<div style="font-size:34px;margin-bottom:12px;">
-🚧
-</div>
-
-<div style="font-size:17px;font-weight:900;color:#fff;">
-${escapeHtml(feature)} Coming Soon
-</div>
-
-<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px;">
-This feature requires the live FIDEXA backend.
-</div>
-
-<div style="display:inline-block;margin-top:14px;padding:6px 12px;border-radius:20px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.25);color:var(--yellow);font-size:10px;font-weight:900;">
-DEVELOPMENT
-</div>
-
-</div>
-
-`;
-
+    const modal = document.getElementById( 'profileInfoModal' );
+    const titleEl = document.getElementById( 'sheetTitle' );
+    const bodyEl = document.getElementById( 'sheetContentBody' );
+    modal.classList.add( 'active' );
+    titleEl.textContent = feature.toUpperCase();
+    bodyEl.innerHTML = `<div style="text-align:center;padding:12px 0;"><div style="font-size:34px;margin-bottom:12px;">🚧</div><div style="font-size:17px;font-weight:900;color:#fff;">${escapeHtml(feature)} Coming Soon</div></div>`;
 }
-
-
-/* =========================================================
-   MIGRATION
-========================================================= */
 
 function openMigrationInfo(){
-
-const modal =
-document.getElementById(
-'profileInfoModal'
-);
-
-const titleEl =
-document.getElementById(
-'sheetTitle'
-);
-
-const bodyEl =
-document.getElementById(
-'sheetContentBody'
-);
-
-modal.classList.add(
-'active'
-);
-
-titleEl.textContent =
-'FDX Migration';
-
-
-bodyEl.innerHTML = `
-
-<div style="text-align:center;">
-
-<div style="font-size:34px;margin-bottom:12px;">
-🔄
-</div>
-
-<div style="font-size:17px;font-weight:900;color:#fff;">
-Migration Not Open Yet
-</div>
-
-<div style="font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px;">
-
-The FIDEXA application balance will not be displayed as a transferable wallet balance until the official distribution and migration process begins.
-
-</div>
-
-<div style="margin-top:16px;padding:13px;background:#111b27;border:1px solid var(--border);border-radius:12px;">
-
-<div style="font-size:10px;color:var(--muted);font-weight:900;">
-CURRENT MIGRATION STATUS
-</div>
-
-<div style="font-size:14px;color:var(--yellow);font-weight:900;margin-top:6px;">
-NOT YET OPEN
-</div>
-
-</div>
-
-</div>
-
-`;
-
+    const modal = document.getElementById( 'profileInfoModal' );
+    const titleEl = document.getElementById( 'sheetTitle' );
+    const bodyEl = document.getElementById( 'sheetContentBody' );
+    modal.classList.add( 'active' );
+    titleEl.textContent = 'FDX Migration';
+    bodyEl.innerHTML = `<div style="text-align:center;"><div style="font-size:34px;margin-bottom:12px;">🔄</div><div style="font-size:17px;font-weight:900;color:#fff;">Migration Not Open Yet</div></div>`;
 }
 
-
-/* =========================================================
-   REFERRAL SYSTEM
-========================================================= */
-
+/* ========================================================= REFERRAL SYSTEM ========================================================= */
 function getReferralLink(){
-
-if(currentUserId){
-
-return (
-FIDEXA_BASE_REF_LINK +
-encodeURIComponent(
-currentUserId
-)
-);
-
+    let userId = currentUserId;
+    if (!userId) {
+        userId = localStorage.getItem('fidexa_simulated_id');
+        if (!userId) {
+            userId = 'user_' + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem('fidexa_simulated_id', userId);
+        }
+        currentUserId = userId;
+    }
+    return FIDEXA_BASE_REF_LINK + encodeURIComponent(userId);
 }
-
-return (
-FIDEXA_BASE_REF_LINK +
-'demo'
-);
-
-}
-
 
 function copyReferralLink(){
-
-const referralLink =
-getReferralLink();
-
-
-if(
-navigator.clipboard &&
-navigator.clipboard.writeText
-){
-
-navigator.clipboard
-.writeText(
-referralLink
-)
-.then(
-()=>{
-
-showToast(
-'FIDEXA referral link copied.'
-);
-
+    const referralLink = getReferralLink();
+    if( navigator.clipboard && navigator.clipboard.writeText ){
+        navigator.clipboard.writeText( referralLink ).then( ()=>{
+            showToast( 'Your unique referral link copied!' );
+        }).catch( ()=>{
+            prompt( 'Copy your FIDEXA referral link:', referralLink );
+        });
+    } else {
+        prompt( 'Copy your FIDEXA referral link:', referralLink );
+    }
 }
-)
-.catch(
-()=>{
-
-prompt(
-'Copy your FIDEXA referral link:',
-referralLink
-);
-
-}
-);
-
-}
-else{
-
-prompt(
-'Copy your FIDEXA referral link:',
-referralLink
-);
-
-}
-
-}
-
 
 function shareReferralLink(){
-
-const referralLink =
-getReferralLink();
-
-
-const shareText =
-encodeURIComponent(
-'Join Fidexa Network and start mining $FDX! Use my referral link to join:'
-);
-
-
-const telegramShareUrl =
-`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${shareText}`;
-
-
-if(
-window.Telegram &&
-window.Telegram.WebApp &&
-window.Telegram.WebApp.openTelegramLink
-){
-
-window.Telegram.WebApp.openTelegramLink(
-telegramShareUrl
-);
-
+    const referralLink = getReferralLink();
+    const shareText = encodeURIComponent( 'Join Fidexa Network and start mining $FDX! Use my referral link to join:' );
+    const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${shareText}`;
+    if( window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink ){
+        window.Telegram.WebApp.openTelegramLink( telegramShareUrl );
+    } else {
+        window.open( telegramShareUrl, '_blank' );
+    }
 }
-else{
-
-window.open(
-telegramShareUrl,
-'_blank'
-);
-
-}
-
-}
-
-
-/* =========================================================
-   FRIEND DATA
-========================================================= */
-
-function setFriendsData(data){
-
-if(!Array.isArray(data)){
-
-data = [];
-
-}
-
-state.friends =
-data.filter(
-friend =>
-friend &&
-typeof friend === 'object'
-);
-
-saveState();
-
-renderFriends();
-
-}
-
 
 function renderFriends(){
+    const list = document.getElementById( 'friendsList' );
+    const friends = Array.isArray(state.friends) ? state.friends : [];
+    const total = friends.length;
+    const active = friends.filter( friend => friend.active === true ).length;
+    const inactive = total - active;
 
-const list =
-document.getElementById(
-'friendsList'
-);
+    document.getElementById( 'totalFriendsCount' ).textContent = total;
+    document.getElementById( 'activeFriendsCount' ).textContent = active;
+    document.getElementById( 'inactiveFriendsCount' ).textContent = inactive;
+    document.getElementById( 'friendListCount' ).textContent = `${total} MEMBER${total===1?'':'S'}`;
 
-const friends =
-Array.isArray(state.friends)
-?
-state.friends
-:
-[];
-
-
-const total =
-friends.length;
-
-
-const active =
-friends.filter(
-friend =>
-friend.active === true
-).length;
-
-
-const inactive =
-total - active;
-
-
-document.getElementById(
-'totalFriendsCount'
-).textContent =
-total;
-
-
-document.getElementById(
-'activeFriendsCount'
-).textContent =
-active;
-
-
-document.getElementById(
-'inactiveFriendsCount'
-).textContent =
-inactive;
-
-
-document.getElementById(
-'friendListCount'
-).textContent =
-`${total} MEMBER${total===1?'':'S'}`;
-
-
-if(!list)
-return;
-
-
-if(total===0){
-
-list.innerHTML = `
-
-<div class="friend-empty-state">
-
-<div class="friend-empty-icon">
-👥
-</div>
-
-<div class="friend-empty-title">
-No Invited Members
-</div>
-
-<div class="friend-empty-text">
-Your real invited members will appear here when referral data is connected.
-</div>
-
-</div>
-
-`;
-
-return;
-
+    if(!list) return;
+    if(total===0){
+        list.innerHTML = `
+            <div class="friend-empty-state">
+                <div class="friend-empty-icon">👥</div>
+                <div class="friend-empty-title">No Invited Members</div>
+                <div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
+            </div>
+        `;
+        return;
+    }
+    list.innerHTML = '';
+    friends.forEach( friend => {
+        const row = document.createElement( 'div' );
+        row.className = 'friend-row-item';
+        const username = friend.username ? `@${String( friend.username ).replace(/^@/,'')}` : 'Telegram User';
+        const displayName = friend.name || username;
+        const status = friend.active === true ? 'ACTIVE' : 'INACTIVE';
+        const statusClass = friend.active === true ? 'active' : 'inactive';
+        row.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">👤</div>
+                <div style="min-width:0;">
+                    <div class="friend-name">${escapeHtml(displayName)}</div>
+                    <div class="friend-status ${statusClass}">${status}</div>
+                </div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);font-weight:800;">${escapeHtml(username)}</div>
+        `;
+        list.appendChild( row );
+    });
 }
 
-
-list.innerHTML = '';
-
-
-friends.forEach(
-friend => {
-
-const row =
-document.createElement(
-'div'
-);
-
-row.className =
-'friend-row-item';
-
-
-const username =
-friend.username
-?
-`@${String(
-friend.username
-).replace(/^@/,'')}`
-:
-'Telegram User';
-
-
-const displayName =
-friend.name ||
-username;
-
-
-const status =
-friend.active === true
-?
-'ACTIVE'
-:
-'INACTIVE';
-
-
-const statusClass =
-friend.active === true
-?
-'active'
-:
-'inactive';
-
-
-row.innerHTML = `
-
-<div class="friend-left">
-
-<div class="friend-avatar">
-👤
-</div>
-
-<div style="min-width:0;">
-
-<div class="friend-name">
-${escapeHtml(displayName)}
-</div>
-
-<div class="friend-status ${statusClass}">
-${status}
-</div>
-
-</div>
-
-</div>
-
-<div style="font-size:10px;color:var(--muted);font-weight:800;">
-${escapeHtml(username)}
-</div>
-
-`;
-
-
-list.appendChild(
-row
-);
-
-}
-);
-
-}
-
-
-/* =========================================================
-   MINING VARIABLES
-========================================================= */
-
-const MINING_CYCLE_SECONDS =
-14400;
-
-
+/* ========================================================= MINING & AD LOGIC ========================================================= */
+const MINING_CYCLE_SECONDS = 14400;
 let adInterval = null;
-
 let activeAdType = '';
-
 let activeAdReward = 0;
 
-
-/* =========================================================
-   MINING RATE
-========================================================= */
-
-function getMiningRate(){
-
-return getCurrentRate();
-
-}
-
-
-/* =========================================================
-   SESSION ELAPSED
-========================================================= */
-
 function getMiningElapsedSeconds(){
-
-if(
-state.miningState !== 'ACTIVE'
-)
-return 0;
-
-
-if(
-!state.miningStartedAt
-)
-return 0;
-
-
-const now =
-Date.now();
-
-
-return Math.max(
-0,
-Math.min(
-MINING_CYCLE_SECONDS,
-Math.floor(
-(now-state.miningStartedAt)/1000
-)
-)
-);
-
+    if( state.miningState !== 'ACTIVE' ) return 0;
+    if( !state.miningStartedAt ) return 0;
+    const now = Date.now();
+    return Math.max( 0, Math.min( MINING_CYCLE_SECONDS, Math.floor( (now-state.miningStartedAt)/1000 ) ) );
 }
-
-
-/* =========================================================
-   SESSION ACCUMULATION
-========================================================= */
 
 function getSessionAccumulated(){
-
-if(
-state.miningState !== 'ACTIVE'
-)
-return Number(
-state.sessionAccumulated || 0
-);
-
-
-const elapsed =
-getMiningElapsedSeconds();
-
-
-const completedHours =
-Math.floor(
-elapsed/3600
-);
-
-
-return parseFloat(
-(
-completedHours *
-getMiningRate()
-).toFixed(2)
-);
-
+    if( state.miningState !== 'ACTIVE' ) return Number( state.sessionAccumulated || 0 );
+    const elapsed = getMiningElapsedSeconds();
+    const completedHours = Math.floor( elapsed/3600 );
+    return parseFloat( ( completedHours * getCurrentRate() ).toFixed(2) );
 }
-
-
-/* =========================================================
-   TIMER
-========================================================= */
 
 function getRemainingSeconds(){
-
-if(
-state.miningState === 'IDLE'
-)
-return MINING_CYCLE_SECONDS;
-
-
-if(
-state.miningState === 'READY_TO_CLAIM'
-)
-return 0;
-
-
-const elapsed =
-getMiningElapsedSeconds();
-
-
-return Math.max(
-0,
-MINING_CYCLE_SECONDS-elapsed
-);
-
+    if( state.miningState === 'IDLE' ) return MINING_CYCLE_SECONDS;
+    if( state.miningState === 'READY_TO_CLAIM' ) return 0;
+    const elapsed = getMiningElapsedSeconds();
+    return Math.max( 0, MINING_CYCLE_SECONDS-elapsed );
 }
-
 
 function formatTimer(seconds){
-
-const h =
-Math.floor(
-seconds/3600
-)
-.toString()
-.padStart(
-2,
-'0'
-);
-
-
-const m =
-Math.floor(
-(seconds%3600)/60
-)
-.toString()
-.padStart(
-2,
-'0'
-);
-
-
-const s =
-(seconds%60)
-.toString()
-.padStart(
-2,
-'0'
-);
-
-
-return `${h}:${m}:${s}`;
-
+    const h = Math.floor( seconds/3600 ).toString().padStart( 2, '0' );
+    const m = Math.floor( (seconds%3600)/60 ).toString().padStart( 2, '0' );
+    const s = (seconds%60).toString().padStart( 2, '0' );
+    return `${h}:${m}:${s}`;
 }
-
-
-/* =========================================================
-   COMPLETE MINING SESSION
-========================================================= */
 
 function checkMiningSession(){
-
-if(
-state.miningState !== 'ACTIVE'
-)
-return;
-
-
-const elapsed =
-getMiningElapsedSeconds();
-
-
-if(
-elapsed >= MINING_CYCLE_SECONDS
-){
-
-state.sessionAccumulated =
-parseFloat(
-(
-4 *
-getMiningRate()
-).toFixed(2)
-);
-
-
-state.miningState =
-'READY_TO_CLAIM';
-
-
-saveState();
-
+    if( state.miningState !== 'ACTIVE' ) return;
+    const elapsed = getMiningElapsedSeconds();
+    if( elapsed >= MINING_CYCLE_SECONDS ){
+        state.sessionAccumulated = parseFloat( ( 4 * getCurrentRate() ).toFixed(2) );
+        state.miningState = 'READY_TO_CLAIM';
+        saveState();
+    }
 }
-
-}
-
-
-/* =========================================================
-   MINING UI
-========================================================= */
 
 function updateMiningUI(){
+    checkMiningSession();
+    const rate = getCurrentRate();
+    document.getElementById( 'currentRateDisplay' ).textContent = rate.toFixed(1);
+    document.getElementById( 'statRate' ).textContent = `${rate.toFixed(1)} FDX/H`;
+    const remaining = getRemainingSeconds();
+    document.getElementById( 'timerDisplay' ).textContent = formatTimer( remaining );
 
-checkMiningSession();
+    let sessionAmount = state.miningState === 'ACTIVE' ? getSessionAccumulated() : Number( state.sessionAccumulated || 0 );
+    document.getElementById( 'sessionAccumulated' ).textContent = `${formatNumber( sessionAmount )} FDX`;
 
+    const elapsed = state.miningState === 'ACTIVE' ? getMiningElapsedSeconds() : ( state.miningState === 'READY_TO_CLAIM' ? MINING_CYCLE_SECONDS : 0 );
+    const completedHours = Math.min( 4, Math.floor( elapsed/3600 ) );
+    document.getElementById( 'completedHours' ).textContent = `${completedHours} / 4`;
+    document.getElementById( 'totalMined' ).textContent = `${formatNumber( state.totalMined )} FDX`;
+    document.getElementById( 'boosterChances' ).textContent = `${state.boosterChancesLeft}/5 Left`;
+    document.getElementById( 'luckyBoxPromptChances' ).textContent = state.luckyBoxChances;
+    document.getElementById( 'recoverableFdx' ).textContent = formatNumber( state.recoverableBalance );
+    document.getElementById( 'burningStreak' ).textContent = `${state.burningStreak} Day${state.burningStreak===1?'':'s'}`;
 
-const rate =
-getMiningRate();
-
-
-document.getElementById(
-'currentRateDisplay'
-).textContent =
-rate.toFixed(1);
-
-
-document.getElementById(
-'statRate'
-).textContent =
-`${rate.toFixed(1)} FDX/H`;
-
-
-const remaining =
-getRemainingSeconds();
-
-
-document.getElementById(
-'timerDisplay'
-).textContent =
-formatTimer(
-remaining
-);
-
-
-let sessionAmount = 0;
-
-
-if(
-state.miningState === 'ACTIVE'
-){
-
-sessionAmount =
-getSessionAccumulated();
-
+    const pill = document.getElementById( 'systemPill' );
+    const button = document.getElementById( 'miningToggleBtn' );
+    if( state.miningState === 'IDLE' ){
+        pill.textContent = 'READY TO MINE';
+        pill.style.color = 'var(--cyan)';
+        button.textContent = 'START MINING';
+        button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
+        button.style.pointerEvents = 'auto';
+    } else if( state.miningState === 'ACTIVE' ){
+        pill.textContent = 'ACTIVE MINING';
+        button.textContent = 'MINING IN PROGRESS';
+        button.style.background = 'rgba(56,189,248,.2)';
+        button.style.pointerEvents = 'none';
+    } else if( state.miningState === 'READY_TO_CLAIM' ){
+        pill.textContent = 'SESSION ENDED';
+        button.textContent = 'CLAIM';
+        button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+        button.style.pointerEvents = 'auto';
+    }
 }
-else{
-
-sessionAmount =
-Number(
-state.sessionAccumulated || 0
-);
-
-}
-
-
-document.getElementById(
-'sessionAccumulated'
-).textContent =
-`${formatNumber(
-sessionAmount
-)} FDX`;
-
-
-const elapsed =
-state.miningState === 'ACTIVE'
-?
-getMiningElapsedSeconds()
-:
-(
-state.miningState === 'READY_TO_CLAIM'
-?
-MINING_CYCLE_SECONDS
-:
-0
-);
-
-
-const completedHours =
-Math.min(
-4,
-Math.floor(
-elapsed/3600
-)
-);
-
-
-document.getElementById(
-'completedHours'
-).textContent =
-`${completedHours} / 4`;
-
-
-document.getElementById(
-'totalMined'
-).textContent =
-`${formatNumber(
-state.totalMined
-)} FDX`;
-
-
-document.getElementById(
-'boosterChances'
-).textContent =
-`${state.boosterChancesLeft}/5 Left`;
-
-
-document.getElementById(
-'luckyBoxPromptChances'
-).textContent =
-state.luckyBoxChances;
-
-
-document.getElementById(
-'recoverableFdx'
-).textContent =
-formatNumber(
-state.recoverableBalance
-);
-
-
-document.getElementById(
-'burningStreak'
-).textContent =
-`${state.burningStreak} Day${state.burningStreak===1?'':'s'}`;
-
-
-const pill =
-document.getElementById(
-'systemPill'
-);
-
-const button =
-document.getElementById(
-'miningToggleBtn'
-);
-
-
-if(
-state.miningState === 'IDLE'
-){
-
-pill.textContent =
-'READY TO MINE';
-
-pill.style.color =
-'var(--cyan)';
-
-pill.style.borderColor =
-'rgba(56,189,248,.3)';
-
-
-button.textContent =
-'START MINING';
-
-button.style.background =
-'linear-gradient(90deg,#0284c7,#38bdf8)';
-
-button.style.border =
-'0';
-
-button.style.color =
-'#fff';
-
-button.style.pointerEvents =
-'auto';
-
-}
-
-
-else if(
-state.miningState === 'ACTIVE'
-){
-
-pill.textContent =
-'ACTIVE MINING';
-
-pill.style.color =
-'var(--cyan)';
-
-pill.style.borderColor =
-'rgba(56,189,248,.3)';
-
-
-button.textContent =
-'MINING IN PROGRESS';
-
-button.style.background =
-'rgba(56,189,248,.2)';
-
-button.style.border =
-'1px solid rgba(56,189,248,.5)';
-
-button.style.color =
-'var(--cyan)';
-
-button.style.pointerEvents =
-'none';
-
-}
-
-
-else if(
-state.miningState === 'READY_TO_CLAIM'
-){
-
-pill.textContent =
-'SESSION ENDED';
-
-pill.style.color =
-'var(--yellow)';
-
-pill.style.borderColor =
-'rgba(250,204,21,.4)';
-
-
-button.textContent =
-'CLAIM';
-
-button.style.background =
-'linear-gradient(90deg,#facc15,#f59e0b)';
-
-button.style.border =
-'0';
-
-button.style.color =
-'#05080c';
-
-button.style.pointerEvents =
-'auto';
-
-}
-
-}
-
-
-/* =========================================================
-   START / CLAIM
-========================================================= */
 
 function handleMiningAction(){
-
-if(
-state.miningState === 'IDLE'
-){
-
-state.miningState =
-'ACTIVE';
-
-state.miningStartedAt =
-Date.now();
-
-state.sessionAccumulated =
-0;
-
-markUserActive();
-
-saveState();
-
-updateAllUI();
-
-showToast(
-'Mining started. Your FDX will accumulate hourly.'
-);
-
-return;
-
+    if( state.miningState === 'IDLE' ){
+        state.miningState = 'ACTIVE';
+        state.miningStartedAt = Date.now();
+        state.sessionAccumulated = 0;
+        markUserActive();
+        saveState();
+        updateAllUI();
+        showToast( 'Mining started. Your FDX will accumulate hourly.' );
+        return;
+    }
+    if( state.miningState === 'READY_TO_CLAIM' ){
+        triggerAd( 'claim' );
+    }
 }
-
-
-if(
-state.miningState === 'READY_TO_CLAIM'
-){
-
-triggerAd(
-'claim'
-);
-
-}
-
-}
-
-
-/* =========================================================
-   BOOSTER & CYCLES RESET
-========================================================= */
 
 function resetCyclesIfNeeded(){
-
-const now =
-Date.now();
-
-const fourHours =
-4*60*60*1000;
-
-
-/* Lucky Box */
-
-if(
-!state.luckyBoxResetAt ||
-now-state.luckyBoxResetAt >= fourHours
-){
-
-state.luckyBoxChances =
-5;
-
-state.luckyBoxResetAt =
-now;
-
+    const now = Date.now();
+    const fourHours = 4*60*60*1000;
+    if( !state.luckyBoxResetAt || now-state.luckyBoxResetAt >= fourHours ){
+        state.luckyBoxChances = 5;
+        state.luckyBoxResetAt = now;
+    }
+    if( !state.boosterResetAt || now-state.boosterResetAt >= fourHours ){
+        state.boosterBonusRate = 0;
+        state.boosterChancesLeft = 5;
+        state.boosterResetAt = now;
+    }
+    saveState();
 }
-
-
-/* Mining Booster */
-
-if(
-!state.boosterResetAt ||
-now-state.boosterResetAt >= fourHours
-){
-
-state.boosterBonusRate =
-0;
-
-state.boosterChancesLeft =
-5;
-
-state.boosterResetAt =
-now;
-
-}
-
-
-saveState();
-
-}
-
 
 function openBoosterPrompt(){
-
-resetCyclesIfNeeded();
-
-
-if(
-state.boosterChancesLeft <= 0
-){
-
-showToast(
-'No booster chances left. Resets every 4 hours.'
-);
-
-return;
-
+    resetCyclesIfNeeded();
+    if( state.boosterChancesLeft <= 0 ){
+        showToast( 'No booster chances left. Resets every 4 hours.' );
+        return;
+    }
+    document.getElementById( 'boosterPromptModal' ).classList.add( 'active' );
 }
-
-
-document
-.getElementById(
-'boosterPromptModal'
-)
-.classList.add(
-'active'
-);
-
-}
-
 
 function closeBoosterPrompt(){
-
-document
-.getElementById(
-'boosterPromptModal'
-)
-.classList.remove(
-'active'
-);
-
+    document.getElementById( 'boosterPromptModal' ).classList.remove( 'active' );
 }
-
 
 function confirmWatchBoosterAd(){
-
-closeBoosterPrompt();
-
-triggerAd(
-'booster'
-);
-
+    closeBoosterPrompt();
+    triggerAd( 'booster' );
 }
-
-
-/* =========================================================
-   LUCKY BOX
-========================================================= */
 
 function openLuckyBoxModal(){
-
-resetCyclesIfNeeded();
-
-
-if(
-state.luckyBoxChances <= 0
-){
-
-showToast(
-'Your Lucky Box chances are finished. 5 new chances return every 4 hours.'
-);
-
-return;
-
+    resetCyclesIfNeeded();
+    if( state.luckyBoxChances <= 0 ){
+        showToast( 'Your Lucky Box chances are finished. Resets every 4 hours.' );
+        return;
+    }
+    document.getElementById( 'luckyBoxModal' ).classList.add( 'active' );
+    document.getElementById( 'luckyBoxPromptChances' ).textContent = state.luckyBoxChances;
 }
-
-
-document
-.getElementById(
-'luckyBoxModal'
-)
-.classList.add(
-'active'
-);
-
-
-document.getElementById(
-'luckyBoxPromptChances'
-).textContent =
-state.luckyBoxChances;
-
-}
-
 
 function closeLuckyBoxModal(){
-
-document
-.getElementById(
-'luckyBoxModal'
-)
-.classList.remove(
-'active'
-);
-
+    document.getElementById( 'luckyBoxModal' ).classList.remove( 'active' );
 }
-
 
 function confirmOpenLuckyBox(){
-
-if(
-state.luckyBoxChances <= 0
-){
-
-closeLuckyBoxModal();
-
-showToast(
-'No Lucky Box chances remaining.'
-);
-
-return;
-
+    if( state.luckyBoxChances <= 0 ){
+        closeLuckyBoxModal();
+        showToast( 'No Lucky Box chances remaining.' );
+        return;
+    }
+    closeLuckyBoxModal();
+    triggerAd( 'luckybox' );
 }
-
-
-closeLuckyBoxModal();
-
-triggerAd(
-'luckybox'
-);
-
-}
-
-
-/* =========================================================
-   RANDOM LUCKY BOX REWARD
-========================================================= */
 
 function generateLuckyReward(){
-
-const rewards = [
-0.5,
-1,
-1,
-1.5,
-2,
-2,
-2.5,
-3,
-3,
-4,
-5,
-7,
-10
-];
-
-
-const index =
-Math.floor(
-Math.random() *
-rewards.length
-);
-
-
-return rewards[index];
-
+    const rewards = [ 0.5, 1, 1, 1.5, 2, 2, 2.5, 3, 3, 4, 5, 7, 10 ];
+    return rewards[Math.floor( Math.random() * rewards.length )];
 }
-
-
-/* =========================================================
-   AD SYSTEM
-========================================================= */
 
 function triggerAd(type){
+    activeAdType = type;
+    activeAdReward = 0;
+    const modal = document.getElementById( 'adModal' );
+    const closeBtn = document.getElementById( 'adCloseBtn' );
+    const timerBadge = document.getElementById( 'adTimerBadge' );
+    const desc = document.getElementById( 'adDescText' );
+    modal.classList.add( 'active' );
+    closeBtn.classList.remove( 'ready' );
+    closeBtn.textContent = 'WATCHING AD...';
 
-activeAdType =
-type;
+    if(type === 'claim') desc.textContent = 'Complete advertisement to claim mining reward.';
+    else if(type === 'booster') desc.textContent = 'Complete advertisement to activate boost.';
+    else if(type === 'luckybox') desc.textContent = 'Complete advertisement to reveal Lucky Box reward.';
 
-activeAdReward =
-0;
-
-
-const modal =
-document.getElementById(
-'adModal'
-);
-
-const closeBtn =
-document.getElementById(
-'adCloseBtn'
-);
-
-const timerBadge =
-document.getElementById(
-'adTimerBadge'
-);
-
-const desc =
-document.getElementById(
-'adDescText'
-);
-
-
-modal.classList.add(
-'active'
-);
-
-closeBtn.classList.remove(
-'ready'
-);
-
-closeBtn.textContent =
-'WATCHING AD...';
-
-
-if(type === 'claim'){
-
-desc.textContent =
-'Complete the advertisement to claim your accumulated mining reward.';
-
+    let countdown = 4;
+    timerBadge.textContent = `Ad in ${countdown}s`;
+    if(adInterval) clearInterval( adInterval );
+    
+    adInterval = setInterval( ()=>{
+        countdown--;
+        if( countdown > 0 ){
+            timerBadge.textContent = `Ad in ${countdown}s`;
+        } else {
+            clearInterval( adInterval );
+            timerBadge.textContent = 'Ad Finished';
+            closeBtn.classList.add( 'ready' );
+            if(type === 'claim') closeBtn.textContent = 'CLAIM REWARD';
+            else if(type === 'luckybox') closeBtn.textContent = 'OPEN LUCKY BOX';
+            else closeBtn.textContent = 'COLLECT +0.5 SPEED BOOST';
+        }
+    }, 1000 );
 }
-
-
-else if(type === 'booster'){
-
-desc.textContent =
-'Complete the advertisement to activate your +0.5 FDX/H mining boost.';
-
-}
-
-
-else if(type === 'luckybox'){
-
-desc.textContent =
-'Complete the advertisement to reveal your random Lucky Box reward.';
-
-}
-
-
-let countdown = 4;
-
-
-timerBadge.textContent =
-`Ad in ${countdown}s`;
-
-
-if(adInterval){
-
-clearInterval(
-adInterval
-);
-
-}
-
-
-adInterval =
-setInterval(
-()=>{
-
-countdown--;
-
-
-if(
-countdown > 0
-){
-
-timerBadge.textContent =
-`Ad in ${countdown}s`;
-
-}
-
-
-else{
-
-clearInterval(
-adInterval
-);
-
-timerBadge.textContent =
-'Ad Finished';
-
-closeBtn.classList.add(
-'ready'
-);
-
-
-if(type === 'claim'){
-
-closeBtn.textContent =
-'CLAIM REWARD';
-
-}
-
-else if(type === 'luckybox'){
-
-closeBtn.textContent =
-'OPEN LUCKY BOX';
-
-}
-
-else{
-
-closeBtn.textContent =
-'COLLECT +0.5 SPEED BOOST';
-
-}
-
-}
-
-},
-1000
-);
-
-}
-
-
-/* =========================================================
-   CLOSE AD
-========================================================= */
 
 function closeAdModal(){
+    const modal = document.getElementById( 'adModal' );
+    modal.classList.remove( 'active' );
 
-const modal =
-document.getElementById(
-'adModal'
-);
-
-
-modal.classList.remove(
-'active'
-);
-
-
-if(
-activeAdType === 'booster'
-){
-
-if(
-state.boosterChancesLeft > 0
-){
-
-state.boosterChancesLeft--;
-
-
-state.boosterBonusRate =
-parseFloat(
-(
-Number(
-state.boosterBonusRate
-) + 0.5
-).toFixed(1)
-);
-
-
-saveState();
-
-updateAllUI();
-
-
-showToast(
-`Mining rate increased to ${getMiningRate().toFixed(1)} FDX/H`
-);
-
+    if( activeAdType === 'booster' ){
+        if( state.boosterChancesLeft > 0 ){
+            state.boosterChancesLeft--;
+            state.boosterBonusRate = parseFloat( ( Number( state.boosterBonusRate ) + 0.5 ).toFixed(1) );
+            saveState();
+            updateAllUI();
+            showToast( `Mining rate increased to ${getCurrentRate().toFixed(1)} FDX/H` );
+        }
+    } else if( activeAdType === 'luckybox' ){
+        if( state.luckyBoxChances <= 0 ) return;
+        state.luckyBoxChances--;
+        activeAdReward = generateLuckyReward();
+        state.totalBalance = Number( state.totalBalance ) + activeAdReward;
+        saveState();
+        updateAllUI();
+        showToast( `🎁 Lucky Box Reward: +${formatNumber(activeAdReward)} FDX` );
+    } else if( activeAdType === 'claim' ){
+        const accumulated = state.miningState === 'READY_TO_CLAIM' ? Number( state.sessionAccumulated || 0 ) : getSessionAccumulated();
+        if( accumulated <= 0 ){
+            showToast( 'There is no accumulated mining reward to claim.' );
+            return;
+        }
+        state.totalBalance = Number( state.totalBalance ) + accumulated;
+        state.totalMined = Number( state.totalMined ) + accumulated;
+        state.sessionAccumulated = 0;
+        state.miningState = 'IDLE';
+        state.miningStartedAt = 0;
+        markUserActive();
+        saveState();
+        updateAllUI();
+        showToast( `+${formatNumber(accumulated)} FDX added to Total Balance` );
+    }
 }
 
-}
-
-
-else if(
-activeAdType === 'luckybox'
-){
-
-if(
-state.luckyBoxChances <= 0
-)
-return;
-
-
-state.luckyBoxChances--;
-
-
-activeAdReward =
-generateLuckyReward();
-
-
-state.totalBalance =
-Number(
-state.totalBalance
-) +
-activeAdReward;
-
-
-saveState();
-
-updateAllUI();
-
-
-setTimeout(
-()=>{
-
-alert(
-`🎁 Lucky Box Reward\n\n+${formatNumber(activeAdReward)} FDX`
-);
-
-},
-100
-);
-
-}
-
-
-else if(
-activeAdType === 'claim'
-){
-
-const accumulated =
-state.miningState === 'READY_TO_CLAIM'
-?
-Number(
-state.sessionAccumulated || 0
-)
-:
-getSessionAccumulated();
-
-
-if(
-accumulated <= 0
-){
-
-showToast(
-'There is no accumulated mining reward to claim.'
-);
-
-return;
-
-}
-
-
-state.totalBalance =
-Number(
-state.totalBalance
-) +
-accumulated;
-
-
-state.totalMined =
-Number(
-state.totalMined
-) +
-accumulated;
-
-
-state.sessionAccumulated =
-0;
-
-
-state.miningState =
-'IDLE';
-
-
-state.miningStartedAt =
-0;
-
-
-markUserActive();
-
-saveState();
-
-updateAllUI();
-
-
-showToast(
-`+${formatNumber(accumulated)} FDX added to Total Balance`
-);
-
-}
-
-}
-
-
-/* =========================================================
-   RECOVERY SYSTEM
-========================================================= */
-
+/* ========================================================= RECOVERY SYSTEM ========================================================= */
 function getDayKey(date){
-
-const d =
-date instanceof Date
-?
-date
-:
-new Date(date);
-
-
-return `${d.getFullYear()}-${String(
-d.getMonth()+1
-).padStart(2,'0')}-${String(
-d.getDate()
-).padStart(2,'0')}`;
-
+    const d = date instanceof Date ? date : new Date(date);
+    return `${d.getFullYear()}-${String( d.getMonth()+1 ).padStart(2,'0')}-${String( d.getDate() ).padStart(2,'0')}`;
 }
-
 
 function markUserActive(){
-
-const today =
-getDayKey(
-new Date()
-);
-
-
-if(
-state.lastActivityDay === today
-){
-
-return;
-
+    const today = getDayKey( new Date() );
+    if( state.lastActivityDay === today ) return;
+    if( state.lastActivityDay ){
+        const previous = new Date( state.lastActivityDay );
+        const current = new Date( today );
+        const difference = Math.floor( ( current - previous ) / 86400000 );
+        if( difference === 1 ){
+            state.activeDays = Math.min( 7, Number( state.activeDays ) + 1 );
+            state.inactiveDays = 0;
+        } else {
+            state.activeDays = 1;
+            state.inactiveDays = Math.max( 0, difference - 1 );
+        }
+    } else {
+        state.activeDays = 1;
+        state.inactiveDays = 0;
+    }
+    state.lastActivityDay = today;
+    if( state.activeDays >= 7 && Number( state.recoverableBalance ) > 0 ){
+        const unlockAmount = Number( ( state.recoverableBalance * 0.10 ).toFixed(2) );
+        state.totalBalance = Number( state.totalBalance ) + unlockAmount;
+        state.recoverableBalance = Math.max( 0, Number( state.recoverableBalance ) - unlockAmount );
+    }
+    saveState();
 }
-
-
-if(
-state.lastActivityDay
-){
-
-const previous =
-new Date(
-state.lastActivityDay
-);
-
-const current =
-new Date(
-today
-);
-
-const difference =
-Math.floor(
-(
-current -
-previous
-) /
-86400000
-);
-
-
-if(
-difference === 1
-){
-
-state.activeDays =
-Math.min(
-7,
-Number(
-state.activeDays
-) + 1
-);
-
-state.inactiveDays =
-0;
-
-}
-else{
-
-state.activeDays =
-1;
-
-state.inactiveDays =
-Math.max(
-0,
-difference - 1
-);
-
-}
-
-}
-else{
-
-state.activeDays =
-1;
-
-state.inactiveDays =
-0;
-
-}
-
-
-state.lastActivityDay =
-today;
-
-
-if(
-state.activeDays >= 7 &&
-Number(
-state.recoverableBalance
-) > 0
-){
-
-const unlockAmount =
-Number(
-(
-state.recoverableBalance *
-0.10
-).toFixed(2)
-);
-
-
-state.totalBalance =
-Number(
-state.totalBalance
-) +
-unlockAmount;
-
-
-state.recoverableBalance =
-Math.max(
-0,
-Number(
-state.recoverableBalance
-) -
-unlockAmount
-);
-
-
-state.recoveryUnlockPercent =
-Math.min(
-100,
-Number(
-state.recoveryUnlockPercent
-) +
-10
-);
-
-}
-
-
-saveState();
-
-}
-
 
 function processRecovery(){
-
-if(
-!state.lastActivityDay
-)
-return;
-
-
-const today =
-new Date();
-
-
-const last =
-new Date(
-state.lastActivityDay
-);
-
-
-const daysSince =
-Math.floor(
-(
-today -
-last
-) /
-86400000
-);
-
-
-if(
-daysSince < 7
-)
-return;
-
-
-const daysToProcess =
-Math.max(
-0,
-daysSince - 6
-);
-
-
-if(
-daysToProcess <= 0
-)
-return;
-
-
-let recoverable =
-Number(
-state.recoverableBalance || 0
-);
-
-
-let balance =
-Number(
-state.totalBalance || 0
-);
-
-
-for(
-let i=0;
-i<daysToProcess;
-i++
-){
-
-if(
-balance <= 0
-)
-break;
-
-
-const deduction =
-Number(
-(
-balance * 0.10
-).toFixed(2)
-);
-
-
-if(
-deduction <= 0
-)
-break;
-
-
-balance =
-Math.max(
-0,
-balance -
-deduction
-);
-
-
-recoverable =
-Number(
-(
-recoverable +
-deduction
-).toFixed(2)
-);
-
+    if( !state.lastActivityDay ) return;
+    const today = new Date();
+    const last = new Date( state.lastActivityDay );
+    const daysSince = Math.floor( ( today - last ) / 86400000 );
+    if( daysSince < 7 ) return;
+    const daysToProcess = Math.max( 0, daysSince - 6 );
+    if( daysToProcess <= 0 ) return;
+    let recoverable = Number( state.recoverableBalance || 0 );
+    let balance = Number( state.totalBalance || 0 );
+    for( let i=0; i<daysToProcess; i++ ){
+        if( balance <= 0 ) break;
+        const deduction = Number( ( balance * 0.10 ).toFixed(2) );
+        if( deduction <= 0 ) break;
+        balance = Math.max( 0, balance - deduction );
+        recoverable = Number( ( recoverable + deduction ).toFixed(2) );
+    }
+    state.totalBalance = balance;
+    state.recoverableBalance = recoverable;
+    state.inactiveDays = daysSince;
+    state.activeDays = 0;
+    saveState();
 }
-
-
-state.totalBalance =
-balance;
-
-
-state.recoverableBalance =
-recoverable;
-
-
-state.inactiveDays =
-daysSince;
-
-
-state.activeDays =
-0;
-
-
-saveState();
-
-}
-
-
-/* =========================================================
-   RECOVERY DISPLAY
-========================================================= */
 
 function updateRecoveryUI(){
-
-const status =
-document.getElementById(
-'activityStatus'
-);
-
-const inactive =
-document.getElementById(
-'inactiveDays'
-);
-
-const active =
-document.getElementById(
-'activeDays'
-);
-
-
-if(
-state.inactiveDays >= 7
-){
-
-status.textContent =
-'INACTIVE';
-
-status.style.color =
-'var(--red)';
-
+    const status = document.getElementById( 'activityStatus' );
+    const inactive = document.getElementById( 'inactiveDays' );
+    const active = document.getElementById( 'activeDays' );
+    if( state.inactiveDays >= 7 ){
+        status.textContent = 'INACTIVE';
+        status.style.color = 'var(--red)';
+    } else {
+        status.textContent = 'ACTIVE';
+        status.style.color = 'var(--green)';
+    }
+    inactive.textContent = `${Math.min( state.inactiveDays, 7 )} / 7`;
+    active.textContent = `${Math.min( state.activeDays, 7 )} / 7`;
 }
-else{
-
-status.textContent =
-'ACTIVE';
-
-status.style.color =
-'var(--green)';
-
-}
-
-
-inactive.textContent =
-`${Math.min(
-state.inactiveDays,
-7
-)} / 7`;
-
-
-active.textContent =
-`${Math.min(
-state.activeDays,
-7
-)} / 7`;
-
-}
-
-
-/* =========================================================
-   BALANCE UI
-========================================================= */
 
 function updateBalanceUI(){
-
-document.getElementById(
-'balanceDisplay'
-).textContent =
-formatNumber(
-state.totalBalance
-);
-
+    document.getElementById( 'balanceDisplay' ).textContent = formatNumber( state.totalBalance );
 }
-
-
-/* =========================================================
-   ALL UI
-========================================================= */
 
 function updateAllUI(){
-
-updateBalanceUI();
-
-updateMiningUI();
-
-updateRecoveryUI();
-
-renderFriends();
-
-updateTaskUI();
-
+    updateBalanceUI();
+    updateMiningUI();
+    updateRecoveryUI();
+    renderFriends();
+    updateTaskUI();
 }
 
+/* ========================================================= INIT & INTERVALS ========================================================= */
+window.addEventListener( 'DOMContentLoaded', ()=>{
+    loadState();
+    resetCyclesIfNeeded();
+    processRecovery();
+    updateAllUI();
+});
 
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
+setInterval( ()=>{
+    resetCyclesIfNeeded();
+    updateAllUI();
+}, 1000 );
 
-function escapeHtml(value){
-
-return String(value)
-.replace(
-/&/g,
-'&amp;'
-)
-.replace(
-/</g,
-'&lt;'
-)
-.replace(
-/>/g,
-'&gt;'
-)
-.replace(
-/"/g,
-'&quot;'
-)
-.replace(
-/'/g,
-'&#039;'
-);
-
+if( window.Telegram && window.Telegram.WebApp ){
+    try{
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }catch(error){
+        console.log( 'Telegram WebApp initialization error', error );
+    }
 }
-
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
-window.addEventListener(
-'DOMContentLoaded',
-()=>{
-
-loadState();
-
-resetCyclesIfNeeded();
-
-processRecovery();
-
-updateAllUI();
-
-}
-);
-
-
-/* =========================================================
-   LIVE UI CLOCK
-========================================================= */
-
-setInterval(
-()=>{
-
-resetCyclesIfNeeded();
-
-updateAllUI();
-
-},
-1000
-);
-
-
-/* =========================================================
-   TELEGRAM WEB APP
-========================================================= */
-
-if(
-window.Telegram &&
-window.Telegram.WebApp
-){
-
-try{
-
-window.Telegram.WebApp.ready();
-
-window.Telegram.WebApp.expand();
-
-}
-catch(error){
-
-console.log(
-'Telegram WebApp initialization error',
-error
-);
-
-}
-
-}
-
 </script>
-
 </body>
 </html>
