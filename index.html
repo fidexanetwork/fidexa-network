@@ -1170,7 +1170,7 @@ BURNING<br>STREAK
 
 </div>
 
-<div class="info-box">
+<div class="info-box" style="cursor:pointer;" onclick="openRecoverableModal()">
 
 <div class="info-box-top">
 
@@ -2108,7 +2108,9 @@ FIDEXA_X,
 setTimeout(()=>{
 const confirmed=confirm("Have you successfully joined/followed the official channel? Mandatory check required to claim your +5.00 $FDX reward.");
 if(confirmed){
-showComingSoon('5.00 $FDX Task Reward Claim');
+totalBalance += 5.00;
+updateBalancesUI();
+alert("Successfully claimed +5.00 $FDX task reward!");
 }
 }, 1500);
 
@@ -2720,6 +2722,8 @@ NOT YET OPEN
 let totalBalance=0;
 let transferableBal=0;
 let unverifiedBal=0;
+let recoverableFdx=0;
+let currentSessionAccumulated=0;
 
 
 function updateBalancesUI(){
@@ -2751,6 +2755,15 @@ maximumFractionDigits:2
 }
 );
 
+const formattedRecoverable=
+Number(recoverableFdx || 0).toLocaleString(
+'en-US',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
 const balance=
 document.getElementById('balanceDisplay');
 
@@ -2762,6 +2775,9 @@ document.getElementById('transferableBalance');
 
 const unverified=
 document.getElementById('unverifiedBalance');
+
+const recoverableEl=
+document.getElementById('recoverableFdx');
 
 if(balance)
 balance.textContent=
@@ -2778,6 +2794,10 @@ formattedTrans;
 if(unverified)
 unverified.textContent=
 formattedUnver;
+
+if(recoverableEl)
+recoverableEl.textContent=
+formattedRecoverable;
 
 }
 
@@ -2995,7 +3015,7 @@ referralLink
 
 
 /* =========================================================
-   MINING STATE
+   MINING STATE & STREAK CONFIGURATION
 ========================================================= */
 
 let miningState='IDLE';
@@ -3013,6 +3033,9 @@ let adInterval=null;
 let activeAdType='';
 
 let totalSeconds=14400;
+
+let inactiveDaysCount=0; // Set to >=7 to simulate inactivity penalty
+let activeStreakDays=1;
 
 
 /* =========================================================
@@ -3033,8 +3056,10 @@ referralBonusRate
 
 
 /* =========================================================
-   TIMER
+   TIMER & ACCUMULATION ENGINE
 ========================================================= */
+
+let hourlyCounter=0;
 
 function updateTimerDisplay(){
 
@@ -3043,6 +3068,13 @@ if(miningState==='ACTIVE'){
 if(totalSeconds>0){
 
 totalSeconds--;
+hourlyCounter++;
+
+// Every 1 hour (3600 seconds), increment accumulated stats
+if(hourlyCounter >= 3600){
+hourlyCounter = 0;
+currentSessionAccumulated = parseFloat((currentSessionAccumulated + getCumulativeRate()).toFixed(2));
+}
 
 const h=
 Math.floor(totalSeconds/3600)
@@ -3071,6 +3103,9 @@ else{
 miningState=
 'READY_TO_CLAIM';
 
+// Add final portion of the session earnings
+currentSessionAccumulated = parseFloat((currentSessionAccumulated + (getCumulativeRate() * (totalSeconds / 3600))).toFixed(2));
+
 document
 .getElementById('timerDisplay')
 .textContent=
@@ -3094,7 +3129,7 @@ document
 document
 .getElementById('miningToggleBtn')
 .textContent=
-'CLAIM';
+'CLAIM TO TOTAL BALANCE';
 
 document
 .getElementById('miningToggleBtn')
@@ -3126,11 +3161,25 @@ function handleMiningAction(){
 
 if(miningState==='IDLE'){
 
+// Check inactivity penalty rule: if inactive >= 7 days, deduct 10% total balance daily to recoverable
+if(inactiveDaysCount >= 7){
+let deduction = totalBalance * 0.10;
+totalBalance = parseFloat((totalBalance - deduction).toFixed(2));
+recoverableFdx = parseFloat((recoverableFdx + deduction).toFixed(2));
+alert(`Inactivity penalty applied: 10% (${deduction.toFixed(2)} $FDX) moved to Recoverable Balance.`);
+}
+
 miningState=
 'ACTIVE';
 
 totalSeconds=
 14400;
+hourlyCounter=0;
+currentSessionAccumulated=0;
+
+// Increment active streak days
+activeStreakDays++;
+document.getElementById('burningStreak').textContent = `${activeStreakDays} Day${activeStreakDays===1?'':'s'}`;
 
 document
 .getElementById('systemPill')
@@ -3166,6 +3215,8 @@ document
 .getElementById('miningToggleBtn')
 .style.pointerEvents=
 'none';
+
+updateBalancesUI();
 
 }
 
@@ -3251,6 +3302,31 @@ triggerAd('luckybox');
 
 
 /* =========================================================
+   RECOVERABLE MODAL & UNLOCK SYSTEM
+========================================================= */
+
+let pendingUnlockAmount = 0;
+
+function openRecoverableModal(){
+if(recoverableFdx <= 0){
+alert("You have no Recoverable $FDX balance.");
+return;
+}
+
+if(activeStreakDays < 7){
+alert(`You must maintain an active streak of at least 7 days to start unlocking Recoverable $FDX. Current Streak: ${activeStreakDays}/7 days.`);
+return;
+}
+
+// 10% unlock portion calculation
+pendingUnlockAmount = parseFloat((recoverableFdx * 0.10).toFixed(2));
+if(pendingUnlockAmount < 0.01) pendingUnlockAmount = recoverableFdx;
+
+triggerAd('recoverable_unlock');
+}
+
+
+/* =========================================================
    AD SYSTEM
 ========================================================= */
 
@@ -3316,6 +3392,13 @@ else if(type==='luckybox'){
 
 closeBtn.textContent=
 'COLLECT MYSTERY REWARD';
+
+}
+
+else if(type==='recoverable_unlock'){
+
+closeBtn.textContent=
+'UNLOCK & CLAIM REWARD';
 
 }
 
@@ -3385,13 +3468,33 @@ showComingSoon(
 }
 
 
+else if(activeAdType==='recoverable_unlock'){
+
+recoverableFdx = parseFloat((recoverableFdx - pendingUnlockAmount).toFixed(2));
+totalBalance = parseFloat((totalBalance + pendingUnlockAmount).toFixed(2));
+updateBalancesUI();
+
+alert(`Successfully unlocked and added ${pendingUnlockAmount.toFixed(2)} $FDX from Recoverable to Total Balance!`);
+pendingUnlockAmount = 0;
+
+}
+
+
 else if(activeAdType==='claim'){
+
+// Add current session accumulated balance to Total Balance
+totalBalance = parseFloat((totalBalance + currentSessionAccumulated).toFixed(2));
+updateBalancesUI();
+
+alert(`Successfully claimed ${currentSessionAccumulated.toFixed(2)} $FDX to Total Balance!`);
 
 miningState=
 'IDLE';
 
 totalSeconds=
 14400;
+currentSessionAccumulated=0;
+hourlyCounter=0;
 
 document
 .getElementById('systemPill')
@@ -3432,10 +3535,6 @@ document
 .getElementById('miningToggleBtn')
 .style.pointerEvents=
 'auto';
-
-showComingSoon(
-'Reward claim'
-);
 
 }
 
