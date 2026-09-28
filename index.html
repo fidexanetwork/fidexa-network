@@ -1227,12 +1227,21 @@ Your real invited members will appear here when referral data is connected.
 </div>
 </div>
 
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
 <button
 class="full-action-btn"
 onclick="copyReferralLink()"
 style="padding:15px;font-size:13px;box-shadow:none;">
-INVITE FRIENDS
+📋 COPY LINK
 </button>
+
+<button
+class="full-action-btn"
+onclick="shareReferralLink()"
+style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90deg,#10b981,#059669);">
+📤 SHARE LINK
+</button>
+</div>
 
 </main>
 
@@ -1441,13 +1450,13 @@ Copy Address
 </div>
 
 <div class="prompt-desc">
-Transfer available tokens to another user address securely.
+Transfer available tokens directly to another user node address or @username securely.
 </div>
 
 <input
 type="text"
 id="sendRecipientInput"
-placeholder="Recipient Wallet Address (@username)"
+placeholder="Recipient Address or @username"
 style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;"
 >
 
@@ -1629,105 +1638,49 @@ const ADSGRAM_BLOCK_ID = "49196";
 
 let adsgramController = null;
 
-
-/*
- * Adsgram is loaded in the <head>.
- * Initialize it only once.
- */
-
 function initializeAdsgram(){
 
     if(!window.Adsgram){
-
-        console.warn(
-            'Adsgram SDK is not available.'
-        );
-
+        console.warn('Adsgram SDK is not available.');
         return;
     }
 
     try{
-
         adsgramController =
             window.Adsgram.init({
-
                 blockId: ADSGRAM_BLOCK_ID,
-
-                /*
-                 * Production mode.
-                 * Test ads are disabled.
-                 */
                 debug: false
-
             });
-
-
-        /*
-         * No advertisement available.
-         */
 
         if(
             adsgramController &&
             typeof adsgramController.addEventListener === 'function'
         ){
-
             adsgramController.addEventListener(
                 'onBannerNotFound',
                 function(){
-
-                    console.warn(
-                        'Adsgram: no advertisement available.'
-                    );
-
+                    console.warn('Adsgram: no advertisement available.');
                 }
             );
-
-
-            /*
-             * Adsgram error.
-             */
 
             adsgramController.addEventListener(
                 'onError',
                 function(event){
-
-                    console.warn(
-                        'Adsgram error:',
-                        event
-                    );
-
+                    console.warn('Adsgram error:', event);
                 }
             );
-
         }
 
     }catch(error){
-
-        console.warn(
-            'Adsgram initialization error:',
-            error
-        );
-
+        console.warn('Adsgram initialization error:', error);
         adsgramController = null;
     }
 }
 
-
-/*
- * Wait until the page has loaded before initializing Adsgram.
- */
-
 if(document.readyState === 'loading'){
-
-    document.addEventListener(
-        'DOMContentLoaded',
-        initializeAdsgram
-    );
-
+    document.addEventListener('DOMContentLoaded', initializeAdsgram);
 }else{
-
     initializeAdsgram();
-
 }
 
 
@@ -1739,55 +1692,30 @@ const STORAGE_KEY =
     'fidexa_prototype_state_v9';
 
 const defaultState = {
-
     totalBalance: 0,
-
     totalMined: 0,
-
     miningState: 'IDLE',
-
     miningStartedAt: 0,
-
     miningCycleDuration: 14400,
-
     baseMiningRate: 1.0,
-
     boosterBonusRate: 0,
-
     boosterResetAt: 0,
-
     referralBonusRate: 0,
-
     boosterChancesLeft: 5,
-
     luckyBoxChances: 5,
-
     luckyBoxResetAt: 0,
-
     burningStreak: 1,
-
     lastActivityDay: '',
-
     inactiveDays: 0,
-
     activeDays: 0,
-
     recoverableBalance: 0,
-
     friends: [],
-
     transactions: [],
-
     claimedTasks: {
-
         telegram: false,
-
         x: false,
-
         youtube: false
-
     }
-
 };
 
 let state = {
@@ -1796,54 +1724,24 @@ let state = {
 
 
 function loadState(){
-
     try{
-
-        const saved =
-            localStorage.getItem(STORAGE_KEY);
-
+        const saved = localStorage.getItem(STORAGE_KEY);
         if(saved){
-
-            const parsed =
-                JSON.parse(saved);
-
-            state = {
-                ...defaultState,
-                ...parsed
-            };
-
+            const parsed = JSON.parse(saved);
+            state = { ...defaultState, ...parsed };
         }
-
     }catch(error){
-
-        console.log(
-            'State load error',
-            error
-        );
-
+        console.log('State load error', error);
     }
-
 }
 
 
 function saveState(){
-
     try{
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(state)
-        );
-
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }catch(error){
-
-        console.log(
-            'State save error',
-            error
-        );
-
+        console.log('State save error', error);
     }
-
 }
 
 
@@ -1852,7 +1750,6 @@ function saveState(){
 ========================================================= */
 
 function formatNumber(value){
-
     return Number(value || 0)
         .toLocaleString(
             'en-US',
@@ -1861,425 +1758,213 @@ function formatNumber(value){
                 maximumFractionDigits: 2
             }
         );
-
 }
 
 
 function getCurrentRate(){
-
     return parseFloat(
-
         (
-
             Number(state.baseMiningRate) +
-
             Number(state.boosterBonusRate) +
-
             Number(state.referralBonusRate)
-
         ).toFixed(1)
-
     );
-
 }
 
 
 function showToast(message){
-
-    const toast =
-        document.getElementById('toast');
-
+    const toast = document.getElementById('toast');
     if(!toast) return;
 
-    toast.textContent =
-        message;
-
+    toast.textContent = message;
     toast.classList.add('show');
 
     setTimeout(
         function(){
-
             toast.classList.remove('show');
-
         },
         2600
     );
-
 }
 
 
 function switchTab(tabName,btnElement){
+    document.querySelectorAll('.page-view').forEach(
+        function(page){
+            page.classList.remove('active');
+        }
+    );
 
-    document
-        .querySelectorAll('.page-view')
-        .forEach(
-            function(page){
-
-                page.classList.remove('active');
-
-            }
-        );
-
-    const page =
-        document.getElementById(
-            `page-${tabName}`
-        );
-
+    const page = document.getElementById(`page-${tabName}`);
     if(page){
-
         page.classList.add('active');
-
     }
 
-    document
-        .querySelectorAll('.nav-item')
-        .forEach(
-            function(nav){
-
-                nav.classList.remove('active');
-
-            }
-        );
+    document.querySelectorAll('.nav-item').forEach(
+        function(nav){
+            nav.classList.remove('active');
+        }
+    );
 
     if(btnElement){
-
         btnElement.classList.add('active');
-
     }
 
     if(tabName === 'wallet'){
-
         renderTransactions();
-
     }
-
 }
 
 
 /* =========================================================
-   WALLET & QR CODE
+   WALLET & QR CODE & P2P SENDING
 ========================================================= */
 
 function getWalletAddress(){
-
     return `FDX_NODE_${currentUserId}`;
-
 }
 
 let qrInstance = null;
 
 
 function openReceiveModal(){
+    const modal = document.getElementById('receiveModal');
+    const addressBox = document.getElementById('receiveAddressBox');
+    const qrContainer = document.getElementById('qrcodeCanvas');
+    const userWallet = getWalletAddress();
 
-    const modal =
-        document.getElementById(
-            'receiveModal'
-        );
+    addressBox.value = userWallet;
+    qrContainer.innerHTML = '';
 
-    const addressBox =
-        document.getElementById(
-            'receiveAddressBox'
-        );
-
-    const qrContainer =
-        document.getElementById(
-            'qrcodeCanvas'
-        );
-
-    const userWallet =
-        getWalletAddress();
-
-    addressBox.value =
-        userWallet;
-
-    qrContainer.innerHTML =
-        '';
-
-    qrInstance =
-        new QRCode(
-            qrContainer,
-            {
-                text:userWallet,
-                width:160,
-                height:160,
-                colorDark:"#000000",
-                colorLight:"#ffffff",
-                correctLevel:
-                    QRCode.CorrectLevel.H
-            }
-        );
+    qrInstance = new QRCode(
+        qrContainer,
+        {
+            text: userWallet,
+            width: 160,
+            height: 160,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        }
+    );
 
     modal.classList.add('active');
-
 }
 
 
 function closeReceiveModal(){
-
-    document
-        .getElementById('receiveModal')
-        .classList.remove('active');
-
+    document.getElementById('receiveModal').classList.remove('active');
 }
 
 
 async function copyReceiveAddress(){
-
-    const addressBox =
-        document.getElementById(
-            'receiveAddressBox'
-        );
-
+    const addressBox = document.getElementById('receiveAddressBox');
     try{
-
-        await navigator.clipboard.writeText(
-            addressBox.value
-        );
-
-        showToast(
-            'Wallet address copied to clipboard!'
-        );
-
+        await navigator.clipboard.writeText(addressBox.value);
+        showToast('Wallet address copied to clipboard!');
     }catch(e){
-
         addressBox.select();
-
         document.execCommand('copy');
-
-        showToast(
-            'Wallet address copied!'
-        );
-
+        showToast('Wallet address copied!');
     }
-
     closeReceiveModal();
-
 }
 
 
 function openSendModal(){
-
-    document.getElementById(
-        'sendRecipientInput'
-    ).value = '';
-
-    document.getElementById(
-        'sendAmountInput'
-    ).value = '';
-
-    document
-        .getElementById('sendModal')
-        .classList.add('active');
-
+    document.getElementById('sendRecipientInput').value = '';
+    document.getElementById('sendAmountInput').value = '';
+    document.getElementById('sendModal').classList.add('active');
 }
 
 
 function closeSendModal(){
-
-    document
-        .getElementById('sendModal')
-        .classList.remove('active');
-
+    document.getElementById('sendModal').classList.remove('active');
 }
 
 
 function processSendTransaction(){
-
-    const recipient =
-        document
-            .getElementById(
-                'sendRecipientInput'
-            )
-            .value
-            .trim();
-
-    const amount =
-        parseFloat(
-            document
-                .getElementById(
-                    'sendAmountInput'
-                )
-                .value
-        );
+    const recipient = document.getElementById('sendRecipientInput').value.trim();
+    const amount = parseFloat(document.getElementById('sendAmountInput').value);
 
     if(!recipient){
-
-        showToast(
-            'Please enter a valid recipient address.'
-        );
-
+        showToast('Please enter a valid recipient address or @username.');
         return;
-
     }
 
     if(isNaN(amount) || amount <= 0){
-
-        showToast(
-            'Please enter a valid send amount.'
-        );
-
+        showToast('Please enter a valid send amount.');
         return;
-
     }
 
     if(amount > Number(state.totalBalance)){
-
-        showToast(
-            'Insufficient Total Balance for transfer.'
-        );
-
+        showToast('Insufficient Total Balance for transfer.');
         return;
-
     }
 
-    state.totalBalance =
-        Number(state.totalBalance) -
-        amount;
+    // Deduct balance from sender
+    state.totalBalance = Number(state.totalBalance) - amount;
 
     const tx = {
-
-        type:'SEND',
-
-        recipient:recipient,
-
-        amount:amount,
-
-        time:
-            new Date().toLocaleTimeString(
-                [],
-                {
-                    hour:'2-digit',
-                    minute:'2-digit'
-                }
-            )
-
+        type: 'SEND',
+        recipient: recipient,
+        amount: amount,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     if(!state.transactions){
-
         state.transactions = [];
-
     }
 
     state.transactions.unshift(tx);
-
     saveState();
-
     updateAllUI();
-
     closeSendModal();
 
-    showToast(
-        `Successfully sent ${formatNumber(amount)} $FDX!`
-    );
-
+    showToast(`Successfully sent ${formatNumber(amount)} $FDX to ${recipient}!`);
 }
 
 
 function renderTransactions(){
-
-    const container =
-        document.getElementById(
-            'txListContainer'
-        );
-
-    const emptyState =
-        document.getElementById(
-            'txEmptyState'
-        );
-
-    const txs =
-        state.transactions || [];
+    const container = document.getElementById('txListContainer');
+    const emptyState = document.getElementById('txEmptyState');
+    const txs = state.transactions || [];
 
     if(txs.length === 0){
-
-        emptyState.style.display =
-            'block';
-
-        container.innerHTML =
-            '';
-
+        emptyState.style.display = 'block';
+        container.innerHTML = '';
         return;
-
     }
 
-    emptyState.style.display =
-        'none';
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
 
-    container.innerHTML =
-        '';
-
-    txs.forEach(
-        function(tx){
-
-            const item =
-                document.createElement(
-                    'div'
-                );
-
-            item.className =
-                'friend-row-item';
-
-            item.innerHTML = `
-
-                <div class="friend-left">
-
-                    <div class="friend-avatar">
-                        📤
-                    </div>
-
-                    <div>
-
-                        <div class="friend-name">
-                            Sent to ${escapeHtml(tx.recipient)}
-                        </div>
-
-                        <div class="friend-status inactive">
-                            ${tx.time}
-                        </div>
-
-                    </div>
-
+    txs.forEach(function(tx){
+        const item = document.createElement('div');
+        item.className = 'friend-row-item';
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">📤</div>
+                <div>
+                    <div class="friend-name">Sent to ${escapeHtml(tx.recipient)}</div>
+                    <div class="friend-status inactive">${tx.time}</div>
                 </div>
-
-                <div style="font-size:13px;color:var(--red);font-weight:900;">
-                    -${formatNumber(tx.amount)} $FDX
-                </div>
-
-            `;
-
-            container.appendChild(item);
-
-        }
-    );
-
+            </div>
+            <div style="font-size:13px;color:var(--red);font-weight:900;">
+                -${formatNumber(tx.amount)} $FDX
+            </div>
+        `;
+        container.appendChild(item);
+    });
 }
 
 
 function escapeHtml(str){
-
     return String(str)
-
-        .replace(
-            /&/g,
-            '&amp;'
-        )
-
-        .replace(
-            /</g,
-            '&lt;'
-        )
-
-        .replace(
-            />/g,
-            '&gt;'
-        )
-
-        .replace(
-            /"/g,
-            '&quot;'
-        );
-
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 
@@ -2288,119 +1973,44 @@ function escapeHtml(str){
 ========================================================= */
 
 function openTaskLinkAndVerify(type){
-
     if(type === 'telegram'){
-
-        window.open(
-            FIDEXA_TELEGRAM,
-            '_blank'
-        );
-
-        setTimeout(
-            function(){
-
-                if(
-                    confirm(
-                        'Confirm you joined the Telegram channel?'
-                    )
-                ){
-
-                    claimTaskReward(
-                        'telegram'
-                    );
-
-                }
-
-            },
-            1200
-        );
-
+        window.open(FIDEXA_TELEGRAM, '_blank');
+        setTimeout(function(){
+            if(confirm('Confirm you joined the Telegram channel?')){
+                claimTaskReward('telegram');
+            }
+        }, 1200);
     }
-
     else if(type === 'x'){
-
-        window.open(
-            FIDEXA_X,
-            '_blank'
-        );
-
-        setTimeout(
-            function(){
-
-                if(
-                    confirm(
-                        'Confirm you followed X (@Fidexa_Network)?'
-                    )
-                ){
-
-                    claimTaskReward('x');
-
-                }
-
-            },
-            1200
-        );
-
+        window.open(FIDEXA_X, '_blank');
+        setTimeout(function(){
+            if(confirm('Confirm you followed X (@Fidexa_Network)?')){
+                claimTaskReward('x');
+            }
+        }, 1200);
     }
-
     else if(type === 'youtube'){
-
-        window.open(
-            FIDEXA_YOUTUBE,
-            '_blank'
-        );
-
-        setTimeout(
-            function(){
-
-                if(
-                    confirm(
-                        'Confirm you subscribed to YouTube (@Fidexa_Network)?'
-                    )
-                ){
-
-                    claimTaskReward(
-                        'youtube'
-                    );
-
-                }
-
-            },
-            1200
-        );
-
+        window.open(FIDEXA_YOUTUBE, '_blank');
+        setTimeout(function(){
+            if(confirm('Confirm you subscribed to YouTube (@Fidexa_Network)?')){
+                claimTaskReward('youtube');
+            }
+        }, 1200);
     }
-
 }
 
 
 function claimTaskReward(type){
-
     if(state.claimedTasks[type]){
-
-        showToast(
-            'Task already claimed.'
-        );
-
+        showToast('Task already claimed.');
         return;
-
     }
 
-    state.claimedTasks[type] =
-        true;
-
-    state.totalBalance =
-        Number(state.totalBalance) +
-        5;
-
+    state.claimedTasks[type] = true;
+    state.totalBalance = Number(state.totalBalance) + 5;
     saveState();
-
     updateAllUI();
-
-    showToast(
-        '+5.00 FDX added to Balance'
-    );
-
+    showToast('+5.00 FDX added to Balance');
 }
 
 
@@ -2409,424 +2019,156 @@ function claimTaskReward(type){
 ========================================================= */
 
 function openProfileInfo(type){
-
-    const modal =
-        document.getElementById(
-            'profileInfoModal'
-        );
-
-    const titleEl =
-        document.getElementById(
-            'sheetTitle'
-        );
-
-    const bodyEl =
-        document.getElementById(
-            'sheetContentBody'
-        );
+    const modal = document.getElementById('profileInfoModal');
+    const titleEl = document.getElementById('sheetTitle');
+    const bodyEl = document.getElementById('sheetContentBody');
 
     modal.classList.add('active');
 
-
     if(type === 'account'){
-
-        titleEl.textContent =
-            'Account Information';
-
+        titleEl.textContent = 'Account Information';
         bodyEl.innerHTML = `
-
-            <p>
-                <strong>Telegram ID:</strong>
-                ${escapeHtml(currentUserId)}
-            </p>
-
-            <p style="margin-top:10px;">
-                <strong>Username:</strong>
-                ${escapeHtml(currentUserName)}
-            </p>
-
-            <p style="margin-top:10px;">
-                <strong>Wallet Address:</strong>
-                ${escapeHtml(getWalletAddress())}
-            </p>
-
-            <p style="margin-top:10px;">
-                <strong>Balance:</strong>
-                ${formatNumber(state.totalBalance)} FDX
-            </p>
-
+            <p><strong>Telegram ID:</strong> ${escapeHtml(currentUserId)}</p>
+            <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml(currentUserName)}</p>
+            <p style="margin-top:10px;"><strong>Wallet Address:</strong> ${escapeHtml(getWalletAddress())}</p>
+            <p style="margin-top:10px;"><strong>Balance:</strong> ${formatNumber(state.totalBalance)} FDX</p>
         `;
-
     }
-
     else if(type === 'support'){
-
-        titleEl.textContent =
-            'Chat Support';
-
+        titleEl.textContent = 'Chat Support';
         bodyEl.innerHTML = `
-
             <div class="support-status">
-
-                <div class="support-status-title">
-                    💬 FIDEXA SUPPORT
-                </div>
-
-                <div class="support-status-text">
-                    How can our support team assist you today?
-                </div>
-
+                <div class="support-status-title">💬 FIDEXA SUPPORT</div>
+                <div class="support-status-text">How can our support team assist you today?</div>
             </div>
-
-            <div
-                id="supportMessages"
-                class="chat-messages-container"
-            >
-
-                <div class="chat-bubble admin">
-                    Hello! Welcome to Fidexa support.
-                </div>
-
+            <div id="supportMessages" class="chat-messages-container">
+                <div class="chat-bubble admin">Hello! Welcome to Fidexa support.</div>
             </div>
-
             <div class="chat-input-row">
-
-                <input
-                    id="supportInput"
-                    class="chat-input-field"
-                    type="text"
-                    maxlength="500"
-                    placeholder="Type a message..."
-                >
-
-                <button
-                    class="chat-send-btn"
-                    onclick="sendSupportMessage()"
-                >
-                    SEND
-                </button>
-
+                <input id="supportInput" class="chat-input-field" type="text" maxlength="500" placeholder="Type a message...">
+                <button class="chat-send-btn" onclick="sendSupportMessage()">SEND</button>
             </div>
-
         `;
-
     }
-
     else if(type === 'privacy'){
-
-        titleEl.textContent =
-            'Privacy Policy';
-
-        bodyEl.innerHTML = `
-
-            <p>
-                Fidexa Network protects your user data and maintains secure
-                decentralized node records.
-            </p>
-
-        `;
-
+        titleEl.textContent = 'Privacy Policy';
+        bodyEl.innerHTML = `<p>Fidexa Network protects your user data and maintains secure decentralized node records.</p>`;
     }
-
     else if(type === 'whitepaper'){
-
-        titleEl.textContent =
-            'Whitepaper v1.0';
-
-        bodyEl.innerHTML = `
-
-            <p>
-                Fidexa Network is a Web3 Telegram Mini App designed for
-                gamified rewards and token distribution.
-            </p>
-
-        `;
-
+        titleEl.textContent = 'Whitepaper v1.0';
+        bodyEl.innerHTML = `<p>Fidexa Network is a Web3 Telegram Mini App designed for gamified rewards and token distribution.</p>`;
     }
-
     else if(type === 'deletion'){
-
-        titleEl.textContent =
-            'Account Deletion';
-
-        bodyEl.innerHTML = `
-
-            <p style="color:var(--red);">
-                Account deletion clears local state node configuration.
-            </p>
-
-        `;
-
+        titleEl.textContent = 'Account Deletion';
+        bodyEl.innerHTML = `<p style="color:var(--red);">Account deletion clears local state node configuration.</p>`;
     }
-
 }
 
 
 function sendSupportMessage(){
+    const input = document.getElementById('supportInput');
+    const messages = document.getElementById('supportMessages');
 
-    const input =
-        document.getElementById(
-            'supportInput'
-        );
+    if(!input || !messages || !input.value.trim()) return;
 
-    const messages =
-        document.getElementById(
-            'supportMessages'
-        );
+    const txt = input.value.trim();
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user';
+    userBubble.textContent = txt;
+    messages.appendChild(userBubble);
 
-    if(
-        !input ||
-        !messages ||
-        !input.value.trim()
-    ){
+    input.value = '';
+    messages.scrollTop = messages.scrollHeight;
 
-        return;
-
-    }
-
-    const txt =
-        input.value.trim();
-
-    const userBubble =
-        document.createElement(
-            'div'
-        );
-
-    userBubble.className =
-        'chat-bubble user';
-
-    userBubble.textContent =
-        txt;
-
-    messages.appendChild(
-        userBubble
-    );
-
-    input.value =
-        '';
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-    setTimeout(
-        function(){
-
-            const adminBubble =
-                document.createElement(
-                    'div'
-                );
-
-            adminBubble.className =
-                'chat-bubble admin';
-
-            adminBubble.textContent =
-                'Thank you. Your ticket has been logged with support.';
-
-            messages.appendChild(
-                adminBubble
-            );
-
-            messages.scrollTop =
-                messages.scrollHeight;
-
-        },
-        600
-    );
-
+    setTimeout(function(){
+        const adminBubble = document.createElement('div');
+        adminBubble.className = 'chat-bubble admin';
+        adminBubble.textContent = 'Thank you. Your ticket has been logged with support.';
+        messages.appendChild(adminBubble);
+        messages.scrollTop = messages.scrollHeight;
+    }, 600);
 }
 
 
 function closeProfileInfo(){
-
-    document
-        .getElementById(
-            'profileInfoModal'
-        )
-        .classList.remove('active');
-
+    document.getElementById('profileInfoModal').classList.remove('active');
 }
 
 
 function openExternalLink(target){
-
     if(target === 'telegram'){
-
-        window.open(
-            FIDEXA_TELEGRAM,
-            '_blank'
-        );
-
+        window.open(FIDEXA_TELEGRAM, '_blank');
     }
-
     else if(target === 'twitter'){
-
-        window.open(
-            FIDEXA_X,
-            '_blank'
-        );
-
+        window.open(FIDEXA_X, '_blank');
     }
-
     else if(target === 'youtube'){
-
-        window.open(
-            FIDEXA_YOUTUBE,
-            '_blank'
-        );
-
+        window.open(FIDEXA_YOUTUBE, '_blank');
     }
-
 }
 
 
 /* =========================================================
-   REFERRAL
+   REFERRAL & SHARING
 ========================================================= */
 
 function getReferralLink(){
-
     return `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
-
 }
 
 
 async function copyReferralLink(){
-
     try{
-
-        await navigator.clipboard.writeText(
-            getReferralLink()
-        );
-
-        showToast(
-            'Referral link copied!'
-        );
-
+        await navigator.clipboard.writeText(getReferralLink());
+        showToast('Referral link copied!');
     }catch(e){
-
-        showToast(
-            'Could not copy link automatically.'
-        );
-
+        showToast('Could not copy link automatically.');
     }
+}
 
+
+function shareReferralLink(){
+    const refLink = getReferralLink();
+    const shareText = encodeURIComponent("Join Fidexa Network and start mining $FDX with me!");
+    
+    // Check if Telegram WebApp sharing is supported
+    if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
+        window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`);
+    } else if(navigator.share){
+        navigator.share({
+            title: 'Fidexa Network',
+            text: 'Join Fidexa Network and start mining $FDX with me!',
+            url: refLink,
+        }).catch(() => {});
+    } else {
+        copyReferralLink();
+    }
 }
 
 
 /* =========================================================
    ADSGRAM REWARDED AD
-   IMPORTANT:
-   REWARD ONLY AFTER ADSGRAM SUCCESS
 ========================================================= */
 
 function showAdsgramAd(rewardCallback){
-
-    /*
-     * Adsgram SDK/controller unavailable.
-     * Do NOT give reward.
-     */
-
     if(!adsgramController){
-
-        showToast(
-            'Advertisement is currently unavailable. Please try again.'
-        );
-
-        console.warn(
-            'Adsgram controller is unavailable.'
-        );
-
+        showToast('Advertisement is currently unavailable. Please try again.');
         return;
-
     }
 
+    if(typeof rewardCallback !== 'function') return;
 
-    /*
-     * Prevent accidental duplicate calls.
-     */
-
-    if(typeof rewardCallback !== 'function'){
-
-        console.warn(
-            'Adsgram reward callback is missing.'
-        );
-
-        return;
-
-    }
-
-
-    /*
-     * Show rewarded advertisement.
-     */
-
-    adsgramController
-        .show()
-
-        .then(
-            function(result){
-
-                console.log(
-                    'Adsgram ad completed:',
-                    result
-                );
-
-
-                /*
-                 * For Rewarded ads:
-                 * reward only when Adsgram confirms
-                 * the ad was watched to the end.
-                 */
-
-                if(
-                    result &&
-                    result.done === true &&
-                    result.error !== true
-                ){
-
-                    rewardCallback();
-
-                }else{
-
-                    console.warn(
-                        'Adsgram completed without valid reward confirmation:',
-                        result
-                    );
-
-                    showToast(
-                        'Advertisement was not completed.'
-                    );
-
-                }
-
+    adsgramController.show()
+        .then(function(result){
+            if(result && result.done === true && result.error !== true){
+                rewardCallback();
+            }else{
+                showToast('Advertisement was not completed.');
             }
-        )
-
-        .catch(
-            function(error){
-
-                /*
-                 * Ad unavailable,
-                 * skipped,
-                 * failed,
-                 * or another Adsgram error.
-                 *
-                 * IMPORTANT:
-                 * NO REWARD HERE.
-                 */
-
-                console.warn(
-                    'Adsgram advertisement failed or was skipped:',
-                    error
-                );
-
-                showToast(
-                    'Advertisement is currently unavailable. Please try again.'
-                );
-
-            }
-        );
-
+        })
+        .catch(function(error){
+            showToast('Advertisement is currently unavailable. Please try again.');
+        });
 }
 
 
@@ -2834,651 +2176,175 @@ function showAdsgramAd(rewardCallback){
    MINING CORE
 ========================================================= */
 
-const MINING_CYCLE_SECONDS =
-    14400;
-
+const MINING_CYCLE_SECONDS = 14400;
 
 function getMiningElapsedSeconds(){
-
-    if(
-        state.miningState !== 'ACTIVE' ||
-        !state.miningStartedAt
-    ){
-
-        return 0;
-
-    }
-
-    return Math.max(
-
-        0,
-
-        Math.min(
-
-            MINING_CYCLE_SECONDS,
-
-            Math.floor(
-                (
-                    Date.now() -
-                    state.miningStartedAt
-                ) / 1000
-            )
-
-        )
-
-    );
-
+    if(state.miningState !== 'ACTIVE' || !state.miningStartedAt) return 0;
+    return Math.max(0, Math.min(MINING_CYCLE_SECONDS, Math.floor((Date.now() - state.miningStartedAt) / 1000)));
 }
-
 
 function getSessionAccumulated(){
-
-    if(
-        state.miningState !== 'ACTIVE'
-    ){
-
-        return Number(
-            state.sessionAccumulated || 0
-        );
-
-    }
-
-    const elapsed =
-        getMiningElapsedSeconds();
-
-    const completedHours =
-        Math.floor(
-            elapsed / 3600
-        );
-
-    return parseFloat(
-
-        (
-            completedHours *
-            getCurrentRate()
-        ).toFixed(2)
-
-    );
-
+    if(state.miningState !== 'ACTIVE') return Number(state.sessionAccumulated || 0);
+    const elapsed = getMiningElapsedSeconds();
+    const completedHours = Math.floor(elapsed / 3600);
+    return parseFloat((completedHours * getCurrentRate()).toFixed(2));
 }
-
 
 function getRemainingSeconds(){
-
-    if(
-        state.miningState === 'IDLE'
-    ){
-
-        return MINING_CYCLE_SECONDS;
-
-    }
-
-    if(
-        state.miningState === 'READY_TO_CLAIM'
-    ){
-
-        return 0;
-
-    }
-
-    return Math.max(
-
-        0,
-
-        MINING_CYCLE_SECONDS -
-        getMiningElapsedSeconds()
-
-    );
-
+    if(state.miningState === 'IDLE') return MINING_CYCLE_SECONDS;
+    if(state.miningState === 'READY_TO_CLAIM') return 0;
+    return Math.max(0, MINING_CYCLE_SECONDS - getMiningElapsedSeconds());
 }
-
 
 function formatTimer(seconds){
-
-    const h =
-        Math.floor(
-            seconds / 3600
-        )
-        .toString()
-        .padStart(2,'0');
-
-    const m =
-        Math.floor(
-            (seconds % 3600) / 60
-        )
-        .toString()
-        .padStart(2,'0');
-
-    const s =
-        (
-            seconds % 60
-        )
-        .toString()
-        .padStart(2,'0');
-
+    const h = Math.floor(seconds / 3600).toString().padStart(2,'0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2,'0');
+    const s = (seconds % 60).toString().padStart(2,'0');
     return `${h}:${m}:${s}`;
-
 }
-
 
 function updateMiningUI(){
-
-    if(
-        state.miningState === 'ACTIVE' &&
-        getMiningElapsedSeconds() >=
-            MINING_CYCLE_SECONDS
-    ){
-
-        state.sessionAccumulated =
-            parseFloat(
-                (
-                    4 *
-                    getCurrentRate()
-                ).toFixed(2)
-            );
-
-        state.miningState =
-            'READY_TO_CLAIM';
-
+    if(state.miningState === 'ACTIVE' && getMiningElapsedSeconds() >= MINING_CYCLE_SECONDS){
+        state.sessionAccumulated = parseFloat((4 * getCurrentRate()).toFixed(2));
+        state.miningState = 'READY_TO_CLAIM';
         saveState();
-
     }
 
+    const rate = getCurrentRate();
 
-    const rate =
-        getCurrentRate();
+    document.getElementById('currentRateDisplay').textContent = rate.toFixed(1);
+    document.getElementById('statRate').textContent = `${rate.toFixed(1)} FDX/H`;
+    document.getElementById('timerDisplay').textContent = formatTimer(getRemainingSeconds());
 
+    const sessionAmount = state.miningState === 'ACTIVE' ? getSessionAccumulated() : Number(state.sessionAccumulated || 0);
+    document.getElementById('sessionAccumulated').textContent = `${formatNumber(sessionAmount)} FDX`;
 
-    document.getElementById(
-        'currentRateDisplay'
-    ).textContent =
-        rate.toFixed(1);
+    const elapsed = state.miningState === 'ACTIVE' ? getMiningElapsedSeconds() : (state.miningState === 'READY_TO_CLAIM' ? MINING_CYCLE_SECONDS : 0);
+    document.getElementById('completedHours').textContent = `${Math.min(4, Math.floor(elapsed / 3600))} / 4`;
 
+    document.getElementById('totalMined').textContent = `${formatNumber(state.totalMined)} FDX`;
+    document.getElementById('boosterChances').textContent = `${state.boosterChancesLeft}/5 Left`;
+    document.getElementById('luckyBoxPromptChances').textContent = state.luckyBoxChances;
+    document.getElementById('recoverableFdx').textContent = formatNumber(state.recoverableBalance);
+    document.getElementById('burningStreak').textContent = `${state.burningStreak} Day`;
 
-    document.getElementById(
-        'statRate'
-    ).textContent =
-        `${rate.toFixed(1)} FDX/H`;
+    const pill = document.getElementById('systemPill');
+    const button = document.getElementById('miningToggleBtn');
 
-
-    document.getElementById(
-        'timerDisplay'
-    ).textContent =
-        formatTimer(
-            getRemainingSeconds()
-        );
-
-
-    const sessionAmount =
-
-        state.miningState === 'ACTIVE'
-
-            ? getSessionAccumulated()
-
-            : Number(
-                state.sessionAccumulated || 0
-            );
-
-
-    document.getElementById(
-        'sessionAccumulated'
-    ).textContent =
-        `${formatNumber(sessionAmount)} FDX`;
-
-
-    const elapsed =
-
-        state.miningState === 'ACTIVE'
-
-            ? getMiningElapsedSeconds()
-
-            : (
-                state.miningState === 'READY_TO_CLAIM'
-                    ? MINING_CYCLE_SECONDS
-                    : 0
-            );
-
-
-    document.getElementById(
-        'completedHours'
-    ).textContent =
-        `${Math.min(
-            4,
-            Math.floor(elapsed / 3600)
-        )} / 4`;
-
-
-    document.getElementById(
-        'totalMined'
-    ).textContent =
-        `${formatNumber(state.totalMined)} FDX`;
-
-
-    document.getElementById(
-        'boosterChances'
-    ).textContent =
-        `${state.boosterChancesLeft}/5 Left`;
-
-
-    document.getElementById(
-        'luckyBoxPromptChances'
-    ).textContent =
-        state.luckyBoxChances;
-
-
-    document.getElementById(
-        'recoverableFdx'
-    ).textContent =
-        formatNumber(
-            state.recoverableBalance
-        );
-
-
-    document.getElementById(
-        'burningStreak'
-    ).textContent =
-        `${state.burningStreak} Day`;
-
-
-    const pill =
-        document.getElementById(
-            'systemPill'
-        );
-
-    const button =
-        document.getElementById(
-            'miningToggleBtn'
-        );
-
-
-    if(
-        state.miningState === 'IDLE'
-    ){
-
-        pill.textContent =
-            'READY TO MINE';
-
-        button.textContent =
-            'START MINING';
-
-        button.style.background =
-            'linear-gradient(90deg,#0284c7,#38bdf8)';
-
-        button.style.pointerEvents =
-            'auto';
-
+    if(state.miningState === 'IDLE'){
+        pill.textContent = 'READY TO MINE';
+        button.textContent = 'START MINING';
+        button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
+        button.style.pointerEvents = 'auto';
     }
-
-    else if(
-        state.miningState === 'ACTIVE'
-    ){
-
-        pill.textContent =
-            'ACTIVE MINING';
-
-        button.textContent =
-            'MINING IN PROGRESS';
-
-        button.style.background =
-            'rgba(56,189,248,.2)';
-
-        button.style.pointerEvents =
-            'none';
-
+    else if(state.miningState === 'ACTIVE'){
+        pill.textContent = 'ACTIVE MINING';
+        button.textContent = 'MINING IN PROGRESS';
+        button.style.background = 'rgba(56,189,248,.2)';
+        button.style.pointerEvents = 'none';
     }
-
-    else if(
-        state.miningState === 'READY_TO_CLAIM'
-    ){
-
-        pill.textContent =
-            'SESSION ENDED';
-
-        button.textContent =
-            'CLAIM REWARD';
-
-        button.style.background =
-            'linear-gradient(90deg,#facc15,#f59e0b)';
-
-        button.style.pointerEvents =
-            'auto';
-
+    else if(state.miningState === 'READY_TO_CLAIM'){
+        pill.textContent = 'SESSION ENDED';
+        button.textContent = 'CLAIM REWARD';
+        button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+        button.style.pointerEvents = 'auto';
     }
-
 }
-
-
-/* =========================================================
-   MINING ACTION
-========================================================= */
 
 function handleMiningAction(){
-
-    if(
-        state.miningState === 'IDLE'
-    ){
-
-        state.miningState =
-            'ACTIVE';
-
-        state.miningStartedAt =
-            Date.now();
-
-        state.sessionAccumulated =
-            0;
-
+    if(state.miningState === 'IDLE'){
+        state.miningState = 'ACTIVE';
+        state.miningStartedAt = Date.now();
+        state.sessionAccumulated = 0;
         saveState();
-
         updateAllUI();
-
-        showToast(
-            'Mining cycle started!'
-        );
-
+        showToast('Mining cycle started!');
     }
-
-    else if(
-        state.miningState === 'READY_TO_CLAIM'
-    ){
-
-        /*
-         * Claim requires rewarded ad.
-         */
-
-        showAdsgramAd(
-
-            function(){
-
-                const accumulated =
-                    Number(
-                        state.sessionAccumulated || 0
-                    );
-
-
-                state.totalBalance =
-                    Number(
-                        state.totalBalance
-                    ) + accumulated;
-
-
-                state.totalMined =
-                    Number(
-                        state.totalMined
-                    ) + accumulated;
-
-
-                state.sessionAccumulated =
-                    0;
-
-                state.miningState =
-                    'IDLE';
-
-                state.miningStartedAt =
-                    0;
-
-
-                saveState();
-
-                updateAllUI();
-
-
-                showToast(
-                    `Successfully claimed ${formatNumber(accumulated)} FDX!`
-                );
-
-            }
-
-        );
-
+    else if(state.miningState === 'READY_TO_CLAIM'){
+        showAdsgramAd(function(){
+            const accumulated = Number(state.sessionAccumulated || 0);
+            state.totalBalance = Number(state.totalBalance) + accumulated;
+            state.totalMined = Number(state.totalMined) + accumulated;
+            state.sessionAccumulated = 0;
+            state.miningState = 'IDLE';
+            state.miningStartedAt = 0;
+            saveState();
+            updateAllUI();
+            showToast(`Successfully claimed ${formatNumber(accumulated)} FDX!`);
+        });
     }
-
 }
 
-
 /* =========================================================
-   BOOSTER
+   BOOSTER & LUCKY BOX
 ========================================================= */
 
 function openBoosterPrompt(){
-
-    if(
-        state.boosterChancesLeft <= 0
-    ){
-
-        showToast(
-            'No booster chances left.'
-        );
-
+    if(state.boosterChancesLeft <= 0){
+        showToast('No booster chances left.');
         return;
-
     }
-
-
-    document
-        .getElementById(
-            'boosterPromptModal'
-        )
-        .classList.add('active');
-
+    document.getElementById('boosterPromptModal').classList.add('active');
 }
-
 
 function closeBoosterPrompt(){
-
-    document
-        .getElementById(
-            'boosterPromptModal'
-        )
-        .classList.remove('active');
-
+    document.getElementById('boosterPromptModal').classList.remove('active');
 }
-
 
 function confirmWatchBoosterAd(){
-
     closeBoosterPrompt();
-
-
-    /*
-     * Booster is granted ONLY after
-     * Adsgram successfully completes.
-     */
-
-    showAdsgramAd(
-
-        function(){
-
-            if(
-                state.boosterChancesLeft > 0
-            ){
-
-                state.boosterChancesLeft--;
-
-
-                state.boosterBonusRate =
-                    parseFloat(
-
-                        (
-                            Number(
-                                state.boosterBonusRate
-                            ) + 0.5
-                        ).toFixed(1)
-
-                    );
-
-
-                saveState();
-
-                updateAllUI();
-
-
-                showToast(
-                    'Speed booster active (+0.5 FDX/H)!'
-                );
-
-            }
-
+    showAdsgramAd(function(){
+        if(state.boosterChancesLeft > 0){
+            state.boosterChancesLeft--;
+            state.boosterBonusRate = parseFloat((Number(state.boosterBonusRate) + 0.5).toFixed(1));
+            saveState();
+            updateAllUI();
+            showToast('Speed booster active (+0.5 FDX/H)captured!');
         }
-
-    );
-
+    });
 }
-
-
-/* =========================================================
-   LUCKY BOX
-========================================================= */
 
 function openLuckyBoxModal(){
-
-    if(
-        state.luckyBoxChances <= 0
-    ){
-
-        showToast(
-            'No Lucky Box chances left.'
-        );
-
+    if(state.luckyBoxChances <= 0){
+        showToast('No Lucky Box chances left.');
         return;
-
     }
-
-
-    document
-        .getElementById(
-            'luckyBoxModal'
-        )
-        .classList.add('active');
-
+    document.getElementById('luckyBoxModal').classList.add('active');
 }
-
 
 function closeLuckyBoxModal(){
-
-    document
-        .getElementById(
-            'luckyBoxModal'
-        )
-        .classList.remove('active');
-
+    document.getElementById('luckyBoxModal').classList.remove('active');
 }
-
 
 function confirmOpenLuckyBox(){
-
-    document
-        .getElementById(
-            'luckyBoxModal'
-        )
-        .classList.remove('active');
-
-
-    /*
-     * Lucky Box reward is granted ONLY
-     * after Adsgram successfully completes.
-     */
-
-    showAdsgramAd(
-
-        function(){
-
-            if(
-                state.luckyBoxChances > 0
-            ){
-
-                state.luckyBoxChances--;
-
-
-                const reward =
-                    [1,2,3,5,10][
-                        Math.floor(
-                            Math.random() * 5
-                        )
-                    ];
-
-
-                state.totalBalance =
-                    Number(
-                        state.totalBalance
-                    ) + reward;
-
-
-                saveState();
-
-                updateAllUI();
-
-
-                showToast(
-                    `🎁 Lucky Box opened! +${reward} FDX credited.`
-                );
-
-            }
-
+    document.getElementById('luckyBoxModal').classList.remove('active');
+    showAdsgramAd(function(){
+        if(state.luckyBoxChances > 0){
+            state.luckyBoxChances--;
+            const reward = [1,2,3,5,10][Math.floor(Math.random() * 5)];
+            state.totalBalance = Number(state.totalBalance) + reward;
+            saveState();
+            updateAllUI();
+            showToast(`🎁 Lucky Box opened! +${reward} FDX credited.`);
         }
-
-    );
-
+    });
 }
-
-
-/* =========================================================
-   GLOBAL UI
-========================================================= */
 
 function updateAllUI(){
-
-    const formattedBal =
-        formatNumber(
-            state.totalBalance
-        );
-
-
-    document.getElementById(
-        'balanceDisplay'
-    ).textContent =
-        formattedBal;
-
-
-    document.getElementById(
-        'walletBalanceNum'
-    ).innerHTML =
-
-        `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
-
-
+    const formattedBal = formatNumber(state.totalBalance);
+    document.getElementById('balanceDisplay').textContent = formattedBal;
+    document.getElementById('walletBalanceNum').innerHTML = `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
     updateMiningUI();
-
 }
 
+window.addEventListener('DOMContentLoaded', function(){
+    loadState();
+    updateAllUI();
+});
 
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
-window.addEventListener(
-    'DOMContentLoaded',
-    function(){
-
-        loadState();
-
-        updateAllUI();
-
-    }
-);
-
-
-/* =========================================================
-   LIVE MINING UI
-========================================================= */
-
-setInterval(
-    function(){
-
-        updateAllUI();
-
-    },
-    1000
-);
+setInterval(function(){
+    updateAllUI();
+}, 1000);
 
 </script>
 
