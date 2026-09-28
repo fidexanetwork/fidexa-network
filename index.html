@@ -1685,7 +1685,7 @@ if(document.readyState === 'loading'){
 
 
 /* =========================================================
-   LOCAL STORAGE STATE
+   LOCAL STORAGE STATE & SHARED REGISTRY
 ========================================================= */
 
 const STORAGE_KEY =
@@ -1722,13 +1722,34 @@ let state = {
     ...defaultState
 };
 
+// Global multi-user registry helper for simulation
+function getAllUsersRegistry() {
+    try {
+        const data = localStorage.getItem('fidexa_global_users');
+        return data ? JSON.parse(data) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveAllUsersRegistry(registry) {
+    try {
+        localStorage.setItem('fidexa_global_users', JSON.stringify(registry));
+    } catch (e) {}
+}
+
 
 function loadState(){
     try{
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if(saved){
-            const parsed = JSON.parse(saved);
-            state = { ...defaultState, ...parsed };
+        const globalUsers = getAllUsersRegistry();
+        if(globalUsers[currentUserId]){
+            state = { ...defaultState, ...globalUsers[currentUserId] };
+        } else {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if(saved){
+                const parsed = JSON.parse(saved);
+                state = { ...defaultState, ...parsed };
+            }
         }
     }catch(error){
         console.log('State load error', error);
@@ -1738,6 +1759,25 @@ function loadState(){
 
 function saveState(){
     try{
+        const globalUsers = getAllUsersRegistry();
+        globalUsers[currentUserId] = {
+            username: currentUserName,
+            totalBalance: state.totalBalance,
+            totalMined: state.totalMined,
+            miningState: state.miningState,
+            miningStartedAt: state.miningStartedAt,
+            miningCycleDuration: state.miningCycleDuration,
+            baseMiningRate: state.baseMiningRate,
+            boosterBonusRate: state.boosterBonusRate,
+            boosterChancesLeft: state.boosterChancesLeft,
+            luckyBoxChances: state.luckyBoxChances,
+            burningStreak: state.burningStreak,
+            recoverableBalance: state.recoverableBalance,
+            friends: state.friends,
+            transactions: state.transactions,
+            claimedTasks: state.claimedTasks
+        };
+        saveAllUsersRegistry(globalUsers);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }catch(error){
         console.log('State save error', error);
@@ -1817,7 +1857,7 @@ function switchTab(tabName,btnElement){
 
 
 /* =========================================================
-   WALLET & QR CODE & P2P SENDING
+   WALLET & QR CODE & P2P SENDING (SIMULATED MULTI-USER)
 ========================================================= */
 
 function getWalletAddress(){
@@ -1884,10 +1924,10 @@ function closeSendModal(){
 
 
 function processSendTransaction(){
-    const recipient = document.getElementById('sendRecipientInput').value.trim();
+    const recipientInput = document.getElementById('sendRecipientInput').value.trim();
     const amount = parseFloat(document.getElementById('sendAmountInput').value);
 
-    if(!recipient){
+    if(!recipientInput){
         showToast('Please enter a valid recipient address or @username.');
         return;
     }
@@ -1902,26 +1942,87 @@ function processSendTransaction(){
         return;
     }
 
-    // Deduct balance from sender
+    // 1. Deduct balance from sender locally
     state.totalBalance = Number(state.totalBalance) - amount;
 
-    const tx = {
-        type: 'SEND',
-        recipient: recipient,
-        amount: amount,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+    const txTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     if(!state.transactions){
         state.transactions = [];
     }
 
-    state.transactions.unshift(tx);
+    // Add SEND transaction record for sender
+    state.transactions.unshift({
+        type: 'SEND',
+        recipient: recipientInput,
+        amount: amount,
+        time: txTime
+    });
+
+    // 2. SIMULATE RECEIVER LOOKUP & CREDIT VIA SHARED REGISTRY
+    const globalUsers = getAllUsersRegistry();
+    
+    globalUsers[currentUserId] = {
+        username: currentUserName,
+        totalBalance: state.totalBalance,
+        totalMined: state.totalMined,
+        miningState: state.miningState,
+        miningStartedAt: state.miningStartedAt,
+        miningCycleDuration: state.miningCycleDuration,
+        baseMiningRate: state.baseMiningRate,
+        boosterBonusRate: state.boosterBonusRate,
+        boosterChancesLeft: state.boosterChancesLeft,
+        luckyBoxChances: state.luckyBoxChances,
+        burningStreak: state.burningStreak,
+        recoverableBalance: state.recoverableBalance,
+        friends: state.friends,
+        transactions: state.transactions,
+        claimedTasks: state.claimedTasks
+    };
+
+    let recipientKey = null;
+    for (let userId in globalUsers) {
+        const userNode = `FDX_NODE_${userId}`;
+        if (userNode.toLowerCase() === recipientInput.toLowerCase() || 
+            (globalUsers[userId].username && globalUsers[userId].username.toLowerCase() === recipientInput.toLowerCase().replace('@',''))) {
+            recipientKey = userId;
+            break;
+        }
+    }
+
+    if(recipientKey) {
+        globalUsers[recipientKey].totalBalance = Number(globalUsers[recipientKey].totalBalance || 0) + amount;
+        if(!globalUsers[recipientKey].transactions) {
+            globalUsers[recipientKey].transactions = [];
+        }
+        
+        globalUsers[recipientKey].transactions.unshift({
+            type: 'RECEIVE',
+            sender: currentUserName,
+            amount: amount,
+            time: txTime
+        });
+        
+        showToast(`Successfully sent ${formatNumber(amount)} $FDX to ${recipientInput}!`);
+    } else {
+        const dummyId = recipientInput.replace('FDX_NODE_', '').replace('@','');
+        globalUsers[dummyId] = {
+            username: recipientInput,
+            totalBalance: amount,
+            transactions: [{
+                type: 'RECEIVE',
+                sender: currentUserName,
+                amount: amount,
+                time: txTime
+            }]
+        };
+        showToast(`Sent ${formatNumber(amount)} $FDX (Recipient node initialized)!`);
+    }
+
+    saveAllUsersRegistry(globalUsers);
     saveState();
     updateAllUI();
     closeSendModal();
-
-    showToast(`Successfully sent ${formatNumber(amount)} $FDX to ${recipient}!`);
 }
 
 
@@ -1942,16 +2043,23 @@ function renderTransactions(){
     txs.forEach(function(tx){
         const item = document.createElement('div');
         item.className = 'friend-row-item';
+        
+        const isReceive = tx.type === 'RECEIVE';
+        const sign = isReceive ? '+' : '-';
+        const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
+        const labelText = isReceive ? `Received from ${escapeHtml(tx.sender || 'Node')}` : `Sent to ${escapeHtml(tx.recipient)}`;
+        const iconSymbol = isReceive ? '📥' : '📤';
+
         item.innerHTML = `
             <div class="friend-left">
-                <div class="friend-avatar">📤</div>
+                <div class="friend-avatar">${iconSymbol}</div>
                 <div>
-                    <div class="friend-name">Sent to ${escapeHtml(tx.recipient)}</div>
+                    <div class="friend-name">${labelText}</div>
                     <div class="friend-status inactive">${tx.time}</div>
                 </div>
             </div>
-            <div style="font-size:13px;color:var(--red);font-weight:900;">
-                -${formatNumber(tx.amount)} $FDX
+            <div style="font-size:13px;color:${colorClass};font-weight:900;">
+                ${sign}${formatNumber(tx.amount)} $FDX
             </div>
         `;
         container.appendChild(item);
@@ -2131,7 +2239,6 @@ function shareReferralLink(){
     const refLink = getReferralLink();
     const shareText = encodeURIComponent("Join Fidexa Network and start mining $FDX with me!");
     
-    // Check if Telegram WebApp sharing is supported
     if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
         window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`);
     } else if(navigator.share){
@@ -2299,7 +2406,7 @@ function confirmWatchBoosterAd(){
             state.boosterBonusRate = parseFloat((Number(state.boosterBonusRate) + 0.5).toFixed(1));
             saveState();
             updateAllUI();
-            showToast('Speed booster active (+0.5 FDX/H)captured!');
+            showToast('Speed booster active (+0.5 FDX/H)!');
         }
     });
 }
