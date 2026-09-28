@@ -608,13 +608,7 @@ color:#fff;
 margin-top:6px;
 }
 
-.wallet-balance-token{
-font-size:14px;
-color:var(--yellow);
-font-weight:900;
-margin-left:4px;
-}
-
+/* SEND LEFT / RECEIVE RIGHT */
 .wallet-action-row{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -1222,8 +1216,8 @@ View the users you personally invited and their current activity status.
 <div class="friend-empty-text">
 Your real invited members will appear here when referral data is connected.
 </div>
-</div>
 
+</div>
 </div>
 </div>
 
@@ -1258,17 +1252,19 @@ TOTAL WALLET BALANCE
 0.00<span class="wallet-balance-token">$FDX</span>
 </div>
 
+<!-- SEND LEFT / RECEIVE RIGHT -->
 <div class="wallet-action-row">
-
-<button class="wallet-btn primary" onclick="openReceiveModal()">
-📥 Receive
-</button>
 
 <button class="wallet-btn" onclick="openSendModal()">
 📤 Send
 </button>
 
+<button class="wallet-btn primary" onclick="openReceiveModal()">
+📥 Receive
+</button>
+
 </div>
+
 </div>
 
 <div class="tx-history-card">
