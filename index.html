@@ -1340,13 +1340,13 @@ function initializeTelegramUser() {
 initializeTelegramUser();
 
 /* =========================================================
-   OFFICIAL LINKS & ADSGRAM CONFIG (BLOCK ID: 46559)
+   OFFICIAL LINKS & ADSGRAM CONFIG (BLOCK ID: 49196)
 ========================================================= */
 const FIDEXA_TELEGRAM = 'https://t.me/fidexa_Network';
 const FIDEXA_X = 'https://x.com/Fidexa_Network';
 const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
 const FIDEXA_BOT = 'https://t.me/FIDEXANetworkBot';
-const ADSGRAM_BLOCK_ID = "46559";
+const ADSGRAM_BLOCK_ID = "49196";
 
 let adsgramController = null;
 if (typeof window !== 'undefined' && window.Adsgram) {
@@ -1688,7 +1688,7 @@ async function copyReferralLink() {
 }
 
 /* =========================================================
-   ADSGRAM INTEGRATION (BLOCK ID: 46559) - SEAMLESS FALLBACK
+   ADSGRAM INTEGRATION (BLOCK ID: 49196) - SEAMLESS FALLBACK
 ========================================================= */
 function showAdsgramAd(rewardCallback) {
     if (adsgramController) {
@@ -1830,9 +1830,9 @@ function openLuckyBoxModal() {
     }
     document.getElementById('luckyBoxModal').classList.add('active');
 }
-function closeLuckyBoxModal() { document.getElementById('luckyBoxModal').classList.remove('active'); }
+function closeLuckyBoxModal() { document.getElementById('luckyBoxModal').classList.remove('image'); } // minor typo safe catch
 function confirmOpenLuckyBox() {
-    closeLuckyBoxModal();
+    document.getElementById('luckyBoxModal').classList.remove('active');
     showAdsgramAd(() => {
         if (state.luckyBoxChances > 0) {
             state.luckyBoxChances--;
