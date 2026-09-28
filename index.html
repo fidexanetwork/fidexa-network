@@ -1019,7 +1019,8 @@ border-bottom:1px solid rgba(27,38,54,.7);
 
 <div class="interactive-grid">
 
-<button class="action-tile" onclick="openBoosterPrompt">
+<!-- FIXED: parentheses added -->
+<button class="action-tile" onclick="openBoosterPrompt()">
 <div class="action-tile-icon">🚀</div>
 <div>
 <div class="action-tile-title">Mining Boost</div>
@@ -1223,8 +1224,8 @@ View the users you personally invited and their current activity status.
 <div class="friend-empty-text">
 Your real invited members will appear here when referral data is connected.
 </div>
-</div>
 
+</div>
 </div>
 </div>
 
@@ -1251,7 +1252,6 @@ style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90
 <!-- WALLET VIEW -->
 <main class="page-view" id="page-wallet">
 
-<!-- TOTAL BALANCE CARD -->
 <div class="wallet-main-card">
 
 <div class="wallet-balance-title">
@@ -1264,7 +1264,6 @@ TOTAL WALLET BALANCE
 
 </div>
 
-<!-- SEND / RECEIVE NOW UNDER TOTAL BALANCE CARD -->
 <div class="wallet-action-row">
 
 <button class="wallet-btn" onclick="openSendModal()">
@@ -1705,11 +1704,19 @@ const defaultState = {
     miningCycleDuration: 14400,
     baseMiningRate: 1.0,
     boosterBonusRate: 0,
+
+    /* NEW: one shared reset timestamp for both features */
+    boostLuckyResetAt: 0,
+
     boosterResetAt: 0,
     referralBonusRate: 0,
     boosterChancesLeft: 5,
     luckyBoxChances: 5,
     luckyBoxResetAt: 0,
+
+    /* Keep session earnings persistent */
+    sessionAccumulated: 0,
+
     burningStreak: 1,
     lastActivityDay: '',
     inactiveDays: 0,
@@ -1730,36 +1737,64 @@ let state = {
 
 
 function getAllUsersRegistry() {
+
     try {
-        const data = localStorage.getItem('fidexa_global_users');
-        return data ? JSON.parse(data) : {};
+
+        const data =
+            localStorage.getItem(
+                'fidexa_global_users'
+            );
+
+        return data
+            ? JSON.parse(data)
+            : {};
+
     } catch (e) {
+
         return {};
     }
 }
 
+
 function saveAllUsersRegistry(registry) {
+
     try {
-        localStorage.setItem('fidexa_global_users', JSON.stringify(registry));
+
+        localStorage.setItem(
+            'fidexa_global_users',
+            JSON.stringify(registry)
+        );
+
     } catch (e) {}
 }
 
 
 function loadState(){
+
     try{
-        const globalUsers = getAllUsersRegistry();
+
+        const globalUsers =
+            getAllUsersRegistry();
 
         if(globalUsers[currentUserId]){
+
             state = {
                 ...defaultState,
                 ...globalUsers[currentUserId]
             };
-        } else {
 
-            const saved = localStorage.getItem(STORAGE_KEY);
+        }else{
+
+            const saved =
+                localStorage.getItem(
+                    STORAGE_KEY
+                );
 
             if(saved){
-                const parsed = JSON.parse(saved);
+
+                const parsed =
+                    JSON.parse(saved);
+
                 state = {
                     ...defaultState,
                     ...parsed
@@ -1768,7 +1803,11 @@ function loadState(){
         }
 
     }catch(error){
-        console.log('State load error', error);
+
+        console.log(
+            'State load error',
+            error
+        );
     }
 }
 
@@ -1777,27 +1816,68 @@ function saveState(){
 
     try{
 
-        const globalUsers = getAllUsersRegistry();
+        const globalUsers =
+            getAllUsersRegistry();
 
         globalUsers[currentUserId] = {
-            username: currentUserName,
-            totalBalance: state.totalBalance,
-            totalMined: state.totalMined,
-            miningState: state.miningState,
-            miningStartedAt: state.miningStartedAt,
-            miningCycleDuration: state.miningCycleDuration,
-            baseMiningRate: state.baseMiningRate,
-            boosterBonusRate: state.boosterBonusRate,
-            boosterChancesLeft: state.boosterChancesLeft,
-            luckyBoxChances: state.luckyBoxChances,
-            burningStreak: state.burningStreak,
-            recoverableBalance: state.recoverableBalance,
-            friends: state.friends,
-            transactions: state.transactions,
-            claimedTasks: state.claimedTasks
+
+            username:
+                currentUserName,
+
+            totalBalance:
+                state.totalBalance,
+
+            totalMined:
+                state.totalMined,
+
+            miningState:
+                state.miningState,
+
+            miningStartedAt:
+                state.miningStartedAt,
+
+            miningCycleDuration:
+                state.miningCycleDuration,
+
+            baseMiningRate:
+                state.baseMiningRate,
+
+            boosterBonusRate:
+                state.boosterBonusRate,
+
+            /* NEW */
+            boostLuckyResetAt:
+                state.boostLuckyResetAt,
+
+            boosterChancesLeft:
+                state.boosterChancesLeft,
+
+            luckyBoxChances:
+                state.luckyBoxChances,
+
+            /* NEW */
+            sessionAccumulated:
+                state.sessionAccumulated,
+
+            burningStreak:
+                state.burningStreak,
+
+            recoverableBalance:
+                state.recoverableBalance,
+
+            friends:
+                state.friends,
+
+            transactions:
+                state.transactions,
+
+            claimedTasks:
+                state.claimedTasks
         };
 
-        saveAllUsersRegistry(globalUsers);
+        saveAllUsersRegistry(
+            globalUsers
+        );
 
         localStorage.setItem(
             STORAGE_KEY,
@@ -1805,7 +1885,11 @@ function saveState(){
         );
 
     }catch(error){
-        console.log('State save error', error);
+
+        console.log(
+            'State save error',
+            error
+        );
     }
 }
 
@@ -1820,8 +1904,8 @@ function formatNumber(value){
         .toLocaleString(
             'en-US',
             {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
             }
         );
 }
@@ -1841,49 +1925,79 @@ function getCurrentRate(){
 
 function showToast(message){
 
-    const toast = document.getElementById('toast');
+    const toast =
+        document.getElementById('toast');
 
     if(!toast) return;
 
-    toast.textContent = message;
+    toast.textContent =
+        message;
 
     toast.classList.add('show');
 
     setTimeout(
         function(){
-            toast.classList.remove('show');
+
+            toast.classList.remove(
+                'show'
+            );
+
         },
         2600
     );
 }
 
 
-function switchTab(tabName,btnElement){
+function switchTab(
+    tabName,
+    btnElement
+){
 
-    document.querySelectorAll('.page-view').forEach(
-        function(page){
-            page.classList.remove('active');
-        }
-    );
+    document
+        .querySelectorAll('.page-view')
+        .forEach(
+            function(page){
+
+                page.classList.remove(
+                    'active'
+                );
+
+            }
+        );
 
     const page =
-        document.getElementById(`page-${tabName}`);
+        document.getElementById(
+            `page-${tabName}`
+        );
 
     if(page){
-        page.classList.add('active');
+
+        page.classList.add(
+            'active'
+        );
     }
 
-    document.querySelectorAll('.nav-item').forEach(
-        function(nav){
-            nav.classList.remove('active');
-        }
-    );
+    document
+        .querySelectorAll('.nav-item')
+        .forEach(
+            function(nav){
+
+                nav.classList.remove(
+                    'active'
+                );
+
+            }
+        );
 
     if(btnElement){
-        btnElement.classList.add('active');
+
+        btnElement.classList.add(
+            'active'
+        );
     }
 
     if(tabName === 'wallet'){
+
         renderTransactions();
     }
 }
@@ -1894,6 +2008,7 @@ function switchTab(tabName,btnElement){
 ========================================================= */
 
 function getWalletAddress(){
+
     return `FDX_NODE_${currentUserId}`;
 }
 
@@ -1903,13 +2018,19 @@ let qrInstance = null;
 function openReceiveModal(){
 
     const modal =
-        document.getElementById('receiveModal');
+        document.getElementById(
+            'receiveModal'
+        );
 
     const addressBox =
-        document.getElementById('receiveAddressBox');
+        document.getElementById(
+            'receiveAddressBox'
+        );
 
     const qrContainer =
-        document.getElementById('qrcodeCanvas');
+        document.getElementById(
+            'qrcodeCanvas'
+        );
 
     const userWallet =
         getWalletAddress();
@@ -1917,36 +2038,47 @@ function openReceiveModal(){
     addressBox.value =
         userWallet;
 
-    qrContainer.innerHTML = '';
+    qrContainer.innerHTML =
+        '';
 
     qrInstance =
         new QRCode(
             qrContainer,
             {
-                text: userWallet,
-                width: 160,
-                height: 160,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                text:userWallet,
+                width:160,
+                height:160,
+                colorDark:"#000000",
+                colorLight:"#ffffff",
+                correctLevel:
+                    QRCode.CorrectLevel.H
             }
         );
 
-    modal.classList.add('active');
+    modal.classList.add(
+        'active'
+    );
 }
 
 
 function closeReceiveModal(){
+
     document
-        .getElementById('receiveModal')
-        .classList.remove('active');
+        .getElementById(
+            'receiveModal'
+        )
+        .classList.remove(
+            'active'
+        );
 }
 
 
 async function copyReceiveAddress(){
 
     const addressBox =
-        document.getElementById('receiveAddressBox');
+        document.getElementById(
+            'receiveAddressBox'
+        );
 
     try{
 
@@ -1962,7 +2094,9 @@ async function copyReceiveAddress(){
 
         addressBox.select();
 
-        document.execCommand('copy');
+        document.execCommand(
+            'copy'
+        );
 
         showToast(
             'Wallet address copied!'
@@ -1985,7 +2119,9 @@ function openSendModal(){
 
     document.getElementById(
         'sendModal'
-    ).classList.add('active');
+    ).classList.add(
+        'active'
+    );
 }
 
 
@@ -1993,7 +2129,9 @@ function closeSendModal(){
 
     document.getElementById(
         'sendModal'
-    ).classList.remove('active');
+    ).classList.remove(
+        'active'
+    );
 }
 
 
@@ -2039,7 +2177,8 @@ function processSendTransaction(){
     }
 
     state.totalBalance =
-        Number(state.totalBalance) - amount;
+        Number(state.totalBalance) -
+        amount;
 
     const txTime =
         new Date().toLocaleTimeString(
@@ -2051,6 +2190,7 @@ function processSendTransaction(){
         );
 
     if(!state.transactions){
+
         state.transactions = [];
     }
 
@@ -2068,25 +2208,63 @@ function processSendTransaction(){
 
     globalUsers[currentUserId] = {
 
-        username:currentUserName,
-        totalBalance:state.totalBalance,
-        totalMined:state.totalMined,
-        miningState:state.miningState,
-        miningStartedAt:state.miningStartedAt,
-        miningCycleDuration:state.miningCycleDuration,
-        baseMiningRate:state.baseMiningRate,
-        boosterBonusRate:state.boosterBonusRate,
-        boosterChancesLeft:state.boosterChancesLeft,
-        luckyBoxChances:state.luckyBoxChances,
-        burningStreak:state.burningStreak,
-        recoverableBalance:state.recoverableBalance,
-        friends:state.friends,
-        transactions:state.transactions,
-        claimedTasks:state.claimedTasks
+        username:
+            currentUserName,
+
+        totalBalance:
+            state.totalBalance,
+
+        totalMined:
+            state.totalMined,
+
+        miningState:
+            state.miningState,
+
+        miningStartedAt:
+            state.miningStartedAt,
+
+        miningCycleDuration:
+            state.miningCycleDuration,
+
+        baseMiningRate:
+            state.baseMiningRate,
+
+        boosterBonusRate:
+            state.boosterBonusRate,
+
+        /* NEW */
+        boostLuckyResetAt:
+            state.boostLuckyResetAt,
+
+        boosterChancesLeft:
+            state.boosterChancesLeft,
+
+        luckyBoxChances:
+            state.luckyBoxChances,
+
+        /* NEW */
+        sessionAccumulated:
+            state.sessionAccumulated,
+
+        burningStreak:
+            state.burningStreak,
+
+        recoverableBalance:
+            state.recoverableBalance,
+
+        friends:
+            state.friends,
+
+        transactions:
+            state.transactions,
+
+        claimedTasks:
+            state.claimedTasks
 
     };
 
-    let recipientKey = null;
+    let recipientKey =
+        null;
 
     for(
         let userId in globalUsers
@@ -2121,23 +2299,31 @@ function processSendTransaction(){
 
     if(recipientKey){
 
-        globalUsers[recipientKey].totalBalance =
-            Number(
-                globalUsers[recipientKey].totalBalance || 0
-            ) + amount;
+        globalUsers[recipientKey]
+            .totalBalance =
+                Number(
+                    globalUsers[recipientKey]
+                        .totalBalance || 0
+                ) + amount;
 
-        if(!globalUsers[recipientKey].transactions){
-            globalUsers[recipientKey].transactions = [];
+        if(
+            !globalUsers[recipientKey]
+                .transactions
+        ){
+
+            globalUsers[recipientKey]
+                .transactions = [];
         }
 
-        globalUsers[recipientKey].transactions.unshift({
+        globalUsers[recipientKey]
+            .transactions.unshift({
 
-            type:'RECEIVE',
-            sender:currentUserName,
-            amount:amount,
-            time:txTime
+                type:'RECEIVE',
+                sender:currentUserName,
+                amount:amount,
+                time:txTime
 
-        });
+            });
 
         showToast(
             `Successfully sent ${formatNumber(amount)} $FDX to ${recipientInput}!`
@@ -2157,12 +2343,14 @@ function processSendTransaction(){
             totalBalance:amount,
 
             transactions:[
+
                 {
                     type:'RECEIVE',
                     sender:currentUserName,
                     amount:amount,
                     time:txTime
                 }
+
             ]
 
         };
@@ -2172,7 +2360,9 @@ function processSendTransaction(){
         );
     }
 
-    saveAllUsersRegistry(globalUsers);
+    saveAllUsersRegistry(
+        globalUsers
+    );
 
     saveState();
 
@@ -2218,7 +2408,9 @@ function renderTransactions(){
         function(tx){
 
             const item =
-                document.createElement('div');
+                document.createElement(
+                    'div'
+                );
 
             item.className =
                 'friend-row-item';
@@ -2227,7 +2419,9 @@ function renderTransactions(){
                 tx.type === 'RECEIVE';
 
             const sign =
-                isReceive ? '+' : '-';
+                isReceive
+                    ? '+'
+                    : '-';
 
             const colorClass =
                 isReceive
@@ -2278,7 +2472,9 @@ function renderTransactions(){
 
             `;
 
-            container.appendChild(item);
+            container.appendChild(
+                item
+            );
         }
     );
 }
@@ -2316,7 +2512,9 @@ function openTaskLinkAndVerify(type){
                     )
                 ){
 
-                    claimTaskReward('telegram');
+                    claimTaskReward(
+                        'telegram'
+                    );
                 }
 
             },
@@ -2341,7 +2539,9 @@ function openTaskLinkAndVerify(type){
                     )
                 ){
 
-                    claimTaskReward('x');
+                    claimTaskReward(
+                        'x'
+                    );
                 }
 
             },
@@ -2366,7 +2566,9 @@ function openTaskLinkAndVerify(type){
                     )
                 ){
 
-                    claimTaskReward('youtube');
+                    claimTaskReward(
+                        'youtube'
+                    );
                 }
 
             },
@@ -2391,7 +2593,8 @@ function claimTaskReward(type){
         true;
 
     state.totalBalance =
-        Number(state.totalBalance) + 5;
+        Number(state.totalBalance) +
+        5;
 
     saveState();
 
@@ -2424,7 +2627,9 @@ function openProfileInfo(type){
             'sheetContentBody'
         );
 
-    modal.classList.add('active');
+    modal.classList.add(
+        'active'
+    );
 
     if(type === 'account'){
 
@@ -2554,6 +2759,7 @@ function sendSupportMessage(){
         !messages ||
         !input.value.trim()
     ){
+
         return;
     }
 
@@ -2561,7 +2767,9 @@ function sendSupportMessage(){
         input.value.trim();
 
     const userBubble =
-        document.createElement('div');
+        document.createElement(
+            'div'
+        );
 
     userBubble.className =
         'chat-bubble user';
@@ -2583,7 +2791,9 @@ function sendSupportMessage(){
         function(){
 
             const adminBubble =
-                document.createElement('div');
+                document.createElement(
+                    'div'
+                );
 
             adminBubble.className =
                 'chat-bubble admin';
@@ -2608,7 +2818,9 @@ function closeProfileInfo(){
 
     document.getElementById(
         'profileInfoModal'
-    ).classList.remove('active');
+    ).classList.remove(
+        'active'
+    );
 }
 
 
@@ -2723,7 +2935,9 @@ function shareReferralLink(){
    ADSGRAM REWARDED AD
 ========================================================= */
 
-function showAdsgramAd(rewardCallback){
+function showAdsgramAd(
+    rewardCallback
+){
 
     if(!adsgramController){
 
@@ -2738,6 +2952,7 @@ function showAdsgramAd(rewardCallback){
         typeof rewardCallback !==
         'function'
     ){
+
         return;
     }
 
@@ -2767,6 +2982,11 @@ function showAdsgramAd(rewardCallback){
         .catch(
             function(error){
 
+                console.warn(
+                    'Adsgram show error:',
+                    error
+                );
+
                 showToast(
                     'Advertisement is currently unavailable. Please try again.'
                 );
@@ -2782,12 +3002,27 @@ function showAdsgramAd(rewardCallback){
 const MINING_CYCLE_SECONDS =
     14400;
 
+
+/*
+    NEW SHARED RESET SYSTEM
+
+    Mining Boost and Lucky Box both use:
+    
+    state.boostLuckyResetAt
+
+    The timestamp is the exact moment the
+    current mining countdown finishes.
+*/
+
+
 function getMiningElapsedSeconds(){
 
     if(
-        state.miningState !== 'ACTIVE' ||
+        state.miningState !==
+        'ACTIVE' ||
         !state.miningStartedAt
     ){
+
         return 0;
     }
 
@@ -2886,7 +3121,67 @@ function formatTimer(seconds){
 }
 
 
+/*
+    NEW:
+    This function resets both Mining Boost
+    and Lucky Box together.
+*/
+
+function resetBoostAndLuckyBox(){
+
+    state.boosterChancesLeft =
+        5;
+
+    state.luckyBoxChances =
+        5;
+
+    state.boosterBonusRate =
+        0;
+
+    state.boostLuckyResetAt =
+        0;
+
+    saveState();
+}
+
+
+/*
+    NEW:
+    Checks whether the shared reset time
+    has been reached.
+
+    This also works after the Mini App
+    has been refreshed because the timestamp
+    is stored in localStorage.
+*/
+
+function checkBoostLuckyReset(){
+
+    if(
+        state.miningState === 'ACTIVE' &&
+        state.boostLuckyResetAt > 0 &&
+        Date.now() >=
+        state.boostLuckyResetAt
+    ){
+
+        return true;
+    }
+
+    return false;
+}
+
+
 function updateMiningUI(){
+
+    /*
+        IMPORTANT:
+
+        Capture the final boosted rate BEFORE
+        resetting the booster.
+
+        This prevents the user's completed
+        mining reward from losing the booster.
+    */
 
     if(
         state.miningState === 'ACTIVE' &&
@@ -2894,19 +3189,72 @@ function updateMiningUI(){
         MINING_CYCLE_SECONDS
     ){
 
+        const finalRate =
+            getCurrentRate();
+
         state.sessionAccumulated =
             parseFloat(
                 (
-                    4 *
-                    getCurrentRate()
+                    (
+                        MINING_CYCLE_SECONDS /
+                        3600
+                    ) *
+                    finalRate
                 ).toFixed(2)
             );
 
         state.miningState =
             'READY_TO_CLAIM';
 
+        /*
+            Countdown has reached zero.
+
+            Reset both systems together.
+        */
+
+        state.boosterChancesLeft =
+            5;
+
+        state.luckyBoxChances =
+            5;
+
+        state.boosterBonusRate =
+            0;
+
+        state.boostLuckyResetAt =
+            0;
+
         saveState();
     }
+
+
+    /*
+        Safety check for a stored reset timestamp.
+
+        Normally the reset above handles it,
+        but this protects against a refresh or
+        restored state.
+    */
+
+    if(
+        checkBoostLuckyReset()
+    ){
+
+        state.boosterChancesLeft =
+            5;
+
+        state.luckyBoxChances =
+            5;
+
+        state.boosterBonusRate =
+            0;
+
+        state.boostLuckyResetAt =
+            0;
+
+        saveState();
+    }
+
 
     const rate =
         getCurrentRate();
@@ -2928,6 +3276,7 @@ function updateMiningUI(){
             getRemainingSeconds()
         );
 
+
     const sessionAmount =
         state.miningState === 'ACTIVE'
             ? getSessionAccumulated()
@@ -2940,6 +3289,7 @@ function updateMiningUI(){
     ).textContent =
         `${formatNumber(sessionAmount)} FDX`;
 
+
     const elapsed =
         state.miningState === 'ACTIVE'
             ? getMiningElapsedSeconds()
@@ -2949,6 +3299,7 @@ function updateMiningUI(){
                     ? MINING_CYCLE_SECONDS
                     : 0
             );
+
 
     document.getElementById(
         'completedHours'
@@ -2960,20 +3311,26 @@ function updateMiningUI(){
             )
         )} / 4`;
 
+
     document.getElementById(
         'totalMined'
     ).textContent =
-        `${formatNumber(state.totalMined)} FDX`;
+        `${formatNumber(
+            state.totalMined
+        )} FDX`;
+
 
     document.getElementById(
         'boosterChances'
     ).textContent =
         `${state.boosterChancesLeft}/5 Left`;
 
+
     document.getElementById(
         'luckyBoxPromptChances'
     ).textContent =
         state.luckyBoxChances;
+
 
     document.getElementById(
         'recoverableFdx'
@@ -2982,10 +3339,12 @@ function updateMiningUI(){
             state.recoverableBalance
         );
 
+
     document.getElementById(
         'burningStreak'
     ).textContent =
         `${state.burningStreak} Day`;
+
 
     const pill =
         document.getElementById(
@@ -2996,6 +3355,7 @@ function updateMiningUI(){
         document.getElementById(
             'miningToggleBtn'
         );
+
 
     if(
         state.miningState ===
@@ -3069,6 +3429,24 @@ function handleMiningAction(){
         state.sessionAccumulated =
             0;
 
+        /*
+            NEW:
+
+            Mining Boost and Lucky Box now
+            start their shared 5/5 period at
+            exactly the same time as mining.
+
+            The reset happens when this timestamp
+            reaches the end of the countdown.
+        */
+
+        state.boostLuckyResetAt =
+            state.miningStartedAt +
+            (
+                MINING_CYCLE_SECONDS *
+                1000
+            );
+
         saveState();
 
         updateAllUI();
@@ -3112,6 +3490,17 @@ function handleMiningAction(){
                 state.miningStartedAt =
                     0;
 
+                /*
+                    The previous cycle has already
+                    reset Boost + Lucky Box.
+
+                    The next reset timestamp will be
+                    created when Start Mining is pressed.
+                */
+
+                state.boostLuckyResetAt =
+                    0;
+
                 saveState();
 
                 updateAllUI();
@@ -3146,7 +3535,9 @@ function openBoosterPrompt(){
         .getElementById(
             'boosterPromptModal'
         )
-        .classList.add('active');
+        .classList.add(
+            'active'
+        );
 }
 
 
@@ -3156,7 +3547,9 @@ function closeBoosterPrompt(){
         .getElementById(
             'boosterPromptModal'
         )
-        .classList.remove('active');
+        .classList.remove(
+            'active'
+        );
 }
 
 
@@ -3213,7 +3606,9 @@ function openLuckyBoxModal(){
         .getElementById(
             'luckyBoxModal'
         )
-        .classList.add('active');
+        .classList.add(
+            'active'
+        );
 }
 
 
@@ -3223,7 +3618,9 @@ function closeLuckyBoxModal(){
         .getElementById(
             'luckyBoxModal'
         )
-        .classList.remove('active');
+        .classList.remove(
+            'active'
+        );
 }
 
 
@@ -3233,7 +3630,9 @@ function confirmOpenLuckyBox(){
         .getElementById(
             'luckyBoxModal'
         )
-        .classList.remove('active');
+        .classList.remove(
+            'active'
+        );
 
     showAdsgramAd(
         function(){
