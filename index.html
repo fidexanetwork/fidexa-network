@@ -2265,24 +2265,62 @@ async function syncWithBackend(){
                 'Authorization': `Bearer ${telegramInitData}`
             }
         });
+
+        const responseData =
+            await response.json().catch(() => ({}));
+
         if(response.ok){
-            const data = await response.json();
-            if(data){
-                if(data.totalBalance !== undefined) state.totalBalance = Number(data.totalBalance);
-                if(data.totalMined !== undefined) state.totalMined = Number(data.totalMined);
-                if(data.miningState !== undefined) state.miningState = data.miningState;
-                if(data.miningStartedAt !== undefined) state.miningStartedAt = Number(data.miningStartedAt);
-                if(data.sessionRate !== undefined) state.baseMiningRate = Number(data.sessionRate);
-                if(data.completedReward !== undefined) state.sessionAccumulated = Number(data.completedReward);
+
+            const user =
+                responseData.user || responseData;
+
+            if(user){
+
+                if(user.totalBalance !== undefined)
+                    state.totalBalance =
+                        Number(user.totalBalance);
+
+                if(user.totalMined !== undefined)
+                    state.totalMined =
+                        Number(user.totalMined);
+
+                if(user.miningState !== undefined)
+                    state.miningState =
+                        user.miningState;
+
+                if(user.miningStartedAt !== undefined)
+                    state.miningStartedAt =
+                        Number(user.miningStartedAt);
+
+                if(user.sessionRate !== undefined)
+                    state.baseMiningRate =
+                        Number(user.sessionRate);
+
+                if(user.completedReward !== undefined)
+                    state.sessionAccumulated =
+                        Number(user.completedReward);
+
                 saveState();
                 updateAllUI();
             }
+
+        }else{
+
+            console.error(
+                'Backend /api/me failed:',
+                response.status,
+                responseData
+            );
         }
+
     }catch(e){
-        console.warn('Failed to sync with backend /api/me:', e);
+
+        console.warn(
+            'Failed to sync with backend /api/me:',
+            e
+        );
     }
 }
-
 async function callBackendMiningStart(){
     try{
         const response = await fetch(`${BACKEND_URL}/api/mining/start`, {
@@ -2293,29 +2331,86 @@ async function callBackendMiningStart(){
                 'Authorization': `Bearer ${telegramInitData}`
             }
         });
+
+        const responseData =
+            await response.json().catch(() => ({}));
+
         if(response.ok){
-            const data = await response.json();
-            if(data){
-                if(data.miningState !== undefined) state.miningState = data.miningState;
-                if(data.miningStartedAt !== undefined) state.miningStartedAt = Number(data.miningStartedAt);
-                if(data.totalBalance !== undefined) state.totalBalance = Number(data.totalBalance);
-                if(data.totalMined !== undefined) state.totalMined = Number(data.totalMined);
+
+            const mining =
+                responseData.mining || responseData;
+
+            if(mining){
+
+                if(mining.state !== undefined)
+                    state.miningState =
+                        mining.state;
+
+                if(mining.miningState !== undefined)
+                    state.miningState =
+                        mining.miningState;
+
+                if(mining.miningStartedAt !== undefined)
+                    state.miningStartedAt =
+                        Number(
+                            mining.miningStartedAt
+                        );
+
+                if(mining.sessionRate !== undefined)
+                    state.baseMiningRate =
+                        Number(
+                            mining.sessionRate
+                        );
+
+                if(mining.totalBalance !== undefined)
+                    state.totalBalance =
+                        Number(
+                            mining.totalBalance
+                        );
+
+                if(mining.totalMined !== undefined)
+                    state.totalMined =
+                        Number(
+                            mining.totalMined
+                        );
+
                 saveState();
                 updateAllUI();
             }
+
             return true;
+
         }else{
-            const err = await response.json().catch(() => ({}));
-            showToast(err.message || 'Failed to start mining on backend.');
+
+            console.error(
+                'Backend mining start failed:',
+                response.status,
+                responseData
+            );
+
+            showToast(
+                responseData.error ||
+                responseData.message ||
+                `Failed to start mining on backend (${response.status})`
+            );
+
             return false;
         }
+
     }catch(e){
-        console.warn('Backend mining start error:', e);
-        showToast('Network error connecting to backend.');
+
+        console.error(
+            'Backend mining start error:',
+            e
+        );
+
+        showToast(
+            'Network error connecting to backend.'
+        );
+
         return false;
     }
 }
-
 async function callBackendMiningClaim(){
     try{
         const response = await fetch(`${BACKEND_URL}/api/mining/claim`, {
@@ -2326,26 +2421,73 @@ async function callBackendMiningClaim(){
                 'Authorization': `Bearer ${telegramInitData}`
             }
         });
+
+        const responseData =
+            await response.json().catch(() => ({}));
+
         if(response.ok){
-            const data = await response.json();
-            if(data){
-                if(data.totalBalance !== undefined) state.totalBalance = Number(data.totalBalance);
-                if(data.totalMined !== undefined) state.totalMined = Number(data.totalMined);
-                if(data.miningState !== undefined) state.miningState = data.miningState;
-                if(data.miningStartedAt !== undefined) state.miningStartedAt = Number(data.miningStartedAt);
-                if(data.sessionAccumulated !== undefined) state.sessionAccumulated = Number(data.sessionAccumulated);
-                saveState();
-                updateAllUI();
-            }
+
+            if(responseData.totalBalance !== undefined)
+                state.totalBalance =
+                    Number(
+                        responseData.totalBalance
+                    );
+
+            if(responseData.totalMined !== undefined)
+                state.totalMined =
+                    Number(
+                        responseData.totalMined
+                    );
+
+            if(responseData.miningState !== undefined)
+                state.miningState =
+                    responseData.miningState;
+
+            if(responseData.miningStartedAt !== undefined)
+                state.miningStartedAt =
+                    Number(
+                        responseData.miningStartedAt
+                    );
+
+            if(responseData.sessionAccumulated !== undefined)
+                state.sessionAccumulated =
+                    Number(
+                        responseData.sessionAccumulated
+                    );
+
+            saveState();
+            updateAllUI();
+
             return true;
+
         }else{
-            const err = await response.json().catch(() => ({}));
-            showToast(err.message || 'Failed to claim mining on backend.');
+
+            console.error(
+                'Backend mining claim failed:',
+                response.status,
+                responseData
+            );
+
+            showToast(
+                responseData.error ||
+                responseData.message ||
+                `Failed to claim mining on backend (${response.status})`
+            );
+
             return false;
         }
+
     }catch(e){
-        console.warn('Backend mining claim error:', e);
-        showToast('Network error connecting to backend.');
+
+        console.error(
+            'Backend mining claim error:',
+            e
+        );
+
+        showToast(
+            'Network error connecting to backend.'
+        );
+
         return false;
     }
 }
