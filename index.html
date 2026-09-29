@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -652,6 +651,7 @@ background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
 border-radius:20px;
 overflow:hidden;
+margin-bottom:14px;
 }
 
 .tx-header{
@@ -662,6 +662,85 @@ font-weight:900;
 color:var(--cyan);
 letter-spacing:.5px;
 text-align:left;
+}
+
+/* TON VERIFICATION SECTION (INSIDE WALLET) */
+.ton-verification-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+padding:20px;
+margin-bottom:14px;
+text-align:left;
+}
+
+.ton-verification-title{
+font-size:13px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px;
+margin-bottom:8px;
+}
+
+.ton-verification-desc{
+font-size:11px;
+color:var(--muted);
+line-height:1.5;
+font-weight:700;
+margin-bottom:16px;
+}
+
+.ton-verification-meta{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:11px;
+padding:8px 0;
+border-bottom:1px solid rgba(27,38,54,.7);
+margin-bottom:14px;
+}
+
+.ton-verification-meta-label{
+color:var(--muted);
+font-weight:700;
+}
+
+.ton-verification-meta-value{
+color:#fff;
+font-weight:900;
+}
+
+.ton-verification-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.ton-btn{
+background:rgba(56,189,248,.12);
+border:1px solid rgba(56,189,248,.35);
+border-radius:12px;
+padding:12px 10px;
+color:var(--cyan);
+font-size:12px;
+font-weight:900;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+}
+
+.ton-btn.primary{
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+color:#fff;
+box-shadow:0 4px 15px rgba(56,189,248,.3);
+}
+
+.ton-btn:disabled, .ton-btn.disabled{
+opacity:0.5;
+cursor:not-allowed;
+pointer-events:none;
 }
 
 .qr-container{
@@ -1601,6 +1680,27 @@ onclick="openReceiveModal()">
 📥 Receive
 </button>
 
+</div>
+
+<!-- ON-CHAIN VERIFICATION SECTION -->
+<div class="ton-verification-card">
+<div class="ton-verification-title">ON-CHAIN VERIFICATION</div>
+<div class="ton-verification-desc">Verify your Fidexa account on the TON blockchain.</div>
+
+<div class="ton-verification-meta">
+<span class="ton-verification-meta-label">Verification fee:</span>
+<span class="ton-verification-meta-value">0.5 TON</span>
+</div>
+
+<div class="ton-verification-meta">
+<span class="ton-verification-meta-label">Status:</span>
+<span class="ton-verification-meta-value" id="fidexaTonStatusText">Coming Soon</span>
+</div>
+
+<div class="ton-verification-actions">
+<button class="ton-btn" id="tonConnectWalletBtn" onclick="fidexaConnectTonWallet()">Connect TON Wallet</button>
+<button class="ton-btn primary disabled" id="tonVerifyAccountBtn" disabled onclick="fidexaVerifyAccountAction()">Verify Account</button>
+</div>
 </div>
 
 <div class="tx-history-card">
@@ -3772,6 +3872,87 @@ function renderTransactions(){
 }
 
 
+/* =========================================================
+   TON VERIFICATION SYSTEM (FRONTEND STRUCTURE)
+========================================================= */
+
+const FIDEXA_VERIFICATION_CONFIG = {
+    enabled: false,
+    feeTon: 0.5,
+    network: "testnet",
+    status: "coming_soon"
+};
+
+let fidexaTonWalletState = {
+    connected: false,
+    address: null,
+    status: "coming_soon"
+};
+
+function fidexaConnectTonWallet() {
+    markUserActive();
+    if (!FIDEXA_VERIFICATION_CONFIG.enabled) {
+        showToast("On-chain verification coming soon.");
+        return;
+    }
+    // FUTURE: Integrate TON Connect UI flow here
+    showToast("TON Connect preparation initialized.");
+}
+
+async function fidexaVerifyAccountAction() {
+    markUserActive();
+    if (!FIDEXA_VERIFICATION_CONFIG.enabled) {
+        showToast("On-Chain Verification Coming Soon");
+        return;
+    }
+    // FUTURE BACKEND INTEGRATION PLACEHOLDERS
+    await createVerificationRequest();
+    await verifyTonPayment();
+    await getVerificationStatus();
+}
+
+async function createVerificationRequest() {
+    // FUTURE: Call Firebase/backend. Backend creates a unique verification request.
+}
+
+async function verifyTonPayment() {
+    // FUTURE: Backend checks the TON blockchain. Frontend must NOT independently decide payment validity.
+}
+
+async function getVerificationStatus() {
+    // FUTURE: Retrieve authenticated user's verification status from backend/Firestore.
+}
+
+function updateFidexaTonVerificationUI() {
+    const statusTextEl = document.getElementById('fidexaTonStatusText');
+    const connectBtn = document.getElementById('tonConnectWalletBtn');
+    const verifyBtn = document.getElementById('tonVerifyAccountBtn');
+
+    if (!statusTextEl || !connectBtn || !verifyBtn) return;
+
+    if (!FIDEXA_VERIFICATION_CONFIG.enabled) {
+        statusTextEl.textContent = "Coming Soon";
+        connectBtn.textContent = "Connect TON Wallet";
+        verifyBtn.textContent = "Verify Account";
+        verifyBtn.classList.add("disabled");
+        verifyBtn.disabled = true;
+        return;
+    }
+
+    if (!fidexaTonWalletState.connected) {
+        statusTextEl.textContent = "Wallet Not Connected";
+        connectBtn.textContent = "Connect TON Wallet";
+        verifyBtn.classList.add("disabled");
+        verifyBtn.disabled = true;
+    } else {
+        statusTextEl.textContent = "TON Wallet Connected";
+        connectBtn.textContent = fidexaTonWalletState.address ? `${fidexaTonWalletState.address.slice(0, 4)}...${fidexaTonWalletState.address.slice(-4)}` : "Connected";
+        verifyBtn.classList.remove("disabled");
+        verifyBtn.disabled = false;
+    }
+}
+
+
 function escapeHtml(str){
 
     return String(str)
@@ -5034,6 +5215,7 @@ function updateMiningUI(){
     }
 
     updateRecoveryUI();
+    updateFidexaTonVerificationUI();
 }
 
 
@@ -5634,4 +5816,3 @@ setInterval(
 
 </body>
 </html>
-
