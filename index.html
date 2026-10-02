@@ -1940,9 +1940,7 @@ id="toast">
 <script>
 
 /* =========================================================
-   FIDEXA NETWORK — BACKEND / STATE CONTROLLER
-   IMPORTANT: rewards and balances are never created locally.
-   The backend is the source of truth.
+   FIDEXA NETWORK — FIXED & OPTIMIZED SCRIPT
 ========================================================= */
 
 const BACKEND_API_URL = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
@@ -2222,10 +2220,6 @@ async function initializeBackendSync() {
             }
         }
 
-        if (!getTelegramInitData() && currentUserId === 'demo_user') {
-            console.warn('FIDEXA is running without Telegram initData. Backend should reject reward operations outside Telegram.');
-        }
-
         const res = await callBackendAPI('/api/me', 'GET');
         if (res && res.success) {
             applyBackendState(res);
@@ -2300,8 +2294,7 @@ function updateAllUI() {
 }
 
 /* =========================================================
-   MINING TIMER — DISPLAY ONLY
-   Backend timestamps remain authoritative.
+   MINING TIMER — ABSOLUTE TIMESTAMP SYNCED
 ========================================================= */
 function getRemainingMiningSeconds() {
     if (state.miningState !== 'MINING' || !state.sessionEndAt) return 0;
@@ -2390,7 +2383,7 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER — AD COMPLETION + SERVER CLAIM
+   BOOSTER — SAFE AD COMPLETION & BUSY RESTORATION
 ========================================================= */
 function openBoosterPrompt() {
     if (state.boosterRemaining <= 0) {
@@ -2412,6 +2405,8 @@ async function confirmWatchBoosterAd() {
     }
 
     closeBoosterPrompt();
+    const boosterConfirmBtn = document.querySelector('#boosterPromptModal .prompt-btn-confirm');
+    setBusy(boosterConfirmBtn, true, 'LOADING AD...');
 
     try {
         showToast('Loading advertisement...');
@@ -2429,11 +2424,13 @@ async function confirmWatchBoosterAd() {
     } catch (error) {
         console.error('Booster error:', error);
         showToast(error.message || 'Ad unavailable. No booster was applied.');
+    } finally {
+        setBusy(boosterConfirmBtn, false);
     }
 }
 
 /* =========================================================
-   LUCKY BOX — SERVER CONTROLLED
+   LUCKY BOX
 ========================================================= */
 function openLuckyBoxModal() {
     if (state.luckyBoxRemaining <= 0) {
@@ -2470,7 +2467,7 @@ async function confirmOpenLuckyBox() {
 }
 
 /* =========================================================
-   RECOVERY — AD COMPLETION + SERVER CLAIM
+   RECOVERY
 ========================================================= */
 async function claimRecovery() {
     if (state.recoverableBalance <= 0) {
@@ -2502,7 +2499,7 @@ async function claimRecovery() {
 }
 
 /* =========================================================
-   TASKS — NEVER CREDIT BALANCE LOCALLY
+   TASKS
 ========================================================= */
 function openTaskLinkAndVerify(type) {
     const urls = {
@@ -2637,7 +2634,7 @@ function switchTab(tabName, btnElement) {
 }
 
 /* =========================================================
-   WALLET
+   WALLET (WITH QR RE-CREATION FIX)
 ========================================================= */
 function getWalletAddress() {
     return `FDX_NODE_${currentUserId}`;
@@ -2651,6 +2648,8 @@ function openReceiveModal() {
 
     const userWallet = getWalletAddress();
     addressBox.value = userWallet;
+    
+    // Clear previous QR code to prevent stacked canvases
     qrContainer.innerHTML = '';
 
     if (window.QRCode) {
@@ -2856,6 +2855,15 @@ function openExternalLink(type) {
 
     if (links[type]) window.open(links[type], '_blank', 'noopener,noreferrer');
 }
+
+/* =========================================================
+   VISIBILITY CHANGE RESYNC (PREVENTS TIMER DESYNC)
+========================================================= */
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        syncMiningState();
+    }
+});
 
 /* =========================================================
    INITIALIZATION
