@@ -1,0 +1,2876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta name="theme-color" content="#05080c">
+
+<title>Fidexa Network</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
+<style>
+:root{
+--bg:#05080c;
+--panel:#0a1018;
+--border:#1b2636;
+--text:#f1f5f9;
+--muted:#8899a6;
+--cyan:#38bdf8;
+--blue:#0284c7;
+--yellow:#facc15;
+--red:#f87171;
+--green:#4ade80;
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+html,body{
+min-height:100%;
+background:var(--bg);
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+color:var(--text);
+-webkit-tap-highlight-color:transparent;
+-webkit-user-select:none;
+user-select:none;
+}
+
+button{
+font:inherit;
+cursor:pointer;
+}
+
+button:active{
+transform:scale(.98);
+}
+
+input{
+font:inherit;
+}
+
+.app{
+max-width:480px;
+min-height:100vh;
+margin:auto;
+padding-bottom:95px;
+position:relative;
+}
+
+.page-view{
+display:none;
+padding:24px 20px;
+min-height:calc(100vh - 95px);
+animation:fadeIn .2s ease-in-out;
+}
+
+.page-view.active{
+display:block;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(6px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+.balance-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid #1b2636;
+border-radius:18px;
+padding:18px;
+position:relative;
+margin-bottom:18px;
+}
+
+.balance-label{
+font-size:10px;
+color:var(--muted);
+letter-spacing:.8px;
+font-weight:700;
+}
+
+.balance-row{
+display:flex;
+align-items:baseline;
+gap:8px;
+margin-top:6px;
+}
+
+.balance-value{
+font-size:32px;
+font-weight:900;
+color:#fff;
+}
+
+.balance-token{
+font-size:18px;
+font-weight:800;
+color:var(--yellow);
+}
+
+.balance-dot{
+position:absolute;
+top:18px;
+right:18px;
+width:8px;
+height:8px;
+background:var(--cyan);
+border-radius:50%;
+box-shadow:0 0 8px var(--cyan);
+}
+
+.mining-node-container{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+margin:15px 0 20px;
+}
+
+.ring-wrapper{
+width:260px;
+height:260px;
+border-radius:50%;
+border:2px solid rgba(56,189,248,.25);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+position:relative;
+box-shadow:0 0 30px rgba(56,189,248,.08),inset 0 0 30px rgba(56,189,248,.08);
+}
+
+.ring-wrapper::before{
+content:'';
+position:absolute;
+inset:-6px;
+border-radius:50%;
+border:2px dashed rgba(56,189,248,.4);
+animation:spin 30s linear infinite;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+.system-status-pill{
+background:rgba(56,189,248,.12);
+border:1px solid rgba(56,189,248,.3);
+padding:4px 14px;
+border-radius:20px;
+font-size:10px;
+font-weight:800;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:4px;
+}
+
+.mining-timer{
+font-size:34px;
+font-weight:900;
+letter-spacing:2px;
+color:#fff;
+}
+
+.mining-rate-indicator{
+font-size:11px;
+color:var(--muted);
+font-weight:700;
+margin-top:6px;
+}
+
+.mining-rate-indicator span{
+color:var(--yellow);
+font-weight:900;
+}
+
+.action-controls{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:18px;
+}
+
+.start-mining-btn{
+width:100%;
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:14px;
+padding:16px;
+color:#fff;
+font-size:14px;
+font-weight:800;
+letter-spacing:1px;
+box-shadow:0 4px 20px rgba(56,189,248,.3);
+}
+
+.interactive-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.action-tile{
+background:rgba(10,16,24,.9);
+border:1px solid var(--border);
+border-radius:14px;
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px;
+text-align:left;
+box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+
+.action-tile-icon{
+font-size:22px;
+}
+
+.action-tile-title{
+font-size:11px;
+font-weight:800;
+color:#fff;
+letter-spacing:.3px;
+}
+
+.action-tile-sub{
+font-size:9px;
+color:var(--muted);
+margin-top:2px;
+font-weight:600;
+}
+
+.dual-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:14px;
+}
+
+.info-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:16px;
+padding:16px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+position:relative;
+}
+
+.info-box-top{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+}
+
+.info-box-label{
+font-size:10px;
+color:var(--muted);
+font-weight:700;
+line-height:1.3;
+letter-spacing:.5px;
+}
+
+.info-box-icon{
+width:28px;
+height:28px;
+border-radius:8px;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+}
+
+.info-box-value{
+font-size:18px;
+font-weight:800;
+color:#fff;
+margin-top:16px;
+}
+
+.statistics-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+padding:17px;
+margin-top:18px;
+}
+
+.statistics-title{
+font-size:14px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.7px;
+margin-bottom:14px;
+}
+
+.statistics-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.statistics-item{
+background:#0a111a;
+border:1px solid #1a2838;
+border-radius:13px;
+padding:13px;
+}
+
+.statistics-label{
+font-size:9px;
+font-weight:800;
+color:var(--muted);
+text-transform:uppercase;
+letter-spacing:.5px;
+}
+
+.statistics-value{
+font-size:17px;
+font-weight:900;
+color:#fff;
+margin-top:6px;
+}
+
+.statistics-value.yellow{color:var(--yellow);}
+.statistics-value.green{color:var(--green);}
+
+.full-page-header{
+font-size:22px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:1px;
+margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.full-page-sub{
+font-size:14px;
+color:var(--muted);
+margin-bottom:24px;
+line-height:1.5;
+font-weight:700;
+}
+
+.full-action-btn{
+width:100%;
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+border-radius:18px;
+padding:20px;
+color:#fff;
+font-size:16px;
+font-weight:900;
+box-shadow:0 6px 25px rgba(56,189,248,.35);
+letter-spacing:.8px;
+}
+
+.task-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:18px;
+overflow:hidden;
+margin-bottom:14px;
+}
+
+.task-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:16px;
+}
+
+.task-left{
+display:flex;
+align-items:center;
+gap:12px;
+min-width:0;
+}
+
+.task-icon{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+flex-shrink:0;
+}
+
+.task-name{
+font-size:15px;
+font-weight:900;
+color:#fff;
+}
+
+.task-reward{
+font-size:10px;
+font-weight:800;
+color:var(--yellow);
+margin-top:4px;
+}
+
+.task-button{
+background:rgba(56,189,248,.15);
+border:1px solid rgba(56,189,248,.4);
+color:var(--cyan);
+border-radius:11px;
+padding:10px 15px;
+font-size:12px;
+font-weight:900;
+white-space:nowrap;
+}
+
+.friends-stats-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-bottom:18px;
+}
+
+.friend-stat-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:16px;
+padding:15px 8px;
+text-align:center;
+}
+
+.friend-stat-value{
+font-size:22px;
+font-weight:900;
+color:#fff;
+}
+
+.friend-stat-label{
+font-size:9px;
+color:var(--muted);
+font-weight:900;
+margin-top:5px;
+text-transform:uppercase;
+letter-spacing:.4px;
+}
+
+.friend-list-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:18px;
+}
+
+.friend-list-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.friend-list-title{
+font-size:14px;
+font-weight:900;
+color:#fff;
+}
+
+.friend-list-count{
+font-size:10px;
+font-weight:900;
+color:var(--cyan);
+}
+
+.friends-scroll-area{
+max-height:330px;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+}
+
+.friend-row-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:14px 16px;
+border-bottom:1px solid rgba(27,38,54,.7);
+}
+
+.friend-row-item:last-child{
+border-bottom:0;
+}
+
+.friend-left{
+display:flex;
+align-items:center;
+gap:11px;
+min-width:0;
+}
+
+.friend-avatar{
+width:38px;
+height:38px;
+border-radius:50%;
+background:#111b27;
+border:1px solid #223247;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:17px;
+flex-shrink:0;
+}
+
+.friend-name{
+font-size:13px;
+font-weight:900;
+color:#fff;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.friend-status{
+font-size:9px;
+font-weight:900;
+margin-top:4px;
+}
+
+.friend-status.active{
+color:var(--green);
+}
+
+.friend-status.inactive{
+color:var(--muted);
+}
+
+.friend-empty-state{
+padding:30px 18px;
+text-align:center;
+}
+
+.friend-empty-icon{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.friend-empty-title{
+font-size:15px;
+font-weight:900;
+color:#fff;
+}
+
+.friend-empty-text{
+font-size:11px;
+color:var(--muted);
+line-height:1.6;
+margin-top:8px;
+}
+
+/* WALLET */
+
+.wallet-main-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:22px;
+padding:24px 20px;
+text-align:center;
+margin-bottom:14px;
+box-shadow:0 8px 30px rgba(0,0,0,.4);
+}
+
+.wallet-balance-title{
+font-size:11px;
+color:var(--muted);
+font-weight:800;
+letter-spacing:1px;
+}
+
+.wallet-balance-num{
+font-size:38px;
+font-weight:900;
+color:#fff;
+margin-top:6px;
+}
+
+.wallet-balance-token{
+font-size:18px;
+font-weight:800;
+color:var(--yellow);
+margin-left:6px;
+}
+
+.wallet-action-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:20px;
+}
+
+.wallet-btn{
+background:rgba(56,189,248,.12);
+border:1px solid rgba(56,189,248,.35);
+border-radius:14px;
+padding:14px;
+color:var(--cyan);
+font-size:13px;
+font-weight:900;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.wallet-btn.primary{
+background:linear-gradient(90deg,#0284c7,#38bdf8);
+border:0;
+color:#fff;
+box-shadow:0 4px 15px rgba(56,189,248,.3);
+}
+
+.tx-history-card{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:20px;
+overflow:hidden;
+}
+
+.tx-header{
+padding:16px;
+border-bottom:1px solid var(--border);
+font-size:13px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px;
+text-align:left;
+}
+
+.qr-container{
+background:#fff;
+padding:16px;
+border-radius:16px;
+display:inline-block;
+margin:14px 0;
+box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+
+.qr-container canvas,
+.qr-container img{
+display:block;
+margin:auto;
+}
+
+.profile-menu-list{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-bottom:28px;
+}
+
+.profile-menu-item{
+background:linear-gradient(145deg,#0d1520,#080d14);
+border:1px solid var(--border);
+border-radius:18px;
+padding:18px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+
+.profile-menu-left{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.profile-menu-icon{
+font-size:20px;
+}
+
+.profile-menu-title{
+font-size:15px;
+font-weight:900;
+color:#fff;
+letter-spacing:.3px;
+}
+
+.profile-menu-arrow{
+font-size:16px;
+color:var(--muted);
+font-weight:900;
+}
+
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(5,8,12,.95);
+z-index:1000;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.modal-overlay.active{
+display:flex;
+}
+
+.prompt-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:20px;
+width:100%;
+max-width:340px;
+padding:24px;
+text-align:center;
+box-shadow:0 10px 40px rgba(0,0,0,.5);
+}
+
+.prompt-title{
+font-size:14px;
+font-weight:800;
+color:var(--yellow);
+margin-bottom:12px;
+letter-spacing:.5px;
+}
+
+.prompt-desc{
+font-size:12px;
+color:var(--muted);
+margin-bottom:20px;
+line-height:1.4;
+}
+
+.prompt-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.prompt-btn-cancel{
+background:#111b27;
+border:1px solid #223247;
+border-radius:12px;
+padding:12px;
+color:var(--muted);
+font-size:12px;
+font-weight:800;
+}
+
+.prompt-btn-confirm{
+background:linear-gradient(90deg,#facc15,#f59e0b);
+border:0;
+border-radius:12px;
+padding:12px;
+color:#05080c;
+font-size:12px;
+font-weight:900;
+}
+
+.sheet-box{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:22px;
+width:100%;
+max-width:380px;
+max-height:80vh;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 12px 45px rgba(0,0,0,.6);
+}
+
+.sheet-header{
+padding:20px;
+border-bottom:1px solid var(--border);
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.sheet-title{
+font-size:16px;
+font-weight:900;
+color:var(--cyan);
+letter-spacing:.5px;
+}
+
+.sheet-close{
+background:none;
+border:0;
+font-size:18px;
+color:var(--muted);
+font-weight:900;
+}
+
+.sheet-content{
+padding:20px;
+overflow-y:auto;
+font-size:13px;
+color:var(--muted);
+line-height:1.6;
+font-weight:700;
+}
+
+.sheet-content strong{
+color:#fff;
+}
+
+.sheet-content p{
+margin:0;
+}
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+width:min(480px,100%);
+background:#070b10;
+border-top:1px solid var(--border);
+display:grid;
+grid-template-columns:repeat(5,1fr);
+padding:10px 0 calc(10px + env(safe-area-inset-bottom));
+z-index:100;
+}
+
+.nav-item{
+background:none;
+border:0;
+color:var(--muted);
+font-size:10px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+font-weight:700;
+}
+
+.nav-icon{
+font-size:18px;
+}
+
+.nav-item.active{
+color:var(--cyan);
+}
+
+.toast{
+position:fixed;
+left:50%;
+bottom:105px;
+transform:translateX(-50%) translateY(20px);
+background:#111b27;
+border:1px solid var(--cyan);
+color:#fff;
+padding:12px 18px;
+border-radius:12px;
+font-size:12px;
+font-weight:800;
+z-index:2000;
+opacity:0;
+pointer-events:none;
+transition:.25s;
+max-width:90%;
+text-align:center;
+}
+
+.toast.show{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+
+.recovery-card{
+margin-top:18px;
+background:linear-gradient(145deg,#101722,#080d14);
+border:1px solid rgba(250,204,21,.25);
+border-radius:20px;
+padding:17px;
+}
+
+.recovery-title{
+font-size:14px;
+font-weight:900;
+color:var(--yellow);
+margin-bottom:12px;
+}
+
+.recovery-line{
+display:flex;
+justify-content:space-between;
+gap:10px;
+font-size:11px;
+padding:7px 0;
+border-bottom:1px solid rgba(27,38,54,.7);
+}
+
+.recovery-line:last-child{
+border-bottom:0;
+}
+
+.recovery-label{
+color:var(--muted);
+}
+
+.recovery-value{
+color:#fff;
+font-weight:900;
+}
+
+.recovery-claim-btn{
+width:100%;
+margin-top:14px;
+padding:13px;
+border:0;
+border-radius:13px;
+background:linear-gradient(90deg,#facc15,#f59e0b);
+color:#05080c;
+font-size:12px;
+font-weight:900;
+display:none;
+}
+
+.recovery-claim-btn.visible{
+display:block;
+}
+
+.recovery-note{
+font-size:10px;
+color:var(--muted);
+line-height:1.5;
+margin-top:10px;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<main class="page-view active" id="page-mining">
+
+<div class="balance-card">
+<div class="balance-dot"></div>
+<div class="balance-label">TOTAL BALANCE</div>
+
+<div class="balance-row">
+<div class="balance-value" id="balanceDisplay">0.00</div>
+<div class="balance-token">$FDX</div>
+</div>
+</div>
+
+<div class="mining-node-container">
+
+<div class="ring-wrapper">
+
+<div class="system-status-pill" id="systemPill">
+READY TO MINE
+</div>
+
+<div class="mining-timer" id="timerDisplay">
+04:00:00
+</div>
+
+<div class="mining-rate-indicator">
+Mining Rate:
+<span id="currentRateDisplay">1.0</span> $FDX/H
+</div>
+
+</div>
+</div>
+
+<div class="action-controls">
+
+<button
+class="start-mining-btn"
+id="miningToggleBtn"
+onclick="handleMiningAction()">
+START MINING
+</button>
+
+<div class="interactive-grid">
+
+<button
+class="action-tile"
+onclick="openBoosterPrompt()">
+
+<div class="action-tile-icon">🚀</div>
+
+<div>
+<div class="action-tile-title">Mining Boost</div>
+
+<div
+class="action-tile-sub"
+id="boosterChances">
+5/5 Left
+</div>
+</div>
+
+</button>
+
+<button
+class="action-tile"
+onclick="openLuckyBoxModal()"
+style="border-color:rgba(250,204,21,.5);">
+
+<div class="action-tile-icon">🎁</div>
+
+<div>
+
+<div
+class="action-tile-title"
+style="color:var(--yellow);">
+Lucky Box
+</div>
+
+<div class="action-tile-sub">
+5 chances / 4 hours
+</div>
+
+</div>
+
+</button>
+
+</div>
+</div>
+
+<div class="statistics-card">
+
+<div class="statistics-title">
+📊 MINING STATISTICS
+</div>
+
+<div class="statistics-grid">
+
+<div class="statistics-item">
+<div class="statistics-label">Current Rate</div>
+
+<div
+class="statistics-value yellow"
+id="statRate">
+1.0 $FDX/H
+</div>
+</div>
+
+<div class="statistics-item">
+<div class="statistics-label">Session Accumulated</div>
+
+<div
+class="statistics-value"
+id="sessionAccumulated">
+0.00 $FDX
+</div>
+</div>
+
+<div class="statistics-item">
+<div class="statistics-label">Completed Hours</div>
+
+<div
+class="statistics-value"
+id="completedHours">
+0 / 4
+</div>
+</div>
+
+<div class="statistics-item">
+<div class="statistics-label">Total Mined</div>
+
+<div
+class="statistics-value green"
+id="totalMined">
+0.00 $FDX
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="dual-grid">
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+BURNING<br>
+STREAK
+</div>
+
+<div class="info-box-icon">🔥</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="burningStreak">
+1 Day
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-box-top">
+
+<div class="info-box-label">
+RECOVERABLE<br>
+$FDX
+</div>
+
+<div class="info-box-icon">💎</div>
+
+</div>
+
+<div
+class="info-box-value"
+id="recoverableFdx">
+0.00
+</div>
+
+</div>
+
+</div>
+
+<div class="recovery-card">
+
+<div class="recovery-title">
+🔐 RECOVERY STATUS
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Activity Status
+</div>
+
+<div
+class="recovery-value"
+id="activityStatus">
+ACTIVE
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Inactive Days
+</div>
+
+<div
+class="recovery-value"
+id="inactiveDays">
+0 / 7
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Active Days
+</div>
+
+<div
+class="recovery-value"
+id="activeDays">
+0 / 7
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Recovery Pool
+</div>
+
+<div
+class="recovery-value"
+id="recoveryPoolDisplay">
+0.00 $FDX
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Ready to Recover
+</div>
+
+<div
+class="recovery-value"
+id="recoveryUnlockedDisplay">
+0.00 $FDX
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Next Unlock
+</div>
+
+<div
+class="recovery-value"
+id="recoveryNextUnlock">
+Not active
+</div>
+
+</div>
+
+<div class="recovery-line">
+
+<div class="recovery-label">
+Daily Unlock
+</div>
+
+<div class="recovery-value">
+10%
+</div>
+
+</div>
+
+<button
+id="recoveryClaimBtn"
+class="recovery-claim-btn"
+onclick="claimRecovery()">
+🎁 WATCH AD & CLAIM RECOVERY
+</button>
+
+<div class="recovery-note" id="recoveryNote">
+Stay active to protect your $FDX balance.
+</div>
+
+</div>
+
+</main>
+
+<main class="page-view" id="page-tasks">
+
+<div class="full-page-header">
+📋 SYSTEM TASKS
+</div>
+
+<div class="full-page-sub">
+Complete official FIDEXA community tasks to earn rewards.
+</div>
+
+<div class="task-card">
+
+<div class="task-row">
+
+<div class="task-left">
+
+<div class="task-icon">📢</div>
+
+<div>
+
+<div class="task-name">
+Join Telegram
+</div>
+
+<div class="task-reward">
+Reward: +5.00 $FDX
+</div>
+
+</div>
+
+</div>
+
+<button
+class="task-button"
+onclick="openTaskLinkAndVerify('telegram')">
+JOIN
+</button>
+
+</div>
+</div>
+
+<div class="task-card">
+
+<div class="task-row">
+
+<div class="task-left">
+
+<div class="task-icon">𝕏</div>
+
+<div>
+
+<div class="task-name">
+Join X
+</div>
+
+<div class="task-reward">
+Reward: +5.00 $FDX
+</div>
+
+</div>
+
+</div>
+
+<button
+class="task-button"
+onclick="openTaskLinkAndVerify('x')">
+JOIN
+</button>
+
+</div>
+</div>
+
+<div class="task-card">
+
+<div class="task-row">
+
+<div class="task-left">
+
+<div class="task-icon">▶️</div>
+
+<div>
+
+<div class="task-name">
+Subscribe YouTube (@Fidexa_Network)
+</div>
+
+<div class="task-reward">
+Reward: +5.00 $FDX
+</div>
+
+</div>
+
+</div>
+
+<button
+class="task-button"
+onclick="openTaskLinkAndVerify('youtube')">
+SUBSCRIBE
+</button>
+
+</div>
+</div>
+
+</main>
+
+<main class="page-view" id="page-friends">
+
+<div class="full-page-header">
+👥 REFERRAL NETWORK
+</div>
+
+<div class="full-page-sub">
+View the users you personally invited and their current activity status.
+</div>
+
+<div class="friends-stats-grid">
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="totalFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Invited
+</div>
+
+</div>
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="activeFriendsCount"
+style="color:var(--green);">
+0
+</div>
+
+<div class="friend-stat-label">
+Active
+</div>
+
+</div>
+
+<div class="friend-stat-card">
+
+<div
+class="friend-stat-value"
+id="inactiveFriendsCount">
+0
+</div>
+
+<div class="friend-stat-label">
+Inactive
+</div>
+
+</div>
+
+</div>
+
+<div class="friend-list-card">
+
+<div class="friend-list-header">
+
+<div class="friend-list-title">
+My Invited Members
+</div>
+
+<div
+class="friend-list-count"
+id="friendListCount">
+0 MEMBERS
+</div>
+
+</div>
+
+<div
+class="friends-scroll-area"
+id="friendsList">
+
+<div class="friend-empty-state">
+
+<div class="friend-empty-icon">👥</div>
+
+<div class="friend-empty-title">
+No Invited Members
+</div>
+
+<div class="friend-empty-text">
+Your real invited members will appear here when referral data is connected.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+
+<button
+class="full-action-btn"
+onclick="copyReferralLink()"
+style="padding:15px;font-size:13px;box-shadow:none;">
+📋 COPY LINK
+</button>
+
+<button
+class="full-action-btn"
+onclick="shareReferralLink()"
+style="padding:15px;font-size:13px;box-shadow:none;background:linear-gradient(90deg,#10b981,#059669);">
+📤 SHARE LINK
+</button>
+
+</div>
+
+</main>
+
+<main class="page-view" id="page-wallet">
+
+<div class="wallet-main-card">
+
+<div class="wallet-balance-title">
+TOTAL WALLET BALANCE
+</div>
+
+<div
+class="wallet-balance-num"
+id="walletBalanceNum">
+0.00<span class="wallet-balance-token">$FDX</span>
+</div>
+
+</div>
+
+<div class="wallet-action-row">
+
+<button
+class="wallet-btn"
+onclick="openSendModal()">
+📤 Send
+</button>
+
+<button
+class="wallet-btn primary"
+onclick="openReceiveModal()">
+📥 Receive
+</button>
+
+</div>
+
+<div class="tx-history-card">
+
+<div class="tx-header">
+📜 RECENT TRANSACTIONS
+</div>
+
+<div
+class="friend-empty-state"
+id="txEmptyState">
+
+<div class="friend-empty-icon">💸</div>
+
+<div class="friend-empty-title">
+No Transactions Yet
+</div>
+
+<div class="friend-empty-text">
+Your send and receive transfers will appear here.
+</div>
+
+</div>
+
+<div
+id="txListContainer"
+style="max-height:220px;overflow-y:auto;">
+</div>
+
+</div>
+
+</main>
+
+<main class="page-view" id="page-profile">
+
+<div class="full-page-header">
+🛡️ USER PROFILE
+</div>
+
+<div class="full-page-sub">
+Manage your account, support, and official FIDEXA information.
+</div>
+
+<div class="profile-menu-list">
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('account')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">👤</span>
+<span class="profile-menu-title">Account Information</span>
+</div>
+
+<span class="profile-menu-arrow">›</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('support')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">💬</span>
+<span class="profile-menu-title">Chat Support</span>
+</div>
+
+<span class="profile-menu-arrow">›</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('privacy')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">🔒</span>
+<span class="profile-menu-title">Privacy Policy</span>
+</div>
+
+<span class="profile-menu-arrow">›</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('whitepaper')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">📄</span>
+<span class="profile-menu-title">White Paper</span>
+</div>
+
+<span class="profile-menu-arrow">›</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openExternalLink('telegram')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">📢</span>
+<span class="profile-menu-title">Official Telegram</span>
+</div>
+
+<span class="profile-menu-arrow">↗</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openExternalLink('twitter')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">🌐</span>
+<span class="profile-menu-title">Official X</span>
+</div>
+
+<span class="profile-menu-arrow">↗</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openExternalLink('youtube')">
+
+<div class="profile-menu-left">
+<span class="profile-menu-icon">▶️</span>
+<span class="profile-menu-title">
+Official YouTube (@Fidexa_Network)
+</span>
+</div>
+
+<span class="profile-menu-arrow">↗</span>
+
+</div>
+
+<div
+class="profile-menu-item"
+onclick="openProfileInfo('deletion')"
+style="border-color:rgba(248,113,113,.3);">
+
+<div class="profile-menu-left">
+
+<span class="profile-menu-icon">⚠️</span>
+
+<span
+class="profile-menu-title"
+style="color:var(--red);">
+Account Deletion
+</span>
+
+</div>
+
+<span
+class="profile-menu-arrow"
+style="color:var(--red);">
+›
+</span>
+
+</div>
+
+</div>
+
+</main>
+
+<div
+class="modal-overlay"
+id="profileInfoModal">
+
+<div class="sheet-box">
+
+<div class="sheet-header">
+
+<div
+class="sheet-title"
+id="sheetTitle">
+Information
+</div>
+
+<button
+class="sheet-close"
+onclick="closeProfileInfo()">
+✕
+</button>
+
+</div>
+
+<div
+class="sheet-content"
+id="sheetContentBody">
+Loading details...
+</div>
+
+</div>
+
+</div>
+
+<div
+class="modal-overlay"
+id="receiveModal">
+
+<div
+class="prompt-box"
+style="max-width:360px;">
+
+<div class="prompt-title">
+📥 RECEIVE $FDX
+</div>
+
+<div class="prompt-desc">
+Scan QR code or copy address to receive funds directly into your node wallet.
+</div>
+
+<div
+class="qr-container"
+id="qrcodeCanvas">
+</div>
+
+<input
+type="text"
+id="receiveAddressBox"
+readonly
+style="width:100%;padding:10px;background:#111b27;border:1px solid var(--border);border-radius:10px;color:#fff;font-size:11px;text-align:center;margin-bottom:14px;"
+onclick="this.select();">
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeReceiveModal()">
+Close
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="copyReceiveAddress()">
+Copy Address
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="modal-overlay"
+id="sendModal">
+
+<div
+class="prompt-box"
+style="max-width:360px;">
+
+<div class="prompt-title">
+📤 SEND $FDX
+</div>
+
+<div class="prompt-desc">
+Transfer available tokens directly to another user node address or @username securely.
+</div>
+
+<input
+type="text"
+id="sendRecipientInput"
+placeholder="Recipient Address or @username"
+style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
+
+<input
+type="number"
+id="sendAmountInput"
+placeholder="Amount to send ($FDX)"
+style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeSendModal()">
+Cancel
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="processSendTransaction()">
+Confirm Send
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="modal-overlay"
+id="boosterPromptModal">
+
+<div class="prompt-box">
+
+<div class="prompt-title">
+⚡ SPEED BOOSTER
+</div>
+
+<div class="prompt-desc">
+Watch an official Adsgram advertisement to increase your mining speed by +0.5 $FDX/H.
+</div>
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeBoosterPrompt()">
+Not now
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="confirmWatchBoosterAd()">
+Watch ad
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+class="modal-overlay"
+id="luckyBoxModal">
+
+<div class="prompt-box">
+
+<div class="prompt-title">
+🎁 LUCKY BOX
+</div>
+
+<div class="prompt-desc">
+
+You have
+<strong
+style="color:#fff;"
+id="luckyBoxPromptChances">
+5
+</strong>
+
+Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.
+
+</div>
+
+<div class="prompt-actions">
+
+<button
+class="prompt-btn-cancel"
+onclick="closeLuckyBoxModal()">
+Close
+</button>
+
+<button
+class="prompt-btn-confirm"
+onclick="confirmOpenLuckyBox()">
+Open Box
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<nav class="bottom-nav">
+
+<button
+class="nav-item active"
+onclick="switchTab('mining',this)">
+<span class="nav-icon">⚡</span>
+Mining
+</button>
+
+<button
+class="nav-item"
+onclick="switchTab('tasks',this)">
+<span class="nav-icon">📋</span>
+Tasks
+</button>
+
+<button
+class="nav-item"
+onclick="switchTab('friends',this)">
+<span class="nav-icon">👥</span>
+Friends
+</button>
+
+<button
+class="nav-item"
+onclick="switchTab('wallet',this)">
+<span class="nav-icon">👛</span>
+Wallet
+</button>
+
+<button
+class="nav-item"
+onclick="switchTab('profile',this)">
+<span class="nav-icon">🛡️</span>
+Profile
+</button>
+
+</nav>
+
+</div>
+
+<div
+class="toast"
+id="toast">
+</div>
+
+<script>
+
+/* =========================================================
+   FIDEXA NETWORK — BACKEND / STATE CONTROLLER
+   IMPORTANT: rewards and balances are never created locally.
+   The backend is the source of truth.
+========================================================= */
+
+const BACKEND_API_URL = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+
+const FIDEXA_TELEGRAM = 'https://t.me/fidexa_Network';
+const FIDEXA_X = 'https://x.com/Fidexa_Network';
+const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
+const FIDEXA_BOT = 'https://t.me/FIDEXANetworkBot';
+
+const ADSGRAM_BLOCK_ID = "49196";
+const MINING_CYCLE_SECONDS = 4 * 60 * 60;
+const BOOSTER_MAX = 5;
+const LUCKY_BOX_MAX = 5;
+
+let adsgramController = null;
+let qrInstance = null;
+let timerInterval = null;
+let isBusy = false;
+
+let currentUserId = 'demo_user';
+let currentUserName = 'FidexaUser';
+
+let state = {
+    totalBalance: 0,
+    totalMined: 0,
+    miningState: 'IDLE',
+    baseMiningRate: 1.0,
+    sessionRate: 1.0,
+    sessionAccumulated: 0,
+    sessionStartAt: null,
+    sessionEndAt: null,
+    burningStreak: 1,
+    inactiveDays: 0,
+    activeDays: 0,
+    recoverableBalance: 0,
+    activityStatus: 'ACTIVE',
+    boosterUsed: 0,
+    boosterRemaining: BOOSTER_MAX,
+    luckyBoxUsed: 0,
+    luckyBoxRemaining: LUCKY_BOX_MAX,
+    friends: [],
+    transactions: [],
+    claimedTasks: { telegram: false, x: false, youtube: false }
+};
+
+function getTelegramInitData() {
+    if (window.Telegram && window.Telegram.WebApp) {
+        return window.Telegram.WebApp.initData || '';
+    }
+    return '';
+}
+
+async function callBackendAPI(endpoint, method = 'GET', bodyData = null) {
+    const initData = getTelegramInitData();
+    const headers = { 'Content-Type': 'application/json' };
+
+    if (initData) headers['X-Telegram-Init-Data'] = initData;
+
+    const options = { method, headers };
+    if (bodyData !== null && bodyData !== undefined) {
+        options.body = JSON.stringify(bodyData);
+    }
+
+    try {
+        const response = await fetch(`${BACKEND_API_URL}${endpoint}`, options);
+        let data = null;
+        try { data = await response.json(); } catch (_) {}
+
+        if (!response.ok) {
+            return {
+                success: false,
+                error: (data && (data.error || data.message)) || `Server error (${response.status})`,
+                status: response.status
+            };
+        }
+
+        return data || { success: true };
+    } catch (error) {
+        console.error('API call error:', error);
+        return { success: false, error: 'Network error. Please try again.' };
+    }
+}
+
+function safeNumber(value, fallback = 0) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+}
+
+function firstDefined(...values) {
+    for (const value of values) {
+        if (value !== undefined && value !== null) return value;
+    }
+    return undefined;
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function formatNumber(value) {
+    return safeNumber(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = String(message || '');
+    toast.classList.add('show');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+}
+
+function setBusy(button, busy, busyText = 'PROCESSING...') {
+    if (!button) return;
+    if (busy) {
+        button.dataset.originalText = button.textContent;
+        button.disabled = true;
+        button.style.opacity = '0.65';
+        button.textContent = busyText;
+    } else {
+        button.disabled = false;
+        button.style.opacity = '';
+        if (button.dataset.originalText) button.textContent = button.dataset.originalText;
+    }
+}
+
+/* =========================================================
+   ADSGRAM
+========================================================= */
+function initializeAdsgram() {
+    if (!window.Adsgram) return;
+    try {
+        adsgramController = window.Adsgram.init({
+            blockId: ADSGRAM_BLOCK_ID,
+            debug: false
+        });
+    } catch (error) {
+        console.error('Adsgram initialization failed:', error);
+        adsgramController = null;
+    }
+}
+
+async function showAdsgramAd() {
+    if (!adsgramController) {
+        throw new Error('Adsgram is not available. Please try again later.');
+    }
+    await adsgramController.show();
+}
+
+/* =========================================================
+   BACKEND STATE NORMALIZATION
+========================================================= */
+function applyBackendState(payload) {
+    if (!payload) return;
+
+    const user = payload.user || {};
+    const mining = payload.mining || {};
+    const recovery = payload.recovery || {};
+    const boosters = payload.boosters || payload.booster || {};
+    const lucky = payload.luckyBox || payload.lucky_box || {};
+    const tasks = payload.tasks || {};
+
+    state.totalBalance = safeNumber(firstDefined(
+        payload.totalBalance, payload.balance, user.balance, state.totalBalance
+    ));
+
+    state.totalMined = safeNumber(firstDefined(
+        payload.totalMined, user.total_mined, user.totalMined, state.totalMined
+    ));
+
+    const miningStatus = String(firstDefined(
+        mining.status, mining.state, payload.miningState, user.mining_state, state.miningState
+    )).toUpperCase();
+
+    state.miningState = ['MINING', 'ACTIVE', 'RUNNING'].includes(miningStatus) ? 'MINING' : 'IDLE';
+
+    state.baseMiningRate = safeNumber(firstDefined(
+        mining.baseRate, mining.base_rate, payload.baseMiningRate, user.base_mining_rate, state.baseMiningRate
+    ), 1.0);
+
+    state.sessionRate = safeNumber(firstDefined(
+        mining.sessionRate, mining.session_rate, payload.sessionRate, state.sessionRate, state.baseMiningRate
+    ), state.baseMiningRate);
+
+    state.sessionAccumulated = safeNumber(firstDefined(
+        mining.sessionAccumulated, mining.session_accumulated, payload.sessionAccumulated, state.sessionAccumulated
+    ));
+
+    state.sessionStartAt = firstDefined(
+        mining.startAt, mining.start_at, mining.startedAt, mining.started_at,
+        payload.sessionStartAt, user.mining_started_at, null
+    );
+
+    state.sessionEndAt = firstDefined(
+        mining.endAt, mining.end_at, mining.expiresAt, mining.expires_at,
+        payload.sessionEndAt, user.mining_ends_at, null
+    );
+
+    state.burningStreak = safeNumber(firstDefined(
+        recovery.burningStreak, recovery.burning_streak, payload.burningStreak, user.burning_streak, state.burningStreak
+    ), 1);
+
+    state.inactiveDays = safeNumber(firstDefined(
+        recovery.inactiveDays, recovery.inactive_days, payload.inactiveDays, user.inactive_days, state.inactiveDays
+    ));
+
+    state.activeDays = safeNumber(firstDefined(
+        recovery.activeDays, recovery.active_days, payload.activeDays, user.active_days, state.activeDays
+    ));
+
+    state.recoverableBalance = safeNumber(firstDefined(
+        recovery.recoverableBalance, recovery.recoverable_balance,
+        payload.recoverableBalance, user.recoverable_balance, state.recoverableBalance
+    ));
+
+    state.activityStatus = String(firstDefined(
+        recovery.activityStatus, recovery.activity_status, payload.activityStatus,
+        user.activity_status, state.activityStatus
+    )).toUpperCase();
+
+    state.boosterRemaining = Math.max(0, Math.min(
+        BOOSTER_MAX,
+        Math.floor(safeNumber(firstDefined(
+            boosters.remaining, boosters.remainingToday, payload.boosterRemaining,
+            user.booster_remaining, BOOSTER_MAX - state.boosterUsed
+        ), BOOSTER_MAX))
+    ));
+    state.boosterUsed = BOOSTER_MAX - state.boosterRemaining;
+
+    state.luckyBoxRemaining = Math.max(0, Math.min(
+        LUCKY_BOX_MAX,
+        Math.floor(safeNumber(firstDefined(
+            lucky.remaining, lucky.remainingChances, payload.luckyBoxRemaining,
+            user.lucky_box_remaining, LUCKY_BOX_MAX - state.luckyBoxUsed
+        ), LUCKY_BOX_MAX))
+    ));
+    state.luckyBoxUsed = LUCKY_BOX_MAX - state.luckyBoxRemaining;
+
+    if (tasks && typeof tasks === 'object') {
+        state.claimedTasks = {
+            telegram: Boolean(firstDefined(tasks.telegram, tasks.telegram_claimed, state.claimedTasks.telegram)),
+            x: Boolean(firstDefined(tasks.x, tasks.x_claimed, state.claimedTasks.x)),
+            youtube: Boolean(firstDefined(tasks.youtube, tasks.youtube_claimed, state.claimedTasks.youtube))
+        };
+    }
+
+    if (Array.isArray(payload.transactions)) state.transactions = payload.transactions;
+}
+
+/* =========================================================
+   TELEGRAM USER + INITIAL SYNC
+========================================================= */
+async function initializeBackendSync() {
+    try {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const webApp = window.Telegram.WebApp;
+            webApp.ready();
+            webApp.expand();
+
+            if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
+                const tgUser = webApp.initDataUnsafe.user;
+                currentUserId = tgUser.id ? String(tgUser.id) : 'demo_user';
+                currentUserName = tgUser.username || tgUser.first_name || 'FidexaUser';
+            }
+        }
+
+        if (!getTelegramInitData() && currentUserId === 'demo_user') {
+            console.warn('FIDEXA is running without Telegram initData. Backend should reject reward operations outside Telegram.');
+        }
+
+        const res = await callBackendAPI('/api/me', 'GET');
+        if (res && res.success) {
+            applyBackendState(res);
+            if (res.user && res.user.username) currentUserName = res.user.username;
+        } else if (res && res.error) {
+            showToast(res.error);
+        }
+
+        await Promise.allSettled([
+            loadReferralData(),
+            loadTransactions(),
+            syncMiningState()
+        ]);
+
+        updateAllUI();
+        startMiningTimer();
+    } catch (error) {
+        console.error('Initialization failed:', error);
+        showToast('Unable to load account data.');
+    }
+}
+
+async function syncMiningState() {
+    const res = await callBackendAPI('/api/mining/status', 'GET');
+    if (res && res.success) {
+        applyBackendState(res);
+        updateAllUI();
+        startMiningTimer();
+    }
+}
+
+/* =========================================================
+   UI STATE
+========================================================= */
+function updateAllUI() {
+    const balanceEl = document.getElementById('balanceDisplay');
+    if (balanceEl) balanceEl.textContent = formatNumber(state.totalBalance);
+
+    const walletNumEl = document.getElementById('walletBalanceNum');
+    if (walletNumEl) {
+        walletNumEl.innerHTML = `${formatNumber(state.totalBalance)}<span class="wallet-balance-token">$FDX</span>`;
+    }
+
+    const rate = safeNumber(state.sessionRate || state.baseMiningRate, 1);
+    setText('statRate', `${rate.toFixed(1)} $FDX/H`);
+    setText('currentRateDisplay', rate.toFixed(1));
+    setText('totalMined', `${formatNumber(state.totalMined)} $FDX`);
+    setText('sessionAccumulated', `${formatNumber(state.sessionAccumulated)} $FDX`);
+
+    setText('boosterChances', `${state.boosterRemaining}/${BOOSTER_MAX} Left`);
+    setText('luckyBoxPromptChances', state.luckyBoxRemaining);
+
+    setText('recoverableFdx', formatNumber(state.recoverableBalance));
+    setText('activityStatus', state.activityStatus || 'ACTIVE');
+    setText('inactiveDays', `${state.inactiveDays} / 7`);
+
+    const recoveryBtn = document.querySelector('.recovery-claim-btn');
+    if (recoveryBtn) {
+        const canRecover = state.recoverableBalance > 0 && state.inactiveDays > 0;
+        recoveryBtn.classList.toggle('visible', canRecover);
+    }
+
+    const miningBtn = document.getElementById('miningToggleBtn');
+    const systemPill = document.getElementById('systemPill');
+    if (state.miningState === 'MINING') {
+        if (miningBtn) miningBtn.textContent = 'CLAIM REWARD';
+        if (systemPill) systemPill.textContent = 'MINING ACTIVE';
+    } else {
+        if (miningBtn) miningBtn.textContent = 'START MINING';
+        if (systemPill) systemPill.textContent = 'READY TO MINE';
+    }
+}
+
+/* =========================================================
+   MINING TIMER — DISPLAY ONLY
+   Backend timestamps remain authoritative.
+========================================================= */
+function getRemainingMiningSeconds() {
+    if (state.miningState !== 'MINING' || !state.sessionEndAt) return 0;
+    const end = new Date(state.sessionEndAt).getTime();
+    if (!Number.isFinite(end)) return 0;
+    return Math.max(0, Math.ceil((end - Date.now()) / 1000));
+}
+
+function formatDuration(totalSeconds) {
+    const seconds = Math.max(0, Math.floor(totalSeconds));
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+}
+
+function updateMiningTimer() {
+    const timerEl = document.getElementById('timerDisplay');
+    if (!timerEl) return;
+
+    if (state.miningState !== 'MINING') {
+        timerEl.textContent = '04:00:00';
+        return;
+    }
+
+    const remaining = getRemainingMiningSeconds();
+    timerEl.textContent = formatDuration(remaining);
+
+    const elapsed = Math.max(0, MINING_CYCLE_SECONDS - remaining);
+    const completedHours = Math.min(4, Math.floor(elapsed / 3600));
+    setText('completedHours', `${completedHours} / 4`);
+
+    if (remaining <= 0) {
+        stopMiningTimer();
+        syncMiningState();
+    }
+}
+
+function startMiningTimer() {
+    stopMiningTimer();
+    updateMiningTimer();
+    timerInterval = setInterval(updateMiningTimer, 1000);
+}
+
+function stopMiningTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+/* =========================================================
+   MINING ACTIONS
+========================================================= */
+async function handleMiningAction() {
+    if (isBusy) return;
+    isBusy = true;
+
+    const button = document.getElementById('miningToggleBtn');
+    setBusy(button, true, state.miningState === 'MINING' ? 'CLAIMING...' : 'STARTING...');
+
+    try {
+        const endpoint = state.miningState === 'MINING' ? '/api/mining/claim' : '/api/mining/start';
+        const res = await callBackendAPI(endpoint, 'POST');
+
+        if (!res || !res.success) {
+            showToast((res && res.error) || 'Mining action failed.');
+            return;
+        }
+
+        applyBackendState(res);
+
+        if (state.miningState === 'MINING') {
+            showToast(res.message || 'Mining started!');
+            startMiningTimer();
+        } else {
+            showToast(res.message || `Reward claimed: +${formatNumber(res.reward || 0)} $FDX`);
+            startMiningTimer();
+        }
+
+        updateAllUI();
+    } finally {
+        isBusy = false;
+        setBusy(button, false);
+    }
+}
+
+/* =========================================================
+   BOOSTER — AD COMPLETION + SERVER CLAIM
+========================================================= */
+function openBoosterPrompt() {
+    if (state.boosterRemaining <= 0) {
+        showToast('No booster chances remaining.');
+        return;
+    }
+    document.getElementById('boosterPromptModal')?.classList.add('active');
+}
+
+function closeBoosterPrompt() {
+    document.getElementById('boosterPromptModal')?.classList.remove('active');
+}
+
+async function confirmWatchBoosterAd() {
+    if (state.boosterRemaining <= 0) {
+        closeBoosterPrompt();
+        showToast('No booster chances remaining.');
+        return;
+    }
+
+    closeBoosterPrompt();
+
+    try {
+        showToast('Loading advertisement...');
+        await showAdsgramAd();
+
+        const res = await callBackendAPI('/api/mining/boost', 'POST');
+        if (!res || !res.success) {
+            showToast((res && res.error) || 'Booster could not be applied.');
+            return;
+        }
+
+        applyBackendState(res);
+        updateAllUI();
+        showToast(res.message || 'Mining boost applied successfully!');
+    } catch (error) {
+        console.error('Booster error:', error);
+        showToast(error.message || 'Ad unavailable. No booster was applied.');
+    }
+}
+
+/* =========================================================
+   LUCKY BOX — SERVER CONTROLLED
+========================================================= */
+function openLuckyBoxModal() {
+    if (state.luckyBoxRemaining <= 0) {
+        showToast('No Lucky Box chances remaining.');
+        return;
+    }
+    document.getElementById('luckyBoxModal')?.classList.add('active');
+}
+
+function closeLuckyBoxModal() {
+    document.getElementById('luckyBoxModal')?.classList.remove('active');
+}
+
+async function confirmOpenLuckyBox() {
+    if (state.luckyBoxRemaining <= 0) {
+        closeLuckyBoxModal();
+        showToast('No Lucky Box chances remaining.');
+        return;
+    }
+
+    closeLuckyBoxModal();
+
+    const res = await callBackendAPI('/api/lucky-box/open', 'POST');
+    if (!res || !res.success) {
+        showToast((res && res.error) || 'Lucky Box could not be opened.');
+        return;
+    }
+
+    applyBackendState(res);
+    updateAllUI();
+
+    const reward = safeNumber(firstDefined(res.reward, res.luckyBox?.reward, 0));
+    showToast(res.message || `Lucky Box opened! Won +${formatNumber(reward)} $FDX`);
+}
+
+/* =========================================================
+   RECOVERY — AD COMPLETION + SERVER CLAIM
+========================================================= */
+async function claimRecovery() {
+    if (state.recoverableBalance <= 0) {
+        showToast('No recoverable FDX is available.');
+        return;
+    }
+
+    const button = document.querySelector('.recovery-claim-btn');
+    setBusy(button, true, 'WATCHING AD...');
+
+    try {
+        await showAdsgramAd();
+        const res = await callBackendAPI('/api/recovery/claim', 'POST');
+
+        if (!res || !res.success) {
+            showToast((res && res.error) || 'Recovery could not be claimed.');
+            return;
+        }
+
+        applyBackendState(res);
+        updateAllUI();
+        showToast(res.message || 'Recovery claimed successfully!');
+    } catch (error) {
+        console.error('Recovery error:', error);
+        showToast(error.message || 'Ad unavailable. No recovery was claimed.');
+    } finally {
+        setBusy(button, false);
+    }
+}
+
+/* =========================================================
+   TASKS — NEVER CREDIT BALANCE LOCALLY
+========================================================= */
+function openTaskLinkAndVerify(type) {
+    const urls = {
+        telegram: FIDEXA_TELEGRAM,
+        x: FIDEXA_X,
+        youtube: FIDEXA_YOUTUBE
+    };
+
+    if (!urls[type]) return;
+
+    window.open(urls[type], '_blank');
+
+    setTimeout(() => claimTaskReward(type), 1200);
+}
+
+async function claimTaskReward(type) {
+    if (!['telegram', 'x', 'youtube'].includes(type)) return;
+
+    if (state.claimedTasks[type]) {
+        showToast('Task already claimed.');
+        return;
+    }
+
+    const res = await callBackendAPI('/api/tasks/claim', 'POST', { task: type });
+
+    if (!res || !res.success) {
+        showToast((res && res.error) || 'Task verification failed.');
+        return;
+    }
+
+    applyBackendState(res);
+    updateAllUI();
+
+    const reward = safeNumber(firstDefined(res.reward, res.task?.reward, 0));
+    showToast(res.message || `Task completed. +${formatNumber(reward)} $FDX`);
+}
+
+/* =========================================================
+   REFERRALS
+========================================================= */
+async function loadReferralData() {
+    const res = await callBackendAPI('/api/referrals', 'GET');
+    if (!res || !res.success) return;
+
+    state.friends = Array.isArray(res.referrals) ? res.referrals : [];
+    const totalCount = safeNumber(firstDefined(res.totalCount, res.total_count, state.friends.length));
+    const activeCount = safeNumber(firstDefined(res.activeCount, res.active_count, state.friends.filter(f => f.active !== false).length));
+    const inactiveCount = safeNumber(firstDefined(res.inactiveCount, res.inactive_count, Math.max(0, totalCount - activeCount)));
+
+    setText('totalFriendsCount', totalCount);
+    setText('activeFriendsCount', activeCount);
+    setText('inactiveFriendsCount', inactiveCount);
+    setText('friendListCount', `${totalCount} MEMBERS`);
+
+    renderFriendsList();
+}
+
+function renderFriendsList() {
+    const container = document.getElementById('friendsList');
+    if (!container) return;
+
+    const friends = state.friends || [];
+    if (!friends.length) {
+        container.innerHTML = `
+            <div class="friend-empty-state">
+                <div class="friend-empty-icon">👥</div>
+                <div class="friend-empty-title">No Invited Members</div>
+                <div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = '';
+    friends.forEach(friend => {
+        const item = document.createElement('div');
+        item.className = 'friend-row-item';
+
+        const username = escapeHtml(friend.username || 'FidexaUser');
+        const telegramId = escapeHtml(friend.telegram_id || friend.telegramId || '—');
+        const formattedDate = friend.created_at ? new Date(friend.created_at).toLocaleDateString() : '';
+        const active = friend.active !== false;
+
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">👤</div>
+                <div>
+                    <div class="friend-name">@${username}</div>
+                    <div class="friend-status ${active ? 'active' : 'inactive'}">${formattedDate ? (active ? 'Joined ' : 'Inactive · ') + formattedDate : (active ? 'Active Member' : 'Inactive Member')}</div>
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;">ID: ${telegramId}</div>`;
+
+        container.appendChild(item);
+    });
+}
+
+function copyReferralLink() {
+    const link = `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
+    navigator.clipboard.writeText(link)
+        .then(() => showToast('Referral link copied!'))
+        .catch(() => showToast('Unable to copy referral link.'));
+}
+
+function shareReferralLink() {
+    const link = `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
+    const text = encodeURIComponent('Join Fidexa Network and mine $FDX!');
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
+
+    if (window.Telegram?.WebApp?.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(shareUrl);
+    } else {
+        copyReferralLink();
+    }
+}
+
+/* =========================================================
+   TAB SWITCHING
+========================================================= */
+function switchTab(tabName, btnElement) {
+    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+    const page = document.getElementById(`page-${tabName}`);
+    if (page) page.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+
+    if (tabName === 'wallet') {
+        loadTransactions();
+    } else if (tabName === 'friends') {
+        loadReferralData();
+    }
+}
+
+/* =========================================================
+   WALLET
+========================================================= */
+function getWalletAddress() {
+    return `FDX_NODE_${currentUserId}`;
+}
+
+function openReceiveModal() {
+    const modal = document.getElementById('receiveModal');
+    const addressBox = document.getElementById('receiveAddressBox');
+    const qrContainer = document.getElementById('qrcodeCanvas');
+    if (!modal || !addressBox || !qrContainer) return;
+
+    const userWallet = getWalletAddress();
+    addressBox.value = userWallet;
+    qrContainer.innerHTML = '';
+
+    if (window.QRCode) {
+        qrInstance = new QRCode(qrContainer, {
+            text: userWallet,
+            width: 160,
+            height: 160,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
+    modal.classList.add('active');
+}
+
+function closeReceiveModal() {
+    document.getElementById('receiveModal')?.classList.remove('active');
+}
+
+async function copyReceiveAddress() {
+    const addressBox = document.getElementById('receiveAddressBox');
+    if (!addressBox) return;
+
+    try {
+        await navigator.clipboard.writeText(addressBox.value);
+    } catch (_) {
+        addressBox.select();
+        document.execCommand('copy');
+    }
+
+    showToast('Wallet address copied!');
+    closeReceiveModal();
+}
+
+function openSendModal() {
+    const recipient = document.getElementById('sendRecipientInput');
+    const amount = document.getElementById('sendAmountInput');
+    if (recipient) recipient.value = '';
+    if (amount) amount.value = '';
+    document.getElementById('sendModal')?.classList.add('active');
+}
+
+function closeSendModal() {
+    document.getElementById('sendModal')?.classList.remove('active');
+}
+
+async function processSendTransaction() {
+    const recipientInput = document.getElementById('sendRecipientInput')?.value.trim();
+    const amount = parseFloat(document.getElementById('sendAmountInput')?.value);
+
+    if (!recipientInput) {
+        showToast('Please enter a valid recipient address or @username.');
+        return;
+    }
+    if (!Number.isFinite(amount) || amount <= 0) {
+        showToast('Please enter a valid send amount.');
+        return;
+    }
+
+    if (amount > state.totalBalance) {
+        showToast('Insufficient balance.');
+        return;
+    }
+
+    const button = document.querySelector('#sendModal .prompt-btn-confirm');
+    setBusy(button, true, 'SENDING...');
+
+    try {
+        const res = await callBackendAPI('/api/wallet/send', 'POST', {
+            recipient: recipientInput,
+            amount
+        });
+
+        if (!res || !res.success) {
+            showToast((res && res.error) || 'Transfer failed.');
+            return;
+        }
+
+        applyBackendState(res);
+        await loadTransactions();
+        updateAllUI();
+        showToast(res.message || 'Transfer successful!');
+        closeSendModal();
+    } finally {
+        setBusy(button, false);
+    }
+}
+
+async function loadTransactions() {
+    const res = await callBackendAPI('/api/wallet/transactions', 'GET');
+    if (res && res.success) {
+        state.transactions = Array.isArray(res.transactions) ? res.transactions : [];
+        renderTransactions();
+    }
+}
+
+function renderTransactions() {
+    const container = document.getElementById('txListContainer');
+    const emptyState = document.getElementById('txEmptyState');
+    if (!container || !emptyState) return;
+
+    const txs = state.transactions || [];
+    if (!txs.length) {
+        emptyState.style.display = 'block';
+        container.innerHTML = '';
+        return;
+    }
+
+    emptyState.style.display = 'none';
+    container.innerHTML = '';
+
+    txs.forEach(tx => {
+        const item = document.createElement('div');
+        item.className = 'friend-row-item';
+
+        const type = String(tx.type || '').toUpperCase();
+        const isReceive = type === 'RECEIVE';
+        const sign = isReceive ? '+' : '-';
+        const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
+        const labelText = isReceive
+            ? `Received from ${escapeHtml(tx.sender || 'Node')}`
+            : `Sent to ${escapeHtml(tx.recipient || 'Node')}`;
+        const iconSymbol = isReceive ? '📥' : '📤';
+        const time = escapeHtml(tx.time || tx.created_at || '');
+
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">${iconSymbol}</div>
+                <div>
+                    <div class="friend-name">${labelText}</div>
+                    <div class="friend-status inactive">${time}</div>
+                </div>
+            </div>
+            <div style="font-size:13px;color:${colorClass};font-weight:900;">
+                ${sign}${formatNumber(tx.amount)} $FDX
+            </div>`;
+
+        container.appendChild(item);
+    });
+}
+
+/* =========================================================
+   PROFILE / EXTERNAL LINKS
+========================================================= */
+function openProfileInfo(type) {
+    const modal = document.getElementById('profileInfoModal');
+    const titleEl = document.getElementById('sheetTitle');
+    const bodyEl = document.getElementById('sheetContentBody');
+    if (!modal || !titleEl || !bodyEl) return;
+
+    if (type === 'account') {
+        titleEl.textContent = 'Account Information';
+        bodyEl.innerHTML = `
+            <p><strong>Telegram ID:</strong> ${escapeHtml(currentUserId)}</p>
+            <p style="margin-top:8px;"><strong>Username:</strong> @${escapeHtml(currentUserName)}</p>
+            <p style="margin-top:8px;"><strong>Node Address:</strong> ${escapeHtml(getWalletAddress())}</p>`;
+    } else if (type === 'support') {
+        titleEl.textContent = 'Chat Support';
+        bodyEl.innerHTML = `<p>For assistance with your Fidexa node or transfers, please contact the official Fidexa support channel.</p>`;
+    } else if (type === 'privacy') {
+        titleEl.textContent = 'Privacy Policy';
+        bodyEl.innerHTML = `<p>Fidexa Network uses Telegram WebApp authentication and server-side account data. Reward operations are processed by the Fidexa backend.</p>`;
+    } else if (type === 'whitepaper') {
+        titleEl.textContent = 'White Paper';
+        bodyEl.innerHTML = `<p>Read the official Fidexa Network whitepaper from the official Fidexa channels for tokenomics and mining-cycle information.</p>`;
+    } else if (type === 'deletion') {
+        titleEl.textContent = 'Account Deletion';
+        bodyEl.innerHTML = `
+            <p>Account deletion must be processed by the Fidexa backend so your server-side account data is removed correctly.</p>
+            <div style="margin-top:14px;">
+                <button class="prompt-btn-confirm" style="width:100%;" onclick="requestAccountDeletion()">Request Account Deletion</button>
+            </div>`;
+    }
+
+    modal.classList.add('active');
+}
+
+function closeProfileInfo() {
+    document.getElementById('profileInfoModal')?.classList.remove('active');
+}
+
+async function requestAccountDeletion() {
+    const confirmed = window.confirm('Are you sure you want to request deletion of your Fidexa account? This action may be irreversible.');
+    if (!confirmed) return;
+
+    const res = await callBackendAPI('/api/account/delete', 'POST');
+    if (!res || !res.success) {
+        showToast((res && res.error) || 'Account deletion request failed.');
+        return;
+    }
+
+    showToast(res.message || 'Account deletion request submitted.');
+    closeProfileInfo();
+}
+
+function openExternalLink(type) {
+    const links = {
+        telegram: FIDEXA_TELEGRAM,
+        twitter: FIDEXA_X,
+        youtube: FIDEXA_YOUTUBE
+    };
+
+    if (links[type]) window.open(links[type], '_blank', 'noopener,noreferrer');
+}
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeAdsgram();
+        initializeBackendSync();
+    });
+} else {
+    initializeAdsgram();
+    initializeBackendSync();
+}
+
+window.addEventListener('beforeunload', stopMiningTimer);
+</script>
+</body>
+</html>
