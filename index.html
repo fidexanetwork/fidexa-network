@@ -1940,7 +1940,9 @@ id="toast">
 <script>
 
 /* =========================================================
-   FIDEXA NETWORK — FIXED & OPTIMIZED SCRIPT
+   FIDEXA NETWORK — BACKEND / STATE CONTROLLER
+   IMPORTANT: rewards and balances are never created locally.
+   The backend is the source of truth.
 ========================================================= */
 
 const BACKEND_API_URL = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
@@ -2081,10 +2083,13 @@ function setBusy(button, busy, busyText = 'PROCESSING...') {
 }
 
 /* =========================================================
-   ADSGRAM
+   ADSGRAM (Safely guarded initialization & execution)
 ========================================================= */
 function initializeAdsgram() {
-    if (!window.Adsgram) return;
+    if (!window.Adsgram) {
+        console.warn('Adsgram script not loaded globally.');
+        return;
+    }
     try {
         adsgramController = window.Adsgram.init({
             blockId: ADSGRAM_BLOCK_ID,
@@ -2098,9 +2103,12 @@ function initializeAdsgram() {
 
 async function showAdsgramAd() {
     if (!adsgramController) {
+        initializeAdsgram();
+    }
+    if (!adsgramController) {
         throw new Error('Adsgram is not available. Please try again later.');
     }
-    await adsgramController.show();
+    return await adsgramController.show();
 }
 
 /* =========================================================
@@ -2294,7 +2302,7 @@ function updateAllUI() {
 }
 
 /* =========================================================
-   MINING TIMER — ABSOLUTE TIMESTAMP SYNCED
+   MINING TIMER — DISPLAY ONLY
 ========================================================= */
 function getRemainingMiningSeconds() {
     if (state.miningState !== 'MINING' || !state.sessionEndAt) return 0;
@@ -2383,7 +2391,7 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER — SAFE AD COMPLETION & BUSY RESTORATION
+   BOOSTER — AD COMPLETION + SERVER CLAIM
 ========================================================= */
 function openBoosterPrompt() {
     if (state.boosterRemaining <= 0) {
@@ -2405,8 +2413,6 @@ async function confirmWatchBoosterAd() {
     }
 
     closeBoosterPrompt();
-    const boosterConfirmBtn = document.querySelector('#boosterPromptModal .prompt-btn-confirm');
-    setBusy(boosterConfirmBtn, true, 'LOADING AD...');
 
     try {
         showToast('Loading advertisement...');
@@ -2424,13 +2430,11 @@ async function confirmWatchBoosterAd() {
     } catch (error) {
         console.error('Booster error:', error);
         showToast(error.message || 'Ad unavailable. No booster was applied.');
-    } finally {
-        setBusy(boosterConfirmBtn, false);
     }
 }
 
 /* =========================================================
-   LUCKY BOX
+   LUCKY BOX — SERVER CONTROLLED
 ========================================================= */
 function openLuckyBoxModal() {
     if (state.luckyBoxRemaining <= 0) {
@@ -2467,7 +2471,7 @@ async function confirmOpenLuckyBox() {
 }
 
 /* =========================================================
-   RECOVERY
+   RECOVERY — AD COMPLETION + SERVER CLAIM
 ========================================================= */
 async function claimRecovery() {
     if (state.recoverableBalance <= 0) {
@@ -2511,7 +2515,6 @@ function openTaskLinkAndVerify(type) {
     if (!urls[type]) return;
 
     window.open(urls[type], '_blank');
-
     setTimeout(() => claimTaskReward(type), 1200);
 }
 
@@ -2634,7 +2637,7 @@ function switchTab(tabName, btnElement) {
 }
 
 /* =========================================================
-   WALLET (WITH QR RE-CREATION FIX)
+   WALLET
 ========================================================= */
 function getWalletAddress() {
     return `FDX_NODE_${currentUserId}`;
@@ -2648,8 +2651,6 @@ function openReceiveModal() {
 
     const userWallet = getWalletAddress();
     addressBox.value = userWallet;
-    
-    // Clear previous QR code to prevent stacked canvases
     qrContainer.innerHTML = '';
 
     if (window.QRCode) {
@@ -2855,15 +2856,6 @@ function openExternalLink(type) {
 
     if (links[type]) window.open(links[type], '_blank', 'noopener,noreferrer');
 }
-
-/* =========================================================
-   VISIBILITY CHANGE RESYNC (PREVENTS TIMER DESYNC)
-========================================================= */
-document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-        syncMiningState();
-    }
-});
 
 /* =========================================================
    INITIALIZATION
