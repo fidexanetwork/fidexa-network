@@ -2,13 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#05080c">
-
 <title>Fidexa Network</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -585,8 +580,6 @@ line-height:1.6;
 margin-top:8px;
 }
 
-/* WALLET */
-
 .wallet-main-card{
 background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
@@ -1043,8 +1036,8 @@ style="color:var(--yellow);">
 Lucky Box
 </div>
 
-<div class="action-tile-sub">
-5 chances / 4 hours
+<div class="action-tile-sub" id="luckyBoxChances">
+5/5 Left
 </div>
 
 </div>
@@ -1664,7 +1657,7 @@ style="border-color:rgba(248,113,113,.3);">
 
 <div class="profile-menu-left">
 
-<span class="profile-menu-icon">⚠️</span>
+<span class="profile-menu-icon">⚠️️</span>
 
 <span
 class="profile-menu-title"
@@ -1867,7 +1860,7 @@ id="luckyBoxPromptChances">
 5
 </strong>
 
-Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.
+Lucky Box chances. Watch an ad to claim up to 10 $FDX.
 
 </div>
 
@@ -1941,8 +1934,6 @@ id="toast">
 
 /* =========================================================
    FIDEXA NETWORK — BACKEND / STATE CONTROLLER
-   IMPORTANT: rewards and balances are never created locally.
-   The backend is the source of truth.
 ========================================================= */
 
 const BACKEND_API_URL = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
@@ -2083,11 +2074,11 @@ function setBusy(button, busy, busyText = 'PROCESSING...') {
 }
 
 /* =========================================================
-   ADSGRAM (Safely guarded initialization & execution)
+   ADSGRAM INTEGRATION (WITH ERROR SAFETY)
 ========================================================= */
 function initializeAdsgram() {
     if (!window.Adsgram) {
-        console.warn('Adsgram script not loaded globally.');
+        console.warn('Adsgram SDK not present.');
         return;
     }
     try {
@@ -2106,99 +2097,106 @@ async function showAdsgramAd() {
         initializeAdsgram();
     }
     if (!adsgramController) {
-        throw new Error('Adsgram is not available. Please try again later.');
+        throw new Error('Ad network unavailable. Check your internet connection.');
     }
-    return await adsgramController.show();
+    try {
+        const result = await adsgramController.show();
+        return result;
+    } catch (error) {
+        console.error('Ad display error:', error);
+        throw new Error('Ad was not completed or closed early.');
+    }
 }
 
 /* =========================================================
-   BACKEND STATE NORMALIZATION
+   BACKEND STATE PARSER
 ========================================================= */
 function applyBackendState(payload) {
     if (!payload) return;
 
-    const user = payload.user || {};
-    const mining = payload.mining || {};
-    const recovery = payload.recovery || {};
-    const boosters = payload.boosters || payload.booster || {};
-    const lucky = payload.luckyBox || payload.lucky_box || {};
-    const tasks = payload.tasks || {};
+    const data = payload.data || payload;
+    const user = data.user || data;
+    const mining = data.mining || user.mining || {};
+    const recovery = data.recovery || user.recovery || {};
+    const boosters = data.boosters || data.booster || user.booster || {};
+    const lucky = data.luckyBox || data.lucky_box || user.lucky_box || {};
+    const tasks = data.tasks || user.tasks || {};
 
     state.totalBalance = safeNumber(firstDefined(
-        payload.totalBalance, payload.balance, user.balance, state.totalBalance
+        data.totalBalance, data.balance, user.balance, state.totalBalance
     ));
 
     state.totalMined = safeNumber(firstDefined(
-        payload.totalMined, user.total_mined, user.totalMined, state.totalMined
+        data.totalMined, user.total_mined, user.totalMined, state.totalMined
     ));
 
     const miningStatus = String(firstDefined(
-        mining.status, mining.state, payload.miningState, user.mining_state, state.miningState
+        mining.status, mining.state, data.miningState, user.mining_state, state.miningState
     )).toUpperCase();
 
     state.miningState = ['MINING', 'ACTIVE', 'RUNNING'].includes(miningStatus) ? 'MINING' : 'IDLE';
 
     state.baseMiningRate = safeNumber(firstDefined(
-        mining.baseRate, mining.base_rate, payload.baseMiningRate, user.base_mining_rate, state.baseMiningRate
+        mining.baseRate, mining.base_rate, data.baseMiningRate, user.base_mining_rate, state.baseMiningRate
     ), 1.0);
 
     state.sessionRate = safeNumber(firstDefined(
-        mining.sessionRate, mining.session_rate, payload.sessionRate, state.sessionRate, state.baseMiningRate
+        mining.sessionRate, mining.session_rate, data.sessionRate, state.sessionRate, state.baseMiningRate
     ), state.baseMiningRate);
 
     state.sessionAccumulated = safeNumber(firstDefined(
-        mining.sessionAccumulated, mining.session_accumulated, payload.sessionAccumulated, state.sessionAccumulated
+        mining.sessionAccumulated, mining.session_accumulated, data.sessionAccumulated, state.sessionAccumulated
     ));
 
     state.sessionStartAt = firstDefined(
         mining.startAt, mining.start_at, mining.startedAt, mining.started_at,
-        payload.sessionStartAt, user.mining_started_at, null
+        data.sessionStartAt, user.mining_started_at, state.sessionStartAt
     );
 
     state.sessionEndAt = firstDefined(
         mining.endAt, mining.end_at, mining.expiresAt, mining.expires_at,
-        payload.sessionEndAt, user.mining_ends_at, null
+        data.sessionEndAt, user.mining_ends_at, state.sessionEndAt
     );
 
     state.burningStreak = safeNumber(firstDefined(
-        recovery.burningStreak, recovery.burning_streak, payload.burningStreak, user.burning_streak, state.burningStreak
+        recovery.burningStreak, recovery.burning_streak, data.burningStreak, user.burning_streak, state.burningStreak
     ), 1);
 
     state.inactiveDays = safeNumber(firstDefined(
-        recovery.inactiveDays, recovery.inactive_days, payload.inactiveDays, user.inactive_days, state.inactiveDays
+        recovery.inactiveDays, recovery.inactive_days, data.inactiveDays, user.inactive_days, state.inactiveDays
     ));
 
     state.activeDays = safeNumber(firstDefined(
-        recovery.activeDays, recovery.active_days, payload.activeDays, user.active_days, state.activeDays
+        recovery.activeDays, recovery.active_days, data.activeDays, user.active_days, state.activeDays
     ));
 
     state.recoverableBalance = safeNumber(firstDefined(
         recovery.recoverableBalance, recovery.recoverable_balance,
-        payload.recoverableBalance, user.recoverable_balance, state.recoverableBalance
+        data.recoverableBalance, user.recoverable_balance, state.recoverableBalance
     ));
 
     state.activityStatus = String(firstDefined(
-        recovery.activityStatus, recovery.activity_status, payload.activityStatus,
+        recovery.activityStatus, recovery.activity_status, data.activityStatus,
         user.activity_status, state.activityStatus
     )).toUpperCase();
 
-    state.boosterRemaining = Math.max(0, Math.min(
-        BOOSTER_MAX,
-        Math.floor(safeNumber(firstDefined(
-            boosters.remaining, boosters.remainingToday, payload.boosterRemaining,
-            user.booster_remaining, BOOSTER_MAX - state.boosterUsed
-        ), BOOSTER_MAX))
-    ));
-    state.boosterUsed = BOOSTER_MAX - state.boosterRemaining;
+    const boosterRem = firstDefined(
+        boosters.remaining, boosters.remainingToday, data.boosterRemaining,
+        user.booster_remaining, user.booster_left
+    );
+    if (boosterRem !== undefined) {
+        state.boosterRemaining = Math.max(0, Math.min(BOOSTER_MAX, safeNumber(boosterRem)));
+        state.boosterUsed = BOOSTER_MAX - state.boosterRemaining;
+    }
 
-    state.luckyBoxRemaining = Math.max(0, Math.min(
-        LUCKY_BOX_MAX,
-        Math.floor(safeNumber(firstDefined(
-            lucky.remaining, lucky.remainingChances, payload.luckyBoxRemaining,
-            user.lucky_box_remaining, LUCKY_BOX_MAX - state.luckyBoxUsed
-        ), LUCKY_BOX_MAX))
-    ));
-    state.luckyBoxUsed = LUCKY_BOX_MAX - state.luckyBoxRemaining;
+    const luckyRem = firstDefined(
+        lucky.remaining, lucky.remainingChances, data.luckyBoxRemaining,
+        user.lucky_box_remaining, user.lucky_box_left
+    );
+    if (luckyRem !== undefined) {
+        state.luckyBoxRemaining = Math.max(0, Math.min(LUCKY_BOX_MAX, safeNumber(luckyRem)));
+        state.luckyBoxUsed = LUCKY_BOX_MAX - state.luckyBoxRemaining;
+    }
 
     if (tasks && typeof tasks === 'object') {
         state.claimedTasks = {
@@ -2208,11 +2206,11 @@ function applyBackendState(payload) {
         };
     }
 
-    if (Array.isArray(payload.transactions)) state.transactions = payload.transactions;
+    if (Array.isArray(data.transactions)) state.transactions = data.transactions;
 }
 
 /* =========================================================
-   TELEGRAM USER + INITIAL SYNC
+   INITIALIZATION
 ========================================================= */
 async function initializeBackendSync() {
     try {
@@ -2260,7 +2258,7 @@ async function syncMiningState() {
 }
 
 /* =========================================================
-   UI STATE
+   UI CONTROLLER
 ========================================================= */
 function updateAllUI() {
     const balanceEl = document.getElementById('balanceDisplay');
@@ -2278,6 +2276,7 @@ function updateAllUI() {
     setText('sessionAccumulated', `${formatNumber(state.sessionAccumulated)} $FDX`);
 
     setText('boosterChances', `${state.boosterRemaining}/${BOOSTER_MAX} Left`);
+    setText('luckyBoxChances', `${state.luckyBoxRemaining}/${LUCKY_BOX_MAX} Left`);
     setText('luckyBoxPromptChances', state.luckyBoxRemaining);
 
     setText('recoverableFdx', formatNumber(state.recoverableBalance));
@@ -2302,13 +2301,22 @@ function updateAllUI() {
 }
 
 /* =========================================================
-   MINING TIMER — DISPLAY ONLY
+   MINING TIMER CONTROLLER
 ========================================================= */
 function getRemainingMiningSeconds() {
     if (state.miningState !== 'MINING' || !state.sessionEndAt) return 0;
-    const end = new Date(state.sessionEndAt).getTime();
-    if (!Number.isFinite(end)) return 0;
-    return Math.max(0, Math.ceil((end - Date.now()) / 1000));
+
+    let endTimeMs = 0;
+    if (typeof state.sessionEndAt === 'number') {
+        endTimeMs = state.sessionEndAt < 1e11 ? state.sessionEndAt * 1000 : state.sessionEndAt;
+    } else {
+        endTimeMs = new Date(state.sessionEndAt).getTime();
+    }
+
+    if (!Number.isFinite(endTimeMs) || isNaN(endTimeMs)) return 0;
+
+    const diffSeconds = Math.ceil((endTimeMs - Date.now()) / 1000);
+    return Math.max(0, diffSeconds);
 }
 
 function formatDuration(totalSeconds) {
@@ -2377,12 +2385,11 @@ async function handleMiningAction() {
 
         if (state.miningState === 'MINING') {
             showToast(res.message || 'Mining started!');
-            startMiningTimer();
         } else {
             showToast(res.message || `Reward claimed: +${formatNumber(res.reward || 0)} $FDX`);
-            startMiningTimer();
         }
 
+        startMiningTimer();
         updateAllUI();
     } finally {
         isBusy = false;
@@ -2391,7 +2398,7 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER — AD COMPLETION + SERVER CLAIM
+   BOOSTER ACTIONS
 ========================================================= */
 function openBoosterPrompt() {
     if (state.boosterRemaining <= 0) {
@@ -2429,12 +2436,12 @@ async function confirmWatchBoosterAd() {
         showToast(res.message || 'Mining boost applied successfully!');
     } catch (error) {
         console.error('Booster error:', error);
-        showToast(error.message || 'Ad unavailable. No booster was applied.');
+        showToast(error.message || 'Ad failed. Booster was not applied.');
     }
 }
 
 /* =========================================================
-   LUCKY BOX — SERVER CONTROLLED
+   LUCKY BOX ACTIONS
 ========================================================= */
 function openLuckyBoxModal() {
     if (state.luckyBoxRemaining <= 0) {
@@ -2457,21 +2464,29 @@ async function confirmOpenLuckyBox() {
 
     closeLuckyBoxModal();
 
-    const res = await callBackendAPI('/api/lucky-box/open', 'POST');
-    if (!res || !res.success) {
-        showToast((res && res.error) || 'Lucky Box could not be opened.');
-        return;
+    try {
+        showToast('Loading advertisement...');
+        await showAdsgramAd();
+
+        const res = await callBackendAPI('/api/lucky-box/open', 'POST');
+        if (!res || !res.success) {
+            showToast((res && res.error) || 'Lucky Box could not be opened.');
+            return;
+        }
+
+        applyBackendState(res);
+        updateAllUI();
+
+        const reward = safeNumber(firstDefined(res.reward, res.luckyBox?.reward, 0));
+        showToast(res.message || `Lucky Box opened! Won +${formatNumber(reward)} $FDX`);
+    } catch (error) {
+        console.error('Lucky Box error:', error);
+        showToast(error.message || 'Ad failed. Box was not opened.');
     }
-
-    applyBackendState(res);
-    updateAllUI();
-
-    const reward = safeNumber(firstDefined(res.reward, res.luckyBox?.reward, 0));
-    showToast(res.message || `Lucky Box opened! Won +${formatNumber(reward)} $FDX`);
 }
 
 /* =========================================================
-   RECOVERY — AD COMPLETION + SERVER CLAIM
+   RECOVERY ACTIONS
 ========================================================= */
 async function claimRecovery() {
     if (state.recoverableBalance <= 0) {
@@ -2496,7 +2511,7 @@ async function claimRecovery() {
         showToast(res.message || 'Recovery claimed successfully!');
     } catch (error) {
         console.error('Recovery error:', error);
-        showToast(error.message || 'Ad unavailable. No recovery was claimed.');
+        showToast(error.message || 'Ad unavailable. Recovery was not claimed.');
     } finally {
         setBusy(button, false);
     }
@@ -2619,7 +2634,7 @@ function shareReferralLink() {
 }
 
 /* =========================================================
-   TAB SWITCHING
+   TAB SWITCHING & WALLET
 ========================================================= */
 function switchTab(tabName, btnElement) {
     document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
@@ -2636,9 +2651,6 @@ function switchTab(tabName, btnElement) {
     }
 }
 
-/* =========================================================
-   WALLET
-========================================================= */
 function getWalletAddress() {
     return `FDX_NODE_${currentUserId}`;
 }
@@ -2794,7 +2806,7 @@ function renderTransactions() {
 }
 
 /* =========================================================
-   PROFILE / EXTERNAL LINKS
+   PROFILE & LINKS
 ========================================================= */
 function openProfileInfo(type) {
     const modal = document.getElementById('profileInfoModal');
@@ -2858,7 +2870,7 @@ function openExternalLink(type) {
 }
 
 /* =========================================================
-   INITIALIZATION
+   LIFECYCLE INITIALIZATION
 ========================================================= */
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
