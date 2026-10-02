@@ -2005,7 +2005,7 @@ Wallet
 <button
 class="nav-item"
 onclick="switchTab('profile',this)">
-<span class="nav-icon">🛡️</span>
+<span class="nav-icon">🛡️️</span>
 Profile
 </button>
 
@@ -2028,6 +2028,10 @@ let currentUserId='demo_user';
 let currentUserName='FidexaUser';
 let telegramInitData='';
 
+const FIDEXA_API=
+    'https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api';
+
+
 function initializeTelegramUser(){
 
     if(
@@ -2035,37 +2039,18 @@ function initializeTelegramUser(){
         window.Telegram.WebApp
     ){
 
-        const webApp=window.Telegram.WebApp;
+        const webApp=
+            window.Telegram.WebApp;
 
         webApp.ready();
         webApp.expand();
 
-        // REAL TELEGRAM INIT DATA
+        /* =========================================
+           REAL TELEGRAM INITDATA
+        ========================================= */
+
         telegramInitData=
             webApp.initData || '';
-
-        console.log(
-            'FIDEXA TELEGRAM INITDATA:',
-            telegramInitData
-        );
-
-        if(
-            telegramInitData
-        ){
-
-            alert(
-                'Telegram InitData received!\n\n' +
-                telegramInitData.substring(0,200) +
-                '...'
-            );
-
-        }else{
-
-            alert(
-                'NO TELEGRAM INITDATA RECEIVED.\n\n' +
-                'Make sure you opened Fidexa from inside Telegram.'
-            );
-        }
 
         if(
             webApp.initDataUnsafe &&
@@ -2085,10 +2070,98 @@ function initializeTelegramUser(){
                 tgUser.first_name ||
                 'FidexaUser';
         }
+
     }
 }
 
+
+/* =========================================================
+   CONNECT TELEGRAM USER TO FIDEXA BACKEND
+========================================================= */
+
+async function connectFidexaBackend(){
+
+    if(!telegramInitData){
+
+        alert(
+            'FIDEXA BACKEND TEST FAILED\n\n' +
+            'Telegram InitData is missing.'
+        );
+
+        return;
+    }
+
+    try{
+
+        const response=
+            await fetch(
+                `${FIDEXA_API}/api/me`,
+                {
+                    method:'GET',
+
+                    headers:{
+                        'X-Telegram-Init-Data':
+                            telegramInitData
+                    }
+                }
+            );
+
+        const data=
+            await response.json();
+
+        console.log(
+            'FIDEXA BACKEND RESPONSE:',
+            data
+        );
+
+        if(
+            response.ok &&
+            data.success
+        ){
+
+            currentUserId=
+                String(data.user.id);
+
+            currentUserName=
+                data.user.username ||
+                currentUserName;
+
+            alert(
+                'FIDEXA BACKEND CONNECTED! ✅\n\n' +
+                'Telegram ID: ' +
+                currentUserId +
+                '\n\n' +
+                'Username: ' +
+                currentUserName
+            );
+
+        }else{
+
+            alert(
+                'FIDEXA BACKEND ERROR\n\n' +
+                (data.error ||
+                'Unknown backend error')
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            'FIDEXA backend connection error:',
+            error
+        );
+
+        alert(
+            'FIDEXA BACKEND CONNECTION FAILED\n\n' +
+            error.message
+        );
+    }
+}
+
+
 initializeTelegramUser();
+
+connectFidexaBackend();
 
 
 /* =========================================================
