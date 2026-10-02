@@ -2026,6 +2026,7 @@ id="toast">
 
 let currentUserId='demo_user';
 let currentUserName='FidexaUser';
+let telegramInitData='';
 
 function initializeTelegramUser(){
 
@@ -2039,9 +2040,31 @@ function initializeTelegramUser(){
         webApp.ready();
         webApp.expand();
 
-        const telegramInitData = webApp.initData;
-        if (telegramInitData) {
-            console.log("TELEGRAM_INIT_DATA:", telegramInitData);
+        // REAL TELEGRAM INIT DATA
+        telegramInitData=
+            webApp.initData || '';
+
+        console.log(
+            'FIDEXA TELEGRAM INITDATA:',
+            telegramInitData
+        );
+
+        if(
+            telegramInitData
+        ){
+
+            alert(
+                'Telegram InitData received!\n\n' +
+                telegramInitData.substring(0,200) +
+                '...'
+            );
+
+        }else{
+
+            alert(
+                'NO TELEGRAM INITDATA RECEIVED.\n\n' +
+                'Make sure you opened Fidexa from inside Telegram.'
+            );
         }
 
         if(
