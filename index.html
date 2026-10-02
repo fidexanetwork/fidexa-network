@@ -2021,7 +2021,62 @@ async function initializeBackendSync() {
             currentUserName = res.user.username;
         }
     }
+
+    // Load referral network data from backend
+    await loadReferralData();
     updateAllUI();
+}
+
+async function loadReferralData() {
+    const res = await callBackendAPI("/api/referrals", "GET");
+    if (res && res.success) {
+        state.friends = res.referrals || [];
+        const totalCount = res.totalCount || state.friends.length;
+        
+        document.getElementById('totalFriendsCount').textContent = totalCount;
+        document.getElementById('activeFriendsCount').textContent = totalCount; // Mapping joined members
+        document.getElementById('inactiveFriendsCount').textContent = 0;
+        document.getElementById('friendListCount').textContent = `${totalCount} MEMBERS`;
+        
+        renderFriendsList();
+    }
+}
+
+function renderFriendsList() {
+    const container = document.getElementById('friendsList');
+    const friends = state.friends || [];
+
+    if (friends.length === 0) {
+        container.innerHTML = `
+            <div class="friend-empty-state">
+                <div class="friend-empty-icon">👥</div>
+                <div class="friend-empty-title">No Invited Members</div>
+                <div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = '';
+    friends.forEach(friend => {
+        const item = document.createElement('div');
+        item.className = 'friend-row-item';
+        const formattedDate = friend.created_at ? new Date(friend.created_at).toLocaleDateString() : '';
+
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">👤</div>
+                <div>
+                    <div class="friend-name">@${friend.username}</div>
+                    <div class="friend-status active">${formattedDate ? 'Joined ' + formattedDate : 'Active Member'}</div>
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);font-weight:700;">
+                ID: ${friend.telegram_id}
+            </div>
+        `;
+        container.appendChild(item);
+    });
 }
 
 /* =========================================================
@@ -2101,7 +2156,6 @@ function showToast(message) {
 
 async function handleMiningAction() {
     if (state.miningState === 'MINING') {
-        // Claim reward if active cycle complete / active session
         const res = await callBackendAPI("/api/mining/claim", "POST");
         if (res && res.success) {
             state.miningState = 'IDLE';
@@ -2115,7 +2169,6 @@ async function handleMiningAction() {
             showToast(res.error || "Could not claim reward yet.");
         }
     } else {
-        // Start mining
         const res = await callBackendAPI("/api/mining/start", "POST");
         if (res && res.success) {
             state.miningState = 'MINING';
@@ -2146,6 +2199,8 @@ function switchTab(tabName, btnElement) {
 
     if (tabName === 'wallet') {
         renderTransactions();
+    } else if (tabName === 'friends') {
+        loadReferralData();
     }
 }
 
