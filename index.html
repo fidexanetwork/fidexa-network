@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2021,44 +2022,6 @@ id="toast">
 <script>
 
 /* =========================================================
-   SUPABASE API CONFIG & AUTHENTICATION
-========================================================= */
-
-const API_BASE = 'https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api';
-
-function getTelegramInitData() {
-    if (window.Telegram && window.Telegram.WebApp) {
-        return window.Telegram.WebApp.initData || '';
-    }
-    return '';
-}
-
-async function fidexaApi(endpoint, options = {}) {
-    const initData = getTelegramInitData();
-    if (!initData) {
-        throw new Error('Telegram authentication data is missing');
-    }
-    const response = await fetch(
-        API_BASE + endpoint,
-        {
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Telegram-Init-Data': initData,
-                ...(options.headers || {})
-            }
-        }
-    );
-    const data = await response.json();
-    if (!response.ok || data.success === false) {
-        throw new Error(
-            data.error || 'Fidexa API request failed'
-        );
-    }
-    return data;
-}
-
-/* =========================================================
    TELEGRAM USER
 ========================================================= */
 
@@ -2937,10 +2900,10 @@ function completeRecoveryIfFinished(){
 
 
 /* =========================================================
-   LOAD STATE & BACKEND SYNC (/api/me)
+   LOAD STATE
 ========================================================= */
 
-async function loadState(){
+function loadState(){
 
     try{
 
@@ -3025,9 +2988,22 @@ async function loadState(){
 
         normalizeRecoveryState();
 
+        /*
+            Process inactivity before marking this new
+            app session as active.
+        */
+
         processInactivityTrigger();
+
+        /*
+            If the user has opened/interacted with the app,
+            that counts as activity.
+        */
+
         markUserActive();
+
         processRecoveryUnlock();
+
         completeRecoveryIfFinished();
 
         saveState();
@@ -3038,49 +3014,6 @@ async function loadState(){
             'State load error',
             error
         );
-    }
-
-    // Call /api/me to sync with backend
-    try {
-        const responseData = await fidexaApi('/api/me', { method: 'GET' });
-        if (responseData && (responseData.user || responseData.data || responseData)) {
-            const u = responseData.user || responseData.data || responseData;
-            if (u.balance !== undefined || u.totalBalance !== undefined || u.total_balance !== undefined) {
-                state.totalBalance = Number(u.balance ?? u.totalBalance ?? u.total_balance ?? state.totalBalance);
-            }
-            if (u.totalMined !== undefined || u.total_mined !== undefined) {
-                state.totalMined = Number(u.totalMined ?? u.total_mined ?? state.totalMined);
-            }
-            if (u.miningState !== undefined || u.mining_state !== undefined) {
-                state.miningState = u.miningState ?? u.mining_state ?? state.miningState;
-            }
-            if (u.miningStartedAt !== undefined || u.mining_started_at !== undefined) {
-                state.miningStartedAt = Number(u.miningStartedAt ?? u.mining_started_at ?? state.miningStartedAt);
-            }
-            if (u.miningEndTime !== undefined || u.mining_end_time !== undefined) {
-                // If backend provides mining_end_time or similar, we can compute miningStartedAt if needed
-                const endT = new Date(u.miningEndTime ?? u.mining_end_time).getTime();
-                if (!isNaN(endT)) {
-                    state.miningStartedAt = endT - (14400 * 1000);
-                }
-            }
-            if (u.sessionAccumulated !== undefined || u.session_accumulated !== undefined || u.pending_reward !== undefined) {
-                state.sessionAccumulated = Number(u.sessionAccumulated ?? u.session_accumulated ?? u.pending_reward ?? state.sessionAccumulated);
-            }
-            if (u.recoverableBalance !== undefined || u.recoverable_balance !== undefined) {
-                state.recoverableBalance = Number(u.recoverableBalance ?? u.recoverable_balance ?? state.recoverableBalance);
-            }
-            if (u.friends !== undefined) {
-                state.friends = u.friends;
-            }
-            if (u.transactions !== undefined) {
-                state.transactions = u.transactions;
-            }
-            saveState();
-            updateAllUI();
-        }
-    } catch (err) {
-        console.warn('Backend /api/me sync failed, using local/cached state:', err);
     }
 }
 
@@ -3302,6 +3235,10 @@ function switchTab(
     if(btnElement){
         btnElement.classList.add('active');
     }
+
+    /*
+        Any navigation interaction counts as activity.
+    */
 
     markUserActive();
 
@@ -5101,98 +5038,101 @@ function updateMiningUI(){
 
 
 /* =========================================================
-   MINING ACTION (BACKEND CONNECTED)
+   MINING ACTION
 ========================================================= */
 
-let isMiningRequestInProgress = false;
-
-async function handleMiningAction(){
+function handleMiningAction(){
 
     markUserActive();
-
-    if (isMiningRequestInProgress) {
-        return;
-    }
 
     if(
         state.miningState==='IDLE'
     ){
 
-        isMiningRequestInProgress = true;
-        const button = document.getElementById('miningToggleBtn');
-        if (button) button.style.pointerEvents = 'none';
+        state.miningState=
+            'ACTIVE';
 
-        try {
-            const res = await fidexaApi('/api/mining/start', {
-                method: 'POST',
-                body: JSON.stringify({})
-            });
+        state.miningStartedAt=
+            Date.now();
 
-            if (res && res.success !== false) {
-                state.miningState = 'ACTIVE';
-                state.miningStartedAt = res.miningStartedAt || res.mining_started_at || Date.now();
-                state.sessionAccumulated = 0;
+        state.sessionAccumulated=0;
 
-                state.boostLuckyResetAt = state.miningStartedAt + (MINING_CYCLE_SECONDS * 1000);
+        state.boostLuckyResetAt=
 
-                if (Number(state.boosterChancesLeft) < 0) state.boosterChancesLeft = 5;
-                if (Number(state.luckyBoxChances) < 0) state.luckyBoxChances = 5;
+            state.miningStartedAt+
+            (
+                MINING_CYCLE_SECONDS*
+                1000
+            );
 
-                saveState();
-                updateAllUI();
-                showToast('Mining cycle started!');
-            } else {
-                throw new Error(res.error || 'Failed to start mining');
-            }
-        } catch (error) {
-            console.error('Start mining error:', error);
-            showToast(error.message || 'Failed to start mining session');
-        } finally {
-            isMiningRequestInProgress = false;
-            if (button) button.style.pointerEvents = 'auto';
+        if(
+            Number(
+                state.boosterChancesLeft
+            )<0
+        ){
+
+            state.boosterChancesLeft=5;
         }
+
+        if(
+            Number(
+                state.luckyBoxChances
+            )<0
+        ){
+
+            state.luckyBoxChances=5;
+        }
+
+        saveState();
+
+        updateAllUI();
+
+        showToast(
+            'Mining cycle started!'
+        );
 
     }else if(
         state.miningState==='READY_TO_CLAIM'
     ){
 
-        isMiningRequestInProgress = true;
-        const button = document.getElementById('miningToggleBtn');
-        if (button) button.style.pointerEvents = 'none';
+        showAdsgramAd(
 
-        try {
-            const res = await fidexaApi('/api/mining/claim', {
-                method: 'POST',
-                body: JSON.stringify({})
-            });
+            function(){
 
-            if (res && res.success !== false) {
-                const claimedBal = Number(res.balance ?? res.totalBalance ?? res.total_balance ?? (state.totalBalance + Number(state.sessionAccumulated || 0)));
-                state.totalBalance = claimedBal;
-                if (res.totalMined !== undefined || res.total_mined !== undefined) {
-                    state.totalMined = Number(res.totalMined ?? res.total_mined);
-                } else {
-                    state.totalMined = Number(state.totalMined) + Number(state.sessionAccumulated || 0);
-                }
+                const accumulated=
+                    Number(
+                        state.sessionAccumulated||0
+                    );
 
-                state.sessionAccumulated = 0;
-                state.miningState = 'IDLE';
-                state.miningStartedAt = 0;
-                state.boostLuckyResetAt = 0;
+                state.totalBalance=
+                    Number(
+                        state.totalBalance
+                    )+
+                    accumulated;
+
+                state.totalMined=
+                    Number(
+                        state.totalMined
+                    )+
+                    accumulated;
+
+                state.sessionAccumulated=0;
+
+                state.miningState='IDLE';
+
+                state.miningStartedAt=0;
+
+                state.boostLuckyResetAt=0;
 
                 saveState();
+
                 updateAllUI();
-                showToast('Successfully claimed mining reward!');
-            } else {
-                throw new Error(res.error || 'Claim failed');
+
+                showToast(
+                    `Successfully claimed ${formatNumber(accumulated)} $FDX!`
+                );
             }
-        } catch (error) {
-            console.error('Claim reward error:', error);
-            showToast(error.message || 'Failed to claim reward');
-        } finally {
-            isMiningRequestInProgress = false;
-            if (button) button.style.pointerEvents = 'auto';
-        }
+        );
     }
 }
 
@@ -5521,6 +5461,12 @@ function claimRecovery(){
 
         function(){
 
+            /*
+                Re-read the amount after the advertisement
+                has completed so the claim uses the current
+                stored state.
+            */
+
             const claimAmount=
                 Number(
                     state.recoveryUnlockedBalance||0
@@ -5569,6 +5515,10 @@ function claimRecovery(){
 
 function updateAllUI(){
 
+    /*
+        Process time-based recovery every UI update.
+    */
+
     processRecoveryUnlock();
 
     completeRecoveryIfFinished();
@@ -5596,9 +5546,23 @@ function updateAllUI(){
    USER INTERACTION TRACKING
 ========================================================= */
 
+/*
+    These interactions count as activity.
+
+    Mining activity is separately recorded when mining
+    starts. General interaction also counts because your
+    rule says the user should not be completely inactive
+    for seven full days.
+*/
+
 document.addEventListener(
     'click',
     function(event){
+
+        /*
+            Avoid repeatedly writing state on every click
+            when it occurs on the same calendar day.
+        */
 
         const today=
             getDateKey();
@@ -5610,6 +5574,11 @@ document.addEventListener(
             markUserActive();
 
         }else{
+
+            /*
+                Even on the same day, refresh the timestamp
+                so the user is considered active.
+            */
 
             state.lastActivityTimestamp=
                 Date.now();
@@ -5634,9 +5603,9 @@ document.addEventListener(
 
 window.addEventListener(
     'DOMContentLoaded',
-    async function(){
+    function(){
 
-        await loadState();
+        loadState();
 
         processRecoveryUnlock();
 
