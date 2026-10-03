@@ -1,9 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
 <meta name="theme-color" content="#05080c">
+
 <title>Fidexa Network</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -580,6 +586,8 @@ line-height:1.6;
 margin-top:8px;
 }
 
+/* WALLET */
+
 .wallet-main-card{
 background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
@@ -644,6 +652,7 @@ background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
 border-radius:20px;
 overflow:hidden;
+margin-bottom:14px;
 }
 
 .tx-header{
@@ -711,6 +720,87 @@ letter-spacing:.3px;
 font-size:16px;
 color:var(--muted);
 font-weight:900;
+}
+
+.chat-messages-container{
+max-height:220px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:16px;
+padding-right:4px;
+}
+
+.chat-bubble{
+padding:10px 14px;
+border-radius:12px;
+font-size:13px;
+max-width:85%;
+line-height:1.4;
+font-weight:700;
+}
+
+.chat-bubble.user{
+background:var(--blue);
+color:#fff;
+align-self:flex-end;
+border-bottom-right-radius:2px;
+}
+
+.chat-bubble.admin{
+background:#162235;
+color:var(--text);
+align-self:flex-start;
+border:1px solid var(--border);
+border-bottom-left-radius:2px;
+}
+
+.chat-input-row{
+display:flex;
+gap:8px;
+}
+
+.chat-input-field{
+flex:1;
+background:#111b27;
+border:1px solid var(--border);
+border-radius:12px;
+padding:12px;
+color:#fff;
+font-size:13px;
+outline:none;
+}
+
+.chat-send-btn{
+background:var(--cyan);
+border:0;
+border-radius:12px;
+padding:0 18px;
+color:#05080c;
+font-weight:900;
+font-size:13px;
+}
+
+.support-status{
+padding:13px;
+background:#111b27;
+border:1px solid rgba(56,189,248,.25);
+border-radius:13px;
+margin-bottom:14px;
+}
+
+.support-status-title{
+font-size:12px;
+font-weight:900;
+color:var(--cyan);
+}
+
+.support-status-text{
+font-size:11px;
+color:var(--muted);
+line-height:1.5;
+margin-top:5px;
 }
 
 .modal-overlay{
@@ -1036,8 +1126,8 @@ style="color:var(--yellow);">
 Lucky Box
 </div>
 
-<div class="action-tile-sub" id="luckyBoxChances">
-5/5 Left
+<div class="action-tile-sub">
+5 chances / 4 hours
 </div>
 
 </div>
@@ -1498,6 +1588,55 @@ id="walletBalanceNum">
 
 </div>
 
+<!-- FIDEXA BALANCE STRUCTURE CARDS -->
+<div style="display:grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px;">
+  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
+    <div class="balance-label">UNVERIFIED BALANCE</div>
+    <div class="balance-row" style="margin-top:4px;">
+      <div class="balance-value" id="unverifiedBalanceDisplay" style="font-size:24px;">0.00</div>
+      <div class="balance-token" style="font-size:14px;">$FDX</div>
+    </div>
+  </div>
+
+  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
+    <div class="balance-label">TRANSFERABLE BALANCE</div>
+    <div class="balance-row" style="margin-top:4px;">
+      <div class="balance-value" id="transferableBalanceDisplay" style="font-size:24px;">0.00</div>
+      <div class="balance-token" style="font-size:14px;">$FDX</div>
+    </div>
+    <button class="wallet-btn primary" id="migrateBtn" onclick="handleMigrateAction()" style="width:100%; margin-top:12px; padding:10px; font-size:12px;" disabled>
+      Migrate to Main Wallet (Coming Soon)
+    </button>
+  </div>
+
+  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
+    <div class="balance-label">MAIN WALLET BALANCE</div>
+    <div class="balance-row" style="margin-top:4px;">
+      <div class="balance-value" id="mainWalletBalanceDisplay" style="font-size:24px;">0.00</div>
+      <div class="balance-token" style="font-size:14px;">$FDX</div>
+    </div>
+  </div>
+</div>
+
+<!-- ON-CHAIN VERIFICATION SECTION -->
+<div class="balance-card" style="margin-bottom:14px; padding: 18px;">
+  <div class="balance-label" style="color:var(--cyan); margin-bottom:8px;">ON-CHAIN VERIFICATION</div>
+  <div style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.5;">
+    Verify your account to make your mined $FDX transferable.
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:12px;">
+    <span style="color:var(--muted);">Verification fee:</span>
+    <span style="font-weight:900; color:#fff;">0.5 TON</span>
+  </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; font-size:12px;">
+    <span style="color:var(--muted);">Status:</span>
+    <span id="verificationStatusLabel" style="font-weight:900; color:var(--yellow);">Coming Soon</span>
+  </div>
+  <button class="wallet-btn" id="tonVerifyBtn" onclick="handleTonVerification()" style="width:100%; justify-content:center;" disabled>
+    Coming Soon (Connect TON)
+  </button>
+</div>
+
 <div class="wallet-action-row">
 
 <button
@@ -1657,7 +1796,7 @@ style="border-color:rgba(248,113,113,.3);">
 
 <div class="profile-menu-left">
 
-<span class="profile-menu-icon">⚠️️</span>
+<span class="profile-menu-icon">⚠️</span>
 
 <span
 class="profile-menu-title"
@@ -1772,7 +1911,7 @@ style="max-width:360px;">
 </div>
 
 <div class="prompt-desc">
-Transfer available tokens directly to another user node address or @username securely.
+Transfer available tokens directly from your Main Wallet to another user node address or @username securely.
 </div>
 
 <input
@@ -1860,7 +1999,7 @@ id="luckyBoxPromptChances">
 5
 </strong>
 
-Lucky Box chances. Watch an ad to claim up to 10 $FDX.
+Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.
 
 </div>
 
@@ -1933,956 +2072,3622 @@ id="toast">
 <script>
 
 /* =========================================================
-   FIDEXA NETWORK — BACKEND / STATE CONTROLLER
+   TELEGRAM USER
 ========================================================= */
 
-const BACKEND_API_URL = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+let currentUserId='demo_user';
+let currentUserName='FidexaUser';
 
-const FIDEXA_TELEGRAM = 'https://t.me/fidexa_Network';
-const FIDEXA_X = 'https://x.com/Fidexa_Network';
-const FIDEXA_YOUTUBE = 'https://youtube.com/@Fidexa_Network';
-const FIDEXA_BOT = 'https://t.me/FIDEXANetworkBot';
+function initializeTelegramUser(){
 
-const ADSGRAM_BLOCK_ID = "49196";
-const MINING_CYCLE_SECONDS = 4 * 60 * 60;
-const BOOSTER_MAX = 5;
-const LUCKY_BOX_MAX = 5;
+    if(
+        window.Telegram &&
+        window.Telegram.WebApp
+    ){
 
-let adsgramController = null;
-let qrInstance = null;
-let timerInterval = null;
-let isBusy = false;
+        const webApp=window.Telegram.WebApp;
 
-let currentUserId = 'demo_user';
-let currentUserName = 'FidexaUser';
+        webApp.ready();
+        webApp.expand();
 
-let state = {
-    totalBalance: 0,
-    totalMined: 0,
-    miningState: 'IDLE',
-    baseMiningRate: 1.0,
-    sessionRate: 1.0,
-    sessionAccumulated: 0,
-    sessionStartAt: null,
-    sessionEndAt: null,
-    burningStreak: 1,
-    inactiveDays: 0,
-    activeDays: 0,
-    recoverableBalance: 0,
-    activityStatus: 'ACTIVE',
-    boosterUsed: 0,
-    boosterRemaining: BOOSTER_MAX,
-    luckyBoxUsed: 0,
-    luckyBoxRemaining: LUCKY_BOX_MAX,
-    friends: [],
-    transactions: [],
-    claimedTasks: { telegram: false, x: false, youtube: false }
-};
+        if(
+            webApp.initDataUnsafe &&
+            webApp.initDataUnsafe.user
+        ){
 
-function getTelegramInitData() {
-    if (window.Telegram && window.Telegram.WebApp) {
-        return window.Telegram.WebApp.initData || '';
-    }
-    return '';
-}
+            const tgUser=
+                webApp.initDataUnsafe.user;
 
-async function callBackendAPI(endpoint, method = 'GET', bodyData = null) {
-    const initData = getTelegramInitData();
-    const headers = { 'Content-Type': 'application/json' };
+            currentUserId=
+                tgUser.id
+                ? String(tgUser.id)
+                : 'demo_user';
 
-    if (initData) headers['X-Telegram-Init-Data'] = initData;
-
-    const options = { method, headers };
-    if (bodyData !== null && bodyData !== undefined) {
-        options.body = JSON.stringify(bodyData);
-    }
-
-    try {
-        const response = await fetch(`${BACKEND_API_URL}${endpoint}`, options);
-        let data = null;
-        try { data = await response.json(); } catch (_) {}
-
-        if (!response.ok) {
-            return {
-                success: false,
-                error: (data && (data.error || data.message)) || `Server error (${response.status})`,
-                status: response.status
-            };
+            currentUserName=
+                tgUser.username ||
+                tgUser.first_name ||
+                'FidexaUser';
         }
-
-        return data || { success: true };
-    } catch (error) {
-        console.error('API call error:', error);
-        return { success: false, error: 'Network error. Please try again.' };
     }
 }
 
-function safeNumber(value, fallback = 0) {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : fallback;
-}
+initializeTelegramUser();
 
-function firstDefined(...values) {
-    for (const value of values) {
-        if (value !== undefined && value !== null) return value;
-    }
-    return undefined;
-}
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-}
-
-function formatNumber(value) {
-    return safeNumber(value).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = String(message || '');
-    toast.classList.add('show');
-    clearTimeout(showToast._timer);
-    showToast._timer = setTimeout(() => toast.classList.remove('show'), 2600);
-}
-
-function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-}
-
-function setBusy(button, busy, busyText = 'PROCESSING...') {
-    if (!button) return;
-    if (busy) {
-        button.dataset.originalText = button.textContent;
-        button.disabled = true;
-        button.style.opacity = '0.65';
-        button.textContent = busyText;
-    } else {
-        button.disabled = false;
-        button.style.opacity = '';
-        if (button.dataset.originalText) button.textContent = button.dataset.originalText;
-    }
-}
 
 /* =========================================================
-   ADSGRAM INTEGRATION (WITH ERROR SAFETY)
+   OFFICIAL LINKS
 ========================================================= */
-function initializeAdsgram() {
-    if (!window.Adsgram) {
-        console.warn('Adsgram SDK not present.');
+
+const FIDEXA_TELEGRAM=
+    'https://t.me/fidexa_Network';
+
+const FIDEXA_X=
+    'https://x.com/Fidexa_Network';
+
+const FIDEXA_YOUTUBE=
+    'https://youtube.com/@Fidexa_Network';
+
+const FIDEXA_BOT=
+    'https://t.me/FIDEXANetworkBot';
+
+
+/* =========================================================
+   ADSGRAM
+========================================================= */
+
+const ADSGRAM_BLOCK_ID="49196";
+
+let adsgramController=null;
+let adsgramAdInProgress=false;
+
+function initializeAdsgram(){
+
+    if(!window.Adsgram){
+        console.warn('Adsgram SDK is not available.');
         return;
     }
-    try {
-        adsgramController = window.Adsgram.init({
-            blockId: ADSGRAM_BLOCK_ID,
-            debug: false
-        });
-    } catch (error) {
-        console.error('Adsgram initialization failed:', error);
-        adsgramController = null;
+
+    try{
+
+        adsgramController=
+            window.Adsgram.init({
+                blockId:ADSGRAM_BLOCK_ID,
+                debug:false
+            });
+
+        if(
+            adsgramController &&
+            typeof adsgramController.addEventListener==='function'
+        ){
+
+            try{
+                adsgramController.addEventListener(
+                    'onBannerNotFound',
+                    function(){
+                        console.warn(
+                            'Adsgram: no advertisement available.'
+                        );
+                    }
+                );
+            }catch(e){}
+
+            try{
+                adsgramController.addEventListener(
+                    'onError',
+                    function(event){
+                        console.warn(
+                            'Adsgram error:',
+                            event
+                        );
+                    }
+                );
+            }catch(e){}
+        }
+
+    }catch(error){
+
+        console.warn(
+            'Adsgram initialization error:',
+            error
+        );
+
+        adsgramController=null;
     }
 }
 
-async function showAdsgramAd() {
-    if (!adsgramController) {
-        initializeAdsgram();
-    }
-    if (!adsgramController) {
-        throw new Error('Ad network unavailable. Check your internet connection.');
-    }
-    try {
-        const result = await adsgramController.show();
-        return result;
-    } catch (error) {
-        console.error('Ad display error:', error);
-        throw new Error('Ad was not completed or closed early.');
-    }
+if(
+    document.readyState==='loading'
+){
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        initializeAdsgram
+    );
+
+}else{
+
+    initializeAdsgram();
 }
+
 
 /* =========================================================
-   BACKEND STATE PARSER
+   STORAGE & CONFIG
 ========================================================= */
-function applyBackendState(payload) {
-    if (!payload) return;
 
-    const data = payload.data || payload;
-    const user = data.user || data;
-    const mining = data.mining || user.mining || {};
-    const recovery = data.recovery || user.recovery || {};
-    const boosters = data.boosters || data.booster || user.booster || {};
-    const lucky = data.luckyBox || data.lucky_box || user.lucky_box || {};
-    const tasks = data.tasks || user.tasks || {};
+const STORAGE_KEY=
+    'fidexa_prototype_state_v10';
 
-    state.totalBalance = safeNumber(firstDefined(
-        data.totalBalance, data.balance, user.balance, state.totalBalance
-    ));
+const FIDEXA_VERIFICATION_CONFIG = {
+    enabled: false,
+    feeTon: 0.5,
+    feeNanoTon: "500000000",
+    network: "testnet",
+    status: "coming_soon"
+};
 
-    state.totalMined = safeNumber(firstDefined(
-        data.totalMined, user.total_mined, user.totalMined, state.totalMined
-    ));
 
-    const miningStatus = String(firstDefined(
-        mining.status, mining.state, data.miningState, user.mining_state, state.miningState
-    )).toUpperCase();
+const defaultState={
 
-    state.miningState = ['MINING', 'ACTIVE', 'RUNNING'].includes(miningStatus) ? 'MINING' : 'IDLE';
+    totalBalance:0,
+    unverifiedBalance:0,
+    transferableBalance:0,
+    mainWalletBalance:0,
+    isVerified:false,
 
-    state.baseMiningRate = safeNumber(firstDefined(
-        mining.baseRate, mining.base_rate, data.baseMiningRate, user.base_mining_rate, state.baseMiningRate
-    ), 1.0);
+    totalMined:0,
 
-    state.sessionRate = safeNumber(firstDefined(
-        mining.sessionRate, mining.session_rate, data.sessionRate, state.sessionRate, state.baseMiningRate
-    ), state.baseMiningRate);
+    miningState:'IDLE',
 
-    state.sessionAccumulated = safeNumber(firstDefined(
-        mining.sessionAccumulated, mining.session_accumulated, data.sessionAccumulated, state.sessionAccumulated
-    ));
+    miningStartedAt:0,
 
-    state.sessionStartAt = firstDefined(
-        mining.startAt, mining.start_at, mining.startedAt, mining.started_at,
-        data.sessionStartAt, user.mining_started_at, state.sessionStartAt
-    );
+    miningCycleDuration:14400,
 
-    state.sessionEndAt = firstDefined(
-        mining.endAt, mining.end_at, mining.expiresAt, mining.expires_at,
-        data.sessionEndAt, user.mining_ends_at, state.sessionEndAt
-    );
+    baseMiningRate:1.0,
 
-    state.burningStreak = safeNumber(firstDefined(
-        recovery.burningStreak, recovery.burning_streak, data.burningStreak, user.burning_streak, state.burningStreak
-    ), 1);
+    boosterBonusRate:0,
 
-    state.inactiveDays = safeNumber(firstDefined(
-        recovery.inactiveDays, recovery.inactive_days, data.inactiveDays, user.inactive_days, state.inactiveDays
-    ));
+    boostLuckyResetAt:0,
 
-    state.activeDays = safeNumber(firstDefined(
-        recovery.activeDays, recovery.active_days, data.activeDays, user.active_days, state.activeDays
-    ));
+    boosterResetAt:0,
 
-    state.recoverableBalance = safeNumber(firstDefined(
-        recovery.recoverableBalance, recovery.recoverable_balance,
-        data.recoverableBalance, user.recoverable_balance, state.recoverableBalance
-    ));
+    referralBonusRate:0,
 
-    state.activityStatus = String(firstDefined(
-        recovery.activityStatus, recovery.activity_status, data.activityStatus,
-        user.activity_status, state.activityStatus
-    )).toUpperCase();
+    boosterChancesLeft:5,
 
-    const boosterRem = firstDefined(
-        boosters.remaining, boosters.remainingToday, data.boosterRemaining,
-        user.booster_remaining, user.booster_left
-    );
-    if (boosterRem !== undefined) {
-        state.boosterRemaining = Math.max(0, Math.min(BOOSTER_MAX, safeNumber(boosterRem)));
-        state.boosterUsed = BOOSTER_MAX - state.boosterRemaining;
-    }
+    luckyBoxChances:5,
 
-    const luckyRem = firstDefined(
-        lucky.remaining, lucky.remainingChances, data.luckyBoxRemaining,
-        user.lucky_box_remaining, user.lucky_box_left
-    );
-    if (luckyRem !== undefined) {
-        state.luckyBoxRemaining = Math.max(0, Math.min(LUCKY_BOX_MAX, safeNumber(luckyRem)));
-        state.luckyBoxUsed = LUCKY_BOX_MAX - state.luckyBoxRemaining;
-    }
+    luckyBoxResetAt:0,
 
-    if (tasks && typeof tasks === 'object') {
-        state.claimedTasks = {
-            telegram: Boolean(firstDefined(tasks.telegram, tasks.telegram_claimed, state.claimedTasks.telegram)),
-            x: Boolean(firstDefined(tasks.x, tasks.x_claimed, state.claimedTasks.x)),
-            youtube: Boolean(firstDefined(tasks.youtube, tasks.youtube_claimed, state.claimedTasks.youtube))
-        };
-    }
+    sessionAccumulated:0,
 
-    if (Array.isArray(data.transactions)) state.transactions = data.transactions;
-}
+    burningStreak:1,
+
+    lastActivityDay:'',
+
+    inactiveDays:0,
+
+    activeDays:0,
+
+    recoverableBalance:0,
+
+    friends:[],
+
+    transactions:[],
+
+    claimedTasks:{
+        telegram:false,
+        x:false,
+        youtube:false
+    },
+
+    /* =====================================================
+       RECOVERY SYSTEM
+    ===================================================== */
+
+    lastActivityTimestamp:0,
+
+    recoveryTriggered:false,
+
+    recoveryQualified:false,
+
+    recoveryQualificationStartDay:'',
+
+    recoveryActiveDays:0,
+
+    recoveryLastUnlockAt:0,
+
+    recoveryUnlockedBalance:0,
+
+    recoveryTriggerTimestamp:0
+};
+
+
+let state={
+    ...defaultState
+};
+
 
 /* =========================================================
-   INITIALIZATION
+   GLOBAL USER REGISTRY
 ========================================================= */
-async function initializeBackendSync() {
-    try {
-        if (window.Telegram && window.Telegram.WebApp) {
-            const webApp = window.Telegram.WebApp;
-            webApp.ready();
-            webApp.expand();
 
-            if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
-                const tgUser = webApp.initDataUnsafe.user;
-                currentUserId = tgUser.id ? String(tgUser.id) : 'demo_user';
-                currentUserName = tgUser.username || tgUser.first_name || 'FidexaUser';
+function getAllUsersRegistry(){
+
+    try{
+
+        const data=
+            localStorage.getItem(
+                'fidexa_global_users'
+            );
+
+        return data
+            ? JSON.parse(data)
+            : {};
+
+    }catch(e){
+
+        return {};
+    }
+}
+
+
+function saveAllUsersRegistry(
+    registry
+){
+
+    try{
+
+        localStorage.setItem(
+            'fidexa_global_users',
+            JSON.stringify(registry)
+        );
+
+    }catch(e){}
+}
+
+
+/* =========================================================
+   DATE HELPERS
+========================================================= */
+
+function getDateKey(
+    timestamp=Date.now()
+){
+
+    const d=
+        new Date(timestamp);
+
+    return [
+        d.getFullYear(),
+        String(d.getMonth()+1).padStart(2,'0'),
+        String(d.getDate()).padStart(2,'0')
+    ].join('-');
+}
+
+
+function getPreviousDateKey(
+    dateKey
+){
+
+    const parts=
+        dateKey.split('-').map(Number);
+
+    const d=
+        new Date(
+            parts[0],
+            parts[1]-1,
+            parts[2]
+        );
+
+    d.setDate(
+        d.getDate()-1
+    );
+
+    return getDateKey(
+        d.getTime()
+    );
+}
+
+
+/* =========================================================
+   RECOVERY STATE NORMALIZATION
+========================================================= */
+
+function normalizeRecoveryState(){
+
+    state.totalBalance=
+        Number(state.totalBalance)||0;
+    state.unverifiedBalance = Number(state.unverifiedBalance)||0;
+    state.transferableBalance = Number(state.transferableBalance)||0;
+    state.mainWalletBalance = Number(state.mainWalletBalance)||0;
+
+    state.recoverableBalance=
+        Number(state.recoverableBalance)||0;
+
+    state.recoveryUnlockedBalance=
+        Number(state.recoveryUnlockedBalance)||0;
+
+    state.lastActivityTimestamp=
+        Number(state.lastActivityTimestamp)||0;
+
+    state.recoveryLastUnlockAt=
+        Number(state.recoveryLastUnlockAt)||0;
+
+    state.recoveryTriggerTimestamp=
+        Number(state.recoveryTriggerTimestamp)||0;
+
+    state.recoveryActiveDays=
+        Number(state.recoveryActiveDays)||0;
+
+    if(
+        !Number.isFinite(
+            state.recoveryActiveDays
+        )
+    ){
+
+        state.recoveryActiveDays=0;
+    }
+
+    if(
+        typeof state.recoveryTriggered!=='boolean'
+    ){
+
+        state.recoveryTriggered=
+            Number(state.recoverableBalance)>0;
+    }
+
+    if(
+        typeof state.recoveryQualified!=='boolean'
+    ){
+
+        state.recoveryQualified=false;
+    }
+
+    if(
+        typeof state.recoveryQualificationStartDay!=='string'
+    ){
+
+        state.recoveryQualificationStartDay='';
+    }
+
+    if(
+        !state.lastActivityDay &&
+        state.lastActivityTimestamp
+    ){
+
+        state.lastActivityDay=
+            getDateKey(
+                state.lastActivityTimestamp
+            );
+    }
+}
+
+
+/* =========================================================
+   RECOVERY: TRIGGER AFTER 7 FULL INACTIVE DAYS
+========================================================= */
+
+function processInactivityTrigger(){
+
+    normalizeRecoveryState();
+
+    if(
+        state.recoveryTriggered ||
+        Number(state.recoverableBalance)>0
+    ){
+
+        return false;
+    }
+
+    if(
+        !state.lastActivityTimestamp
+    ){
+
+        state.lastActivityTimestamp=
+            Date.now();
+
+        state.lastActivityDay=
+            getDateKey();
+
+        state.inactiveDays=0;
+
+        saveState();
+
+        return false;
+    }
+
+    const elapsed=
+        Date.now() -
+        Number(state.lastActivityTimestamp);
+
+    const fullInactiveDays=
+        Math.floor(
+            elapsed /
+            (24*60*60*1000)
+        );
+
+    state.inactiveDays=
+        Math.min(
+            7,
+            fullInactiveDays
+        );
+
+    if(
+        fullInactiveDays>=7
+    ){
+
+        const balance=
+            Math.max(
+                0,
+                Number(state.unverifiedBalance)||0
+            );
+
+        const deduction=
+            parseFloat(
+                (balance*0.10).toFixed(8)
+            );
+
+        state.unverifiedBalance=
+            parseFloat(
+                Math.max(
+                    0,
+                    balance-deduction
+                ).toFixed(8)
+            );
+        
+        state.totalBalance = parseFloat((state.unverifiedBalance + state.transferableBalance + state.mainWalletBalance).toFixed(8));
+
+        state.recoverableBalance=
+            parseFloat(
+                (
+                    Number(state.recoverableBalance||0) +
+                    deduction
+                ).toFixed(8)
+            );
+
+        state.recoveryTriggered=true;
+
+        state.recoveryQualified=false;
+
+        state.recoveryQualificationStartDay='';
+
+        state.recoveryActiveDays=0;
+
+        state.recoveryLastUnlockAt=0;
+
+        state.recoveryUnlockedBalance=0;
+
+        state.recoveryTriggerTimestamp=
+            Date.now();
+
+        state.burningStreak=
+            Math.max(
+                1,
+                Number(state.burningStreak||1)
+            );
+
+        state.inactiveDays=7;
+
+        saveState();
+
+        return true;
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   RECOVERY: MARK USER ACTIVE
+========================================================= */
+
+function markUserActive(){
+
+    normalizeRecoveryState();
+
+    const now=
+        Date.now();
+
+    const today=
+        getDateKey(now);
+
+    const burningTriggered=
+        processInactivityTrigger();
+
+    const previousDay=
+        state.lastActivityDay;
+
+    state.lastActivityTimestamp=
+        now;
+
+    state.lastActivityDay=
+        today;
+
+    state.inactiveDays=0;
+
+    if(
+        burningTriggered
+    ){
+
+        state.recoveryQualificationStartDay=
+            today;
+
+        state.recoveryActiveDays=1;
+
+        state.recoveryQualified=false;
+
+        state.activeDays=1;
+
+        saveState();
+
+        return;
+    }
+
+    if(
+        state.recoveryTriggered &&
+        !state.recoveryQualified
+    ){
+
+        if(
+            !state.recoveryQualificationStartDay
+        ){
+
+            state.recoveryQualificationStartDay=
+                today;
+
+            state.recoveryActiveDays=1;
+
+        }else if(
+            today !== previousDay
+        ){
+
+            const expectedPrevious=
+                getPreviousDateKey(today);
+
+            if(
+                previousDay===
+                expectedPrevious
+            ){
+
+                state.recoveryActiveDays=
+                    Math.min(
+                        7,
+                        Number(
+                            state.recoveryActiveDays||0
+                        )+1
+                    );
+
+            }else{
+
+                state.recoveryActiveDays=1;
+
+                state.recoveryQualificationStartDay=
+                    today;
             }
         }
 
-        const res = await callBackendAPI('/api/me', 'GET');
-        if (res && res.success) {
-            applyBackendState(res);
-            if (res.user && res.user.username) currentUserName = res.user.username;
-        } else if (res && res.error) {
-            showToast(res.error);
+        state.activeDays=
+            state.recoveryActiveDays;
+
+        if(
+            state.recoveryActiveDays>=7
+        ){
+
+            state.recoveryQualified=true;
+
+            if(
+                !state.recoveryLastUnlockAt
+            ){
+
+                state.recoveryLastUnlockAt=
+                    now;
+            }
         }
 
-        await Promise.allSettled([
-            loadReferralData(),
-            loadTransactions(),
-            syncMiningState()
-        ]);
+        saveState();
 
-        updateAllUI();
-        startMiningTimer();
-    } catch (error) {
-        console.error('Initialization failed:', error);
-        showToast('Unable to load account data.');
-    }
-}
-
-async function syncMiningState() {
-    const res = await callBackendAPI('/api/mining/status', 'GET');
-    if (res && res.success) {
-        applyBackendState(res);
-        updateAllUI();
-        startMiningTimer();
-    }
-}
-
-/* =========================================================
-   UI CONTROLLER
-========================================================= */
-function updateAllUI() {
-    const balanceEl = document.getElementById('balanceDisplay');
-    if (balanceEl) balanceEl.textContent = formatNumber(state.totalBalance);
-
-    const walletNumEl = document.getElementById('walletBalanceNum');
-    if (walletNumEl) {
-        walletNumEl.innerHTML = `${formatNumber(state.totalBalance)}<span class="wallet-balance-token">$FDX</span>`;
-    }
-
-    const rate = safeNumber(state.sessionRate || state.baseMiningRate, 1);
-    setText('statRate', `${rate.toFixed(1)} $FDX/H`);
-    setText('currentRateDisplay', rate.toFixed(1));
-    setText('totalMined', `${formatNumber(state.totalMined)} $FDX`);
-    setText('sessionAccumulated', `${formatNumber(state.sessionAccumulated)} $FDX`);
-
-    setText('boosterChances', `${state.boosterRemaining}/${BOOSTER_MAX} Left`);
-    setText('luckyBoxChances', `${state.luckyBoxRemaining}/${LUCKY_BOX_MAX} Left`);
-    setText('luckyBoxPromptChances', state.luckyBoxRemaining);
-
-    setText('recoverableFdx', formatNumber(state.recoverableBalance));
-    setText('activityStatus', state.activityStatus || 'ACTIVE');
-    setText('inactiveDays', `${state.inactiveDays} / 7`);
-
-    const recoveryBtn = document.querySelector('.recovery-claim-btn');
-    if (recoveryBtn) {
-        const canRecover = state.recoverableBalance > 0 && state.inactiveDays > 0;
-        recoveryBtn.classList.toggle('visible', canRecover);
-    }
-
-    const miningBtn = document.getElementById('miningToggleBtn');
-    const systemPill = document.getElementById('systemPill');
-    if (state.miningState === 'MINING') {
-        if (miningBtn) miningBtn.textContent = 'CLAIM REWARD';
-        if (systemPill) systemPill.textContent = 'MINING ACTIVE';
-    } else {
-        if (miningBtn) miningBtn.textContent = 'START MINING';
-        if (systemPill) systemPill.textContent = 'READY TO MINE';
-    }
-}
-
-/* =========================================================
-   MINING TIMER CONTROLLER
-========================================================= */
-function getRemainingMiningSeconds() {
-    if (state.miningState !== 'MINING' || !state.sessionEndAt) return 0;
-
-    let endTimeMs = 0;
-    if (typeof state.sessionEndAt === 'number') {
-        endTimeMs = state.sessionEndAt < 1e11 ? state.sessionEndAt * 1000 : state.sessionEndAt;
-    } else {
-        endTimeMs = new Date(state.sessionEndAt).getTime();
-    }
-
-    if (!Number.isFinite(endTimeMs) || isNaN(endTimeMs)) return 0;
-
-    const diffSeconds = Math.ceil((endTimeMs - Date.now()) / 1000);
-    return Math.max(0, diffSeconds);
-}
-
-function formatDuration(totalSeconds) {
-    const seconds = Math.max(0, Math.floor(totalSeconds));
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
-}
-
-function updateMiningTimer() {
-    const timerEl = document.getElementById('timerDisplay');
-    if (!timerEl) return;
-
-    if (state.miningState !== 'MINING') {
-        timerEl.textContent = '04:00:00';
         return;
     }
 
-    const remaining = getRemainingMiningSeconds();
-    timerEl.textContent = formatDuration(remaining);
+    if(
+        !state.recoveryTriggered
+    ){
 
-    const elapsed = Math.max(0, MINING_CYCLE_SECONDS - remaining);
-    const completedHours = Math.min(4, Math.floor(elapsed / 3600));
-    setText('completedHours', `${completedHours} / 4`);
+        if(
+            previousDay===
+            getPreviousDateKey(today)
+        ){
 
-    if (remaining <= 0) {
-        stopMiningTimer();
-        syncMiningState();
-    }
-}
+            state.activeDays=
+                Math.min(
+                    7,
+                    Number(state.activeDays||0)+1
+                );
 
-function startMiningTimer() {
-    stopMiningTimer();
-    updateMiningTimer();
-    timerInterval = setInterval(updateMiningTimer, 1000);
-}
+        }else if(
+            previousDay!==today
+        ){
 
-function stopMiningTimer() {
-    if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-    }
-}
-
-/* =========================================================
-   MINING ACTIONS
-========================================================= */
-async function handleMiningAction() {
-    if (isBusy) return;
-    isBusy = true;
-
-    const button = document.getElementById('miningToggleBtn');
-    setBusy(button, true, state.miningState === 'MINING' ? 'CLAIMING...' : 'STARTING...');
-
-    try {
-        const endpoint = state.miningState === 'MINING' ? '/api/mining/claim' : '/api/mining/start';
-        const res = await callBackendAPI(endpoint, 'POST');
-
-        if (!res || !res.success) {
-            showToast((res && res.error) || 'Mining action failed.');
-            return;
+            state.activeDays=1;
         }
 
-        applyBackendState(res);
-
-        if (state.miningState === 'MINING') {
-            showToast(res.message || 'Mining started!');
-        } else {
-            showToast(res.message || `Reward claimed: +${formatNumber(res.reward || 0)} $FDX`);
-        }
-
-        startMiningTimer();
-        updateAllUI();
-    } finally {
-        isBusy = false;
-        setBusy(button, false);
+        saveState();
     }
 }
 
+
 /* =========================================================
-   BOOSTER ACTIONS
+   RECOVERY: UNLOCK 10% EVERY 24 HOURS
 ========================================================= */
-function openBoosterPrompt() {
-    if (state.boosterRemaining <= 0) {
-        showToast('No booster chances remaining.');
+
+function processRecoveryUnlock(){
+
+    normalizeRecoveryState();
+
+    if(
+        !state.recoveryTriggered
+    ){
+
         return;
     }
-    document.getElementById('boosterPromptModal')?.classList.add('active');
+
+    if(
+        !state.recoveryQualified
+    ){
+
+        return;
+    }
+
+    const pool=
+        Number(state.recoverableBalance)||0;
+
+    if(
+        pool<=0
+    ){
+
+        return;
+    }
+
+    const unlocked=
+        Number(
+            state.recoveryUnlockedBalance||0
+        );
+
+    const remainingPool=
+        Math.max(
+            0,
+            pool
+        );
+
+    if(
+        remainingPool<=0
+    ){
+
+        return;
+    }
+
+    if(
+        !state.recoveryLastUnlockAt
+    ){
+
+        state.recoveryLastUnlockAt=
+            Date.now();
+
+        saveState();
+
+        return;
+    }
+
+    const now=
+        Date.now();
+
+    const elapsed=
+        now -
+        Number(state.recoveryLastUnlockAt);
+
+    const full24HourPeriods=
+        Math.floor(
+            elapsed /
+            (24*60*60*1000)
+        );
+
+    if(
+        full24HourPeriods<=0
+    ){
+
+        return;
+    }
+
+    let newUnlocked=
+        unlocked;
+
+    let poolRemaining=
+        remainingPool;
+
+    let unlockTimestamp=
+        Number(state.recoveryLastUnlockAt);
+
+    for(
+        let i=0;
+        i<full24HourPeriods;
+        i++
+    ){
+
+        if(
+            poolRemaining<=0
+        ){
+
+            break;
+        }
+
+        const amount=
+            parseFloat(
+                (
+                    poolRemaining*0.10
+                ).toFixed(8)
+            );
+
+        if(
+            amount<=0
+        ){
+
+            break;
+        }
+
+        poolRemaining=
+            parseFloat(
+                Math.max(
+                    0,
+                    poolRemaining-amount
+                ).toFixed(8)
+            );
+
+        newUnlocked=
+            parseFloat(
+                (
+                    newUnlocked+amount
+                ).toFixed(8)
+            );
+
+        unlockTimestamp+=
+            24*60*60*1000;
+    }
+
+    state.recoverableBalance=
+        poolRemaining;
+
+    state.recoveryUnlockedBalance=
+        newUnlocked;
+
+    state.recoveryLastUnlockAt=
+        unlockTimestamp;
+
+    saveState();
 }
 
-function closeBoosterPrompt() {
-    document.getElementById('boosterPromptModal')?.classList.remove('active');
+
+/* =========================================================
+   RECOVERY: COMPLETE RESET AFTER EVERYTHING IS CLAIMED
+========================================================= */
+
+function completeRecoveryIfFinished(){
+
+    if(
+        state.recoveryTriggered &&
+        Number(state.recoverableBalance||0)<=0 &&
+        Number(state.recoveryUnlockedBalance||0)<=0
+    ){
+
+        state.recoveryTriggered=false;
+
+        state.recoveryQualified=false;
+
+        state.recoveryQualificationStartDay='';
+
+        state.recoveryActiveDays=0;
+
+        state.recoveryLastUnlockAt=0;
+
+        state.recoveryTriggerTimestamp=0;
+
+        state.activeDays=0;
+
+        saveState();
+    }
 }
 
-async function confirmWatchBoosterAd() {
-    if (state.boosterRemaining <= 0) {
+
+/* =========================================================
+   LOAD STATE
+========================================================= */
+
+function loadState(){
+
+    try{
+
+        const globalUsers=
+            getAllUsersRegistry();
+
+        if(
+            globalUsers[currentUserId]
+        ){
+
+            state={
+                ...defaultState,
+                ...globalUsers[currentUserId]
+            };
+
+        }else{
+
+            const saved=
+                localStorage.getItem(
+                    STORAGE_KEY
+                );
+
+            if(saved){
+
+                const parsed=
+                    JSON.parse(saved);
+
+                state={
+                    ...defaultState,
+                    ...parsed
+                };
+            }
+        }
+
+        // Migrate legacy totalBalance if sub-balances aren't set
+        if(state.totalBalance > 0 && state.unverifiedBalance === 0 && state.transferableBalance === 0 && state.mainWalletBalance === 0) {
+            state.unverifiedBalance = state.totalBalance;
+        }
+
+        state.totalBalance = parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+        state.boosterChancesLeft=
+            Number(state.boosterChancesLeft);
+
+        if(
+            !Number.isFinite(
+                state.boosterChancesLeft
+            )
+        ){
+
+            state.boosterChancesLeft=5;
+        }
+
+        state.boosterBonusRate=
+            Number(state.boosterBonusRate);
+
+        if(
+            !Number.isFinite(
+                state.boosterBonusRate
+            )
+        ){
+
+            state.boosterBonusRate=0;
+        }
+
+        state.luckyBoxChances=
+            Number(state.luckyBoxChances);
+
+        if(
+            !Number.isFinite(
+                state.luckyBoxChances
+            )
+        ){
+
+            state.luckyBoxChances=5;
+        }
+
+        if(
+            typeof state.claimedTasks!=='object' ||
+            state.claimedTasks===null
+        ){
+
+            state.claimedTasks={
+                telegram:false,
+                x:false,
+                youtube:false
+            };
+        }
+
+        normalizeRecoveryState();
+
+        processInactivityTrigger();
+
+        markUserActive();
+
+        processRecoveryUnlock();
+
+        completeRecoveryIfFinished();
+
+        saveState();
+
+    }catch(error){
+
+        console.log(
+            'State load error',
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   SAVE STATE
+========================================================= */
+
+function saveState(){
+
+    try{
+
+        state.totalBalance = parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+        const globalUsers=
+            getAllUsersRegistry();
+
+        globalUsers[currentUserId]={
+
+            username:
+                currentUserName,
+
+            totalBalance:
+                state.totalBalance,
+            unverifiedBalance:
+                state.unverifiedBalance,
+            transferableBalance:
+                state.transferableBalance,
+            mainWalletBalance:
+                state.mainWalletBalance,
+            isVerified:
+                state.isVerified,
+
+            totalMined:
+                state.totalMined,
+
+            miningState:
+                state.miningState,
+
+            miningStartedAt:
+                state.miningStartedAt,
+
+            miningCycleDuration:
+                state.miningCycleDuration,
+
+            baseMiningRate:
+                state.baseMiningRate,
+
+            boosterBonusRate:
+                state.boosterBonusRate,
+
+            boostLuckyResetAt:
+                state.boostLuckyResetAt,
+
+            boosterChancesLeft:
+                state.boosterChancesLeft,
+
+            luckyBoxChances:
+                state.luckyBoxChances,
+
+            sessionAccumulated:
+                state.sessionAccumulated,
+
+            burningStreak:
+                state.burningStreak,
+
+            recoverableBalance:
+                state.recoverableBalance,
+
+            friends:
+                state.friends,
+
+            transactions:
+                state.transactions,
+
+            claimedTasks:
+                state.claimedTasks,
+
+            lastActivityTimestamp:
+                state.lastActivityTimestamp,
+
+            lastActivityDay:
+                state.lastActivityDay,
+
+            inactiveDays:
+                state.inactiveDays,
+
+            activeDays:
+                state.activeDays,
+
+            recoveryTriggered:
+                state.recoveryTriggered,
+
+            recoveryQualified:
+                state.recoveryQualified,
+
+            recoveryQualificationStartDay:
+                state.recoveryQualificationStartDay,
+
+            recoveryActiveDays:
+                state.recoveryActiveDays,
+
+            recoveryLastUnlockAt:
+                state.recoveryLastUnlockAt,
+
+            recoveryUnlockedBalance:
+                state.recoveryUnlockedBalance,
+
+            recoveryTriggerTimestamp:
+                state.recoveryTriggerTimestamp
+        };
+
+        saveAllUsersRegistry(
+            globalUsers
+        );
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(state)
+        );
+
+    }catch(error){
+
+        console.log(
+            'State save error',
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   FIREBASE / BACKEND PLACEHOLDER FUNCTIONS
+========================================================= */
+
+function createVerificationRequest() {
+    console.warn("Backend placeholder: createVerificationRequest not implemented.");
+    return null;
+}
+
+function getVerificationStatus() {
+    console.warn("Backend placeholder: getVerificationStatus not implemented.");
+    return { verified: state.isVerified };
+}
+
+function verifyTonPayment() {
+    console.warn("Backend placeholder: verifyTonPayment not implemented.");
+    return false;
+}
+
+function migrateTransferableBalance() {
+    console.warn("Backend placeholder: migrateTransferableBalance not implemented.");
+    return false;
+}
+
+function handleTonVerification() {
+    if (!FIDEXA_VERIFICATION_CONFIG.enabled) {
+        showToast("Verification is coming soon. Feature is currently disabled.");
+        return;
+    }
+    // Future implementation hook for TON Connect & backend verification
+}
+
+function handleMigrateAction() {
+    if (!FIDEXA_VERIFICATION_CONFIG.enabled || !state.isVerified) {
+        showToast("Migration is unavailable. Account must be verified first.");
+        return;
+    }
+    // Future backend-controlled migration
+}
+
+
+/* =========================================================
+   UTILITY
+========================================================= */
+
+function formatNumber(value){
+
+    return Number(
+        value||0
+    ).toLocaleString(
+        'en-US',
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+}
+
+
+function getCurrentRate(){
+
+    return parseFloat(
+
+        (
+            Number(state.baseMiningRate) +
+            Number(state.boosterBonusRate) +
+            Number(state.referralBonusRate||0)
+        ).toFixed(1)
+
+    );
+}
+
+
+function showToast(message){
+
+    const toast=
+        document.getElementById('toast');
+
+    if(!toast){
+        return;
+    }
+
+    toast.textContent=
+        message;
+
+    toast.classList.add('show');
+
+    setTimeout(
+        function(){
+
+            toast.classList.remove('show');
+
+        },
+        2600
+    );
+}
+
+
+/* =========================================================
+   TAB SWITCHING
+========================================================= */
+
+function switchTab(
+    tabName,
+    btnElement
+){
+
+    document
+        .querySelectorAll('.page-view')
+        .forEach(
+            function(page){
+
+                page.classList.remove('active');
+
+            }
+        );
+
+    const page=
+        document.getElementById(
+            `page-${tabName}`
+        );
+
+    if(page){
+        page.classList.add('active');
+    }
+
+    document
+        .querySelectorAll('.nav-item')
+        .forEach(
+            function(nav){
+
+                nav.classList.remove('active');
+
+            }
+        );
+
+    if(btnElement){
+        btnElement.classList.add('active');
+    }
+
+    markUserActive();
+
+    processRecoveryUnlock();
+
+    updateRecoveryUI();
+
+    if(tabName==='wallet'){
+        renderTransactions();
+    }
+}
+
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+function getWalletAddress(){
+
+    return `FDX_NODE_${currentUserId}`;
+}
+
+
+let qrInstance=null;
+
+
+function openReceiveModal(){
+
+    markUserActive();
+
+    const modal=
+        document.getElementById(
+            'receiveModal'
+        );
+
+    const addressBox=
+        document.getElementById(
+            'receiveAddressBox'
+        );
+
+    const qrContainer=
+        document.getElementById(
+            'qrcodeCanvas'
+        );
+
+    const userWallet=
+        getWalletAddress();
+
+    addressBox.value=
+        userWallet;
+
+    qrContainer.innerHTML='';
+
+    qrInstance=
+        new QRCode(
+            qrContainer,
+            {
+                text:userWallet,
+                width:160,
+                height:160,
+                colorDark:"#000000",
+                colorLight:"#ffffff",
+                correctLevel:
+                    QRCode.CorrectLevel.H
+            }
+        );
+
+    modal.classList.add('active');
+}
+
+
+function closeReceiveModal(){
+
+    document
+        .getElementById('receiveModal')
+        .classList.remove('active');
+}
+
+
+async function copyReceiveAddress(){
+
+    markUserActive();
+
+    const addressBox=
+        document.getElementById(
+            'receiveAddressBox'
+        );
+
+    try{
+
+        await navigator.clipboard.writeText(
+            addressBox.value
+        );
+
+        showToast(
+            'Wallet address copied to clipboard!'
+        );
+
+    }catch(e){
+
+        addressBox.select();
+
+        document.execCommand('copy');
+
+        showToast(
+            'Wallet address copied!'
+        );
+    }
+
+    closeReceiveModal();
+}
+
+
+function openSendModal(){
+
+    markUserActive();
+
+    document.getElementById(
+        'sendRecipientInput'
+    ).value='';
+
+    document.getElementById(
+        'sendAmountInput'
+    ).value='';
+
+    document
+        .getElementById('sendModal')
+        .classList.add('active');
+}
+
+
+function closeSendModal(){
+
+    document
+        .getElementById('sendModal')
+        .classList.remove('active');
+}
+
+
+function processSendTransaction(){
+
+    markUserActive();
+
+    const recipientInput=
+        document.getElementById(
+            'sendRecipientInput'
+        ).value.trim();
+
+    const amount=
+        parseFloat(
+            document.getElementById(
+                'sendAmountInput'
+            ).value
+        );
+
+    if(!recipientInput){
+
+        showToast(
+            'Please enter a valid recipient address or @username.'
+        );
+
+        return;
+    }
+
+    if(
+        isNaN(amount) ||
+        amount<=0
+    ){
+
+        showToast(
+            'Please enter a valid send amount.'
+        );
+
+        return;
+    }
+
+    // Rule: ONLY Main Wallet Balance can be sent
+    if(
+        amount>
+        Number(state.mainWalletBalance)
+    ){
+
+        showToast(
+            'Insufficient Main Wallet Balance for transfer. Unverified or Transferable balances cannot be sent directly.'
+        );
+
+        return;
+    }
+
+    state.mainWalletBalance=
+        Number(state.mainWalletBalance)-
+        amount;
+
+    state.totalBalance=
+        parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+    const txTime=
+        new Date().toLocaleTimeString(
+            [],
+            {
+                hour:'2-digit',
+                minute:'2-digit'
+            }
+        );
+
+    if(!state.transactions){
+        state.transactions=[];
+    }
+
+    state.transactions.unshift({
+
+        type:'SEND',
+
+        recipient:
+            recipientInput,
+
+        amount:
+            amount,
+
+        time:
+            txTime
+    });
+
+    const globalUsers=
+        getAllUsersRegistry();
+
+    globalUsers[currentUserId]={
+
+        username:
+            currentUserName,
+
+        totalBalance:
+            state.totalBalance,
+        unverifiedBalance:
+            state.unverifiedBalance,
+        transferableBalance:
+            state.transferableBalance,
+        mainWalletBalance:
+            state.mainWalletBalance,
+        isVerified:
+            state.isVerified,
+
+        totalMined:
+            state.totalMined,
+
+        miningState:
+            state.miningState,
+
+        miningStartedAt:
+            state.miningStartedAt,
+
+        miningCycleDuration:
+            state.miningCycleDuration,
+
+        baseMiningRate:
+            state.baseMiningRate,
+
+        boosterBonusRate:
+            state.boosterBonusRate,
+
+        boostLuckyResetAt:
+            state.boostLuckyResetAt,
+
+        boosterChancesLeft:
+            state.boosterChancesLeft,
+
+        luckyBoxChances:
+            state.luckyBoxChances,
+
+        sessionAccumulated:
+            state.sessionAccumulated,
+
+        burningStreak:
+            state.burningStreak,
+
+        recoverableBalance:
+            state.recoverableBalance,
+
+        friends:
+            state.friends,
+
+        transactions:
+            state.transactions,
+
+        claimedTasks:
+            state.claimedTasks,
+
+        lastActivityTimestamp:
+            state.lastActivityTimestamp,
+
+        lastActivityDay:
+            state.lastActivityDay,
+
+        inactiveDays:
+            state.inactiveDays,
+
+        activeDays:
+            state.activeDays,
+
+        recoveryTriggered:
+            state.recoveryTriggered,
+
+        recoveryQualified:
+            state.recoveryQualified,
+
+        recoveryQualificationStartDay:
+            state.recoveryQualificationStartDay,
+
+        recoveryActiveDays:
+            state.recoveryActiveDays,
+
+        recoveryLastUnlockAt:
+            state.recoveryLastUnlockAt,
+
+        recoveryUnlockedBalance:
+            state.recoveryUnlockedBalance,
+
+        recoveryTriggerTimestamp:
+            state.recoveryTriggerTimestamp
+    };
+
+    let recipientKey=null;
+
+    for(
+        let userId in globalUsers
+    ){
+
+        const userNode=
+            `FDX_NODE_${userId}`;
+
+        if(
+
+            userNode.toLowerCase()===
+            recipientInput.toLowerCase()
+
+            ||
+
+            (
+                globalUsers[userId].username &&
+
+                globalUsers[userId]
+                    .username
+                    .toLowerCase()===
+
+                recipientInput
+                    .toLowerCase()
+                    .replace('@','')
+            )
+
+        ){
+
+            recipientKey=userId;
+            break;
+        }
+    }
+
+    if(recipientKey){
+
+        globalUsers[
+            recipientKey
+        ].mainWalletBalance =
+            Number(
+                globalUsers[
+                    recipientKey
+                ].mainWalletBalance||0
+            )+
+            amount;
+
+        globalUsers[
+            recipientKey
+        ].totalBalance = parseFloat((
+            Number(globalUsers[recipientKey].unverifiedBalance||0) +
+            Number(globalUsers[recipientKey].transferableBalance||0) +
+            Number(globalUsers[recipientKey].mainWalletBalance||0)
+        ).toFixed(8));
+
+        if(
+            !globalUsers[
+                recipientKey
+            ].transactions
+        ){
+
+            globalUsers[
+                recipientKey
+            ].transactions=[];
+        }
+
+        globalUsers[
+            recipientKey
+        ].transactions.unshift({
+
+            type:'RECEIVE',
+
+            sender:
+                currentUserName,
+
+            amount:
+                amount,
+
+            time:
+                txTime
+        });
+
+        showToast(
+            `Successfully sent ${formatNumber(amount)} $FDX to ${recipientInput}!`
+        );
+
+    }else{
+
+        const dummyId=
+            recipientInput
+                .replace('FDX_NODE_','')
+                .replace('@','');
+
+        globalUsers[dummyId]={
+
+            username:
+                recipientInput,
+
+            totalBalance:
+                amount,
+            unverifiedBalance: 0,
+            transferableBalance: 0,
+            mainWalletBalance: amount,
+            isVerified: false,
+
+            transactions:[
+
+                {
+                    type:'RECEIVE',
+
+                    sender:
+                        currentUserName,
+
+                    amount:
+                        amount,
+
+                    time:
+                        txTime
+                }
+
+            ]
+        };
+
+        showToast(
+            `Sent ${formatNumber(amount)} $FDX (Recipient node initialized)!`
+        );
+    }
+
+    saveAllUsersRegistry(
+        globalUsers
+    );
+
+    saveState();
+
+    updateAllUI();
+
+    closeSendModal();
+}
+
+
+function renderTransactions(){
+
+    const container=
+        document.getElementById(
+            'txListContainer'
+        );
+
+    const emptyState=
+        document.getElementById(
+            'txEmptyState'
+        );
+
+    const txs=
+        state.transactions||[];
+
+    if(txs.length===0){
+
+        emptyState.style.display='block';
+
+        container.innerHTML='';
+
+        return;
+    }
+
+    emptyState.style.display='none';
+
+    container.innerHTML='';
+
+    txs.forEach(
+        function(tx){
+
+            const item=
+                document.createElement('div');
+
+            item.className=
+                'friend-row-item';
+
+            const isReceive=
+                tx.type==='RECEIVE';
+
+            const sign=
+                isReceive?'+':'-';
+
+            const colorClass=
+                isReceive
+                ?'var(--green)'
+                :'var(--red)';
+
+            const labelText=
+                isReceive
+                ?`Received from ${escapeHtml(tx.sender||'Node')}`
+                :`Sent to ${escapeHtml(tx.recipient)}`;
+
+            const iconSymbol=
+                isReceive?'📥':'📤';
+
+            item.innerHTML=`
+
+                <div class="friend-left">
+
+                    <div class="friend-avatar">
+                        ${iconSymbol}
+                    </div>
+
+                    <div>
+
+                        <div class="friend-name">
+                            ${labelText}
+                        </div>
+
+                        <div class="friend-status inactive">
+                            ${tx.time}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div
+                    style="
+                    font-size:13px;
+                    color:${colorClass};
+                    font-weight:900;
+                    "
+                >
+                    ${sign}${formatNumber(tx.amount)} $FDX
+                </div>
+            `;
+
+            container.appendChild(item);
+        }
+    );
+}
+
+
+function escapeHtml(str){
+
+    return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+
+/* =========================================================
+   TASK SYSTEM
+========================================================= */
+
+function openTaskLinkAndVerify(type){
+
+    markUserActive();
+
+    if(type==='telegram'){
+
+        window.open(
+            FIDEXA_TELEGRAM,
+            '_blank'
+        );
+
+        setTimeout(
+            function(){
+
+                if(
+                    confirm(
+                        'Confirm you joined the Telegram channel?'
+                    )
+                ){
+
+                    claimTaskReward(
+                        'telegram'
+                    );
+                }
+
+            },
+            1200
+        );
+
+    }else if(type==='x'){
+
+        window.open(
+            FIDEXA_X,
+            '_blank'
+        );
+
+        setTimeout(
+            function(){
+
+                if(
+                    confirm(
+                        'Confirm you followed X (@Fidexa_Network)?'
+                    )
+                ){
+
+                    claimTaskReward('x');
+                }
+
+            },
+            1200
+        );
+
+    }else if(type==='youtube'){
+
+        window.open(
+            FIDEXA_YOUTUBE,
+            '_blank'
+        );
+
+        setTimeout(
+            function(){
+
+                if(
+                    confirm(
+                        'Confirm you subscribed to YouTube (@Fidexa_Network)?'
+                    )
+                ){
+
+                    claimTaskReward('youtube');
+                }
+
+            },
+            1200
+        );
+    }
+}
+
+
+function claimTaskReward(type){
+
+    markUserActive();
+
+    if(
+        state.claimedTasks[type]
+    ){
+
+        showToast(
+            'Task already claimed.'
+        );
+
+        return;
+    }
+
+    state.claimedTasks[type]=true;
+
+    state.unverifiedBalance=
+        Number(state.unverifiedBalance)+5;
+    
+    state.totalBalance=
+        parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+    saveState();
+
+    updateAllUI();
+
+    showToast(
+        '+5.00 $FDX added to Unverified Balance'
+    );
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function openProfileInfo(type){
+
+    markUserActive();
+
+    const modal=
+        document.getElementById(
+            'profileInfoModal'
+        );
+
+    const titleEl=
+        document.getElementById(
+            'sheetTitle'
+        );
+
+    const bodyEl=
+        document.getElementById(
+            'sheetContentBody'
+        );
+
+    modal.classList.add('active');
+
+    if(type==='account'){
+
+        titleEl.textContent=
+            'Account Information';
+
+        bodyEl.innerHTML=`
+
+            <p>
+                <strong>Telegram ID:</strong>
+                ${escapeHtml(currentUserId)}
+            </p>
+
+            <p style="margin-top:10px;">
+                <strong>Username:</strong>
+                ${escapeHtml(currentUserName)}
+            </p>
+
+            <p style="margin-top:10px;">
+                <strong>Wallet Address:</strong>
+                ${escapeHtml(getWalletAddress())}
+            </p>
+
+            <p style="margin-top:10px;">
+                <strong>Total Balance:</strong>
+                ${formatNumber(state.totalBalance)} $FDX
+            </p>
+
+        `;
+
+    }else if(type==='support'){
+
+        titleEl.textContent=
+            'Chat Support';
+
+        bodyEl.innerHTML=`
+
+            <div class="support-status">
+
+                <div class="support-status-title">
+                    💬 FIDEXA SUPPORT
+                </div>
+
+                <div class="support-status-text">
+                    How can our support team assist you today?
+                </div>
+
+            </div>
+
+            <div
+                id="supportMessages"
+                class="chat-messages-container"
+            >
+
+                <div class="chat-bubble admin">
+                    Hello! Welcome to Fidexa support.
+                </div>
+
+            </div>
+
+            <div class="chat-input-row">
+
+                <input
+                    id="supportInput"
+                    class="chat-input-field"
+                    type="text"
+                    maxlength="500"
+                    placeholder="Type a message..."
+                >
+
+                <button
+                    class="chat-send-btn"
+                    onclick="sendSupportMessage()"
+                >
+                    SEND
+                </button>
+
+            </div>
+        `;
+
+    }else if(type==='privacy'){
+
+        titleEl.textContent=
+            'Privacy Policy';
+
+        bodyEl.innerHTML=
+            `<p>Fidexa Network protects your user data and maintains secure decentralized node records.</p>`;
+
+    }else if(type==='whitepaper'){
+
+        titleEl.textContent=
+            'Whitepaper v1.0';
+
+        bodyEl.innerHTML=
+            `<p>Fidexa Network is a Web3 Telegram Mini App designed for gamified rewards and token distribution.</p>`;
+
+    }else if(type==='deletion'){
+
+        titleEl.textContent=
+            'Account Deletion';
+
+        bodyEl.innerHTML=
+            `<p style="color:var(--red);">Account deletion clears local state node configuration.</p>`;
+    }
+}
+
+
+function sendSupportMessage(){
+
+    markUserActive();
+
+    const input=
+        document.getElementById(
+            'supportInput'
+        );
+
+    const messages=
+        document.getElementById(
+            'supportMessages'
+        );
+
+    if(
+        !input ||
+        !messages ||
+        !input.value.trim()
+    ){
+
+        return;
+    }
+
+    const txt=
+        input.value.trim();
+
+    const userBubble=
+        document.createElement('div');
+
+    userBubble.className=
+        'chat-bubble user';
+
+    userBubble.textContent=
+        txt;
+
+    messages.appendChild(
+        userBubble
+    );
+
+    input.value='';
+
+    messages.scrollTop=
+        messages.scrollHeight;
+
+    setTimeout(
+        function(){
+
+            const adminBubble=
+                document.createElement('div');
+
+            adminBubble.className=
+                'chat-bubble admin';
+
+            adminBubble.textContent=
+                'Thank you. Your ticket has been logged with support.';
+
+            messages.appendChild(
+                adminBubble
+            );
+
+            messages.scrollTop=
+                messages.scrollHeight;
+
+        },
+        600
+    );
+}
+
+
+function closeProfileInfo(){
+
+    document
+        .getElementById('profileInfoModal')
+        .classList.remove('active');
+}
+
+
+function openExternalLink(target){
+
+    markUserActive();
+
+    if(target==='telegram'){
+
+        window.open(
+            FIDEXA_TELEGRAM,
+            '_blank'
+        );
+
+    }else if(target==='twitter'){
+
+        window.open(
+            FIDEXA_X,
+            '_blank'
+        );
+
+    }else if(target==='youtube'){
+
+        window.open(
+            FIDEXA_YOUTUBE,
+            '_blank'
+        );
+    }
+}
+
+
+/* =========================================================
+   REFERRAL
+========================================================= */
+
+function getReferralLink(){
+
+    return `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
+}
+
+
+async function copyReferralLink(){
+
+    markUserActive();
+
+    const link=
+        getReferralLink();
+
+    try{
+
+        if(
+            navigator.clipboard &&
+            typeof navigator.clipboard.writeText==='function'
+        ){
+
+            await navigator.clipboard.writeText(
+                link
+            );
+
+        }else{
+
+            const textarea=
+                document.createElement('textarea');
+
+            textarea.value=link;
+
+            textarea.style.position='fixed';
+            textarea.style.opacity='0';
+
+            document.body.appendChild(
+                textarea
+            );
+
+            textarea.focus();
+            textarea.select();
+
+            document.execCommand('copy');
+
+            textarea.remove();
+        }
+
+        showToast(
+            'Referral link copied!'
+        );
+
+    }catch(e){
+
+        console.warn(
+            'Referral copy error:',
+            e
+        );
+
+        try{
+
+            const textarea=
+                document.createElement('textarea');
+
+            textarea.value=link;
+
+            textarea.style.position='fixed';
+            textarea.style.top='0';
+            textarea.style.left='0';
+            textarea.style.opacity='0';
+
+            document.body.appendChild(
+                textarea
+            );
+
+            textarea.focus();
+            textarea.select();
+
+            document.execCommand('copy');
+
+            document.body.removeChild(
+                textarea
+            );
+
+            showToast(
+                'Referral link copied!'
+            );
+
+        }catch(error){
+
+            showToast(
+                'Could not copy link automatically.'
+            );
+        }
+    }
+}
+
+
+function shareReferralLink(){
+
+    markUserActive();
+
+    const refLink=
+        getReferralLink();
+
+    const shareText=
+        encodeURIComponent(
+            "Join Fidexa Network and start mining $FDX with me!"
+        );
+
+    if(
+        window.Telegram &&
+        window.Telegram.WebApp &&
+        window.Telegram.WebApp.openTelegramLink
+    ){
+
+        window.Telegram.WebApp.openTelegramLink(
+
+            `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`
+
+        );
+
+    }else if(
+        navigator.share
+    ){
+
+        navigator.share({
+
+            title:'Fidexa Network',
+
+            text:
+                'Join Fidexa Network and start mining $FDX with me!',
+
+            url:
+                refLink
+
+        }).catch(
+            ()=>{}
+        );
+
+    }else{
+
+        copyReferralLink();
+    }
+}
+
+
+/* =========================================================
+   ADSGRAM REWARDED AD
+========================================================= */
+
+function ensureAdsgramController(){
+
+    if(
+        adsgramController &&
+        typeof adsgramController.show==='function'
+    ){
+
+        return true;
+    }
+
+    if(!window.Adsgram){
+
+        console.warn(
+            'Adsgram SDK is not available.'
+        );
+
+        return false;
+    }
+
+    try{
+
+        adsgramController=
+            window.Adsgram.init({
+
+                blockId:
+                    ADSGRAM_BLOCK_ID,
+
+                debug:false
+            });
+
+        if(
+            adsgramController &&
+            typeof adsgramController.addEventListener==='function'
+        ){
+
+            try{
+
+                adsgramController.addEventListener(
+                    'onBannerNotFound',
+                    function(){
+
+                        console.warn(
+                            'Adsgram: no advertisement available.'
+                        );
+                    }
+                );
+
+            }catch(e){}
+
+            try{
+
+                adsgramController.addEventListener(
+                    'onError',
+                    function(event){
+
+                        console.warn(
+                            'Adsgram error:',
+                            event
+                        );
+                    }
+                );
+
+            }catch(e){}
+        }
+
+        return !!(
+            adsgramController &&
+            typeof adsgramController.show==='function'
+        );
+
+    }catch(error){
+
+        console.warn(
+            'Adsgram initialization error:',
+            error
+        );
+
+        adsgramController=null;
+
+        return false;
+    }
+}
+
+
+function showAdsgramAd(
+    rewardCallback
+){
+
+    if(
+        typeof rewardCallback!=='function'
+    ){
+
+        return;
+    }
+
+    if(
+        adsgramAdInProgress
+    ){
+
+        showToast(
+            'An advertisement is already loading.'
+        );
+
+        return;
+    }
+
+    if(
+        !ensureAdsgramController()
+    ){
+
+        showToast(
+            'Advertisement is currently unavailable. Please try again.'
+        );
+
+        return;
+    }
+
+    adsgramAdInProgress=true;
+
+    Promise.resolve()
+
+        .then(
+            function(){
+
+                return adsgramController.show();
+
+            }
+        )
+
+        .then(
+            function(result){
+
+                console.log(
+                    'Adsgram result:',
+                    result
+                );
+
+                if(
+                    result &&
+                    result.done===true &&
+                    result.error!==true
+                ){
+
+                    rewardCallback();
+
+                }else{
+
+                    showToast(
+                        'Advertisement was not completed.'
+                    );
+                }
+            }
+        )
+
+        .catch(
+            function(error){
+
+                console.warn(
+                    'Adsgram show error:',
+                    error
+                );
+
+                showToast(
+                    'Advertisement is currently unavailable. Please try again.'
+                );
+            }
+        )
+
+        .finally(
+            function(){
+
+                adsgramAdInProgress=false;
+
+            }
+        );
+}
+
+
+/* =========================================================
+   MINING CORE
+========================================================= */
+
+const MINING_CYCLE_SECONDS=14400;
+
+
+function getMiningElapsedSeconds(){
+
+    if(
+        state.miningState!=='ACTIVE' ||
+        !state.miningStartedAt
+    ){
+
+        return 0;
+    }
+
+    return Math.max(
+
+        0,
+
+        Math.min(
+
+            MINING_CYCLE_SECONDS,
+
+            Math.floor(
+                (
+                    Date.now()-
+                    state.miningStartedAt
+                )/1000
+            )
+        )
+    );
+}
+
+
+function getSessionAccumulated(){
+
+    if(
+        state.miningState!=='ACTIVE'
+    ){
+
+        return Number(
+            state.sessionAccumulated||0
+        );
+    }
+
+    const elapsed=
+        getMiningElapsedSeconds();
+
+    const completedHours=
+        Math.floor(
+            elapsed/3600
+        );
+
+    return parseFloat(
+
+        (
+            completedHours*
+            getCurrentRate()
+        ).toFixed(2)
+
+    );
+}
+
+
+function getRemainingSeconds(){
+
+    if(
+        state.miningState==='IDLE'
+    ){
+
+        return MINING_CYCLE_SECONDS;
+    }
+
+    if(
+        state.miningState==='READY_TO_CLAIM'
+    ){
+
+        return 0;
+    }
+
+    return Math.max(
+
+        0,
+
+        MINING_CYCLE_SECONDS-
+        getMiningElapsedSeconds()
+    );
+}
+
+
+function formatTimer(seconds){
+
+    const h=
+        Math.floor(
+            seconds/3600
+        )
+        .toString()
+        .padStart(2,'0');
+
+    const m=
+        Math.floor(
+            (seconds%3600)/60
+        )
+        .toString()
+        .padStart(2,'0');
+
+    const s=
+        (seconds%60)
+        .toString()
+        .padStart(2,'0');
+
+    return `${h}:${m}:${s}`;
+}
+
+
+/* =========================================================
+   BOOST + LUCKY RESET
+========================================================= */
+
+function resetBoostAndLuckyBox(){
+
+    state.boosterChancesLeft=5;
+
+    state.luckyBoxChances=5;
+
+    state.boosterBonusRate=0;
+
+    state.boostLuckyResetAt=0;
+
+    saveState();
+}
+
+
+function checkBoostLuckyReset(){
+
+    if(
+
+        state.miningState==='ACTIVE' &&
+
+        state.boostLuckyResetAt>0 &&
+
+        Date.now()>=
+        state.boostLuckyResetAt
+
+    ){
+
+        return true;
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   RECOVERY UI
+========================================================= */
+
+function updateRecoveryUI(){
+
+    normalizeRecoveryState();
+
+    processRecoveryUnlock();
+
+    completeRecoveryIfFinished();
+
+    const activityStatus=
+        document.getElementById(
+            'activityStatus'
+        );
+
+    const inactiveDays=
+        document.getElementById(
+            'inactiveDays'
+        );
+
+    const activeDays=
+        document.getElementById(
+            'activeDays'
+        );
+
+    const recoveryPool=
+        document.getElementById(
+            'recoveryPoolDisplay'
+        );
+
+    const unlocked=
+        document.getElementById(
+            'recoveryUnlockedDisplay'
+        );
+
+    const nextUnlock=
+        document.getElementById(
+            'recoveryNextUnlock'
+        );
+
+    const claimBtn=
+        document.getElementById(
+            'recoveryClaimBtn'
+        );
+
+    const note=
+        document.getElementById(
+            'recoveryNote'
+        );
+
+    const now=
+        Date.now();
+
+    const pool=
+        Number(
+            state.recoverableBalance||0
+        );
+
+    const ready=
+        Number(
+            state.recoveryUnlockedBalance||0
+        );
+
+    recoveryPool.textContent=
+        `${formatNumber(pool)} $FDX`;
+
+    unlocked.textContent=
+        `${formatNumber(ready)} $FDX`;
+
+    inactiveDays.textContent=
+        `${Math.min(
+            7,
+            Number(state.inactiveDays||0)
+        )} / 7`;
+
+    activeDays.textContent=
+        `${Math.min(
+            7,
+            Number(state.recoveryActiveDays||0)
+        )} / 7`;
+
+    claimBtn.classList.remove('visible');
+
+    if(
+        ready>0
+    ){
+
+        activityStatus.textContent=
+            'RECOVERY READY TO CLAIM';
+
+        activityStatus.style.color=
+            'var(--yellow)';
+
+        claimBtn.classList.add(
+            'visible'
+        );
+
+        nextUnlock.textContent=
+            'AVAILABLE NOW';
+
+        note.textContent=
+            'Watch a rewarded ad to move the unlocked $FDX into Unverified Balance.';
+
+        return;
+    }
+
+    activityStatus.style.color='';
+
+    if(
+        !state.recoveryTriggered &&
+        pool<=0
+    ){
+
+        activityStatus.textContent=
+            'ACTIVE';
+
+        nextUnlock.textContent=
+            'Not active';
+
+        note.textContent=
+            'Stay active to protect your $FDX balance.';
+
+        return;
+    }
+
+    if(
+        state.recoveryTriggered &&
+        !state.recoveryQualified
+    ){
+
+        activityStatus.textContent=
+            'RECOVERY QUALIFICATION';
+
+        activityStatus.style.color=
+            'var(--cyan)';
+
+        nextUnlock.textContent=
+            'After 7 active days';
+
+        note.textContent=
+            'Stay active on 7 consecutive days to begin recovery unlocking.';
+
+        return;
+    }
+
+    if(
+        state.recoveryQualified &&
+        pool>0
+    ){
+
+        activityStatus.textContent=
+            'RECOVERY ACTIVE';
+
+        activityStatus.style.color=
+            'var(--green)';
+
+        if(
+            state.recoveryLastUnlockAt>0
+        ){
+
+            const remaining=
+                Math.max(
+                    0,
+                    (
+                        Number(
+                            state.recoveryLastUnlockAt
+                        )+
+                        24*60*60*1000
+                    )-
+                    now
+                );
+
+            if(
+                remaining<=0
+            ){
+
+                nextUnlock.textContent=
+                    'PROCESSING...';
+
+            }else{
+
+                const hours=
+                    Math.floor(
+                        remaining/
+                        3600000
+                    );
+
+                const minutes=
+                    Math.floor(
+                        (
+                            remaining%
+                            3600000
+                        )/
+                        60000
+                    );
+
+                nextUnlock.textContent=
+                    `${hours}h ${minutes}m`;
+            }
+        }
+
+        note.textContent=
+            '10% of the remaining Recovery Pool unlocks every 24 hours.';
+    }
+}
+
+
+/* =========================================================
+   MINING UI
+========================================================= */
+
+function updateMiningUI(){
+
+    if(
+
+        state.miningState==='ACTIVE' &&
+
+        getMiningElapsedSeconds()>=
+        MINING_CYCLE_SECONDS
+
+    ){
+
+        const finalRate=
+            getCurrentRate();
+
+        state.sessionAccumulated=
+            parseFloat(
+
+                (
+                    (
+                        MINING_CYCLE_SECONDS/
+                        3600
+                    )*
+                    finalRate
+                ).toFixed(2)
+
+            );
+
+        state.miningState=
+            'READY_TO_CLAIM';
+
+        state.boosterChancesLeft=5;
+
+        state.luckyBoxChances=5;
+
+        state.boosterBonusRate=0;
+
+        state.boostLuckyResetAt=0;
+
+        saveState();
+    }
+
+    if(
+        checkBoostLuckyReset()
+    ){
+
+        state.boosterChancesLeft=5;
+
+        state.luckyBoxChances=5;
+
+        state.boosterBonusRate=0;
+
+        state.boostLuckyResetAt=0;
+
+        saveState();
+    }
+
+    const rate=
+        getCurrentRate();
+
+    document.getElementById(
+        'currentRateDisplay'
+    ).textContent=
+        rate.toFixed(1);
+
+    document.getElementById(
+        'statRate'
+    ).textContent=
+        `${rate.toFixed(1)} $FDX/H`;
+
+    document.getElementById(
+        'timerDisplay'
+    ).textContent=
+        formatTimer(
+            getRemainingSeconds()
+        );
+
+    const sessionAmount=
+
+        state.miningState==='ACTIVE'
+        ?
+        getSessionAccumulated()
+        :
+        Number(
+            state.sessionAccumulated||0
+        );
+
+    document.getElementById(
+        'sessionAccumulated'
+    ).textContent=
+        `${formatNumber(sessionAmount)} $FDX`;
+
+    const elapsed=
+
+        state.miningState==='ACTIVE'
+        ?
+        getMiningElapsedSeconds()
+        :
+        (
+            state.miningState==='READY_TO_CLAIM'
+            ?
+            MINING_CYCLE_SECONDS
+            :
+            0
+        );
+
+    document.getElementById(
+        'completedHours'
+    ).textContent=
+
+        `${Math.min(
+            4,
+            Math.floor(
+                elapsed/3600
+            )
+        )} / 4`;
+
+    document.getElementById(
+        'totalMined'
+    ).textContent=
+        `${formatNumber(
+            state.totalMined
+        )} $FDX`;
+
+    document.getElementById(
+        'boosterChances'
+    ).textContent=
+        `${state.boosterChancesLeft}/5 Left`;
+
+    document.getElementById(
+        'luckyBoxPromptChances'
+    ).textContent=
+        state.luckyBoxChances;
+
+    document.getElementById(
+        'recoverableFdx'
+    ).textContent=
+        formatNumber(
+            state.recoverableBalance
+        );
+
+    document.getElementById(
+        'burningStreak'
+    ).textContent=
+        `${state.burningStreak} Day`;
+
+    const pill=
+        document.getElementById(
+            'systemPill'
+        );
+
+    const button=
+        document.getElementById(
+            'miningToggleBtn'
+        );
+
+    if(
+        state.miningState==='IDLE'
+    ){
+
+        pill.textContent=
+            'READY TO MINE';
+
+        button.textContent=
+            'START MINING';
+
+        button.style.background=
+            'linear-gradient(90deg,#0284c7,#38bdf8)';
+
+        button.style.pointerEvents=
+            'auto';
+
+    }else if(
+        state.miningState==='ACTIVE'
+    ){
+
+        pill.textContent=
+            'ACTIVE MINING';
+
+        button.textContent=
+            'MINING IN PROGRESS';
+
+        button.style.background=
+            'rgba(56,189,248,.2)';
+
+        button.style.pointerEvents=
+            'none';
+
+    }else if(
+        state.miningState==='READY_TO_CLAIM'
+    ){
+
+        pill.textContent=
+            'SESSION ENDED';
+
+        button.textContent=
+            'CLAIM REWARD';
+
+        button.style.background=
+            'linear-gradient(90deg,#facc15,#f59e0b)';
+
+        button.style.pointerEvents=
+            'auto';
+    }
+
+    updateRecoveryUI();
+}
+
+
+/* =========================================================
+   MINING ACTION
+========================================================= */
+
+function handleMiningAction(){
+
+    markUserActive();
+
+    if(
+        state.miningState==='IDLE'
+    ){
+
+        state.miningState=
+            'ACTIVE';
+
+        state.miningStartedAt=
+            Date.now();
+
+        state.sessionAccumulated=0;
+
+        state.boostLuckyResetAt=
+
+            state.miningStartedAt+
+            (
+                MINING_CYCLE_SECONDS*
+                1000
+            );
+
+        if(
+            Number(
+                state.boosterChancesLeft
+            )<0
+        ){
+
+            state.boosterChancesLeft=5;
+        }
+
+        if(
+            Number(
+                state.luckyBoxChances
+            )<0
+        ){
+
+            state.luckyBoxChances=5;
+        }
+
+        saveState();
+
+        updateAllUI();
+
+        showToast(
+            'Mining cycle started!'
+        );
+
+    }else if(
+        state.miningState==='READY_TO_CLAIM'
+    ){
+
+        showAdsgramAd(
+
+            function(){
+
+                const accumulated=
+                    Number(
+                        state.sessionAccumulated||0
+                    );
+
+                // Mined tokens route to Unverified Balance
+                state.unverifiedBalance=
+                    Number(
+                        state.unverifiedBalance
+                    )+
+                    accumulated;
+
+                state.totalBalance=
+                    parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+                state.totalMined=
+                    Number(
+                        state.totalMined
+                    )+
+                    accumulated;
+
+                state.sessionAccumulated=0;
+
+                state.miningState='IDLE';
+
+                state.miningStartedAt=0;
+
+                state.boostLuckyResetAt=0;
+
+                saveState();
+
+                updateAllUI();
+
+                showToast(
+                    `Successfully claimed ${formatNumber(accumulated)} $FDX to Unverified Balance!`
+                );
+            }
+        );
+    }
+}
+
+
+/* =========================================================
+   MINING BOOST
+========================================================= */
+
+function openBoosterPrompt(){
+
+    markUserActive();
+
+    state.boosterChancesLeft=
+        Number(
+            state.boosterChancesLeft
+        );
+
+    if(
+        !Number.isFinite(
+            state.boosterChancesLeft
+        )
+    ){
+
+        state.boosterChancesLeft=5;
+
+        saveState();
+    }
+
+    if(
+        state.boosterChancesLeft<=0
+    ){
+
+        showToast(
+            'No booster chances left.'
+        );
+
+        return;
+    }
+
+    const modal=
+        document.getElementById(
+            'boosterPromptModal'
+        );
+
+    if(!modal){
+
+        showToast(
+            'Mining Boost is temporarily unavailable.'
+        );
+
+        return;
+    }
+
+    const chances=
+        document.getElementById(
+            'boosterChances'
+        );
+
+    if(chances){
+
+        chances.textContent=
+            `${state.boosterChancesLeft}/5 Left`;
+    }
+
+    modal.classList.add('active');
+}
+
+
+function closeBoosterPrompt(){
+
+    const modal=
+        document.getElementById(
+            'boosterPromptModal'
+        );
+
+    if(modal){
+        modal.classList.remove('active');
+    }
+}
+
+
+function confirmWatchBoosterAd(){
+
+    markUserActive();
+
+    if(
+        adsgramAdInProgress
+    ){
+
+        showToast(
+            'Advertisement is already loading.'
+        );
+
+        return;
+    }
+
+    state.boosterChancesLeft=
+        Number(
+            state.boosterChancesLeft
+        );
+
+    if(
+        !Number.isFinite(
+            state.boosterChancesLeft
+        )
+    ){
+
+        state.boosterChancesLeft=5;
+    }
+
+    if(
+        state.boosterChancesLeft<=0
+    ){
+
         closeBoosterPrompt();
-        showToast('No booster chances remaining.');
+
+        showToast(
+            'No booster chances left.'
+        );
+
         return;
     }
 
     closeBoosterPrompt();
 
-    try {
-        showToast('Loading advertisement...');
-        await showAdsgramAd();
+    showAdsgramAd(
 
-        const res = await callBackendAPI('/api/mining/boost', 'POST');
-        if (!res || !res.success) {
-            showToast((res && res.error) || 'Booster could not be applied.');
-            return;
+        function(){
+
+            if(
+                Number(
+                    state.boosterChancesLeft
+                )<=0
+            ){
+
+                showToast(
+                    'No booster chances left.'
+                );
+
+                return;
+            }
+
+            state.boosterChancesLeft=
+                Number(
+                    state.boosterChancesLeft
+                )-
+                1;
+
+            state.boosterBonusRate=
+                parseFloat(
+
+                    (
+                        Number(
+                            state.boosterBonusRate||0
+                        )+
+                        0.5
+                    ).toFixed(1)
+
+                );
+
+            saveState();
+
+            updateAllUI();
+
+            showToast(
+                'Speed booster active (+0.5 $FDX/H)!'
+            );
         }
-
-        applyBackendState(res);
-        updateAllUI();
-        showToast(res.message || 'Mining boost applied successfully!');
-    } catch (error) {
-        console.error('Booster error:', error);
-        showToast(error.message || 'Ad failed. Booster was not applied.');
-    }
+    );
 }
+
 
 /* =========================================================
-   LUCKY BOX ACTIONS
+   LUCKY BOX
 ========================================================= */
-function openLuckyBoxModal() {
-    if (state.luckyBoxRemaining <= 0) {
-        showToast('No Lucky Box chances remaining.');
-        return;
-    }
-    document.getElementById('luckyBoxModal')?.classList.add('active');
-}
 
-function closeLuckyBoxModal() {
-    document.getElementById('luckyBoxModal')?.classList.remove('active');
-}
+function openLuckyBoxModal(){
 
-async function confirmOpenLuckyBox() {
-    if (state.luckyBoxRemaining <= 0) {
-        closeLuckyBoxModal();
-        showToast('No Lucky Box chances remaining.');
-        return;
-    }
+    markUserActive();
 
-    closeLuckyBoxModal();
+    if(
+        Number(
+            state.luckyBoxChances
+        )<=0
+    ){
 
-    try {
-        showToast('Loading advertisement...');
-        await showAdsgramAd();
+        showToast(
+            'No Lucky Box chances left.'
+        );
 
-        const res = await callBackendAPI('/api/lucky-box/open', 'POST');
-        if (!res || !res.success) {
-            showToast((res && res.error) || 'Lucky Box could not be opened.');
-            return;
-        }
-
-        applyBackendState(res);
-        updateAllUI();
-
-        const reward = safeNumber(firstDefined(res.reward, res.luckyBox?.reward, 0));
-        showToast(res.message || `Lucky Box opened! Won +${formatNumber(reward)} $FDX`);
-    } catch (error) {
-        console.error('Lucky Box error:', error);
-        showToast(error.message || 'Ad failed. Box was not opened.');
-    }
-}
-
-/* =========================================================
-   RECOVERY ACTIONS
-========================================================= */
-async function claimRecovery() {
-    if (state.recoverableBalance <= 0) {
-        showToast('No recoverable FDX is available.');
         return;
     }
 
-    const button = document.querySelector('.recovery-claim-btn');
-    setBusy(button, true, 'WATCHING AD...');
+    const modal=
+        document.getElementById(
+            'luckyBoxModal'
+        );
 
-    try {
-        await showAdsgramAd();
-        const res = await callBackendAPI('/api/recovery/claim', 'POST');
+    if(!modal){
 
-        if (!res || !res.success) {
-            showToast((res && res.error) || 'Recovery could not be claimed.');
-            return;
-        }
+        showToast(
+            'Lucky Box is temporarily unavailable.'
+        );
 
-        applyBackendState(res);
-        updateAllUI();
-        showToast(res.message || 'Recovery claimed successfully!');
-    } catch (error) {
-        console.error('Recovery error:', error);
-        showToast(error.message || 'Ad unavailable. Recovery was not claimed.');
-    } finally {
-        setBusy(button, false);
-    }
-}
-
-/* =========================================================
-   TASKS
-========================================================= */
-function openTaskLinkAndVerify(type) {
-    const urls = {
-        telegram: FIDEXA_TELEGRAM,
-        x: FIDEXA_X,
-        youtube: FIDEXA_YOUTUBE
-    };
-
-    if (!urls[type]) return;
-
-    window.open(urls[type], '_blank');
-    setTimeout(() => claimTaskReward(type), 1200);
-}
-
-async function claimTaskReward(type) {
-    if (!['telegram', 'x', 'youtube'].includes(type)) return;
-
-    if (state.claimedTasks[type]) {
-        showToast('Task already claimed.');
         return;
     }
 
-    const res = await callBackendAPI('/api/tasks/claim', 'POST', { task: type });
-
-    if (!res || !res.success) {
-        showToast((res && res.error) || 'Task verification failed.');
-        return;
-    }
-
-    applyBackendState(res);
-    updateAllUI();
-
-    const reward = safeNumber(firstDefined(res.reward, res.task?.reward, 0));
-    showToast(res.message || `Task completed. +${formatNumber(reward)} $FDX`);
-}
-
-/* =========================================================
-   REFERRALS
-========================================================= */
-async function loadReferralData() {
-    const res = await callBackendAPI('/api/referrals', 'GET');
-    if (!res || !res.success) return;
-
-    state.friends = Array.isArray(res.referrals) ? res.referrals : [];
-    const totalCount = safeNumber(firstDefined(res.totalCount, res.total_count, state.friends.length));
-    const activeCount = safeNumber(firstDefined(res.activeCount, res.active_count, state.friends.filter(f => f.active !== false).length));
-    const inactiveCount = safeNumber(firstDefined(res.inactiveCount, res.inactive_count, Math.max(0, totalCount - activeCount)));
-
-    setText('totalFriendsCount', totalCount);
-    setText('activeFriendsCount', activeCount);
-    setText('inactiveFriendsCount', inactiveCount);
-    setText('friendListCount', `${totalCount} MEMBERS`);
-
-    renderFriendsList();
-}
-
-function renderFriendsList() {
-    const container = document.getElementById('friendsList');
-    if (!container) return;
-
-    const friends = state.friends || [];
-    if (!friends.length) {
-        container.innerHTML = `
-            <div class="friend-empty-state">
-                <div class="friend-empty-icon">👥</div>
-                <div class="friend-empty-title">No Invited Members</div>
-                <div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
-            </div>`;
-        return;
-    }
-
-    container.innerHTML = '';
-    friends.forEach(friend => {
-        const item = document.createElement('div');
-        item.className = 'friend-row-item';
-
-        const username = escapeHtml(friend.username || 'FidexaUser');
-        const telegramId = escapeHtml(friend.telegram_id || friend.telegramId || '—');
-        const formattedDate = friend.created_at ? new Date(friend.created_at).toLocaleDateString() : '';
-        const active = friend.active !== false;
-
-        item.innerHTML = `
-            <div class="friend-left">
-                <div class="friend-avatar">👤</div>
-                <div>
-                    <div class="friend-name">@${username}</div>
-                    <div class="friend-status ${active ? 'active' : 'inactive'}">${formattedDate ? (active ? 'Joined ' : 'Inactive · ') + formattedDate : (active ? 'Active Member' : 'Inactive Member')}</div>
-                </div>
-            </div>
-            <div style="font-size:11px;color:var(--muted);font-weight:700;">ID: ${telegramId}</div>`;
-
-        container.appendChild(item);
-    });
-}
-
-function copyReferralLink() {
-    const link = `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
-    navigator.clipboard.writeText(link)
-        .then(() => showToast('Referral link copied!'))
-        .catch(() => showToast('Unable to copy referral link.'));
-}
-
-function shareReferralLink() {
-    const link = `${FIDEXA_BOT}?start=ref_${encodeURIComponent(currentUserId)}`;
-    const text = encodeURIComponent('Join Fidexa Network and mine $FDX!');
-    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
-
-    if (window.Telegram?.WebApp?.openTelegramLink) {
-        window.Telegram.WebApp.openTelegramLink(shareUrl);
-    } else {
-        copyReferralLink();
-    }
-}
-
-/* =========================================================
-   TAB SWITCHING & WALLET
-========================================================= */
-function switchTab(tabName, btnElement) {
-    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
-    const page = document.getElementById(`page-${tabName}`);
-    if (page) page.classList.add('active');
-
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    if (btnElement) btnElement.classList.add('active');
-
-    if (tabName === 'wallet') {
-        loadTransactions();
-    } else if (tabName === 'friends') {
-        loadReferralData();
-    }
-}
-
-function getWalletAddress() {
-    return `FDX_NODE_${currentUserId}`;
-}
-
-function openReceiveModal() {
-    const modal = document.getElementById('receiveModal');
-    const addressBox = document.getElementById('receiveAddressBox');
-    const qrContainer = document.getElementById('qrcodeCanvas');
-    if (!modal || !addressBox || !qrContainer) return;
-
-    const userWallet = getWalletAddress();
-    addressBox.value = userWallet;
-    qrContainer.innerHTML = '';
-
-    if (window.QRCode) {
-        qrInstance = new QRCode(qrContainer, {
-            text: userWallet,
-            width: 160,
-            height: 160,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    }
+    document.getElementById(
+        'luckyBoxPromptChances'
+    ).textContent=
+        state.luckyBoxChances;
 
     modal.classList.add('active');
 }
 
-function closeReceiveModal() {
-    document.getElementById('receiveModal')?.classList.remove('active');
+
+function closeLuckyBoxModal(){
+
+    document
+        .getElementById(
+            'luckyBoxModal'
+        )
+        .classList.remove('active');
 }
 
-async function copyReceiveAddress() {
-    const addressBox = document.getElementById('receiveAddressBox');
-    if (!addressBox) return;
 
-    try {
-        await navigator.clipboard.writeText(addressBox.value);
-    } catch (_) {
-        addressBox.select();
-        document.execCommand('copy');
-    }
+function confirmOpenLuckyBox(){
 
-    showToast('Wallet address copied!');
-    closeReceiveModal();
-}
+    markUserActive();
 
-function openSendModal() {
-    const recipient = document.getElementById('sendRecipientInput');
-    const amount = document.getElementById('sendAmountInput');
-    if (recipient) recipient.value = '';
-    if (amount) amount.value = '';
-    document.getElementById('sendModal')?.classList.add('active');
-}
+    if(
+        adsgramAdInProgress
+    ){
 
-function closeSendModal() {
-    document.getElementById('sendModal')?.classList.remove('active');
-}
+        showToast(
+            'Advertisement is already loading.'
+        );
 
-async function processSendTransaction() {
-    const recipientInput = document.getElementById('sendRecipientInput')?.value.trim();
-    const amount = parseFloat(document.getElementById('sendAmountInput')?.value);
-
-    if (!recipientInput) {
-        showToast('Please enter a valid recipient address or @username.');
-        return;
-    }
-    if (!Number.isFinite(amount) || amount <= 0) {
-        showToast('Please enter a valid send amount.');
         return;
     }
 
-    if (amount > state.totalBalance) {
-        showToast('Insufficient balance.');
+    document
+        .getElementById(
+            'luckyBoxModal'
+        )
+        .classList.remove('active');
+
+    showAdsgramAd(
+
+        function(){
+
+            if(
+                Number(
+                    state.luckyBoxChances
+                )>0
+            ){
+
+                state.luckyBoxChances--;
+
+                const reward=
+                    [1,2,3,5,10][
+                        Math.floor(
+                            Math.random()*5
+                        )
+                    ];
+
+                state.unverifiedBalance=
+                    Number(
+                        state.unverifiedBalance
+                    )+
+                    reward;
+                
+                state.totalBalance=
+                    parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+                saveState();
+
+                updateAllUI();
+
+                showToast(
+                    `🎁 Lucky Box opened! +${reward} $FDX credited to Unverified Balance.`
+                );
+            }
+        }
+    );
+}
+
+
+/* =========================================================
+   RECOVERY CLAIM
+========================================================= */
+
+function claimRecovery(){
+
+    markUserActive();
+
+    normalizeRecoveryState();
+
+    processRecoveryUnlock();
+
+    const available=
+        Number(
+            state.recoveryUnlockedBalance||0
+        );
+
+    if(
+        available<=0
+    ){
+
+        showToast(
+            'No unlocked recovery amount is available.'
+        );
+
         return;
     }
 
-    const button = document.querySelector('#sendModal .prompt-btn-confirm');
-    setBusy(button, true, 'SENDING...');
+    if(
+        adsgramAdInProgress
+    ){
 
-    try {
-        const res = await callBackendAPI('/api/wallet/send', 'POST', {
-            recipient: recipientInput,
-            amount
-        });
+        showToast(
+            'Advertisement is already loading.'
+        );
 
-        if (!res || !res.success) {
-            showToast((res && res.error) || 'Transfer failed.');
-            return;
+        return;
+    }
+
+    showAdsgramAd(
+
+        function(){
+
+            const claimAmount=
+                Number(
+                    state.recoveryUnlockedBalance||0
+                );
+
+            if(
+                claimAmount<=0
+            ){
+
+                showToast(
+                    'No unlocked recovery amount is available.'
+                );
+
+                return;
+            }
+
+            state.unverifiedBalance=
+                parseFloat(
+                    (
+                        Number(
+                            state.unverifiedBalance||0
+                        )+
+                        claimAmount
+                    ).toFixed(8)
+                );
+
+            state.totalBalance=
+                parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+
+            state.recoveryUnlockedBalance=0;
+
+            completeRecoveryIfFinished();
+
+            saveState();
+
+            updateAllUI();
+
+            showToast(
+                `🔓 ${formatNumber(claimAmount)} $FDX recovered to Unverified Balance!`
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   UPDATE ALL UI
+========================================================= */
+
+function updateAllUI(){
+
+    processRecoveryUnlock();
+
+    completeRecoveryIfFinished();
+
+    const formattedBal=
+        formatNumber(
+            state.totalBalance
+        );
+
+    document.getElementById(
+        'balanceDisplay'
+    ).textContent=
+        formattedBal;
+
+    document.getElementById(
+        'walletBalanceNum'
+    ).innerHTML=
+        `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
+
+    // Update Wallet Balance States UI
+    const unverifiedEl = document.getElementById('unverifiedBalanceDisplay');
+    const transferableEl = document.getElementById('transferableBalanceDisplay');
+    const mainWalletEl = document.getElementById('mainWalletBalanceDisplay');
+
+    if (unverifiedEl) unverifiedEl.textContent = formatNumber(state.unverifiedBalance);
+    if (transferableEl) transferableEl.textContent = formatNumber(state.transferableBalance);
+    if (mainWalletEl) mainWalletEl.textContent = formatNumber(state.mainWalletBalance);
+
+    updateMiningUI();
+}
+
+
+/* =========================================================
+   USER INTERACTION TRACKING
+========================================================= */
+
+document.addEventListener(
+    'click',
+    function(event){
+
+        const today=
+            getDateKey();
+
+        if(
+            state.lastActivityDay!==today
+        ){
+
+            markUserActive();
+
+        }else{
+
+            state.lastActivityTimestamp=
+                Date.now();
+
+            state.inactiveDays=0;
+
+            saveState();
         }
 
-        applyBackendState(res);
-        await loadTransactions();
+        processRecoveryUnlock();
+
+        updateRecoveryUI();
+
+    },
+    true
+);
+
+
+/* =========================================================
+   APPLICATION START
+========================================================= */
+
+window.addEventListener(
+    'DOMContentLoaded',
+    function(){
+
+        loadState();
+
+        processRecoveryUnlock();
+
         updateAllUI();
-        showToast(res.message || 'Transfer successful!');
-        closeSendModal();
-    } finally {
-        setBusy(button, false);
+
     }
-}
+);
 
-async function loadTransactions() {
-    const res = await callBackendAPI('/api/wallet/transactions', 'GET');
-    if (res && res.success) {
-        state.transactions = Array.isArray(res.transactions) ? res.transactions : [];
-        renderTransactions();
-    }
-}
-
-function renderTransactions() {
-    const container = document.getElementById('txListContainer');
-    const emptyState = document.getElementById('txEmptyState');
-    if (!container || !emptyState) return;
-
-    const txs = state.transactions || [];
-    if (!txs.length) {
-        emptyState.style.display = 'block';
-        container.innerHTML = '';
-        return;
-    }
-
-    emptyState.style.display = 'none';
-    container.innerHTML = '';
-
-    txs.forEach(tx => {
-        const item = document.createElement('div');
-        item.className = 'friend-row-item';
-
-        const type = String(tx.type || '').toUpperCase();
-        const isReceive = type === 'RECEIVE';
-        const sign = isReceive ? '+' : '-';
-        const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
-        const labelText = isReceive
-            ? `Received from ${escapeHtml(tx.sender || 'Node')}`
-            : `Sent to ${escapeHtml(tx.recipient || 'Node')}`;
-        const iconSymbol = isReceive ? '📥' : '📤';
-        const time = escapeHtml(tx.time || tx.created_at || '');
-
-        item.innerHTML = `
-            <div class="friend-left">
-                <div class="friend-avatar">${iconSymbol}</div>
-                <div>
-                    <div class="friend-name">${labelText}</div>
-                    <div class="friend-status inactive">${time}</div>
-                </div>
-            </div>
-            <div style="font-size:13px;color:${colorClass};font-weight:900;">
-                ${sign}${formatNumber(tx.amount)} $FDX
-            </div>`;
-
-        container.appendChild(item);
-    });
-}
 
 /* =========================================================
-   PROFILE & LINKS
+   LIVE UI UPDATE
 ========================================================= */
-function openProfileInfo(type) {
-    const modal = document.getElementById('profileInfoModal');
-    const titleEl = document.getElementById('sheetTitle');
-    const bodyEl = document.getElementById('sheetContentBody');
-    if (!modal || !titleEl || !bodyEl) return;
 
-    if (type === 'account') {
-        titleEl.textContent = 'Account Information';
-        bodyEl.innerHTML = `
-            <p><strong>Telegram ID:</strong> ${escapeHtml(currentUserId)}</p>
-            <p style="margin-top:8px;"><strong>Username:</strong> @${escapeHtml(currentUserName)}</p>
-            <p style="margin-top:8px;"><strong>Node Address:</strong> ${escapeHtml(getWalletAddress())}</p>`;
-    } else if (type === 'support') {
-        titleEl.textContent = 'Chat Support';
-        bodyEl.innerHTML = `<p>For assistance with your Fidexa node or transfers, please contact the official Fidexa support channel.</p>`;
-    } else if (type === 'privacy') {
-        titleEl.textContent = 'Privacy Policy';
-        bodyEl.innerHTML = `<p>Fidexa Network uses Telegram WebApp authentication and server-side account data. Reward operations are processed by the Fidexa backend.</p>`;
-    } else if (type === 'whitepaper') {
-        titleEl.textContent = 'White Paper';
-        bodyEl.innerHTML = `<p>Read the official Fidexa Network whitepaper from the official Fidexa channels for tokenomics and mining-cycle information.</p>`;
-    } else if (type === 'deletion') {
-        titleEl.textContent = 'Account Deletion';
-        bodyEl.innerHTML = `
-            <p>Account deletion must be processed by the Fidexa backend so your server-side account data is removed correctly.</p>
-            <div style="margin-top:14px;">
-                <button class="prompt-btn-confirm" style="width:100%;" onclick="requestAccountDeletion()">Request Account Deletion</button>
-            </div>`;
-    }
+setInterval(
+    function(){
 
-    modal.classList.add('active');
-}
+        processRecoveryUnlock();
 
-function closeProfileInfo() {
-    document.getElementById('profileInfoModal')?.classList.remove('active');
-}
+        updateAllUI();
 
-async function requestAccountDeletion() {
-    const confirmed = window.confirm('Are you sure you want to request deletion of your Fidexa account? This action may be irreversible.');
-    if (!confirmed) return;
+    },
+    1000
+);
 
-    const res = await callBackendAPI('/api/account/delete', 'POST');
-    if (!res || !res.success) {
-        showToast((res && res.error) || 'Account deletion request failed.');
-        return;
-    }
-
-    showToast(res.message || 'Account deletion request submitted.');
-    closeProfileInfo();
-}
-
-function openExternalLink(type) {
-    const links = {
-        telegram: FIDEXA_TELEGRAM,
-        twitter: FIDEXA_X,
-        youtube: FIDEXA_YOUTUBE
-    };
-
-    if (links[type]) window.open(links[type], '_blank', 'noopener,noreferrer');
-}
-
-/* =========================================================
-   LIFECYCLE INITIALIZATION
-========================================================= */
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        initializeAdsgram();
-        initializeBackendSync();
-    });
-} else {
-    initializeAdsgram();
-    initializeBackendSync();
-}
-
-window.addEventListener('beforeunload', stopMiningTimer);
 </script>
+
 </body>
 </html>
+
