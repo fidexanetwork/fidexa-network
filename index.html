@@ -652,7 +652,6 @@ background:linear-gradient(145deg,#0d1520,#080d14);
 border:1px solid var(--border);
 border-radius:20px;
 overflow:hidden;
-margin-bottom:14px;
 }
 
 .tx-header{
@@ -1588,55 +1587,6 @@ id="walletBalanceNum">
 
 </div>
 
-<!-- FIDEXA BALANCE STRUCTURE CARDS -->
-<div style="display:grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px;">
-  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
-    <div class="balance-label">UNVERIFIED BALANCE</div>
-    <div class="balance-row" style="margin-top:4px;">
-      <div class="balance-value" id="unverifiedBalanceDisplay" style="font-size:24px;">0.00</div>
-      <div class="balance-token" style="font-size:14px;">$FDX</div>
-    </div>
-  </div>
-
-  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
-    <div class="balance-label">TRANSFERABLE BALANCE</div>
-    <div class="balance-row" style="margin-top:4px;">
-      <div class="balance-value" id="transferableBalanceDisplay" style="font-size:24px;">0.00</div>
-      <div class="balance-token" style="font-size:14px;">$FDX</div>
-    </div>
-    <button class="wallet-btn primary" id="migrateBtn" onclick="handleMigrateAction()" style="width:100%; margin-top:12px; padding:10px; font-size:12px;" disabled>
-      Migrate to Main Wallet (Coming Soon)
-    </button>
-  </div>
-
-  <div class="balance-card" style="margin-bottom:0; padding: 14px 18px;">
-    <div class="balance-label">MAIN WALLET BALANCE</div>
-    <div class="balance-row" style="margin-top:4px;">
-      <div class="balance-value" id="mainWalletBalanceDisplay" style="font-size:24px;">0.00</div>
-      <div class="balance-token" style="font-size:14px;">$FDX</div>
-    </div>
-  </div>
-</div>
-
-<!-- ON-CHAIN VERIFICATION SECTION -->
-<div class="balance-card" style="margin-bottom:14px; padding: 18px;">
-  <div class="balance-label" style="color:var(--cyan); margin-bottom:8px;">ON-CHAIN VERIFICATION</div>
-  <div style="font-size:12px; color:var(--muted); margin-bottom:12px; line-height:1.5;">
-    Verify your account to make your mined $FDX transferable.
-  </div>
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:12px;">
-    <span style="color:var(--muted);">Verification fee:</span>
-    <span style="font-weight:900; color:#fff;">0.5 TON</span>
-  </div>
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; font-size:12px;">
-    <span style="color:var(--muted);">Status:</span>
-    <span id="verificationStatusLabel" style="font-weight:900; color:var(--yellow);">Coming Soon</span>
-  </div>
-  <button class="wallet-btn" id="tonVerifyBtn" onclick="handleTonVerification()" style="width:100%; justify-content:center;" disabled>
-    Coming Soon (Connect TON)
-  </button>
-</div>
-
 <div class="wallet-action-row">
 
 <button
@@ -1911,7 +1861,7 @@ style="max-width:360px;">
 </div>
 
 <div class="prompt-desc">
-Transfer available tokens directly from your Main Wallet to another user node address or @username securely.
+Transfer available tokens directly to another user node address or @username securely.
 </div>
 
 <input
@@ -2211,28 +2161,16 @@ if(
 
 
 /* =========================================================
-   STORAGE & CONFIG
+   STORAGE
 ========================================================= */
 
 const STORAGE_KEY=
-    'fidexa_prototype_state_v10';
-
-const FIDEXA_VERIFICATION_CONFIG = {
-    enabled: false,
-    feeTon: 0.5,
-    feeNanoTon: "500000000",
-    network: "testnet",
-    status: "coming_soon"
-};
+    'fidexa_prototype_state_v9';
 
 
 const defaultState={
 
     totalBalance:0,
-    unverifiedBalance:0,
-    transferableBalance:0,
-    mainWalletBalance:0,
-    isVerified:false,
 
     totalMined:0,
 
@@ -2397,9 +2335,6 @@ function normalizeRecoveryState(){
 
     state.totalBalance=
         Number(state.totalBalance)||0;
-    state.unverifiedBalance = Number(state.unverifiedBalance)||0;
-    state.transferableBalance = Number(state.transferableBalance)||0;
-    state.mainWalletBalance = Number(state.mainWalletBalance)||0;
 
     state.recoverableBalance=
         Number(state.recoverableBalance)||0;
@@ -2471,6 +2406,11 @@ function processInactivityTrigger(){
 
     normalizeRecoveryState();
 
+    /*
+        If there is already an active recovery pool,
+        do not burn the balance again.
+    */
+
     if(
         state.recoveryTriggered ||
         Number(state.recoverableBalance)>0
@@ -2478,6 +2418,12 @@ function processInactivityTrigger(){
 
         return false;
     }
+
+    /*
+        No previous activity timestamp:
+        initialize it rather than treating the user
+        as inactive for seven days.
+    */
 
     if(
         !state.lastActivityTimestamp
@@ -2512,6 +2458,11 @@ function processInactivityTrigger(){
             fullInactiveDays
         );
 
+    /*
+        Burning activates only after seven COMPLETE
+        24-hour periods have passed.
+    */
+
     if(
         fullInactiveDays>=7
     ){
@@ -2519,7 +2470,7 @@ function processInactivityTrigger(){
         const balance=
             Math.max(
                 0,
-                Number(state.unverifiedBalance)||0
+                Number(state.totalBalance)||0
             );
 
         const deduction=
@@ -2527,15 +2478,13 @@ function processInactivityTrigger(){
                 (balance*0.10).toFixed(8)
             );
 
-        state.unverifiedBalance=
+        state.totalBalance=
             parseFloat(
                 Math.max(
                     0,
                     balance-deduction
                 ).toFixed(8)
             );
-        
-        state.totalBalance = parseFloat((state.unverifiedBalance + state.transferableBalance + state.mainWalletBalance).toFixed(8));
 
         state.recoverableBalance=
             parseFloat(
@@ -2591,8 +2540,19 @@ function markUserActive(){
     const today=
         getDateKey(now);
 
+    /*
+        First process inactivity BEFORE changing the
+        activity timestamp. This is important because
+        otherwise opening the app after seven days would
+        erase the seven-day inactivity period first.
+    */
+
     const burningTriggered=
         processInactivityTrigger();
+
+    /*
+        The user has now returned/interacted.
+    */
 
     const previousDay=
         state.lastActivityDay;
@@ -2604,6 +2564,11 @@ function markUserActive(){
         today;
 
     state.inactiveDays=0;
+
+    /*
+        If a burning event just occurred, this interaction
+        is the beginning of the recovery period.
+    */
 
     if(
         burningTriggered
@@ -2622,6 +2587,11 @@ function markUserActive(){
 
         return;
     }
+
+    /*
+        If recovery is active but not yet qualified,
+        count one active day per calendar day.
+    */
 
     if(
         state.recoveryTriggered &&
@@ -2659,6 +2629,11 @@ function markUserActive(){
 
             }else{
 
+                /*
+                    The user skipped a calendar day,
+                    so the seven-day active streak restarts.
+                */
+
                 state.recoveryActiveDays=1;
 
                 state.recoveryQualificationStartDay=
@@ -2669,11 +2644,20 @@ function markUserActive(){
         state.activeDays=
             state.recoveryActiveDays;
 
+        /*
+            Seven consecutive active days completed.
+        */
+
         if(
             state.recoveryActiveDays>=7
         ){
 
             state.recoveryQualified=true;
+
+            /*
+                The first 10% unlock becomes available
+                after the next full 24-hour recovery interval.
+            */
 
             if(
                 !state.recoveryLastUnlockAt
@@ -2688,6 +2672,11 @@ function markUserActive(){
 
         return;
     }
+
+    /*
+        If there is no recovery currently active,
+        keep the normal active-day indicator useful.
+    */
 
     if(
         !state.recoveryTriggered
@@ -2748,6 +2737,11 @@ function processRecoveryUnlock(){
         return;
     }
 
+    /*
+        Do not unlock more when the entire pool has already
+        been moved to the claimable/unlocked balance.
+    */
+
     const unlocked=
         Number(
             state.recoveryUnlockedBalance||0
@@ -2797,6 +2791,14 @@ function processRecoveryUnlock(){
 
         return;
     }
+
+    /*
+        Each unlock is 10% of the CURRENT remaining
+        recovery pool.
+
+        Multiple completed 24-hour periods are processed
+        if the user was away for several days.
+    */
 
     let newUnlocked=
         unlocked;
@@ -2936,13 +2938,6 @@ function loadState(){
             }
         }
 
-        // Migrate legacy totalBalance if sub-balances aren't set
-        if(state.totalBalance > 0 && state.unverifiedBalance === 0 && state.transferableBalance === 0 && state.mainWalletBalance === 0) {
-            state.unverifiedBalance = state.totalBalance;
-        }
-
-        state.totalBalance = parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
-
         state.boosterChancesLeft=
             Number(state.boosterChancesLeft);
 
@@ -2993,7 +2988,17 @@ function loadState(){
 
         normalizeRecoveryState();
 
+        /*
+            Process inactivity before marking this new
+            app session as active.
+        */
+
         processInactivityTrigger();
+
+        /*
+            If the user has opened/interacted with the app,
+            that counts as activity.
+        */
 
         markUserActive();
 
@@ -3021,8 +3026,6 @@ function saveState(){
 
     try{
 
-        state.totalBalance = parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
-
         const globalUsers=
             getAllUsersRegistry();
 
@@ -3033,14 +3036,6 @@ function saveState(){
 
             totalBalance:
                 state.totalBalance,
-            unverifiedBalance:
-                state.unverifiedBalance,
-            transferableBalance:
-                state.transferableBalance,
-            mainWalletBalance:
-                state.mainWalletBalance,
-            isVerified:
-                state.isVerified,
 
             totalMined:
                 state.totalMined,
@@ -3086,6 +3081,8 @@ function saveState(){
 
             claimedTasks:
                 state.claimedTasks,
+
+            /* Recovery state */
 
             lastActivityTimestamp:
                 state.lastActivityTimestamp,
@@ -3137,47 +3134,6 @@ function saveState(){
             error
         );
     }
-}
-
-
-/* =========================================================
-   FIREBASE / BACKEND PLACEHOLDER FUNCTIONS
-========================================================= */
-
-function createVerificationRequest() {
-    console.warn("Backend placeholder: createVerificationRequest not implemented.");
-    return null;
-}
-
-function getVerificationStatus() {
-    console.warn("Backend placeholder: getVerificationStatus not implemented.");
-    return { verified: state.isVerified };
-}
-
-function verifyTonPayment() {
-    console.warn("Backend placeholder: verifyTonPayment not implemented.");
-    return false;
-}
-
-function migrateTransferableBalance() {
-    console.warn("Backend placeholder: migrateTransferableBalance not implemented.");
-    return false;
-}
-
-function handleTonVerification() {
-    if (!FIDEXA_VERIFICATION_CONFIG.enabled) {
-        showToast("Verification is coming soon. Feature is currently disabled.");
-        return;
-    }
-    // Future implementation hook for TON Connect & backend verification
-}
-
-function handleMigrateAction() {
-    if (!FIDEXA_VERIFICATION_CONFIG.enabled || !state.isVerified) {
-        showToast("Migration is unavailable. Account must be verified first.");
-        return;
-    }
-    // Future backend-controlled migration
 }
 
 
@@ -3279,6 +3235,10 @@ function switchTab(
     if(btnElement){
         btnElement.classList.add('active');
     }
+
+    /*
+        Any navigation interaction counts as activity.
+    */
 
     markUserActive();
 
@@ -3455,25 +3415,21 @@ function processSendTransaction(){
         return;
     }
 
-    // Rule: ONLY Main Wallet Balance can be sent
     if(
         amount>
-        Number(state.mainWalletBalance)
+        Number(state.totalBalance)
     ){
 
         showToast(
-            'Insufficient Main Wallet Balance for transfer. Unverified or Transferable balances cannot be sent directly.'
+            'Insufficient Total Balance for transfer.'
         );
 
         return;
     }
 
-    state.mainWalletBalance=
-        Number(state.mainWalletBalance)-
-        amount;
-
     state.totalBalance=
-        parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+        Number(state.totalBalance)-
+        amount;
 
     const txTime=
         new Date().toLocaleTimeString(
@@ -3512,14 +3468,6 @@ function processSendTransaction(){
 
         totalBalance:
             state.totalBalance,
-        unverifiedBalance:
-            state.unverifiedBalance,
-        transferableBalance:
-            state.transferableBalance,
-        mainWalletBalance:
-            state.mainWalletBalance,
-        isVerified:
-            state.isVerified,
 
         totalMined:
             state.totalMined,
@@ -3639,21 +3587,14 @@ function processSendTransaction(){
 
         globalUsers[
             recipientKey
-        ].mainWalletBalance =
+        ].totalBalance=
+
             Number(
                 globalUsers[
                     recipientKey
-                ].mainWalletBalance||0
+                ].totalBalance||0
             )+
             amount;
-
-        globalUsers[
-            recipientKey
-        ].totalBalance = parseFloat((
-            Number(globalUsers[recipientKey].unverifiedBalance||0) +
-            Number(globalUsers[recipientKey].transferableBalance||0) +
-            Number(globalUsers[recipientKey].mainWalletBalance||0)
-        ).toFixed(8));
 
         if(
             !globalUsers[
@@ -3700,10 +3641,6 @@ function processSendTransaction(){
 
             totalBalance:
                 amount,
-            unverifiedBalance: 0,
-            transferableBalance: 0,
-            mainWalletBalance: amount,
-            isVerified: false,
 
             transactions:[
 
@@ -3944,18 +3881,15 @@ function claimTaskReward(type){
 
     state.claimedTasks[type]=true;
 
-    state.unverifiedBalance=
-        Number(state.unverifiedBalance)+5;
-    
     state.totalBalance=
-        parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
+        Number(state.totalBalance)+5;
 
     saveState();
 
     updateAllUI();
 
     showToast(
-        '+5.00 $FDX added to Unverified Balance'
+        '+5.00 $FDX added to Balance'
     );
 }
 
@@ -4008,7 +3942,7 @@ function openProfileInfo(type){
             </p>
 
             <p style="margin-top:10px;">
-                <strong>Total Balance:</strong>
+                <strong>Balance:</strong>
                 ${formatNumber(state.totalBalance)} $FDX
             </p>
 
@@ -4785,7 +4719,7 @@ function updateRecoveryUI(){
             'AVAILABLE NOW';
 
         note.textContent=
-            'Watch a rewarded ad to move the unlocked $FDX into Unverified Balance.';
+            'Watch a rewarded ad to move the unlocked $FDX into Total Balance.';
 
         return;
     }
@@ -5170,15 +5104,11 @@ function handleMiningAction(){
                         state.sessionAccumulated||0
                     );
 
-                // Mined tokens route to Unverified Balance
-                state.unverifiedBalance=
+                state.totalBalance=
                     Number(
-                        state.unverifiedBalance
+                        state.totalBalance
                     )+
                     accumulated;
-
-                state.totalBalance=
-                    parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
 
                 state.totalMined=
                     Number(
@@ -5199,7 +5129,7 @@ function handleMiningAction(){
                 updateAllUI();
 
                 showToast(
-                    `Successfully claimed ${formatNumber(accumulated)} $FDX to Unverified Balance!`
+                    `Successfully claimed ${formatNumber(accumulated)} $FDX!`
                 );
             }
         );
@@ -5469,21 +5399,18 @@ function confirmOpenLuckyBox(){
                         )
                     ];
 
-                state.unverifiedBalance=
+                state.totalBalance=
                     Number(
-                        state.unverifiedBalance
+                        state.totalBalance
                     )+
                     reward;
-                
-                state.totalBalance=
-                    parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
 
                 saveState();
 
                 updateAllUI();
 
                 showToast(
-                    `🎁 Lucky Box opened! +${reward} $FDX credited to Unverified Balance.`
+                    `🎁 Lucky Box opened! +${reward} $FDX credited.`
                 );
             }
         }
@@ -5534,6 +5461,12 @@ function claimRecovery(){
 
         function(){
 
+            /*
+                Re-read the amount after the advertisement
+                has completed so the claim uses the current
+                stored state.
+            */
+
             const claimAmount=
                 Number(
                     state.recoveryUnlockedBalance||0
@@ -5550,18 +5483,15 @@ function claimRecovery(){
                 return;
             }
 
-            state.unverifiedBalance=
+            state.totalBalance=
                 parseFloat(
                     (
                         Number(
-                            state.unverifiedBalance||0
+                            state.totalBalance||0
                         )+
                         claimAmount
                     ).toFixed(8)
                 );
-
-            state.totalBalance=
-                parseFloat((Number(state.unverifiedBalance||0) + Number(state.transferableBalance||0) + Number(state.mainWalletBalance||0)).toFixed(8));
 
             state.recoveryUnlockedBalance=0;
 
@@ -5572,7 +5502,7 @@ function claimRecovery(){
             updateAllUI();
 
             showToast(
-                `🔓 ${formatNumber(claimAmount)} $FDX recovered to Unverified Balance!`
+                `🔓 ${formatNumber(claimAmount)} $FDX recovered to Total Balance!`
             );
         }
     );
@@ -5584,6 +5514,10 @@ function claimRecovery(){
 ========================================================= */
 
 function updateAllUI(){
+
+    /*
+        Process time-based recovery every UI update.
+    */
 
     processRecoveryUnlock();
 
@@ -5604,15 +5538,6 @@ function updateAllUI(){
     ).innerHTML=
         `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
 
-    // Update Wallet Balance States UI
-    const unverifiedEl = document.getElementById('unverifiedBalanceDisplay');
-    const transferableEl = document.getElementById('transferableBalanceDisplay');
-    const mainWalletEl = document.getElementById('mainWalletBalanceDisplay');
-
-    if (unverifiedEl) unverifiedEl.textContent = formatNumber(state.unverifiedBalance);
-    if (transferableEl) transferableEl.textContent = formatNumber(state.transferableBalance);
-    if (mainWalletEl) mainWalletEl.textContent = formatNumber(state.mainWalletBalance);
-
     updateMiningUI();
 }
 
@@ -5621,9 +5546,23 @@ function updateAllUI(){
    USER INTERACTION TRACKING
 ========================================================= */
 
+/*
+    These interactions count as activity.
+
+    Mining activity is separately recorded when mining
+    starts. General interaction also counts because your
+    rule says the user should not be completely inactive
+    for seven full days.
+*/
+
 document.addEventListener(
     'click',
     function(event){
+
+        /*
+            Avoid repeatedly writing state on every click
+            when it occurs on the same calendar day.
+        */
 
         const today=
             getDateKey();
@@ -5635,6 +5574,11 @@ document.addEventListener(
             markUserActive();
 
         }else{
+
+            /*
+                Even on the same day, refresh the timestamp
+                so the user is considered active.
+            */
 
             state.lastActivityTimestamp=
                 Date.now();
@@ -5690,4 +5634,3 @@ setInterval(
 
 </body>
 </html>
-
