@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1428,7 +1427,7 @@ JOIN
 
 <div class="task-left">
 
-<div class="task-icon">▶️</div>
+<div class="task-icon">▶️️</div>
 
 <div>
 
@@ -1746,7 +1745,7 @@ style="border-color:rgba(248,113,113,.3);">
 
 <div class="profile-menu-left">
 
-<span class="profile-menu-icon">⚠️</span>
+<span class="profile-menu-icon">⚠️️</span>
 
 <span
 class="profile-menu-title"
@@ -2027,6 +2026,7 @@ id="toast">
 
 let currentUserId='demo_user';
 let currentUserName='FidexaUser';
+let currentTelegramInitData='';
 
 function initializeTelegramUser(){
 
@@ -2039,6 +2039,9 @@ function initializeTelegramUser(){
 
         webApp.ready();
         webApp.expand();
+
+        currentTelegramInitData=
+            webApp.initData || '';
 
         if(
             webApp.initDataUnsafe &&
@@ -2062,6 +2065,354 @@ function initializeTelegramUser(){
 }
 
 initializeTelegramUser();
+
+
+/* =========================================================
+   FIDEXA API
+========================================================= */
+
+const FIDEXA_API_BASE=
+    'https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api';
+
+let fidexaApiAuthenticated=false;
+
+async function fidexaApiRequest(
+    path,
+    options={}
+){
+
+    if(
+        !currentTelegramInitData
+    ){
+
+        throw new Error(
+            'Telegram initData is not available.'
+        );
+    }
+
+    const method=
+        options.method || 'GET';
+
+    const headers={
+        ...(options.headers || {}),
+        'X-Telegram-Init-Data':
+            currentTelegramInitData
+    };
+
+    if(
+        options.body !== undefined
+    ){
+
+        headers['Content-Type']=
+            'application/json';
+    }
+
+    const response=
+        await fetch(
+            `${FIDEXA_API_BASE}${path}`,
+            {
+                method,
+                headers,
+                body:
+                    options.body !== undefined
+                    ? JSON.stringify(options.body)
+                    : undefined
+            }
+        );
+
+    let data=null;
+
+    try{
+
+        data=
+            await response.json();
+
+    }catch(error){
+
+        throw new Error(
+            `API returned invalid JSON (${response.status}).`
+        );
+    }
+
+    if(
+        !response.ok ||
+        data?.success===false
+    ){
+
+        throw new Error(
+            data?.error ||
+            data?.message ||
+            `API request failed (${response.status}).`
+        );
+    }
+
+    return data;
+}
+
+
+function applyApiMeData(data){
+
+    const user=
+        data?.user ||
+        data?.profile ||
+        data?.data ||
+        data;
+
+    if(
+        !user ||
+        typeof user!=='object'
+    ){
+
+        throw new Error(
+            'Invalid /api/me response.'
+        );
+    }
+
+    const readNumber=function(){
+
+        for(
+            const value of arguments
+        ){
+
+            if(
+                value !== undefined &&
+                value !== null &&
+                value !== '' &&
+                Number.isFinite(Number(value))
+            ){
+
+                return Number(value);
+            }
+        }
+
+        return null;
+    };
+
+    const readValue=function(){
+
+        for(
+            const value of arguments
+        ){
+
+            if(
+                value !== undefined &&
+                value !== null
+            ){
+
+                return value;
+            }
+        }
+
+        return undefined;
+    };
+
+    const remoteUserId=
+        readValue(
+            user.userId,
+            user.user_id,
+            user.telegramId,
+            user.telegram_id,
+            data?.userId,
+            data?.user_id
+        );
+
+    if(
+        remoteUserId !== undefined &&
+        remoteUserId !== null
+    ){
+
+        currentUserId=
+            String(remoteUserId);
+    }
+
+    const remoteUsername=
+        readValue(
+            user.username,
+            user.telegramUsername,
+            user.telegram_username,
+            data?.username
+        );
+
+    if(
+        remoteUsername
+    ){
+
+        currentUserName=
+            String(remoteUsername);
+    }
+
+    const totalBalance=
+        readNumber(
+            user.totalBalance,
+            user.total_balance,
+            data?.totalBalance,
+            data?.total_balance
+        );
+
+    const totalMined=
+        readNumber(
+            user.totalMined,
+            user.total_mined,
+            data?.totalMined,
+            data?.total_mined
+        );
+
+    const miningState=
+        readValue(
+            user.miningState,
+            user.mining_state
+        );
+
+    const miningStartedAt=
+        readNumber(
+            user.miningStartedAt,
+            user.mining_started_at
+        );
+
+    const sessionAccumulated=
+        readNumber(
+            user.sessionAccumulated,
+            user.session_accumulated
+        );
+
+    const baseMiningRate=
+        readNumber(
+            user.baseMiningRate,
+            user.base_mining_rate
+        );
+
+    const boosterBonusRate=
+        readNumber(
+            user.boosterBonusRate,
+            user.booster_bonus_rate
+        );
+
+    const referralBonusRate=
+        readNumber(
+            user.referralBonusRate,
+            user.referral_bonus_rate
+        );
+
+    if(totalBalance!==null){
+        state.totalBalance=totalBalance;
+    }
+
+    if(totalMined!==null){
+        state.totalMined=totalMined;
+    }
+
+    if(
+        typeof miningState==='string'
+    ){
+
+        const normalized=
+            miningState.toUpperCase();
+
+        if(
+            normalized==='IDLE' ||
+            normalized==='ACTIVE' ||
+            normalized==='READY_TO_CLAIM'
+        ){
+
+            state.miningState=
+                normalized;
+        }
+    }
+
+    if(miningStartedAt!==null){
+        state.miningStartedAt=
+            miningStartedAt;
+    }
+
+    if(sessionAccumulated!==null){
+        state.sessionAccumulated=
+            sessionAccumulated;
+    }
+
+    if(baseMiningRate!==null){
+        state.baseMiningRate=
+            baseMiningRate;
+    }
+
+    if(boosterBonusRate!==null){
+        state.boosterBonusRate=
+            boosterBonusRate;
+    }
+
+    if(referralBonusRate!==null){
+        state.referralBonusRate=
+            referralBonusRate;
+    }
+
+    const activeReferrals=
+        readValue(
+            user.activeReferrals,
+            user.active_referrals,
+            data?.activeReferrals,
+            data?.active_referrals
+        );
+
+    if(
+        Array.isArray(activeReferrals)
+    ){
+
+        state.friends=
+            activeReferrals;
+    }
+
+    fidexaApiAuthenticated=true;
+
+    saveState();
+
+    updateAllUI();
+}
+
+
+async function loadFidexaProfile(){
+
+    if(
+        !currentTelegramInitData
+    ){
+
+        console.warn(
+            'Fidexa API: Telegram initData unavailable; local mode remains active.'
+        );
+
+        return false;
+    }
+
+    try{
+
+        const data=
+            await fidexaApiRequest(
+                '/api/me'
+            );
+
+        applyApiMeData(data);
+
+        console.log(
+            'Fidexa API /api/me:',
+            data
+        );
+
+        return true;
+
+    }catch(error){
+
+        fidexaApiAuthenticated=false;
+
+        console.warn(
+            'Fidexa API /api/me failed:',
+            error
+        );
+
+        showToast(
+            'Fidexa account sync is temporarily unavailable.'
+        );
+
+        return false;
+    }
+}
 
 
 /* =========================================================
@@ -5603,13 +5954,22 @@ document.addEventListener(
 
 window.addEventListener(
     'DOMContentLoaded',
-    function(){
+    async function(){
 
         loadState();
 
         processRecoveryUnlock();
 
         updateAllUI();
+
+        /*
+            Sync the authenticated Telegram user with
+            the Supabase Fidexa backend after local state
+            has loaded. The backend becomes the source of
+            truth for account/balance/mining profile data.
+        */
+
+        await loadFidexaProfile();
 
     }
 );
