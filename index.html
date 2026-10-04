@@ -1728,7 +1728,7 @@ class="profile-menu-item"
 onclick="openExternalLink('youtube')">
 
 <div class="profile-menu-left">
-<span class="profile-menu-icon">▶️️</span>
+<span class="profile-menu-icon">▶️</span>
 <span class="profile-menu-title">
 Official YouTube (@Fidexa_Network)
 </span>
@@ -2096,9 +2096,7 @@ async function fidexaApiRequest(
     const headers={
         ...(options.headers || {}),
         'X-Telegram-Init-Data':
-            currentTelegramInitData,
-        'Authorization':
-            `Bearer ${currentTelegramInitData}`
+            currentTelegramInitData
     };
 
     if(
@@ -2362,158 +2360,60 @@ function applyApiMeData(data){
             activeReferrals;
     }
 
-    /*
-        The API request itself is successful at this point.
-        Keep authentication marked as successful even if a
-        local-state/UI refresh has a non-critical error.
-    */
     fidexaApiAuthenticated=true;
 
-    try{
-        saveState();
-    }catch(error){
-        console.warn(
-            'Fidexa API: local state save after /api/me failed:',
-            error
-        );
-    }
+    saveState();
 
-    try{
-        updateAllUI();
-    }catch(error){
-        console.warn(
-            'Fidexa API: UI refresh after /api/me failed:',
-            error
-        );
-    }
+    updateAllUI();
 }
 
 
 async function loadFidexaProfile(){
 
-    /*
-        Telegram can expose WebApp.initData slightly after
-        the page script starts. Refresh it before every sync
-        attempt instead of relying on the first page load.
-    */
-    function refreshTelegramInitData(){
-
-        if(
-            window.Telegram &&
-            window.Telegram.WebApp
-        ){
-
-            const webApp=window.Telegram.WebApp;
-
-            try{
-                webApp.ready();
-                webApp.expand();
-            }catch(error){
-                console.warn(
-                    'Fidexa API: Telegram WebApp ready/expand warning:',
-                    error
-                );
-            }
-
-            if(webApp.initData){
-                currentTelegramInitData=
-                    webApp.initData;
-            }
-
-            if(
-                webApp.initDataUnsafe &&
-                webApp.initDataUnsafe.user
-            ){
-
-                const tgUser=
-                    webApp.initDataUnsafe.user;
-
-                currentUserId=
-                    tgUser.id
-                    ? String(tgUser.id)
-                    : currentUserId;
-
-                currentUserName=
-                    tgUser.username ||
-                    tgUser.first_name ||
-                    currentUserName;
-            }
-        }
-
-        return Boolean(currentTelegramInitData);
-    }
-
-    /*
-        Give Telegram a moment to populate initData, then
-        retry the authenticated profile request if needed.
-    */
-    for(
-        let attempt=1;
-        attempt<=3;
-        attempt++
+    if(
+        !currentTelegramInitData
     ){
 
-        refreshTelegramInitData();
+        console.warn(
+            'Fidexa API: Telegram initData unavailable; local mode remains active.'
+        );
 
-        if(
-            !currentTelegramInitData
-        ){
-
-            if(attempt<3){
-                await new Promise(function(resolve){
-                    setTimeout(resolve, 500);
-                });
-                continue;
-            }
-
-            console.warn(
-                'Fidexa API: Telegram initData is unavailable after retries.'
-            );
-
-            return false;
-        }
-
-        try{
-
-            const data=
-                await fidexaApiRequest(
-                    '/api/me'
-                );
-
-            applyApiMeData(data);
-
-            fidexaApiAuthenticated=true;
-
-            console.log(
-                'Fidexa API /api/me connected successfully:',
-                data
-            );
-
-            return true;
-
-        }catch(error){
-
-            console.warn(
-                `Fidexa API /api/me attempt ${attempt} failed:`,
-                error
-            );
-
-            if(attempt<3){
-                await new Promise(function(resolve){
-                    setTimeout(resolve, 700);
-                });
-            }
-        }
+        return false;
     }
 
-    fidexaApiAuthenticated=false;
+    try{
 
-    showToast(
-        'Fidexa account sync failed. Please reopen the Mini App.'
-    );
+        const data=
+            await fidexaApiRequest(
+                '/api/me'
+            );
 
-    return false;
+        applyApiMeData(data);
+
+        console.log(
+            'Fidexa API /api/me:',
+            data
+        );
+
+        return true;
+
+    }catch(error){
+
+        fidexaApiAuthenticated=false;
+
+        console.warn(
+            'Fidexa API /api/me failed:',
+            error
+        );
+
+        showToast(
+            'Fidexa account sync is temporarily unavailable.'
+        );
+
+        return false;
+    }
 }
+
 
 /* =========================================================
    OFFICIAL LINKS
