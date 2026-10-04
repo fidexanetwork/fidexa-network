@@ -5510,6 +5510,19 @@ async function handleMiningAction(){
 
         try{
 
+            /* Start the local 4-hour timer immediately so the
+               button and countdown work together. The backend
+               remains authoritative, but a slow backend response
+               must not leave the mining button stuck. */
+            const localStart=Date.now();
+            state.miningState='ACTIVE';
+            state.miningStartedAt=localStart;
+            state.miningCycleDuration=14400;
+            state.sessionAccumulated=0;
+            state.boostLuckyResetAt=localStart+(14400*1000);
+            saveState();
+            updateAllUI();
+
             const data=
                 await fidexaApiRequest(
                     '/api/mining/start',
@@ -5534,12 +5547,18 @@ async function handleMiningAction(){
                 data.mining ||
                 data;
 
-            state.miningState=
-                String(
-                    mining.miningState ||
-                    mining.state ||
-                    'ACTIVE'
-                ).toUpperCase();
+            /* Only replace the local ACTIVE state when the backend
+               explicitly confirms an ACTIVE session. Do not let an
+               unexpected transitional/empty state stop the timer. */
+            const backendMiningState=String(
+                mining.miningState ||
+                mining.state ||
+                ''
+            ).toUpperCase();
+
+            if(backendMiningState==='ACTIVE'){
+                state.miningState='ACTIVE';
+            }
 
             state.miningStartedAt=
                 Number(
