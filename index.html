@@ -2096,7 +2096,9 @@ async function fidexaApiRequest(
     const headers={
         ...(options.headers || {}),
         'X-Telegram-Init-Data':
-            currentTelegramInitData
+            currentTelegramInitData,
+        'Authorization':
+            `Bearer ${currentTelegramInitData}`
     };
 
     if(
@@ -2360,60 +2362,158 @@ function applyApiMeData(data){
             activeReferrals;
     }
 
+    /*
+        The API request itself is successful at this point.
+        Keep authentication marked as successful even if a
+        local-state/UI refresh has a non-critical error.
+    */
     fidexaApiAuthenticated=true;
 
-    saveState();
+    try{
+        saveState();
+    }catch(error){
+        console.warn(
+            'Fidexa API: local state save after /api/me failed:',
+            error
+        );
+    }
 
-    updateAllUI();
+    try{
+        updateAllUI();
+    }catch(error){
+        console.warn(
+            'Fidexa API: UI refresh after /api/me failed:',
+            error
+        );
+    }
 }
 
 
 async function loadFidexaProfile(){
 
-    if(
-        !currentTelegramInitData
+    /*
+        Telegram can expose WebApp.initData slightly after
+        the page script starts. Refresh it before every sync
+        attempt instead of relying on the first page load.
+    */
+    function refreshTelegramInitData(){
+
+        if(
+            window.Telegram &&
+            window.Telegram.WebApp
+        ){
+
+            const webApp=window.Telegram.WebApp;
+
+            try{
+                webApp.ready();
+                webApp.expand();
+            }catch(error){
+                console.warn(
+                    'Fidexa API: Telegram WebApp ready/expand warning:',
+                    error
+                );
+            }
+
+            if(webApp.initData){
+                currentTelegramInitData=
+                    webApp.initData;
+            }
+
+            if(
+                webApp.initDataUnsafe &&
+                webApp.initDataUnsafe.user
+            ){
+
+                const tgUser=
+                    webApp.initDataUnsafe.user;
+
+                currentUserId=
+                    tgUser.id
+                    ? String(tgUser.id)
+                    : currentUserId;
+
+                currentUserName=
+                    tgUser.username ||
+                    tgUser.first_name ||
+                    currentUserName;
+            }
+        }
+
+        return Boolean(currentTelegramInitData);
+    }
+
+    /*
+        Give Telegram a moment to populate initData, then
+        retry the authenticated profile request if needed.
+    */
+    for(
+        let attempt=1;
+        attempt<=3;
+        attempt++
     ){
 
-        console.warn(
-            'Fidexa API: Telegram initData unavailable; local mode remains active.'
-        );
+        refreshTelegramInitData();
 
-        return false;
-    }
+        if(
+            !currentTelegramInitData
+        ){
 
-    try{
+            if(attempt<3){
+                await new Promise(function(resolve){
+                    setTimeout(resolve, 500);
+                });
+                continue;
+            }
 
-        const data=
-            await fidexaApiRequest(
-                '/api/me'
+            console.warn(
+                'Fidexa API: Telegram initData is unavailable after retries.'
             );
 
-        applyApiMeData(data);
+            return false;
+        }
 
-        console.log(
-            'Fidexa API /api/me:',
-            data
-        );
+        try{
 
-        return true;
+            const data=
+                await fidexaApiRequest(
+                    '/api/me'
+                );
 
-    }catch(error){
+            applyApiMeData(data);
 
-        fidexaApiAuthenticated=false;
+            fidexaApiAuthenticated=true;
 
-        console.warn(
-            'Fidexa API /api/me failed:',
-            error
-        );
+            console.log(
+                'Fidexa API /api/me connected successfully:',
+                data
+            );
 
-        showToast(
-            'Fidexa account sync is temporarily unavailable.'
-        );
+            return true;
 
-        return false;
+        }catch(error){
+
+            console.warn(
+                `Fidexa API /api/me attempt ${attempt} failed:`,
+                error
+            );
+
+            if(attempt<3){
+                await new Promise(function(resolve){
+                    setTimeout(resolve, 700);
+                });
+            }
+        }
     }
-}
 
+    fidexaApiAuthenticated=false;
+
+    showToast(
+        'Fidexa account sync failed. Please reopen the Mini App.'
+    );
+
+    return false;
+}
 
 /* =========================================================
    OFFICIAL LINKS
@@ -5392,7 +5492,7 @@ function updateMiningUI(){
    MINING ACTION
 ========================================================= */
 
-function handleMiningAction(){
+async function handleMiningAction(){
 
     markUserActive();
 
@@ -5400,47 +5500,87 @@ function handleMiningAction(){
         state.miningState==='IDLE'
     ){
 
-        state.miningState=
-            'ACTIVE';
+        /*
+            Start the mining session on the Supabase backend first.
+            The backend must own the session so a reload cannot lose
+            or recreate the mining state from local storage.
+        */
 
-        state.miningStartedAt=
-            Date.now();
+        try{
 
-        state.sessionAccumulated=0;
+            const data=
+                await fidexaApiRequest(
+                    '/api/mining/start',
+                    {
+                        method:'POST',
+                        body:{}
+                    }
+                );
 
-        state.boostLuckyResetAt=
+            if(
+                !data ||
+                data.success!==true
+            ){
+                throw new Error(
+                    data?.error ||
+                    data?.message ||
+                    'Invalid mining start response.'
+                );
+            }
 
-            state.miningStartedAt+
-            (
-                MINING_CYCLE_SECONDS*
-                1000
+            const mining=
+                data.mining ||
+                data;
+
+            state.miningState=
+                String(
+                    mining.miningState ||
+                    mining.state ||
+                    'ACTIVE'
+                ).toUpperCase();
+
+            state.miningStartedAt=
+                Number(
+                    mining.miningStartedAt ||
+                    mining.mining_started_at ||
+                    Date.now()
+                );
+
+            state.miningCycleDuration=
+                Number(
+                    mining.cycleDuration ||
+                    mining.miningCycleDuration ||
+                    14400
+                );
+
+            state.sessionAccumulated=0;
+
+            state.boostLuckyResetAt=
+                state.miningStartedAt+
+                (
+                    state.miningCycleDuration*
+                    1000
+                );
+
+            saveState();
+            updateAllUI();
+
+            showToast(
+                'Mining cycle started!'
             );
 
-        if(
-            Number(
-                state.boosterChancesLeft
-            )<0
-        ){
+        }catch(error){
 
-            state.boosterChancesLeft=5;
+            console.warn(
+                'Fidexa backend mining start failed:',
+                error
+            );
+
+            showToast(
+                error.message ||
+                'Could not start mining. Please try again.'
+            );
         }
-
-        if(
-            Number(
-                state.luckyBoxChances
-            )<0
-        ){
-
-            state.luckyBoxChances=5;
-        }
-
-        saveState();
-
-        updateAllUI();
-
-        showToast(
-            'Mining cycle started!'
-        );
 
     }else if(
         state.miningState==='READY_TO_CLAIM'
@@ -5448,40 +5588,134 @@ function handleMiningAction(){
 
         showAdsgramAd(
 
-            function(){
+            async function(){
 
                 const accumulated=
                     Number(
                         state.sessionAccumulated||0
                     );
 
-                state.totalBalance=
-                    Number(
-                        state.totalBalance
-                    )+
-                    accumulated;
+                if(accumulated<=0){
 
-                state.totalMined=
-                    Number(
-                        state.totalMined
-                    )+
-                    accumulated;
+                    showToast(
+                        'No mining reward is available to claim.'
+                    );
 
-                state.sessionAccumulated=0;
+                    return;
+                }
 
-                state.miningState='IDLE';
+                /*
+                    The advertisement is completed, but the reward is
+                    not credited locally. The backend claim is the
+                    authoritative operation that credits the balance and
+                    marks the mining session as claimed/finished.
+                */
 
-                state.miningStartedAt=0;
+                try{
 
-                state.boostLuckyResetAt=0;
+                    const data=
+                        await fidexaApiRequest(
+                            '/api/mining/claim',
+                            {
+                                method:'POST',
+                                body:{}
+                            }
+                        );
 
-                saveState();
+                    if(
+                        !data ||
+                        data.success!==true
+                    ){
+                        throw new Error(
+                            data?.error ||
+                            data?.message ||
+                            'Invalid mining claim response.'
+                        );
+                    }
 
-                updateAllUI();
+                    if(
+                        data.totalBalance!==undefined
+                    ){
+                        state.totalBalance=
+                            Number(data.totalBalance)||0;
+                    }
 
-                showToast(
-                    `Successfully claimed ${formatNumber(accumulated)} $FDX!`
-                );
+                    if(
+                        data.totalMined!==undefined
+                    ){
+                        state.totalMined=
+                            Number(data.totalMined)||0;
+                    }
+
+                    const mining=
+                        data.mining ||
+                        data;
+
+                    state.miningState=
+                        String(
+                            data.miningState ||
+                            mining.miningState ||
+                            mining.state ||
+                            'IDLE'
+                        ).toUpperCase();
+
+                    state.miningStartedAt=
+                        Number(
+                            data.miningStartedAt ||
+                            mining.miningStartedAt ||
+                            mining.mining_started_at ||
+                            0
+                        );
+
+                    state.sessionAccumulated=
+                        Number(
+                            data.sessionAccumulated ??
+                            mining.sessionAccumulated ??
+                            mining.session_accumulated ??
+                            0
+                        );
+
+                    if(
+                        state.miningState==='IDLE'
+                    ){
+                        state.miningStartedAt=0;
+                        state.sessionAccumulated=0;
+                        state.boostLuckyResetAt=0;
+                    }
+
+                    saveState();
+                    updateAllUI();
+
+                    const reward=
+                        Number(
+                            data.reward ??
+                            data.claimedReward ??
+                            accumulated
+                        );
+
+                    showToast(
+                        `Successfully claimed ${formatNumber(reward)} $FDX!`
+                    );
+
+                }catch(error){
+
+                    console.warn(
+                        'Fidexa backend mining claim failed:',
+                        error
+                    );
+
+                    /*
+                        Do not change the local balance or mining state
+                        when the backend claim fails. The reward remains
+                        claimable and can be retried after the connection
+                        is restored.
+                    */
+
+                    showToast(
+                        error.message ||
+                        'Claim failed. Your mining reward was not lost.'
+                    );
+                }
             }
         );
     }
