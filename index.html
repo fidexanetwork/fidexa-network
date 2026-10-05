@@ -2434,6 +2434,83 @@ function applyApiMeData(data){
 }
 
 
+function getIncomingReferralParam(){
+
+    try{
+        const initParams = new URLSearchParams(
+            currentTelegramInitData || ''
+        );
+
+        const webApp =
+            window.Telegram && window.Telegram.WebApp
+                ? window.Telegram.WebApp
+                : null;
+
+        const urlParams = new URLSearchParams(
+            window.location.search || ''
+        );
+
+        const hashParams = new URLSearchParams(
+            String(window.location.hash || '').replace(/^#/, '')
+        );
+
+        const value =
+            initParams.get('start_param') ||
+            (webApp && webApp.initDataUnsafe
+                ? webApp.initDataUnsafe.start_param
+                : '') ||
+            urlParams.get('tgWebAppStartParam') ||
+            urlParams.get('startapp') ||
+            hashParams.get('tgWebAppStartParam') ||
+            '';
+
+        const ref = String(value).trim();
+
+        return /^ref_\d+$/i.test(ref) ? ref : '';
+
+    }catch(error){
+        console.warn(
+            'Fidexa referral parameter read failed:',
+            error
+        );
+        return '';
+    }
+}
+
+async function registerIncomingReferral(){
+
+    if(!fidexaApiAuthenticated || !currentTelegramInitData){
+        return;
+    }
+
+    const ref = getIncomingReferralParam();
+
+    if(!ref){
+        return;
+    }
+
+    try{
+        const result = await fidexaApiRequest(
+            '/api/referrals/register',
+            {
+                method:'POST',
+                body:{ref:ref}
+            }
+        );
+
+        console.log('Fidexa referral registration:', result);
+
+        await loadReferralData();
+
+    }catch(error){
+        console.warn(
+            'Fidexa incoming referral registration failed:',
+            error
+        );
+    }
+}
+
+
 async function loadFidexaProfile(){
 
     /*
@@ -2520,35 +2597,35 @@ async function loadFidexaProfile(){
 
         try{
 
-            const data=
-                await fidexaApiRequest(
-                    '/api/me'
-                );
+            const incomingRef = getIncomingReferralParam();
+
+            const profilePath = incomingRef
+                ? `/api/me?ref=${encodeURIComponent(incomingRef)}`
+                : '/api/me';
+
+            const data =
+                await fidexaApiRequest(profilePath);
 
             applyApiMeData(data);
 
+            /*
+                The backend receives the referral in the same
+                authenticated /api/me request. The POST below is
+                only a fallback and is safe because the backend
+                refuses duplicate referral registration.
+            */
+            if(incomingRef){
+                try{
+                    await registerIncomingReferral();
+                }catch(referralError){
+                    console.warn(
+                        'Fidexa referral fallback registration failed:',
+                        referralError
+                    );
+                }
+            }
+
             fidexaApiAuthenticated=true;
-
-            // Register a referral from the Telegram Mini App startapp link.
-            // This is intentionally after /api/me succeeds so the user is
-            // authenticated before the referral is registered.
-            try{
-                await registerIncomingReferral();
-            }catch(referralError){
-                console.warn(
-                    'Fidexa referral registration warning:',
-                    referralError
-                );
-            }
-
-            try{
-                await loadReferralData();
-            }catch(referralLoadError){
-                console.warn(
-                    'Fidexa referral list load warning:',
-                    referralLoadError
-                );
-            }
 
             console.log(
                 'Fidexa API /api/me connected successfully:',
@@ -2580,144 +2657,6 @@ async function loadFidexaProfile(){
 
     return false;
 }
-
-/* =========================================================
-   REFERRAL API SYNC
-========================================================= */
-
-async function loadReferralData(){
-
-    const data=
-        await fidexaApiRequest(
-            '/api/referrals'
-        );
-
-    const rows=
-        Array.isArray(data?.referrals)
-        ? data.referrals
-        : [];
-
-    state.friends=rows;
-
-    if(data?.referralBonusRate!==undefined){
-        state.referralBonusRate=
-            Number(data.referralBonusRate)||0;
-    }
-
-    const total=
-        Number(data?.total);
-
-    const active=
-        Number(data?.active);
-
-    const inactive=
-        Number(data?.inactive);
-
-    const totalEl=
-        document.getElementById('totalFriendsCount');
-    const activeEl=
-        document.getElementById('activeFriendsCount');
-    const inactiveEl=
-        document.getElementById('inactiveFriendsCount');
-    const countEl=
-        document.getElementById('friendListCount');
-    const listEl=
-        document.getElementById('friendsList');
-
-    if(totalEl) totalEl.textContent=
-        Number.isFinite(total) ? String(total) : String(rows.length);
-    if(activeEl) activeEl.textContent=
-        Number.isFinite(active) ? String(active) : String(rows.filter(r=>r.active).length);
-    if(inactiveEl) inactiveEl.textContent=
-        Number.isFinite(inactive) ? String(inactive) : String(rows.filter(r=>!r.active).length);
-    if(countEl) countEl.textContent=
-        `${rows.length} MEMBER${rows.length===1?'':'S'}`;
-
-    if(listEl){
-        if(rows.length===0){
-            listEl.innerHTML=`
-                <div class="friend-empty-state">
-                    <div class="friend-empty-icon">👥</div>
-                    <div class="friend-empty-title">No Invited Members</div>
-                    <div class="friend-empty-text">Your invited members will appear here.</div>
-                </div>`;
-        }else{
-            listEl.innerHTML=rows.map(function(row){
-                const id=String(row.referredId ?? row.referred_id ?? '');
-                const active=Boolean(row.active);
-                const created=row.createdAt || row.created_at || '';
-                let dateText='';
-                if(created){
-                    const d=new Date(created);
-                    if(!Number.isNaN(d.getTime())){
-                        dateText=d.toLocaleDateString();
-                    }
-                }
-                return `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.08);">
-                        <div>
-                            <div style="font-weight:700;">FDX Member ${id ? '#'+id : ''}</div>
-                            <div style="font-size:11px;opacity:.65;">${dateText ? 'Joined '+dateText : ''}</div>
-                        </div>
-                        <div style="font-size:12px;font-weight:700;">${active ? 'ACTIVE' : 'INACTIVE'}</div>
-                    </div>`;
-            }).join('');
-        }
-    }
-
-    saveState();
-    updateAllUI();
-    return data;
-}
-
-async function registerIncomingReferral(){
-
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){
-        return false;
-    }
-
-    const initParams=
-        new URLSearchParams(currentTelegramInitData);
-
-    const urlParams=
-        new URLSearchParams(window.location.search || '');
-
-    const unsafeStartParam=
-        window.Telegram &&
-        window.Telegram.WebApp &&
-        window.Telegram.WebApp.initDataUnsafe
-        ? window.Telegram.WebApp.initDataUnsafe.start_param
-        : '';
-
-    const startParam=
-        String(
-            initParams.get('start_param') ||
-            urlParams.get('tgWebAppStartParam') ||
-            unsafeStartParam ||
-            ''
-        ).trim();
-
-    if(!/^ref_\d+$/i.test(startParam)){
-        return false;
-    }
-
-    const result=
-        await fidexaApiRequest(
-            '/api/referrals/register',
-            {
-                method:'POST',
-                body:{ref:startParam}
-            }
-        );
-
-    console.log(
-        'Fidexa incoming referral registration:',
-        result
-    );
-
-    return true;
-}
-
 
 /* =========================================================
    OFFICIAL LINKS
