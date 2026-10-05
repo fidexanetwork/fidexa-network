@@ -2434,159 +2434,6 @@ function applyApiMeData(data){
 }
 
 
-async function loadReferralData(){
-
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){
-        return;
-    }
-
-    try{
-        const data=await fidexaApiRequest('/api/referrals');
-
-        const referrals=Array.isArray(data?.referrals)
-            ? data.referrals
-            : [];
-
-        state.friends=referrals;
-
-        const total=Number(data?.total ?? referrals.length) || 0;
-        const active=Number(data?.active ?? 0) || 0;
-        const inactive=Number(data?.inactive ?? Math.max(0,total-active)) || 0;
-        const referralBonusRate=Number(data?.referralBonusRate ?? 0) || 0;
-        state.referralBonusRate=referralBonusRate;
-
-        const totalEl=document.getElementById('totalFriendsCount');
-        const activeEl=document.getElementById('activeFriendsCount');
-        const inactiveEl=document.getElementById('inactiveFriendsCount');
-        const countEl=document.getElementById('friendListCount');
-
-        if(totalEl) totalEl.textContent=String(total);
-        if(activeEl) activeEl.textContent=String(active);
-        if(inactiveEl) inactiveEl.textContent=String(inactive);
-        if(countEl) countEl.textContent=`${total} MEMBERS`;
-
-        const list=document.getElementById('friendsList');
-        if(!list) return;
-
-        if(!referrals.length){
-            list.innerHTML=`
-                <div class="friend-empty-state">
-                    <div class="friend-empty-icon">👥</div>
-                    <div class="friend-empty-title">No Invited Members</div>
-                    <div class="friend-empty-text">Share your referral link to invite your first FIDEXA member.</div>
-                </div>`;
-            return;
-        }
-
-        list.innerHTML='';
-        referrals.forEach(function(ref){
-            const item=document.createElement('div');
-            item.className='friend-row-item';
-            const isActive=ref.active===true || String(ref.status).toLowerCase()==='active';
-            item.innerHTML=`
-                <div class="friend-left">
-                    <div class="friend-avatar">👤</div>
-                    <div>
-                        <div class="friend-name">FIDEXA Member ${escapeHtml(String(ref.referredId||'').slice(-6))}</div>
-                        <div class="friend-status ${isActive?'active':'inactive'}">${isActive?'ACTIVE':'INACTIVE'}</div>
-                    </div>
-                </div>
-                <div style="font-size:11px;color:var(--muted);font-weight:800;">${ref.createdAt ? new Date(ref.createdAt).toLocaleDateString() : ''}</div>`;
-            list.appendChild(item);
-        });
-
-        saveState();
-
-    }catch(error){
-        console.warn('Fidexa referrals load failed:',error);
-    }
-}
-
-function getIncomingReferralParam(){
-
-    try{
-        const initParams=new URLSearchParams(currentTelegramInitData || '');
-
-        const webApp=
-            window.Telegram &&
-            window.Telegram.WebApp
-                ? window.Telegram.WebApp
-                : null;
-
-        const urlParams=new URLSearchParams(
-            window.location.search || ''
-        );
-
-        const hashParams=new URLSearchParams(
-            String(window.location.hash || '').replace(/^#/,'')
-        );
-
-        const value=
-            initParams.get('start_param') ||
-            (webApp && webApp.initDataUnsafe
-                ? webApp.initDataUnsafe.start_param
-                : '') ||
-            urlParams.get('tgWebAppStartParam') ||
-            urlParams.get('startapp') ||
-            hashParams.get('tgWebAppStartParam') ||
-            '';
-
-        const ref=String(value).trim();
-
-        return /^ref_\d+$/i.test(ref)
-            ? ref
-            : '';
-
-    }catch(error){
-        console.warn(
-            'Fidexa referral parameter read failed:',
-            error
-        );
-        return '';
-    }
-}
-
-
-async function registerIncomingReferral(){
-
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){
-        return;
-    }
-
-    const ref=getIncomingReferralParam();
-
-    if(!ref){
-        return;
-    }
-
-    try{
-        const result=await fidexaApiRequest(
-            '/api/referrals/register',{
-                method:'POST',
-                body:{ref:ref}
-            }
-        );
-
-        console.log(
-            'Fidexa referral registration:',
-            result
-        );
-
-        await loadReferralData();
-
-        const refreshed=
-            await fidexaApiRequest('/api/me');
-
-        applyApiMeData(refreshed);
-
-    }catch(error){
-        console.warn(
-            'Fidexa incoming referral registration skipped/failed:',
-            error
-        );
-    }
-}
-
 async function loadFidexaProfile(){
 
     /*
@@ -2673,35 +2520,35 @@ async function loadFidexaProfile(){
 
         try{
 
-            const incomingRef=
-                getIncomingReferralParam();
-
-            const profilePath=
-                incomingRef
-                    ? `/api/me?ref=${encodeURIComponent(incomingRef)}`
-                    : '/api/me';
-
             const data=
                 await fidexaApiRequest(
-                    profilePath
+                    '/api/me'
                 );
 
             applyApiMeData(data);
 
             fidexaApiAuthenticated=true;
 
-            /*
-                The /api/me request above already carries the
-                referral parameter, so the backend can register
-                the referral during the same authenticated request.
-                Keep the POST registration as a safe fallback for
-                older backend deployments.
-            */
-            if(incomingRef){
+            // Register a referral from the Telegram Mini App startapp link.
+            // This is intentionally after /api/me succeeds so the user is
+            // authenticated before the referral is registered.
+            try{
                 await registerIncomingReferral();
+            }catch(referralError){
+                console.warn(
+                    'Fidexa referral registration warning:',
+                    referralError
+                );
             }
 
-            await loadReferralData();
+            try{
+                await loadReferralData();
+            }catch(referralLoadError){
+                console.warn(
+                    'Fidexa referral list load warning:',
+                    referralLoadError
+                );
+            }
 
             console.log(
                 'Fidexa API /api/me connected successfully:',
@@ -2733,6 +2580,144 @@ async function loadFidexaProfile(){
 
     return false;
 }
+
+/* =========================================================
+   REFERRAL API SYNC
+========================================================= */
+
+async function loadReferralData(){
+
+    const data=
+        await fidexaApiRequest(
+            '/api/referrals'
+        );
+
+    const rows=
+        Array.isArray(data?.referrals)
+        ? data.referrals
+        : [];
+
+    state.friends=rows;
+
+    if(data?.referralBonusRate!==undefined){
+        state.referralBonusRate=
+            Number(data.referralBonusRate)||0;
+    }
+
+    const total=
+        Number(data?.total);
+
+    const active=
+        Number(data?.active);
+
+    const inactive=
+        Number(data?.inactive);
+
+    const totalEl=
+        document.getElementById('totalFriendsCount');
+    const activeEl=
+        document.getElementById('activeFriendsCount');
+    const inactiveEl=
+        document.getElementById('inactiveFriendsCount');
+    const countEl=
+        document.getElementById('friendListCount');
+    const listEl=
+        document.getElementById('friendsList');
+
+    if(totalEl) totalEl.textContent=
+        Number.isFinite(total) ? String(total) : String(rows.length);
+    if(activeEl) activeEl.textContent=
+        Number.isFinite(active) ? String(active) : String(rows.filter(r=>r.active).length);
+    if(inactiveEl) inactiveEl.textContent=
+        Number.isFinite(inactive) ? String(inactive) : String(rows.filter(r=>!r.active).length);
+    if(countEl) countEl.textContent=
+        `${rows.length} MEMBER${rows.length===1?'':'S'}`;
+
+    if(listEl){
+        if(rows.length===0){
+            listEl.innerHTML=`
+                <div class="friend-empty-state">
+                    <div class="friend-empty-icon">👥</div>
+                    <div class="friend-empty-title">No Invited Members</div>
+                    <div class="friend-empty-text">Your invited members will appear here.</div>
+                </div>`;
+        }else{
+            listEl.innerHTML=rows.map(function(row){
+                const id=String(row.referredId ?? row.referred_id ?? '');
+                const active=Boolean(row.active);
+                const created=row.createdAt || row.created_at || '';
+                let dateText='';
+                if(created){
+                    const d=new Date(created);
+                    if(!Number.isNaN(d.getTime())){
+                        dateText=d.toLocaleDateString();
+                    }
+                }
+                return `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid rgba(255,255,255,.08);">
+                        <div>
+                            <div style="font-weight:700;">FDX Member ${id ? '#'+id : ''}</div>
+                            <div style="font-size:11px;opacity:.65;">${dateText ? 'Joined '+dateText : ''}</div>
+                        </div>
+                        <div style="font-size:12px;font-weight:700;">${active ? 'ACTIVE' : 'INACTIVE'}</div>
+                    </div>`;
+            }).join('');
+        }
+    }
+
+    saveState();
+    updateAllUI();
+    return data;
+}
+
+async function registerIncomingReferral(){
+
+    if(!fidexaApiAuthenticated || !currentTelegramInitData){
+        return false;
+    }
+
+    const initParams=
+        new URLSearchParams(currentTelegramInitData);
+
+    const urlParams=
+        new URLSearchParams(window.location.search || '');
+
+    const unsafeStartParam=
+        window.Telegram &&
+        window.Telegram.WebApp &&
+        window.Telegram.WebApp.initDataUnsafe
+        ? window.Telegram.WebApp.initDataUnsafe.start_param
+        : '';
+
+    const startParam=
+        String(
+            initParams.get('start_param') ||
+            urlParams.get('tgWebAppStartParam') ||
+            unsafeStartParam ||
+            ''
+        ).trim();
+
+    if(!/^ref_\d+$/i.test(startParam)){
+        return false;
+    }
+
+    const result=
+        await fidexaApiRequest(
+            '/api/referrals/register',
+            {
+                method:'POST',
+                body:{ref:startParam}
+            }
+        );
+
+    console.log(
+        'Fidexa incoming referral registration:',
+        result
+    );
+
+    return true;
+}
+
 
 /* =========================================================
    OFFICIAL LINKS
@@ -3918,11 +3903,6 @@ function switchTab(
 
     if(tabName==='wallet'){
         renderTransactions();
-        loadWalletTransactions();
-    }
-
-    if(tabName==='friends'){
-        loadReferralData();
     }
 }
 
@@ -4053,109 +4033,302 @@ function closeSendModal(){
 }
 
 
-async function processSendTransaction(){
+function processSendTransaction(){
 
     markUserActive();
 
-    const recipientInput=document.getElementById('sendRecipientInput').value.trim();
-    const amount=parseFloat(document.getElementById('sendAmountInput').value);
+    const recipientInput=
+        document.getElementById(
+            'sendRecipientInput'
+        ).value.trim();
+
+    const amount=
+        parseFloat(
+            document.getElementById(
+                'sendAmountInput'
+            ).value
+        );
 
     if(!recipientInput){
-        showToast('Please enter a valid FDX node address or @username.');
+
+        showToast(
+            'Please enter a valid recipient address or @username.'
+        );
+
         return;
     }
 
-    if(isNaN(amount) || amount<=0){
-        showToast('Please enter a valid send amount.');
+    if(
+        isNaN(amount) ||
+        amount<=0
+    ){
+
+        showToast(
+            'Please enter a valid send amount.'
+        );
+
         return;
     }
 
-    if(amount < 100){
-        showToast('Minimum transfer is 100 $FDX.');
+    if(
+        amount>
+        Number(state.totalBalance)
+    ){
+
+        showToast(
+            'Insufficient Total Balance for transfer.'
+        );
+
         return;
     }
 
-    if(amount>Number(state.totalBalance||0)){
-        showToast('Insufficient Total Balance for transfer.');
-        return;
-    }
+    state.totalBalance=
+        Number(state.totalBalance)-
+        amount;
 
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){
-        showToast('Wallet is still connecting. Please try again.');
-        return;
-    }
-
-    if(window.fidexaWalletSendInProgress){
-        return;
-    }
-
-    window.fidexaWalletSendInProgress=true;
-
-    try{
-        const result=await fidexaApiRequest('/api/wallet/send',{
-            method:'POST',
-            body:{
-                recipient:recipientInput,
-                amount:Number(amount)
+    const txTime=
+        new Date().toLocaleTimeString(
+            [],
+            {
+                hour:'2-digit',
+                minute:'2-digit'
             }
-        });
+        );
 
-        if(result?.totalBalance!==undefined){
-            state.totalBalance=Number(result.totalBalance)||0;
-        }else{
-            state.totalBalance=Math.max(0,Number(state.totalBalance||0)-amount);
+    if(!state.transactions){
+        state.transactions=[];
+    }
+
+    state.transactions.unshift({
+
+        type:'SEND',
+
+        recipient:
+            recipientInput,
+
+        amount:
+            amount,
+
+        time:
+            txTime
+    });
+
+    const globalUsers=
+        getAllUsersRegistry();
+
+    globalUsers[currentUserId]={
+
+        username:
+            currentUserName,
+
+        totalBalance:
+            state.totalBalance,
+
+        totalMined:
+            state.totalMined,
+
+        miningState:
+            state.miningState,
+
+        miningStartedAt:
+            state.miningStartedAt,
+
+        miningCycleDuration:
+            state.miningCycleDuration,
+
+        baseMiningRate:
+            state.baseMiningRate,
+
+        boosterBonusRate:
+            state.boosterBonusRate,
+
+        boostLuckyResetAt:
+            state.boostLuckyResetAt,
+
+        boosterChancesLeft:
+            state.boosterChancesLeft,
+
+        luckyBoxChances:
+            state.luckyBoxChances,
+
+        sessionAccumulated:
+            state.sessionAccumulated,
+
+        burningStreak:
+            state.burningStreak,
+
+        recoverableBalance:
+            state.recoverableBalance,
+
+        friends:
+            state.friends,
+
+        transactions:
+            state.transactions,
+
+        claimedTasks:
+            state.claimedTasks,
+
+        lastActivityTimestamp:
+            state.lastActivityTimestamp,
+
+        lastActivityDay:
+            state.lastActivityDay,
+
+        inactiveDays:
+            state.inactiveDays,
+
+        activeDays:
+            state.activeDays,
+
+        recoveryTriggered:
+            state.recoveryTriggered,
+
+        recoveryQualified:
+            state.recoveryQualified,
+
+        recoveryQualificationStartDay:
+            state.recoveryQualificationStartDay,
+
+        recoveryActiveDays:
+            state.recoveryActiveDays,
+
+        recoveryLastUnlockAt:
+            state.recoveryLastUnlockAt,
+
+        recoveryUnlockedBalance:
+            state.recoveryUnlockedBalance,
+
+        recoveryTriggerTimestamp:
+            state.recoveryTriggerTimestamp
+    };
+
+    let recipientKey=null;
+
+    for(
+        let userId in globalUsers
+    ){
+
+        const userNode=
+            `FDX_NODE_${userId}`;
+
+        if(
+
+            userNode.toLowerCase()===
+            recipientInput.toLowerCase()
+
+            ||
+
+            (
+                globalUsers[userId].username &&
+
+                globalUsers[userId]
+                    .username
+                    .toLowerCase()===
+
+                recipientInput
+                    .toLowerCase()
+                    .replace('@','')
+            )
+
+        ){
+
+            recipientKey=userId;
+            break;
+        }
+    }
+
+    if(recipientKey){
+
+        globalUsers[
+            recipientKey
+        ].totalBalance=
+
+            Number(
+                globalUsers[
+                    recipientKey
+                ].totalBalance||0
+            )+
+            amount;
+
+        if(
+            !globalUsers[
+                recipientKey
+            ].transactions
+        ){
+
+            globalUsers[
+                recipientKey
+            ].transactions=[];
         }
 
-        saveState();
+        globalUsers[
+            recipientKey
+        ].transactions.unshift({
 
-        try{
-            const fresh=await fidexaApiRequest('/api/me');
-            applyApiMeData(fresh);
-        }catch(refreshError){
-            console.warn('Fidexa wallet balance refresh failed:',refreshError);
-        }
+            type:'RECEIVE',
 
-        await loadWalletTransactions();
-        updateAllUI();
-        closeSendModal();
+            sender:
+                currentUserName,
 
-        showToast(`Successfully sent ${formatNumber(amount)} $FDX!`);
+            amount:
+                amount,
 
-    }catch(error){
-        console.warn('Fidexa wallet send failed:',error);
-        showToast(error?.message || 'Wallet transfer failed.');
-    }finally{
-        window.fidexaWalletSendInProgress=false;
-    }
-}
-
-async function loadWalletTransactions(){
-
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){
-        return;
-    }
-
-    try{
-        const data=await fidexaApiRequest('/api/wallet/transactions');
-        const remote=Array.isArray(data?.transactions) ? data.transactions : [];
-
-        state.transactions=remote.map(function(tx){
-            const type=String(tx.type||'').toUpperCase();
-            const isReceive=type==='RECEIVE';
-            return {
-                type:isReceive?'RECEIVE':'SEND',
-                sender:isReceive ? (tx.senderId ? `FDX_NODE_${tx.senderId}` : 'Node') : undefined,
-                recipient:!isReceive ? (tx.recipientId ? `FDX_NODE_${tx.recipientId}` : 'Node') : undefined,
-                amount:Number(tx.amount)||0,
-                time:tx.createdAt ? new Date(tx.createdAt).toLocaleString() : ''
-            };
+            time:
+                txTime
         });
 
-        saveState();
-        renderTransactions();
-    }catch(error){
-        console.warn('Fidexa wallet transaction history failed:',error);
+        showToast(
+            `Successfully sent ${formatNumber(amount)} $FDX to ${recipientInput}!`
+        );
+
+    }else{
+
+        const dummyId=
+            recipientInput
+                .replace('FDX_NODE_','')
+                .replace('@','');
+
+        globalUsers[dummyId]={
+
+            username:
+                recipientInput,
+
+            totalBalance:
+                amount,
+
+            transactions:[
+
+                {
+                    type:'RECEIVE',
+
+                    sender:
+                        currentUserName,
+
+                    amount:
+                        amount,
+
+                    time:
+                        txTime
+                }
+
+            ]
+        };
+
+        showToast(
+            `Sent ${formatNumber(amount)} $FDX (Recipient node initialized)!`
+        );
     }
+
+    saveAllUsersRegistry(
+        globalUsers
+    );
+
+    saveState();
+
+    updateAllUI();
+
+    closeSendModal();
 }
 
 
