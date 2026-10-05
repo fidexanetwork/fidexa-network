@@ -5050,16 +5050,13 @@ function resetBoostAndLuckyBox(){
 function checkBoostLuckyReset(){
 
     if(
-
-        state.miningState==='ACTIVE' &&
-
         state.boostLuckyResetAt>0 &&
-
-        Date.now()>=
-        state.boostLuckyResetAt
-
+        Date.now()>=state.boostLuckyResetAt &&
+        (
+            state.miningState==='ACTIVE' ||
+            state.miningState==='READY_TO_CLAIM'
+        )
     ){
-
         return true;
     }
 
@@ -5630,6 +5627,18 @@ async function handleMiningAction(){
                 : 14400;
 
             state.sessionAccumulated=0;
+
+            /*
+                Every successful backend mining start creates a NEW
+                4-hour mining cycle. Boost and Lucky Box are cycle-based,
+                so their chances and temporary boost must start fresh here.
+
+                This reset belongs AFTER the backend start succeeds so a
+                failed start can never consume/reset the user's cycle data.
+            */
+            state.boosterChancesLeft=5;
+            state.luckyBoxChances=5;
+            state.boosterBonusRate=0;
 
             state.boostLuckyResetAt=
                 state.miningStartedAt+
