@@ -2788,14 +2788,15 @@ async function loadFidexaProfile(){
             applyApiMeData(data);
 
             /*
-                The API request itself is authenticated successfully.
-                Mark authentication before loading or registering any
-                referral data because those functions require it.
+                IMPORTANT: mark the API session as authenticated
+                BEFORE loading or registering referrals.
+                loadReferralData() intentionally refuses to run
+                while fidexaApiAuthenticated is false.
             */
             fidexaApiAuthenticated=true;
 
             /*
-                The backend receives the referral in the same
+                The backend already receives the referral in this
                 authenticated /api/me request. The POST below is
                 only a fallback and is safe because the backend
                 refuses duplicate referral registration.
@@ -2812,8 +2813,8 @@ async function loadFidexaProfile(){
             }
 
             /*
-                /api/referrals returns the actual referral records
-                used by the Friends page.
+                Now that authentication is established, fetch the
+                actual referral records for the Friends list.
             */
             await loadReferralData();
 
@@ -4032,20 +4033,6 @@ function switchTab(
 
     if(tabName==='wallet'){
         renderTransactions();
-    }
-
-    /*
-        Referral data belongs to the backend, not localStorage.
-        Refresh it whenever the Friends page is opened so a newly
-        registered invite appears without requiring a full reload.
-    */
-    if(tabName==='friends' && fidexaApiAuthenticated){
-        loadReferralData().catch(function(error){
-            console.warn(
-                'Fidexa Friends refresh failed:',
-                error
-            );
-        });
     }
 }
 
