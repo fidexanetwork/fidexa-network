@@ -5893,7 +5893,15 @@ async function handleMiningAction(){
                     '/api/mining/start',
                     {
                         method:'POST',
-                        body:{}
+                        body:{
+                        /*
+                            Send the referral code with the mining-start
+                            request as a second reliable path. The backend
+                            registers it only once, so this is safe even
+                            when /api/me already registered the referral.
+                        */
+                        ref:getIncomingReferralParam()
+                    }
                     }
                 );
 
