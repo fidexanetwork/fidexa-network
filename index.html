@@ -2511,6 +2511,185 @@ async function registerIncomingReferral(){
 }
 
 
+async function loadReferralData(){
+
+    if(
+        !fidexaApiAuthenticated ||
+        !currentTelegramInitData
+    ){
+        return false;
+    }
+
+    try{
+
+        const data =
+            await fidexaApiRequest(
+                '/api/referrals'
+            );
+
+        const referrals =
+            Array.isArray(data?.referrals)
+                ? data.referrals
+                : [];
+
+        state.friends = referrals;
+
+        renderFriends();
+
+        try{
+            saveState();
+        }catch(error){
+            console.warn(
+                'Fidexa referral local state save failed:',
+                error
+            );
+        }
+
+        return true;
+
+    }catch(error){
+
+        console.warn(
+            'Fidexa referral data load failed:',
+            error
+        );
+
+        return false;
+    }
+}
+
+
+function renderFriends(){
+
+    const list =
+        document.getElementById(
+            'friendsList'
+        );
+
+    const totalEl =
+        document.getElementById(
+            'totalFriendsCount'
+        );
+
+    const activeEl =
+        document.getElementById(
+            'activeFriendsCount'
+        );
+
+    const inactiveEl =
+        document.getElementById(
+            'inactiveFriendsCount'
+        );
+
+    const countEl =
+        document.getElementById(
+            'friendListCount'
+        );
+
+    if(!list){
+        return;
+    }
+
+    const friends =
+        Array.isArray(state.friends)
+            ? state.friends
+            : [];
+
+    const activeCount =
+        friends.filter(function(friend){
+            return friend && friend.active === true;
+        }).length;
+
+    const inactiveCount =
+        friends.length - activeCount;
+
+    if(totalEl){
+        totalEl.textContent =
+            String(friends.length);
+    }
+
+    if(activeEl){
+        activeEl.textContent =
+            String(activeCount);
+    }
+
+    if(inactiveEl){
+        inactiveEl.textContent =
+            String(inactiveCount);
+    }
+
+    if(countEl){
+        countEl.textContent =
+            `${friends.length} MEMBER${friends.length === 1 ? '' : 'S'}`;
+    }
+
+    if(friends.length === 0){
+
+        list.innerHTML = `
+            <div class="friend-empty-state">
+                <div class="friend-empty-icon">👥</div>
+                <div class="friend-empty-title">
+                    No Invited Members
+                </div>
+                <div class="friend-empty-text">
+                    Your real invited members will appear here when referral data is connected.
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    list.innerHTML = '';
+
+    friends.forEach(function(friend){
+
+        const item =
+            document.createElement('div');
+
+        item.className =
+            'friend-row-item';
+
+        const referredId =
+            String(
+                friend?.referredId ||
+                friend?.referred_id ||
+                ''
+            );
+
+        const isActive =
+            friend?.active === true ||
+            String(friend?.status || '').toLowerCase() === 'active';
+
+        const statusText =
+            isActive ? 'ACTIVE' : 'INACTIVE';
+
+        const statusClass =
+            isActive ? 'active' : 'inactive';
+
+        item.innerHTML = `
+            <div class="friend-left">
+                <div class="friend-avatar">
+                    👤
+                </div>
+
+                <div style="min-width:0;">
+                    <div class="friend-name">
+                        Telegram User ${escapeHtml(referredId)}
+                    </div>
+
+                    <div class="friend-status ${statusClass}">
+                        ${statusText}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+
 async function loadFidexaProfile(){
 
     /*
@@ -2607,6 +2786,13 @@ async function loadFidexaProfile(){
                 await fidexaApiRequest(profilePath);
 
             applyApiMeData(data);
+
+            /*
+                /api/me returns the referral bonus/count, but the
+                Friends page needs the actual referral records.
+                Load those records separately from /api/referrals.
+            */
+            await loadReferralData();
 
             /*
                 The backend receives the referral in the same
@@ -6450,6 +6636,8 @@ function updateAllUI(){
         `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
 
     updateMiningUI();
+
+    renderFriends();
 }
 
 
