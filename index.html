@@ -872,7 +872,7 @@ async function syncRecoveryFromServer(force){
         if(data.inactiveDays!==undefined) state.inactiveDays=Number(data.inactiveDays);
         if(data.activeDays!==undefined) state.activeDays=Number(data.activeDays);
         if(data.recoveryTriggered!==undefined) state.recoveryTriggered=Boolean(data.recoveryTriggered);
-        if(data.recoveryQualified!==undefined) state.recoveryQualified=Boolean(data.recoveryQualified);
+        if(data.recoveryQualified!==booleanSafeCheck(data.recoveryQualified)) state.recoveryQualified=Boolean(data.recoveryQualified);
         if(data.recoveryActiveDays!==undefined) state.recoveryActiveDays=Number(data.recoveryActiveDays);
         if(data.recoveryLastUnlockAt!==undefined) state.recoveryLastUnlockAt=Number(data.recoveryLastUnlockAt);
         updateAllUI();
@@ -890,6 +890,7 @@ function switchTab(tabName, btnElement){
     if(btnElement) btnElement.classList.add('active');
     if(tabName==='wallet') loadTransactions();
     if(tabName==='tasks') refreshTaskStatus();
+    if(tabName==='friends') loadReferralData();
     syncRecoveryFromServer(false);
     updateRecoveryUI();
 }
