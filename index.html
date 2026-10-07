@@ -164,11 +164,6 @@ input,textarea{font:inherit;}
 .chat-bubble.admin{background:#162235;color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
 .chat-bubble-time{font-size:9px;color:var(--muted);font-weight:700;padding:0 6px;}
 .chat-bubble-wrap.user .chat-bubble-time{text-align:right;}
-.chat-typing{display:flex;align-items:center;gap:5px;padding:12px 14px;background:#162235;border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;width:fit-content;}
-.chat-typing-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingBounce 1.4s infinite ease-in-out;}
-.chat-typing-dot:nth-child(2){animation-delay:.2s;}
-.chat-typing-dot:nth-child(3){animation-delay:.4s;}
-@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
 .chat-input-bar{padding:12px;border-top:1px solid var(--border);background:#0a1018;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
 .chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:22px;padding:11px 16px;color:#fff;font-size:13px;outline:none;resize:none;max-height:100px;line-height:1.4;font-family:inherit;}
 .chat-input-field:focus{border-color:rgba(56,189,248,.5);}
@@ -349,7 +344,7 @@ input,textarea{font:inherit;}
 <div><div class="chat-sheet-name">FIDEXA Support</div><div class="chat-sheet-status">Online now</div></div>
 </div>
 <div style="display:flex;gap:8px;align-items:center;">
-<button class="chat-sheet-clear" onclick="clearSupportChat()">CLEAR</button>
+<button class="chat-sheet-clear" onclick="clearSupportChat()">REFRESH</button>
 <button class="sheet-close" onclick="closeSupportChat()">✕</button>
 </div>
 </div>
@@ -673,6 +668,7 @@ async function loadFidexaProfile(){
             await loadReferralData();
             await loadTransactions();
             await refreshTaskStatus();
+            try{ await fetchSupportMessages(); }catch(e){}
             return true;
         }catch(error){
             console.warn(`Attempt ${attempt} failed:`, error);
@@ -711,7 +707,7 @@ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded
    CONSTANTS & STORAGE
 ========================================================= */
 const MIN_TRANSFER_AMOUNT = 100;
-const STORAGE_KEY='fidexa_prototype_state_v14';
+const STORAGE_KEY='fidexa_prototype_state_v15';
 const defaultState={
     totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, miningCycleDuration:14400,
     baseMiningRate:1.0, boosterBonusRate:0, referralBonusRate:0,
@@ -1025,141 +1021,104 @@ function openExternalLink(target){
 }
 
 /* =========================================================
-   CHAT SUPPORT
+   CHAT SUPPORT — server-based
 ========================================================= */
-function getSupportStorageKey(){ return 'fidexa_support_chat_' + String(currentUserId); }
-
-function loadSupportMessages(){
-    try{
-        const raw = localStorage.getItem(getSupportStorageKey());
-        if(!raw) return null;
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : null;
-    }catch(e){ return null; }
-}
-
-function saveSupportMessages(messages){
-    try{ localStorage.setItem(getSupportStorageKey(), JSON.stringify(messages.slice(-200))); }catch(e){}
-}
-
-function getDefaultSupportMessages(){
-    const now = Date.now();
-    return [
-        { sender:'admin', text:'Hello! Welcome to FIDEXA Support 👋', time: now - 1000*60*3 },
-        { sender:'admin', text:'How can we help you today? You can ask about mining, referrals, tasks, your balance, or anything else about the app.', time: now - 1000*60*3 + 600 }
-    ];
-}
-
-let supportMessages = null;
-let supportTypingTimeout = null;
+let supportMessages = [];
+let supportPollTimer = null;
 
 function formatChatTime(ts){
     const d = new Date(ts);
     return d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
 }
 
+async function fetchSupportMessages(){
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
+    try{
+        const data = await fidexaApiRequest('/api/support/messages');
+        supportMessages = Array.isArray(data?.messages) ? data.messages : [];
+        renderSupportMessages();
+    }catch(err){
+        console.warn('Fetch support failed:', err);
+    }
+}
+
 function renderSupportMessages(){
     const container = document.getElementById('supportMessages');
     if(!container) return;
-    const messages = supportMessages || [];
     container.innerHTML = '';
-    messages.forEach(function(msg){
+    if(!supportMessages.length){
+        container.innerHTML = '<div style="text-align:center;padding:20px;font-size:11px;color:var(--muted);font-weight:700;">No messages yet. Send your first message below.</div>';
+        return;
+    }
+    supportMessages.forEach(function(msg){
         const wrap = document.createElement('div');
         wrap.className = 'chat-bubble-wrap ' + (msg.sender === 'user' ? 'user' : 'admin');
+        const timeStr = formatChatTime(msg.created_at ? new Date(msg.created_at).getTime() : Date.now());
         if(msg.sender === 'user'){
-            wrap.innerHTML = `<div class="chat-bubble-inner"><div class="chat-bubble user">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${formatChatTime(msg.time)}</div></div>`;
+            wrap.innerHTML = `<div class="chat-bubble-inner"><div class="chat-bubble user">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${timeStr}</div></div>`;
         }else{
-            wrap.innerHTML = `<div class="chat-bubble-avatar">💬</div><div class="chat-bubble-inner"><div class="chat-bubble admin">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${formatChatTime(msg.time)}</div></div>`;
+            wrap.innerHTML = `<div class="chat-bubble-avatar">💬</div><div class="chat-bubble-inner"><div class="chat-bubble admin">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${timeStr}</div></div>`;
         }
         container.appendChild(wrap);
     });
     container.scrollTop = container.scrollHeight;
 }
 
-function showTypingIndicator(){
-    const container = document.getElementById('supportMessages');
-    if(!container) return;
-    const existing = document.getElementById('chatTypingIndicator');
-    if(existing) existing.remove();
-    const wrap = document.createElement('div');
-    wrap.className = 'chat-bubble-wrap admin';
-    wrap.id = 'chatTypingIndicator';
-    wrap.innerHTML = `<div class="chat-bubble-avatar">💬</div><div class="chat-typing"><div class="chat-typing-dot"></div><div class="chat-typing-dot"></div><div class="chat-typing-dot"></div></div>`;
-    container.appendChild(wrap);
-    container.scrollTop = container.scrollHeight;
-}
-
-function hideTypingIndicator(){
-    const el = document.getElementById('chatTypingIndicator');
-    if(el) el.remove();
-}
-
-function pickAutoReply(userText){
-    const t = String(userText).toLowerCase();
-    if(t.includes('withdraw') || t.includes('cash') || t.includes('bank')) return "Withdrawals aren't enabled yet. FDX currently lives inside the FIDEXA Mini App. We'll announce when withdrawal functionality is ready.";
-    if(t.includes('referral') || t.includes('invite') || t.includes('friend')) return "You earn +0.1 $FDX/H for each friend who joins and starts mining. Share your referral link from the Friends tab!";
-    if(t.includes('task') || t.includes('join') || t.includes('claim')) return "Community tasks are on the Tasks tab. Make sure you actually join the channel first — our system verifies membership before you can tap CLAIM.";
-    if(t.includes('balance') || t.includes('fdx') || t.includes('token')) return "Your FDX balance is shown at the top of the Mining tab and on the Wallet page. It updates automatically when rewards are credited.";
-    if(t.includes('recovery') || t.includes('burn') || t.includes('streak')) return "The Recovery system protects your balance. Stay active to avoid burning, and once in recovery, stay active 7 days then 10% unlocks every 24 hours via a rewarded ad.";
-    if(t.includes('bug') || t.includes('error') || t.includes('issue') || t.includes('problem')) return "Thanks for reporting this. Could you describe what happened step by step? Screenshots help too. Our team reviews all tickets.";
-    if(t.includes('mining') || t.includes('mine') || t.includes('start')) return "To start mining, go to the Mining tab and tap START MINING. Your session runs for 4 hours, then you can claim your reward.";
-    if(t.includes('hello') || t.includes('hi') || t.includes('hey')) return "Hi there! 👋 How can we help you today?";
-    if(t.includes('thank')) return "You're welcome! Anything else we can help with?";
-    return "Thanks for your message. A support agent will follow up shortly. In the meantime, feel free to describe your issue in more detail.";
-}
-
-function openSupportChat(){
+async function openSupportChat(){
     const modal = document.getElementById('supportModal');
     modal.classList.add('active');
-    if(!supportMessages){
-        const stored = loadSupportMessages();
-        supportMessages = stored && stored.length ? stored : getDefaultSupportMessages();
-        saveSupportMessages(supportMessages);
-    }
-    renderSupportMessages();
+    const container = document.getElementById('supportMessages');
+    if(container) container.innerHTML = '<div style="text-align:center;padding:20px;font-size:11px;color:var(--muted);font-weight:700;">Loading…</div>';
+    await fetchSupportMessages();
     setTimeout(function(){
         const input = document.getElementById('supportInput');
         if(input) input.focus();
     }, 250);
+    if(supportPollTimer) clearInterval(supportPollTimer);
+    supportPollTimer = setInterval(function(){
+        if(!document.hidden && document.getElementById('supportModal').classList.contains('active')){
+            fetchSupportMessages();
+        }
+    }, 8000);
 }
 
 function closeSupportChat(){
     document.getElementById('supportModal').classList.remove('active');
+    if(supportPollTimer){ clearInterval(supportPollTimer); supportPollTimer = null; }
 }
 
-function sendSupportMessage(){
+async function sendSupportMessage(){
     const input = document.getElementById('supportInput');
     if(!input) return;
     const txt = input.value.trim();
     if(!txt) return;
+    if(!fidexaApiAuthenticated){ showToast('Syncing… please wait a moment.'); return; }
 
-    if(!supportMessages) supportMessages = getDefaultSupportMessages();
-    supportMessages.push({ sender:'user', text: txt, time: Date.now() });
-    saveSupportMessages(supportMessages);
-    renderSupportMessages();
-    input.value='';
-    input.style.height='auto';
+    input.disabled = true;
+    try{
+        const tempMsg = { id:'tmp-'+Date.now(), sender:'user', text:txt, created_at:new Date().toISOString() };
+        supportMessages.push(tempMsg);
+        renderSupportMessages();
+        input.value = '';
+        input.style.height = 'auto';
 
-    if(supportTypingTimeout) clearTimeout(supportTypingTimeout);
-    supportTypingTimeout = setTimeout(function(){
-        showTypingIndicator();
-        const replyDelay = 900 + Math.random() * 900;
-        setTimeout(function(){
-            hideTypingIndicator();
-            const reply = pickAutoReply(txt);
-            supportMessages.push({ sender:'admin', text: reply, time: Date.now() });
-            saveSupportMessages(supportMessages);
-            renderSupportMessages();
-        }, replyDelay);
-    }, 400);
+        const data = await fidexaApiRequest('/api/support/message', { method:'POST', body:{ text:txt } });
+        if(!data || data.success !== true) throw new Error('Failed to send');
+        await fetchSupportMessages();
+    }catch(err){
+        console.warn('Send support failed:', err);
+        showToast('Could not send. Please try again.');
+        supportMessages = supportMessages.filter(function(m){ return !String(m.id).startsWith('tmp-'); });
+        renderSupportMessages();
+    }finally{
+        input.disabled = false;
+        input.focus();
+    }
 }
 
 function clearSupportChat(){
-    if(!confirm('Clear your chat history? This cannot be undone.')) return;
-    supportMessages = getDefaultSupportMessages();
-    saveSupportMessages(supportMessages);
-    renderSupportMessages();
-    showToast('Chat history cleared.');
+    fetchSupportMessages();
+    showToast('Chat refreshed.');
 }
 
 function autoGrowSupportInput(el){
