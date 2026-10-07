@@ -223,10 +223,7 @@ input,textarea{font:inherit;}
 <div class="ring-wrapper">
 <div class="system-status-pill" id="systemPill">READY TO MINE</div>
 <div class="mining-timer" id="timerDisplay">04:00:00</div>
-<div class="mining-rate-indicator">
-Mining Rate:
-<span id="currentRateDisplay">1.0</span> $FDX/H
-</div>
+<div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">1.0</span> $FDX/H</div>
 </div>
 </div>
 <div class="action-controls">
@@ -234,87 +231,36 @@ Mining Rate:
 <div class="interactive-grid">
 <button class="action-tile" onclick="openBoosterPrompt()">
 <div class="action-tile-icon">🚀</div>
-<div>
-<div class="action-tile-title">Mining Boost</div>
-<div class="action-tile-sub" id="boosterChances">5/5 Left</div>
-</div>
+<div><div class="action-tile-title">Mining Boost</div><div class="action-tile-sub" id="boosterChances">5/5 Left</div></div>
 </button>
 <button class="action-tile" onclick="openLuckyBoxModal()" style="border-color:rgba(250,204,21,.5);">
 <div class="action-tile-icon">🎁</div>
-<div>
-<div class="action-tile-title" style="color:var(--yellow);">Lucky Box</div>
-<div class="action-tile-sub">5 chances / 4 hours</div>
-</div>
+<div><div class="action-tile-title" style="color:var(--yellow);">Lucky Box</div><div class="action-tile-sub">5 chances / 4 hours</div></div>
 </button>
 </div>
 </div>
 <div class="statistics-card">
 <div class="statistics-title">📊 MINING STATISTICS</div>
 <div class="statistics-grid">
-<div class="statistics-item">
-<div class="statistics-label">Current Rate</div>
-<div class="statistics-value yellow" id="statRate">1.0 $FDX/H</div>
-</div>
-<div class="statistics-item">
-<div class="statistics-label">Session Accumulated</div>
-<div class="statistics-value" id="sessionAccumulated">0.00 $FDX</div>
-</div>
-<div class="statistics-item">
-<div class="statistics-label">Completed Hours</div>
-<div class="statistics-value" id="completedHours">0 / 4</div>
-</div>
-<div class="statistics-item">
-<div class="statistics-label">Total Mined</div>
-<div class="statistics-value green" id="totalMined">0.00 $FDX</div>
-</div>
+<div class="statistics-item"><div class="statistics-label">Current Rate</div><div class="statistics-value yellow" id="statRate">1.0 $FDX/H</div></div>
+<div class="statistics-item"><div class="statistics-label">Session Accumulated</div><div class="statistics-value" id="sessionAccumulated">0.00 $FDX</div></div>
+<div class="statistics-item"><div class="statistics-label">Completed Hours</div><div class="statistics-value" id="completedHours">0 / 4</div></div>
+<div class="statistics-item"><div class="statistics-label">Total Mined</div><div class="statistics-value green" id="totalMined">0.00 $FDX</div></div>
 </div>
 </div>
 <div class="dual-grid">
-<div class="info-box">
-<div class="info-box-top">
-<div class="info-box-label">BURNING<br>STREAK</div>
-<div class="info-box-icon">🔥</div>
-</div>
-<div class="info-box-value" id="burningStreak">Safe</div>
-</div>
-<div class="info-box">
-<div class="info-box-top">
-<div class="info-box-label">RECOVERABLE<br>$FDX</div>
-<div class="info-box-icon">💎</div>
-</div>
-<div class="info-box-value" id="recoverableFdx">0.00</div>
-</div>
+<div class="info-box"><div class="info-box-top"><div class="info-box-label">BURNING<br>STREAK</div><div class="info-box-icon">🔥</div></div><div class="info-box-value" id="burningStreak">Safe</div></div>
+<div class="info-box"><div class="info-box-top"><div class="info-box-label">RECOVERABLE<br>$FDX</div><div class="info-box-icon">💎</div></div><div class="info-box-value" id="recoverableFdx">0.00</div></div>
 </div>
 <div class="recovery-card">
 <div class="recovery-title">🔐 RECOVERY STATUS</div>
-<div class="recovery-line">
-<div class="recovery-label">Activity Status</div>
-<div class="recovery-value" id="activityStatus">ACTIVE</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Inactive Days</div>
-<div class="recovery-value" id="inactiveDays">0 / 7</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Active Days</div>
-<div class="recovery-value" id="activeDays">0 / 7</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Recovery Pool</div>
-<div class="recovery-value" id="recoveryPoolDisplay">0.00 $FDX</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Ready to Recover</div>
-<div class="recovery-value" id="recoveryUnlockedDisplay">0.00 $FDX</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Next Unlock</div>
-<div class="recovery-value" id="recoveryNextUnlock">Not active</div>
-</div>
-<div class="recovery-line">
-<div class="recovery-label">Daily Unlock</div>
-<div class="recovery-value">10%</div>
-</div>
+<div class="recovery-line"><div class="recovery-label">Activity Status</div><div class="recovery-value" id="activityStatus">ACTIVE</div></div>
+<div class="recovery-line"><div class="recovery-label">Inactive Days</div><div class="recovery-value" id="inactiveDays">0 / 7</div></div>
+<div class="recovery-line"><div class="recovery-label">Active Days</div><div class="recovery-value" id="activeDays">0 / 7</div></div>
+<div class="recovery-line"><div class="recovery-label">Recovery Pool</div><div class="recovery-value" id="recoveryPoolDisplay">0.00 $FDX</div></div>
+<div class="recovery-line"><div class="recovery-label">Ready to Recover</div><div class="recovery-value" id="recoveryUnlockedDisplay">0.00 $FDX</div></div>
+<div class="recovery-line"><div class="recovery-label">Next Unlock</div><div class="recovery-value" id="recoveryNextUnlock">Not active</div></div>
+<div class="recovery-line"><div class="recovery-label">Daily Unlock</div><div class="recovery-value">10%</div></div>
 <button id="recoveryClaimBtn" class="recovery-claim-btn" onclick="claimRecovery()">🎁 WATCH AD & CLAIM RECOVERY</button>
 <div class="recovery-note" id="recoveryNote">Stay active to protect your $FDX balance.</div>
 </div>
@@ -323,42 +269,9 @@ Mining Rate:
 <main class="page-view" id="page-tasks">
 <div class="full-page-header">📋 SYSTEM TASKS</div>
 <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards.</div>
-<div class="task-card">
-<div class="task-row">
-<div class="task-left">
-<div class="task-icon">📢</div>
-<div>
-<div class="task-name">Join Telegram</div>
-<div class="task-reward">Reward: +5.00 $FDX</div>
-</div>
-</div>
-<button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button>
-</div>
-</div>
-<div class="task-card">
-<div class="task-row">
-<div class="task-left">
-<div class="task-icon">𝕏</div>
-<div>
-<div class="task-name">Join X</div>
-<div class="task-reward">Reward: +5.00 $FDX</div>
-</div>
-</div>
-<button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">JOIN</button>
-</div>
-</div>
-<div class="task-card">
-<div class="task-row">
-<div class="task-left">
-<div class="task-icon">▶️</div>
-<div>
-<div class="task-name">Subscribe YouTube (@Fidexa_Network)</div>
-<div class="task-reward">Reward: +5.00 $FDX</div>
-</div>
-</div>
-<button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button>
-</div>
-</div>
+<div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">📢</div><div><div class="task-name">Join Telegram</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button></div></div>
+<div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">𝕏</div><div><div class="task-name">Join X</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">JOIN</button></div></div>
+<div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">▶️</div><div><div class="task-name">Subscribe YouTube (@Fidexa_Network)</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button></div></div>
 </main>
 
 <main class="page-view" id="page-friends">
@@ -372,30 +285,14 @@ Mining Rate:
 </div>
 </div>
 <div class="friends-stats-grid">
-<div class="friend-stat-card">
-<div class="friend-stat-value" id="totalFriendsCount">0</div>
-<div class="friend-stat-label">Invited</div>
-</div>
-<div class="friend-stat-card">
-<div class="friend-stat-value" id="activeFriendsCount" style="color:var(--green);">0</div>
-<div class="friend-stat-label">Active</div>
-</div>
-<div class="friend-stat-card">
-<div class="friend-stat-value" id="inactiveFriendsCount">0</div>
-<div class="friend-stat-label">Inactive</div>
-</div>
+<div class="friend-stat-card"><div class="friend-stat-value" id="totalFriendsCount">0</div><div class="friend-stat-label">Invited</div></div>
+<div class="friend-stat-card"><div class="friend-stat-value" id="activeFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Active</div></div>
+<div class="friend-stat-card"><div class="friend-stat-value" id="inactiveFriendsCount">0</div><div class="friend-stat-label">Inactive</div></div>
 </div>
 <div class="friend-list-card">
-<div class="friend-list-header">
-<div class="friend-list-title">My Invited Members</div>
-<div class="friend-list-count" id="friendListCount">0 MEMBERS</div>
-</div>
+<div class="friend-list-header"><div class="friend-list-title">My Invited Members</div><div class="friend-list-count" id="friendListCount">0 MEMBERS</div></div>
 <div class="friends-scroll-area" id="friendsList">
-<div class="friend-empty-state">
-<div class="friend-empty-icon">👥</div>
-<div class="friend-empty-title">No Invited Members</div>
-<div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
-</div>
+<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div></div>
 </div>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -415,11 +312,7 @@ Mining Rate:
 </div>
 <div class="tx-history-card">
 <div class="tx-header">📜 TRANSFER HISTORY</div>
-<div class="friend-empty-state" id="txEmptyState">
-<div class="friend-empty-icon">💸</div>
-<div class="friend-empty-title">No Transfers Yet</div>
-<div class="friend-empty-text">Your sent and received transfers will appear here.</div>
-</div>
+<div class="friend-empty-state" id="txEmptyState"><div class="friend-empty-icon">💸</div><div class="friend-empty-title">No Transfers Yet</div><div class="friend-empty-text">Your sent and received transfers will appear here.</div></div>
 <div id="txListContainer" style="max-height:220px;overflow-y:auto;"></div>
 </div>
 </main>
@@ -428,52 +321,22 @@ Mining Rate:
 <div class="full-page-header">🛡️ USER PROFILE</div>
 <div class="full-page-sub">Manage your account, support, and official FIDEXA information.</div>
 <div class="profile-menu-list">
-<div class="profile-menu-item" onclick="openProfileInfo('account')">
-<div class="profile-menu-left"><span class="profile-menu-icon">👤</span><span class="profile-menu-title">Account Information</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
-<div class="profile-menu-item" onclick="openProfileInfo('support')">
-<div class="profile-menu-left"><span class="profile-menu-icon">💬</span><span class="profile-menu-title">Chat Support</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
-<div class="profile-menu-item" onclick="openProfileInfo('privacy')">
-<div class="profile-menu-left"><span class="profile-menu-icon">🔒</span><span class="profile-menu-title">Privacy Policy</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
-<div class="profile-menu-item" onclick="openProfileInfo('whitepaper')">
-<div class="profile-menu-left"><span class="profile-menu-icon">📄</span><span class="profile-menu-title">White Paper</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
-<div class="profile-menu-item" onclick="openProfileInfo('roadmap')">
-<div class="profile-menu-left"><span class="profile-menu-icon">🗺️</span><span class="profile-menu-title">Official Roadmap</span></div>
-<span class="profile-menu-arrow">›</span>
-</div>
-<div class="profile-menu-item" onclick="openExternalLink('telegram')">
-<div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Official Telegram</span></div>
-<span class="profile-menu-arrow">↗</span>
-</div>
-<div class="profile-menu-item" onclick="openExternalLink('twitter')">
-<div class="profile-menu-left"><span class="profile-menu-icon">🌐</span><span class="profile-menu-title">Official X</span></div>
-<span class="profile-menu-arrow">↗</span>
-</div>
-<div class="profile-menu-item" onclick="openExternalLink('youtube')">
-<div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Official YouTube (@Fidexa_Network)</span></div>
-<span class="profile-menu-arrow">↗</span>
-</div>
-<div class="profile-menu-item" onclick="openProfileInfo('deletion')" style="border-color:rgba(248,113,113,.3);">
-<div class="profile-menu-left"><span class="profile-menu-icon">⚠️</span><span class="profile-menu-title" style="color:var(--red);">Account Deletion</span></div>
-<span class="profile-menu-arrow" style="color:var(--red);">›</span>
-</div>
+<div class="profile-menu-item" onclick="openProfileInfo('account')"><div class="profile-menu-left"><span class="profile-menu-icon">👤</span><span class="profile-menu-title">Account Information</span></div><span class="profile-menu-arrow">›</span></div>
+<div class="profile-menu-item" onclick="openSupportChat()"><div class="profile-menu-left"><span class="profile-menu-icon">💬</span><span class="profile-menu-title">Chat Support</span></div><span class="profile-menu-arrow">›</span></div>
+<div class="profile-menu-item" onclick="openProfileInfo('privacy')"><div class="profile-menu-left"><span class="profile-menu-icon">🔒</span><span class="profile-menu-title">Privacy Policy</span></div><span class="profile-menu-arrow">›</span></div>
+<div class="profile-menu-item" onclick="openProfileInfo('whitepaper')"><div class="profile-menu-left"><span class="profile-menu-icon">📄</span><span class="profile-menu-title">White Paper</span></div><span class="profile-menu-arrow">›</span></div>
+<div class="profile-menu-item" onclick="openProfileInfo('roadmap')"><div class="profile-menu-left"><span class="profile-menu-icon">🗺️</span><span class="profile-menu-title">Official Roadmap</span></div><span class="profile-menu-arrow">›</span></div>
+<div class="profile-menu-item" onclick="openExternalLink('telegram')"><div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Official Telegram</span></div><span class="profile-menu-arrow">↗</span></div>
+<div class="profile-menu-item" onclick="openExternalLink('twitter')"><div class="profile-menu-left"><span class="profile-menu-icon">🌐</span><span class="profile-menu-title">Official X</span></div><span class="profile-menu-arrow">↗</span></div>
+<div class="profile-menu-item" onclick="openExternalLink('youtube')"><div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Official YouTube (@Fidexa_Network)</span></div><span class="profile-menu-arrow">↗</span></div>
+<div class="profile-menu-item" onclick="openProfileInfo('deletion')" style="border-color:rgba(248,113,113,.3);"><div class="profile-menu-left"><span class="profile-menu-icon">⚠️</span><span class="profile-menu-title" style="color:var(--red);">Account Deletion</span></div><span class="profile-menu-arrow" style="color:var(--red);">›</span></div>
 </div>
 </main>
 </div>
 
 <div class="modal-overlay" id="profileInfoModal">
 <div class="sheet-box" id="profileSheetBox">
-<div class="sheet-header">
-<div class="sheet-title" id="sheetTitle">Information</div>
-<button class="sheet-close" onclick="closeProfileInfo()">✕</button>
-</div>
+<div class="sheet-header"><div class="sheet-title" id="sheetTitle">Information</div><button class="sheet-close" onclick="closeProfileInfo()">✕</button></div>
 <div class="sheet-content" id="sheetContentBody">Loading details...</div>
 </div>
 </div>
@@ -483,12 +346,12 @@ Mining Rate:
 <div class="chat-sheet-header">
 <div class="chat-sheet-title-wrap">
 <div class="chat-sheet-avatar">💬</div>
-<div>
-<div class="chat-sheet-name">FIDEXA Support</div>
-<div class="chat-sheet-status">Online now</div>
+<div><div class="chat-sheet-name">FIDEXA Support</div><div class="chat-sheet-status">Online now</div></div>
 </div>
-</div>
+<div style="display:flex;gap:8px;align-items:center;">
 <button class="chat-sheet-clear" onclick="clearSupportChat()">CLEAR</button>
+<button class="sheet-close" onclick="closeSupportChat()">✕</button>
+</div>
 </div>
 <div id="supportMessages" class="chat-messages-container"></div>
 <div class="chat-input-bar">
@@ -504,10 +367,7 @@ Mining Rate:
 <div class="prompt-desc">Scan the QR code or copy your Telegram ID to receive $FDX directly into your wallet.</div>
 <div class="qr-container" id="qrcodeCanvas"></div>
 <input type="text" id="receiveAddressBox" readonly style="width:100%;padding:10px;background:#111b27;border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;text-align:center;margin-bottom:14px;letter-spacing:1px;font-weight:900;" onclick="this.select();">
-<div class="prompt-actions">
-<button class="prompt-btn-cancel" onclick="closeReceiveModal()">Close</button>
-<button class="prompt-btn-confirm" onclick="copyReceiveAddress()">Copy ID</button>
-</div>
+<div class="prompt-actions"><button class="prompt-btn-cancel" onclick="closeReceiveModal()">Close</button><button class="prompt-btn-confirm" onclick="copyReceiveAddress()">Copy ID</button></div>
 </div>
 </div>
 
@@ -517,10 +377,7 @@ Mining Rate:
 <div class="prompt-desc">Transfer $FDX to another user via their Telegram ID or @username. Minimum: <strong>100 $FDX</strong>.</div>
 <input type="text" id="sendRecipientInput" placeholder="Recipient Telegram ID or @username" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
 <input type="number" id="sendAmountInput" placeholder="Amount (min 100 $FDX)" min="100" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
-<div class="prompt-actions">
-<button class="prompt-btn-cancel" onclick="closeSendModal()">Cancel</button>
-<button class="prompt-btn-confirm" onclick="processSendTransaction()">Confirm Send</button>
-</div>
+<div class="prompt-actions"><button class="prompt-btn-cancel" onclick="closeSendModal()">Cancel</button><button class="prompt-btn-confirm" onclick="processSendTransaction()">Confirm Send</button></div>
 </div>
 </div>
 
@@ -528,10 +385,7 @@ Mining Rate:
 <div class="prompt-box">
 <div class="prompt-title">⚡ SPEED BOOSTER</div>
 <div class="prompt-desc">Watch an official Adsgram advertisement to increase your mining speed by +0.5 $FDX/H.</div>
-<div class="prompt-actions">
-<button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Not now</button>
-<button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">Watch ad</button>
-</div>
+<div class="prompt-actions"><button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Not now</button><button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">Watch ad</button></div>
 </div>
 </div>
 
@@ -539,10 +393,7 @@ Mining Rate:
 <div class="prompt-box">
 <div class="prompt-title">🎁 LUCKY BOX</div>
 <div class="prompt-desc">You have <strong id="luckyBoxPromptChances">5</strong> Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.</div>
-<div class="prompt-actions">
-<button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">Close</button>
-<button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">Open Box</button>
-</div>
+<div class="prompt-actions"><button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">Close</button><button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">Open Box</button></div>
 </div>
 </div>
 
@@ -739,12 +590,7 @@ function renderFriends(){
     if(countEl) countEl.textContent = `${friends.length} MEMBER${friends.length === 1 ? '' : 'S'}`;
 
     if(friends.length === 0){
-        list.innerHTML = `
-            <div class="friend-empty-state">
-                <div class="friend-empty-icon">👥</div>
-                <div class="friend-empty-title">No Invited Members</div>
-                <div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div>
-            </div>`;
+        list.innerHTML = `<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your real invited members will appear here when referral data is connected.</div></div>`;
         return;
     }
     list.innerHTML = '';
@@ -755,14 +601,7 @@ function renderFriends(){
         const isActive = friend?.active === true || String(friend?.status || '').toLowerCase() === 'active';
         const statusText = isActive ? 'ACTIVE · +0.1 $FDX/H' : 'INACTIVE';
         const statusClass = isActive ? 'active' : 'inactive';
-        item.innerHTML = `
-            <div class="friend-left">
-                <div class="friend-avatar">👤</div>
-                <div style="min-width:0;">
-                    <div class="friend-name">Telegram User ${escapeHtml(referredId)}</div>
-                    <div class="friend-status ${statusClass}">${statusText}</div>
-                </div>
-            </div>`;
+        item.innerHTML = `<div class="friend-left"><div class="friend-avatar">👤</div><div style="min-width:0;"><div class="friend-name">Telegram User ${escapeHtml(referredId)}</div><div class="friend-status ${statusClass}">${statusText}</div></div></div>`;
         list.appendChild(item);
     });
 }
@@ -799,17 +638,7 @@ function renderTransactions(){
         const labelText = isReceive ? `Received from ID ${escapeHtml(tx.senderId||'user')}` : `Sent to ID ${escapeHtml(tx.recipientId||'user')}`;
         const icon = isReceive ? '📥' : '📤';
         const timeStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString([], { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' }) : '';
-        item.innerHTML=`
-            <div class="friend-left">
-                <div class="friend-avatar">${icon}</div>
-                <div>
-                    <div class="friend-name">${labelText}</div>
-                    <div class="friend-status inactive">${timeStr}</div>
-                </div>
-            </div>
-            <div style="font-size:13px;color:${colorClass};font-weight:900;">
-                ${sign}${formatNumber(tx.amount)} $FDX
-            </div>`;
+        item.innerHTML=`<div class="friend-left"><div class="friend-avatar">${icon}</div><div><div class="friend-name">${labelText}</div><div class="friend-status inactive">${timeStr}</div></div></div><div style="font-size:13px;color:${colorClass};font-weight:900;">${sign}${formatNumber(tx.amount)} $FDX</div>`;
         container.appendChild(item);
     });
 }
@@ -864,9 +693,9 @@ const FIDEXA_YOUTUBE='https://youtube.com/@Fidexa_Network';
 const FIDEXA_BOT='https://t.me/FIDEXANetworkBot';
 
 /* =========================================================
-   ADSGRAM
+   ADSGRAM — REAL PRODUCTION BLOCK ID
 ========================================================= */
-const ADSGRAM_BLOCK_ID="49196";
+const ADSGRAM_BLOCK_ID="52518";
 let adsgramController=null;
 let adsgramAdInProgress=false;
 
@@ -932,7 +761,7 @@ function escapeHtml(str){
 }
 
 /* =========================================================
-   TASK STATUS (JOIN → CLAIM → CLAIMED)
+   TASK STATUS
 ========================================================= */
 async function refreshTaskStatus(){
     if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
@@ -1238,18 +1067,9 @@ function renderSupportMessages(){
         const wrap = document.createElement('div');
         wrap.className = 'chat-bubble-wrap ' + (msg.sender === 'user' ? 'user' : 'admin');
         if(msg.sender === 'user'){
-            wrap.innerHTML = `
-                <div class="chat-bubble-inner">
-                    <div class="chat-bubble user">${escapeHtml(msg.text)}</div>
-                    <div class="chat-bubble-time">${formatChatTime(msg.time)}</div>
-                </div>`;
+            wrap.innerHTML = `<div class="chat-bubble-inner"><div class="chat-bubble user">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${formatChatTime(msg.time)}</div></div>`;
         }else{
-            wrap.innerHTML = `
-                <div class="chat-bubble-avatar">💬</div>
-                <div class="chat-bubble-inner">
-                    <div class="chat-bubble admin">${escapeHtml(msg.text)}</div>
-                    <div class="chat-bubble-time">${formatChatTime(msg.time)}</div>
-                </div>`;
+            wrap.innerHTML = `<div class="chat-bubble-avatar">💬</div><div class="chat-bubble-inner"><div class="chat-bubble admin">${escapeHtml(msg.text)}</div><div class="chat-bubble-time">${formatChatTime(msg.time)}</div></div>`;
         }
         container.appendChild(wrap);
     });
@@ -1264,13 +1084,7 @@ function showTypingIndicator(){
     const wrap = document.createElement('div');
     wrap.className = 'chat-bubble-wrap admin';
     wrap.id = 'chatTypingIndicator';
-    wrap.innerHTML = `
-        <div class="chat-bubble-avatar">💬</div>
-        <div class="chat-typing">
-            <div class="chat-typing-dot"></div>
-            <div class="chat-typing-dot"></div>
-            <div class="chat-typing-dot"></div>
-        </div>`;
+    wrap.innerHTML = `<div class="chat-bubble-avatar">💬</div><div class="chat-typing"><div class="chat-typing-dot"></div><div class="chat-typing-dot"></div><div class="chat-typing-dot"></div></div>`;
     container.appendChild(wrap);
     container.scrollTop = container.scrollHeight;
 }
@@ -1282,33 +1096,15 @@ function hideTypingIndicator(){
 
 function pickAutoReply(userText){
     const t = String(userText).toLowerCase();
-    if(t.includes('withdraw') || t.includes('cash') || t.includes('bank')){
-        return "Withdrawals aren't enabled yet. FDX currently lives inside the FIDEXA Mini App. We'll announce when withdrawal functionality is ready.";
-    }
-    if(t.includes('referral') || t.includes('invite') || t.includes('friend')){
-        return "You earn +0.1 $FDX/H for each friend who joins and starts mining. Share your referral link from the Friends tab!";
-    }
-    if(t.includes('task') || t.includes('join') || t.includes('claim')){
-        return "Community tasks are on the Tasks tab. Make sure you actually join the channel first — our system verifies membership before you can tap CLAIM.";
-    }
-    if(t.includes('balance') || t.includes('fdx') || t.includes('token')){
-        return "Your FDX balance is shown at the top of the Mining tab and on the Wallet page. It updates automatically when rewards are credited.";
-    }
-    if(t.includes('recovery') || t.includes('burn') || t.includes('streak')){
-        return "The Recovery system protects your balance. Stay active to avoid burning, and once in recovery, stay active 7 days then 10% unlocks every 24 hours via a rewarded ad.";
-    }
-    if(t.includes('bug') || t.includes('error') || t.includes('issue') || t.includes('problem')){
-        return "Thanks for reporting this. Could you describe what happened step by step? Screenshots help too. Our team reviews all tickets.";
-    }
-    if(t.includes('mining') || t.includes('mine') || t.includes('start')){
-        return "To start mining, go to the Mining tab and tap START MINING. Your session runs for 4 hours, then you can claim your reward.";
-    }
-    if(t.includes('hello') || t.includes('hi') || t.includes('hey')){
-        return "Hi there! 👋 How can we help you today?";
-    }
-    if(t.includes('thank')){
-        return "You're welcome! Anything else we can help with?";
-    }
+    if(t.includes('withdraw') || t.includes('cash') || t.includes('bank')) return "Withdrawals aren't enabled yet. FDX currently lives inside the FIDEXA Mini App. We'll announce when withdrawal functionality is ready.";
+    if(t.includes('referral') || t.includes('invite') || t.includes('friend')) return "You earn +0.1 $FDX/H for each friend who joins and starts mining. Share your referral link from the Friends tab!";
+    if(t.includes('task') || t.includes('join') || t.includes('claim')) return "Community tasks are on the Tasks tab. Make sure you actually join the channel first — our system verifies membership before you can tap CLAIM.";
+    if(t.includes('balance') || t.includes('fdx') || t.includes('token')) return "Your FDX balance is shown at the top of the Mining tab and on the Wallet page. It updates automatically when rewards are credited.";
+    if(t.includes('recovery') || t.includes('burn') || t.includes('streak')) return "The Recovery system protects your balance. Stay active to avoid burning, and once in recovery, stay active 7 days then 10% unlocks every 24 hours via a rewarded ad.";
+    if(t.includes('bug') || t.includes('error') || t.includes('issue') || t.includes('problem')) return "Thanks for reporting this. Could you describe what happened step by step? Screenshots help too. Our team reviews all tickets.";
+    if(t.includes('mining') || t.includes('mine') || t.includes('start')) return "To start mining, go to the Mining tab and tap START MINING. Your session runs for 4 hours, then you can claim your reward.";
+    if(t.includes('hello') || t.includes('hi') || t.includes('hey')) return "Hi there! 👋 How can we help you today?";
+    if(t.includes('thank')) return "You're welcome! Anything else we can help with?";
     return "Thanks for your message. A support agent will follow up shortly. In the meantime, feel free to describe your issue in more detail.";
 }
 
@@ -1414,12 +1210,7 @@ async function confirmAccountDeletion(){
     }catch(e){}
 
     closeProfileInfo();
-    if(backendDeleted){
-        showToast('Account deleted. Reloading...');
-    }else{
-        showToast('Local data cleared. Reloading...');
-    }
-
+    showToast(backendDeleted ? 'Account deleted. Reloading...' : 'Local data cleared. Reloading...');
     setTimeout(function(){ window.location.reload(); }, 1400);
 }
 
@@ -1820,34 +1611,23 @@ document.addEventListener('visibilitychange', function(){
 });
 
 /* =========================================================
-   CONTENT: WHITEPAPER / ROADMAP / PRIVACY
+   CONTENT
 ========================================================= */
 const WHITEPAPER_HTML = `
 <div class="wp-brand">FIDEXA NETWORK</div>
 <div class="wp-version">Whitepaper v1.0</div>
 <div class="wp-tagline">A Gamified Digital Mining & Community Rewards Ecosystem</div>
-<div class="wp-meta">
-Ticker: <strong>FDX</strong><br>
-Platform: <strong>Telegram Mini App</strong><br>
-Status: <strong>Live App Experience</strong>
-</div>
-
+<div class="wp-meta">Ticker: <strong>FDX</strong><br>Platform: <strong>Telegram Mini App</strong><br>Status: <strong>Live App Experience</strong></div>
 <h3>1. Vision &amp; Mission</h3>
 <p>FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.</p>
 <p>The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.</p>
 <p>FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.</p>
-
 <h3>2. FIDEXA Mining System</h3>
 <p>FIDEXA uses a timed mining-session system. Users start a mining session from the Mini App and the session runs for a defined period.</p>
 <p><strong>Current Mining Structure</strong></p>
-<ul>
-<li>Mining cycle: 4 hours</li>
-<li>Base mining rate: 1.0 FDX per hour</li>
-<li>Base reward per completed 4-hour cycle: 4 FDX</li>
-</ul>
+<ul><li>Mining cycle: 4 hours</li><li>Base mining rate: 1.0 FDX per hour</li><li>Base reward per completed 4-hour cycle: 4 FDX</li></ul>
 <p>Users can return after the mining timer has completed and claim their accumulated reward. After claiming, users can begin another mining session.</p>
 <p>The mining system is designed around participation rather than requiring users to keep their device continuously active.</p>
-
 <h3>3. Reward Claim &amp; Advertising System</h3>
 <p>Advertising is integrated into the reward-claim process. Advertisements are not intended to run continuously while the user is mining.</p>
 <p>The current flow is:</p>
@@ -1856,7 +1636,6 @@ Status: <strong>Live App Experience</strong>
 <p><strong>Why FIDEXA Uses Advertising</strong></p>
 <p>Advertising provides an additional sustainability mechanism for the platform. Revenue generated through supported advertising can contribute toward the ongoing operation, infrastructure, development, and improvement of the FIDEXA ecosystem.</p>
 <div class="wp-callout"><strong>Important:</strong> The advertisement is not presented as a separate mining system. The user's mining reward comes from the completed mining session; advertising is incorporated into the claim process.</div>
-
 <h3>4. Boosters &amp; Gamification</h3>
 <p>FIDEXA includes gamification mechanisms designed to encourage continued participation.</p>
 <p><strong>Mining Boosters</strong></p>
@@ -1865,74 +1644,38 @@ Status: <strong>Live App Experience</strong>
 <p>Lucky Boxes provide an additional gamified element within the FIDEXA ecosystem. They are designed to give users another interactive way to participate in the platform beyond the standard mining cycle.</p>
 <p><strong>Streak Recovery</strong></p>
 <p>FIDEXA also incorporates a streak-recovery mechanism designed to help users maintain their participation streak when an interruption occurs.</p>
-
 <h3>5. Community Tasks</h3>
 <p>FIDEXA includes a community-task system that allows users to participate in activities connected to the FIDEXA ecosystem. These activities can include community engagement through supported platforms such as:</p>
-<ul>
-<li>Telegram</li>
-<li>X</li>
-</ul>
+<ul><li>Telegram</li><li>X</li></ul>
 <p>Community tasks provide another participation layer beyond the mining timer and help connect user activity with the growth of the FIDEXA community.</p>
-
 <h3>6. Referral System</h3>
 <p>FIDEXA includes a referral mechanism designed to encourage community growth. Users can invite other participants through their referral link.</p>
 <p>The referral system is integrated into the Mini App so users can access and share their referral information. The purpose of the referral system is to encourage organic community expansion while rewarding participation within the FIDEXA ecosystem.</p>
-
 <h3>7. User Balance &amp; Rewards</h3>
 <p>FDX rewards earned through supported activities are reflected in the user's in-app balance. The current ecosystem connects the user's mining activity and reward mechanisms to their FDX balance.</p>
 <p>The balance system provides users with a clear view of their accumulated in-app rewards.</p>
-
 <h3>8. User Profile &amp; Account</h3>
 <p>FIDEXA provides a user-focused interface that allows participants to access their account information and interact with the Mini App. The platform is designed for use through Telegram, allowing the application to work within the Telegram Mini App environment.</p>
-
 <h3>9. Support &amp; Account Controls</h3>
 <p>FIDEXA includes user-support and account-management functionality within the application. Users can access:</p>
-<ul>
-<li>Chat Support</li>
-<li>Account information</li>
-<li>Profile functionality</li>
-<li>Account deletion controls</li>
-</ul>
+<ul><li>Chat Support</li><li>Account information</li><li>Profile functionality</li><li>Account deletion controls</li></ul>
 <p>These features are included to provide users with greater control over their interaction with the platform.</p>
-
 <h3>10. FDX Token / Reward Model</h3>
 <p>FDX is the internal reward unit used throughout the current FIDEXA ecosystem.</p>
 <p>The current mining system is structured around:</p>
-<ul>
-<li>1.0 FDX/hour base mining rate</li>
-<li>4-hour mining cycles</li>
-</ul>
+<ul><li>1.0 FDX/hour base mining rate</li><li>4-hour mining cycles</li></ul>
 <p>The actual reward received by a user can depend on the applicable mining mechanisms and supported features available within the application.</p>
 <div class="wp-callout">FIDEXA does not claim that in-app FDX balances are currently transferable to an external blockchain unless and until such functionality is actually implemented.</div>
-
 <h3>11. Platform Principles</h3>
 <p><strong>Accessibility</strong> — The platform is designed to allow users to participate through a mobile-friendly Telegram Mini App.</p>
 <p><strong>Community</strong> — Referrals and community activities encourage users to grow and participate in the ecosystem.</p>
 <p><strong>Engagement</strong> — Mining sessions, Lucky Boxes, streaks, tasks, and other gamification mechanisms encourage continued interaction.</p>
 <p><strong>Sustainability</strong> — The advertising-supported claim model provides a mechanism that can help support the continued operation and development of the platform.</p>
 <p><strong>Transparency</strong> — FIDEXA documentation should describe the functionality actually available in the application rather than presenting future concepts as completed technology.</p>
-
 <h3>12. Current Platform Summary</h3>
 <p>The current FIDEXA ecosystem combines:</p>
-<ul>
-<li>4-hour mining sessions</li>
-<li>1.0 FDX/hour base mining</li>
-<li>Mining boosters</li>
-<li>Lucky Boxes</li>
-<li>Streak recovery</li>
-<li>Reward claiming</li>
-<li>Advertising-supported reward claims</li>
-<li>FDX in-app balance</li>
-<li>Referral system</li>
-<li>Community tasks</li>
-<li>Telegram integration</li>
-<li>X-related community activities</li>
-<li>User profile</li>
-<li>Chat Support</li>
-<li>Account controls</li>
-</ul>
+<ul><li>4-hour mining sessions</li><li>1.0 FDX/hour base mining</li><li>Mining boosters</li><li>Lucky Boxes</li><li>Streak recovery</li><li>Reward claiming</li><li>Advertising-supported reward claims</li><li>FDX in-app balance</li><li>Referral system</li><li>Community tasks</li><li>Telegram integration</li><li>X-related community activities</li><li>User profile</li><li>Chat Support</li><li>Account controls</li></ul>
 <p>FIDEXA is designed as a continuously developing community-driven digital rewards ecosystem.</p>
-
 <div class="wp-footer">FIDEXA NETWORK · MINE · PARTICIPATE · GROW</div>
 `;
 
@@ -1940,182 +1683,86 @@ const ROADMAP_HTML = `
 <div class="wp-brand">FIDEXA NETWORK</div>
 <div class="wp-version">Official Roadmap</div>
 <div class="wp-tagline">Development Phases &amp; Current Progress</div>
-
 <h3>Phase 1 — Foundation &amp; Mini App Launch</h3>
 <p><strong style="color:var(--green);">COMPLETED</strong></p>
-<ul>
-<li>FIDEXA Telegram Mini App interface</li>
-<li>User profile integration</li>
-<li>Core mining system</li>
-<li>4-hour mining sessions</li>
-<li>1.0 FDX/hour base mining rate</li>
-<li>In-app FDX balance</li>
-<li>Basic referral system</li>
-<li>Initial community-task structure</li>
-<li>Account and support interface</li>
-</ul>
-
+<ul><li>FIDEXA Telegram Mini App interface</li><li>User profile integration</li><li>Core mining system</li><li>4-hour mining sessions</li><li>1.0 FDX/hour base mining rate</li><li>In-app FDX balance</li><li>Basic referral system</li><li>Initial community-task structure</li><li>Account and support interface</li></ul>
 <h3>Phase 2 — Engagement &amp; Gamification</h3>
 <p><strong style="color:var(--yellow);">ACTIVE</strong></p>
-<ul>
-<li>Mining boosters</li>
-<li>Lucky Boxes</li>
-<li>Streak recovery</li>
-<li>Reward-claim advertising integration</li>
-<li>Community task expansion</li>
-<li>Telegram community activities</li>
-<li>X community activities</li>
-<li>Continued improvements to the referral system</li>
-<li>Improvements to the overall user experience</li>
-</ul>
-
+<ul><li>Mining boosters</li><li>Lucky Boxes</li><li>Streak recovery</li><li>Reward-claim advertising integration</li><li>Community task expansion</li><li>Telegram community activities</li><li>X community activities</li><li>Continued improvements to the referral system</li><li>Improvements to the overall user experience</li></ul>
 <h3>Phase 3 — Ecosystem Growth</h3>
 <p><strong style="color:var(--cyan);">CURRENT DEVELOPMENT</strong></p>
-<ul>
-<li>Expansion of community participation</li>
-<li>Improvement of mining and reward interfaces</li>
-<li>Expansion of gamification features already integrated into the platform</li>
-<li>Continued optimization of the referral and task systems</li>
-<li>Improvement of user-support and account-management features</li>
-<li>Platform performance and usability improvements</li>
-</ul>
-
+<ul><li>Expansion of community participation</li><li>Improvement of mining and reward interfaces</li><li>Expansion of gamification features already integrated into the platform</li><li>Continued optimization of the referral and task systems</li><li>Improvement of user-support and account-management features</li><li>Platform performance and usability improvements</li></ul>
 <h3>Development Philosophy</h3>
 <p>FIDEXA will continue to develop based on actual platform implementation and community participation. New functionality will be introduced progressively as the ecosystem develops.</p>
-
 <div class="wp-footer">MINE · PARTICIPATE · GROW</div>
 `;
 
 const PRIVACY_POLICY_HTML = `
 <div class="wp-brand">FIDEXA NETWORK</div>
 <div class="wp-version">Privacy Policy</div>
-<div class="pp-effective">
-Effective Date: <strong>September 26, 2026</strong><br>
-Last Updated: <strong>September 26, 2026</strong>
-</div>
-
+<div class="pp-effective">Effective Date: <strong>September 26, 2026</strong><br>Last Updated: <strong>September 26, 2026</strong></div>
 <p>FIDEXA Network ("FIDEXA", "we", "our", or "us") respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.</p>
 <p>This Privacy Policy explains what information FIDEXA may collect, how it is used, how it may be shared, and the choices available to users.</p>
 <p>By accessing or using the FIDEXA Mini App, you acknowledge that you have read and understood this Privacy Policy.</p>
-
 <h3>1. Information We Collect</h3>
 <p>FIDEXA collects and processes information that is necessary to operate the Mini App and provide its features.</p>
 <p><strong>1.1 Telegram Account Information</strong></p>
 <p>When you open FIDEXA through Telegram, the Mini App may receive information made available by Telegram, which may include:</p>
-<ul>
-<li>Telegram user ID</li>
-<li>First name</li>
-<li>Last name, where available</li>
-<li>Telegram username, where available</li>
-<li>Language information</li>
-<li>Telegram profile information made available to the Mini App</li>
-</ul>
+<ul><li>Telegram user ID</li><li>First name</li><li>Last name, where available</li><li>Telegram username, where available</li><li>Language information</li><li>Telegram profile information made available to the Mini App</li></ul>
 <p>FIDEXA uses this information primarily to identify your account and provide personalized features within the application.</p>
-
 <h3>2. FIDEXA Activity Information</h3>
 <p>When you use FIDEXA, the platform may record information associated with your activity within the application, including:</p>
-<ul>
-<li>Mining session information</li>
-<li>Mining start and completion times</li>
-<li>Mining rewards</li>
-<li>FDX balance information</li>
-<li>Booster activity</li>
-<li>Lucky Box activity</li>
-<li>Streak information</li>
-<li>Referral information</li>
-<li>Community-task activity</li>
-<li>Reward-claim activity</li>
-<li>Account and support interactions</li>
-</ul>
+<ul><li>Mining session information</li><li>Mining start and completion times</li><li>Mining rewards</li><li>FDX balance information</li><li>Booster activity</li><li>Lucky Box activity</li><li>Streak information</li><li>Referral information</li><li>Community-task activity</li><li>Reward-claim activity</li><li>Account and support interactions</li></ul>
 <p>This information is used to operate the FIDEXA reward system and maintain the functionality of the application.</p>
-
 <h3>3. Advertising Information</h3>
 <p>FIDEXA incorporates advertising into the mining reward-claim process.</p>
 <p>When a mining session has completed and you initiate the reward-claim process, a supported advertisement may be displayed before the completed reward is credited to your FDX balance.</p>
 <p>FIDEXA may use third-party advertising technology, including <strong>AdsGram</strong>, to deliver advertisements. Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.</p>
 <p>FIDEXA does not sell your FDX balance or personal information to advertisers.</p>
-
 <h3>4. How We Use Information</h3>
 <p>FIDEXA may use collected information to:</p>
-<ul>
-<li>Create and maintain your FIDEXA account</li>
-<li>Identify users within the Mini App</li>
-<li>Operate mining sessions</li>
-<li>Calculate and display rewards</li>
-<li>Maintain FDX balances</li>
-<li>Process reward claims</li>
-<li>Operate boosters and gamification features</li>
-<li>Maintain referral functionality</li>
-<li>Manage community tasks</li>
-<li>Provide customer support</li>
-<li>Improve application performance and functionality</li>
-<li>Detect abuse, manipulation, or fraudulent activity</li>
-<li>Maintain platform security</li>
-<li>Communicate important service-related information</li>
-<li>Comply with applicable legal obligations</li>
-</ul>
-
+<ul><li>Create and maintain your FIDEXA account</li><li>Identify users within the Mini App</li><li>Operate mining sessions</li><li>Calculate and display rewards</li><li>Maintain FDX balances</li><li>Process reward claims</li><li>Operate boosters and gamification features</li><li>Maintain referral functionality</li><li>Manage community tasks</li><li>Provide customer support</li><li>Improve application performance and functionality</li><li>Detect abuse, manipulation, or fraudulent activity</li><li>Maintain platform security</li><li>Communicate important service-related information</li><li>Comply with applicable legal obligations</li></ul>
 <h3>5. How We Share Information</h3>
 <p>FIDEXA may share or permit access to information where reasonably necessary to operate the service.</p>
 <p><strong>Telegram</strong> — FIDEXA operates through Telegram's Mini App environment. Telegram processes information according to its own policies and platform functionality.</p>
 <p><strong>Advertising Providers</strong> — FIDEXA may use third-party advertising providers to display advertisements within the application. These providers may independently process technical or advertising information according to their own privacy policies.</p>
 <p><strong>Service Providers</strong> — FIDEXA may use infrastructure, hosting, database, analytics, security, or other technical service providers necessary to operate the platform.</p>
 <p><strong>Legal Requirements</strong> — FIDEXA may disclose information when reasonably necessary to comply with applicable law, respond to lawful requests, protect the rights or security of FIDEXA or its users, investigate fraud, abuse, or security incidents, or prevent harm or misuse of the platform.</p>
-
 <h3>6. Data Security</h3>
 <p>FIDEXA takes reasonable technical and organizational measures to protect information against unauthorized access, alteration, disclosure, loss, or misuse. However, no internet service or electronic storage system can be guaranteed to be completely secure.</p>
 <p>Users should also protect access to their Telegram account and device.</p>
-
 <h3>7. Data Retention</h3>
 <p>FIDEXA retains information for as long as reasonably necessary to provide the service, maintain account and reward records, operate referrals and community features, prevent abuse and fraud, resolve disputes, maintain security, and meet applicable legal obligations.</p>
 <p>When information is no longer reasonably required, it may be deleted, anonymized, or otherwise securely disposed of, subject to applicable legal and operational requirements.</p>
-
 <h3>8. Your Privacy Rights</h3>
 <p>Depending on applicable law, you may have rights concerning your personal information, which may include the right to:</p>
-<ul>
-<li>Request access to personal information we hold about you</li>
-<li>Request correction of inaccurate information</li>
-<li>Request deletion of information where applicable</li>
-<li>Request restriction of certain processing</li>
-<li>Object to certain processing</li>
-<li>Withdraw consent where processing is based on consent</li>
-<li>Raise a privacy complaint</li>
-</ul>
+<ul><li>Request access to personal information we hold about you</li><li>Request correction of inaccurate information</li><li>Request deletion of information where applicable</li><li>Request restriction of certain processing</li><li>Object to certain processing</li><li>Withdraw consent where processing is based on consent</li><li>Raise a privacy complaint</li></ul>
 <p>Requests concerning your personal information can be submitted through the FIDEXA support channel.</p>
-
 <h3>9. Account Deletion</h3>
 <p>FIDEXA provides an account-deletion option within the application where available.</p>
 <p>When an account-deletion request is submitted, FIDEXA may delete or anonymize information associated with the account, subject to information that must reasonably be retained for security, fraud prevention, dispute resolution, legal compliance, or other legitimate purposes.</p>
 <p>Deletion of an account may result in the permanent loss of associated FDX balances, mining history, referral information, tasks, streaks, or other account-related data where such information is deleted.</p>
 <div class="wp-callout"><strong>Important:</strong> Users should carefully review the consequences before confirming account deletion.</div>
-
 <h3>10. Children's Privacy</h3>
 <p>FIDEXA is not intended to knowingly collect personal information from children in violation of applicable law. If we become aware that personal information has been collected from a child where such collection is not permitted, we may take appropriate steps to delete the information.</p>
 <p>Parents or legal guardians who believe that a child has provided personal information to FIDEXA may contact us through the official support channel.</p>
-
 <h3>11. Third-Party Services</h3>
 <p>FIDEXA may integrate with third-party platforms and services, including Telegram and advertising providers. These third parties operate under their own terms and privacy policies.</p>
 <p>FIDEXA does not control the privacy practices of independent third-party services. Users should review the privacy policies of those services before using features that interact with them.</p>
-
 <h3>12. Cookies and Local Storage</h3>
 <p>FIDEXA may use browser, Telegram Mini App, or device storage technologies where necessary to maintain application functionality, preferences, sessions, or other technical information.</p>
 <p>FIDEXA does not use such technologies to intentionally collect information unrelated to the operation of the service.</p>
-
 <h3>13. Changes to This Privacy Policy</h3>
 <p>FIDEXA may update this Privacy Policy from time to time to reflect changes to the application, services, technology, or applicable legal requirements.</p>
 <p>When significant changes are made, we may provide notice through the application or other appropriate communication channels. The Last Updated date at the beginning of this Privacy Policy will indicate when the policy was most recently revised.</p>
-
 <h3>14. Contact Us</h3>
 <p>If you have questions, concerns, requests, or complaints concerning this Privacy Policy or the handling of your information, please contact FIDEXA through the official support channel provided within the FIDEXA Mini App.</p>
-<p><strong>Project:</strong> FIDEXA Network<br>
-<strong>Platform:</strong> Telegram Mini App<br>
-<strong>Support:</strong> FIDEXA Chat Support</p>
-
+<p><strong>Project:</strong> FIDEXA Network<br><strong>Platform:</strong> Telegram Mini App<br><strong>Support:</strong> FIDEXA Chat Support</p>
 <div class="wp-footer">FIDEXA NETWORK · PRIVACY FIRST</div>
 `;
 
 /* =========================================================
-   SUPPORT MODAL CLOSE ON BACKDROP
+   BACKDROP CLOSE
 ========================================================= */
 document.getElementById('supportModal').addEventListener('click', function(e){
     if(e.target === this) closeSupportChat();
