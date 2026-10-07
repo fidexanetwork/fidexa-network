@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#05080c">
+<title>FIDEXA Admin</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;--purple:#a78bfa;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit;}
+input,textarea{font:inherit;}
+.app{max-width:720px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
+.screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;flex-direction:column;gap:16px;}
+.screen.hidden{display:none;}
+.spinner{width:44px;height:44px;border:3px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.screen-title{font-size:22px;font-weight:900;color:var(--cyan);letter-spacing:.5px;}
+.screen-sub{font-size:13px;color:var(--muted);line-height:1.6;font-weight:600;max-width:340px;}
+.screen-icon{font-size:52px;}
+.admin-header{position:sticky;top:0;background:#070b10;border-bottom:1px solid var(--border);padding:14px 16px;z-index:50;}
+.admin-header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.admin-brand{display:flex;align-items:center;gap:10px;}
+.admin-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0284c7,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;}
+.admin-title{font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;}
+.admin-subtitle{font-size:10px;color:var(--green);font-weight:800;margin-top:2px;}
+.admin-logout{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);font-size:10px;font-weight:900;padding:6px 10px;border-radius:8px;letter-spacing:.4px;}
+.tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;}
+.tab{padding:8px 14px;border-radius:10px;background:#0a111a;border:1px solid #1a2838;color:var(--muted);font-size:12px;font-weight:800;white-space:nowrap;transition:all .2s;}
+.tab.active{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;border-color:transparent;}
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-size:9px;font-weight:900;border-radius:8px;padding:1px 6px;margin-left:6px;min-width:16px;}
+.content{flex:1;padding:16px;padding-bottom:80px;}
+.view{display:none;}
+.view.active{display:block;animation:fadeIn .2s;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:14px;padding:14px;}
+.stat-label{font-size:9px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;}
+.stat-value{font-size:22px;font-weight:900;color:#fff;margin-top:6px;}
+.stat-value.cyan{color:var(--cyan);}
+.stat-value.yellow{color:var(--yellow);}
+.stat-value.green{color:var(--green);}
+.stat-value.red{color:var(--red);}
+.stat-value.purple{color:var(--purple);}
+.stat-foot{font-size:10px;color:var(--muted);font-weight:700;margin-top:4px;}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;}
+.search-input{flex:1;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;outline:none;}
+.search-input:focus{border-color:rgba(56,189,248,.5);}
+.user-row{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s;}
+.user-row:hover{border-color:rgba(56,189,248,.4);}
+.user-row-left{min-width:0;flex:1;}
+.user-name{font-size:13px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.user-meta{font-size:10px;color:var(--muted);margin-top:3px;font-weight:700;}
+.user-balance{font-size:13px;font-weight:900;color:var(--yellow);white-space:nowrap;}
+.badge{display:inline-block;font-size:9px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px;letter-spacing:.3px;}
+.badge.banned{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge.active{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3);}
+.pagination{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px;}
+.page-btn{background:#111b27;border:1px solid #223247;border-radius:10px;padding:9px 14px;color:var(--muted);font-size:12px;font-weight:800;}
+.page-btn:disabled{opacity:.4;cursor:not-allowed;}
+.page-info{font-size:11px;color:var(--muted);font-weight:800;}
+.chat-row{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;}
+.chat-row.unread{border-color:rgba(250,204,21,.4);}
+.chat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px;}
+.chat-name{font-size:13px;font-weight:900;color:#fff;}
+.chat-time{font-size:9px;color:var(--muted);font-weight:800;}
+.chat-preview{font-size:11px;color:var(--muted);line-height:1.4;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.chat-unread-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px;box-shadow:0 0 8px var(--red);}
+.chat-detail-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#0a1018;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;position:sticky;top:90px;z-index:5;}
+.back-btn{background:#111b27;border:1px solid #223247;border-radius:8px;padding:6px 10px;font-size:14px;color:var(--muted);}
+.chat-detail-name{font-size:14px;font-weight:900;color:#fff;flex:1;}
+.chat-messages{display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 320px);overflow-y:auto;padding:8px 0;}
+.msg-wrap{display:flex;gap:8px;max-width:85%;}
+.msg-wrap.user{align-self:flex-start;}
+.msg-wrap.admin{align-self:flex-end;flex-direction:row-reverse;}
+.msg-bubble{padding:9px 13px;border-radius:13px;font-size:12px;line-height:1.5;font-weight:600;word-break:break-word;white-space:pre-wrap;}
+.msg-bubble.user{background:#162235;color:var(--text);border:1px solid var(--border);}
+.msg-bubble.admin{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;}
+.msg-time{font-size:9px;color:var(--muted);font-weight:700;padding:0 4px;align-self:flex-end;}
+.chat-reply-bar{display:flex;gap:8px;padding:10px;background:#0a1018;border:1px solid var(--border);border-radius:12px;margin-top:12px;}
+.chat-reply-input{flex:1;background:#111b27;border:1px solid #223247;border-radius:10px;padding:10px 14px;color:#fff;font-size:12px;outline:none;resize:none;max-height:80px;font-family:inherit;}
+.chat-reply-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:10px;padding:0 16px;color:#fff;font-weight:900;font-size:12px;}
+.broadcast-box{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.broadcast-textarea{width:100%;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:12px;color:#fff;font-size:13px;outline:none;resize:vertical;min-height:120px;font-family:inherit;line-height:1.5;}
+.broadcast-textarea:focus{border-color:rgba(56,189,248,.5);}
+.broadcast-info{font-size:11px;color:var(--muted);line-height:1.5;font-weight:700;margin:10px 0 14px;}
+.broadcast-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:12px;padding:14px;color:#fff;font-weight:900;font-size:13px;letter-spacing:.4px;width:100%;}
+.broadcast-btn:disabled{opacity:.5;cursor:not-allowed;}
+.modal{position:fixed;inset:0;background:rgba(5,8,12,.95);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0;}
+.modal.active{display:flex;}
+.modal-inner{background:var(--panel);border-top-left-radius:22px;border-top-right-radius:22px;border:1px solid var(--border);border-bottom:0;width:100%;max-width:720px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--panel);z-index:2;}
+.modal-title{font-size:15px;font-weight:900;color:var(--cyan);}
+.modal-close{font-size:18px;color:var(--muted);font-weight:900;padding:4px 8px;}
+.modal-body{padding:20px;overflow-y:auto;}
+.detail-section{margin-bottom:20px;}
+.detail-label{font-size:10px;font-weight:900;color:var(--muted);letter-spacing:.6px;margin-bottom:6px;text-transform:uppercase;}
+.detail-value{font-size:14px;font-weight:900;color:#fff;word-break:break-all;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.detail-cell{background:#0a111a;border:1px solid #1a2838;border-radius:10px;padding:12px;}
+.detail-cell-label{font-size:9px;font-weight:900;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+.detail-cell-value{font-size:16px;font-weight:900;color:#fff;margin-top:4px;}
+.balance-adjust{display:flex;gap:8px;margin-top:8px;}
+.balance-input{flex:1;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:11px;color:#fff;font-size:13px;outline:none;}
+.balance-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:10px;padding:0 16px;color:#fff;font-weight:900;font-size:12px;white-space:nowrap;}
+.balance-btn.danger{background:linear-gradient(135deg,#dc2626,#ef4444);}
+.detail-list{background:#0a111a;border:1px solid #1a2838;border-radius:10px;padding:10px 14px;max-height:200px;overflow-y:auto;}
+.detail-list-item{display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid rgba(27,38,54,.6);font-weight:700;color:var(--muted);}
+.detail-list-item:last-child{border-bottom:0;}
+.detail-list-item strong{color:#fff;}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#111b27;border:1px solid var(--cyan);color:#fff;padding:11px 18px;border-radius:12px;font-size:12px;font-weight:800;z-index:200;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.loader{padding:40px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
+.loader-spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px;}
+.empty{padding:40px 20px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<div class="screen" id="loadingScreen">
+<div class="spinner"></div>
+<div class="screen-sub">Verifying admin access…</div>
+</div>
+
+<div class="screen hidden" id="deniedScreen">
+<div class="screen-icon">🚫</div>
+<div class="screen-title">Access Denied</div>
+<div class="screen-sub" id="deniedReason">You are not authorized to view this page.</div>
+</div>
+
+<div id="adminUI" class="hidden" style="display:none;flex-direction:column;min-height:100vh;">
+<div class="admin-header">
+<div class="admin-header-top">
+<div class="admin-brand">
+<div class="admin-logo">F</div>
+<div>
+<div class="admin-title">FIDEXA Admin</div>
+<div class="admin-subtitle" id="adminWho">Loading…</div>
+</div>
+</div>
+<button class="admin-logout" onclick="logout()">LOGOUT</button>
+</div>
+<div class="tabs">
+<button class="tab active" data-tab="dashboard" onclick="switchView('dashboard',this)">📊 Dashboard</button>
+<button class="tab" data-tab="users" onclick="switchView('users',this)">👥 Users</button>
+<button class="tab" data-tab="chats" onclick="switchView('chats',this)">💬 Chats <span id="unreadBadge" class="tab-badge" style="display:none;">0</span></button>
+<button class="tab" data-tab="broadcast" onclick="switchView('broadcast',this)">📢 Broadcast</button>
+</div>
+</div>
+
+<div class="content">
+
+<div class="view active" id="view-dashboard">
+<div class="stats-grid" id="statsGrid">
+<div class="stat-card"><div class="stat-label">Loading…</div></div>
+</div>
+</div>
+
+<div class="view" id="view-users">
+<div class="search-bar">
+<input id="userSearch" class="search-input" type="text" placeholder="Search by ID or @username…" onkeydown="if(event.key==='Enter') loadUsers(1);">
+<button class="page-btn" onclick="loadUsers(1)">SEARCH</button>
+</div>
+<div id="usersList"><div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div></div>
+<div class="pagination" id="usersPagination" style="display:none;">
+<button class="page-btn" id="prevPageBtn" onclick="loadUsers(currentUsersPage-1)">← Prev</button>
+<div class="page-info" id="pageInfo">Page 1</div>
+<button class="page-btn" id="nextPageBtn" onclick="loadUsers(currentUsersPage+1)">Next →</button>
+</div>
+</div>
+
+<div class="view" id="view-chats">
+<div id="chatsList"><div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div></div>
+<div id="chatDetailView" style="display:none;">
+<div class="chat-detail-header">
+<button class="back-btn" onclick="closeChatDetail()">←</button>
+<div class="chat-detail-name" id="chatDetailName">User</div>
+</div>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-reply-bar">
+<textarea id="chatReplyInput" class="chat-reply-input" rows="1" placeholder="Reply to this user…" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendAdminReply();}"></textarea>
+<button class="chat-reply-btn" onclick="sendAdminReply()">SEND</button>
+</div>
+</div>
+</div>
+
+<div class="view" id="view-broadcast">
+<div class="broadcast-box">
+<div class="detail-label">Broadcast to all users</div>
+<textarea id="broadcastText" class="broadcast-textarea" placeholder="Type your announcement…"></textarea>
+<div class="broadcast-info" id="broadcastInfo">This sends a Telegram message to every registered user. Use sparingly.</div>
+<button class="broadcast-btn" id="broadcastBtn" onclick="sendBroadcast()">SEND BROADCAST</button>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="modal" id="userModal">
+<div class="modal-inner">
+<div class="modal-head">
+<div class="modal-title" id="userModalTitle">User Detail</div>
+<button class="modal-close" onclick="closeUserModal()">✕</button>
+</div>
+<div class="modal-body" id="userModalBody"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================ CONFIG ================ */
+const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+const ADMIN_USERNAME = "safeguy0620";
+
+/* ================ STATE ================ */
+let initData = "";
+let adminInfo = null;
+let currentUsersPage = 1;
+let currentChatUserId = null;
+
+/* ================ HELPERS ================ */
+function el(id){ return document.getElementById(id); }
+function hide(id){ el(id).classList.add('hidden'); }
+function showToast(msg){
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tm);
+  t._tm = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+function fmt(n){ return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function timeAgo(iso){
+  if(!iso) return '';
+  const d = new Date(iso).getTime();
+  const s = Math.floor((Date.now()-d)/1000);
+  if(s<60) return s+'s';
+  if(s<3600) return Math.floor(s/60)+'m';
+  if(s<86400) return Math.floor(s/3600)+'h';
+  if(s<604800) return Math.floor(s/86400)+'d';
+  return new Date(iso).toLocaleDateString([], {day:'2-digit',month:'short'});
+}
+
+/* ================ API ================ */
+async function api(path, opts={}){
+  const headers = {
+    ...(opts.headers||{}),
+    'X-Telegram-Init-Data': initData,
+    'Authorization': `Bearer ${initData}`
+  };
+  if(opts.body !== undefined) headers['Content-Type'] = 'application/json';
+  const r = await fetch(`${API_BASE}${path}`, {
+    method: opts.method || 'GET',
+    headers,
+    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined
+  });
+  let data = null;
+  try{ data = await r.json(); } catch(e){ throw new Error('Invalid server response'); }
+  if(!r.ok || data?.success===false) throw new Error(data?.error || data?.message || `Request failed (${r.status})`);
+  return data;
+}
+
+/* ================ BOOT / AUTH ================ */
+async function boot(){
+  if(!window.Telegram || !window.Telegram.WebApp){
+    el('deniedReason').textContent = 'This page must be opened from Telegram.';
+    hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
+    return;
+  }
+  const tg = window.Telegram.WebApp;
+  try{ tg.ready(); tg.expand(); }catch(e){}
+  initData = tg.initData || '';
+  if(!initData){
+    el('deniedReason').textContent = 'Telegram authentication is not available.';
+    hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
+    return;
+  }
+
+  // Layer 1 — Username gate
+  const tgUser = (tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+  const actualUsername = String(tgUser.username || "").toLowerCase().trim();
+  const requiredUsername = String(ADMIN_USERNAME).toLowerCase().trim();
+  if(actualUsername !== requiredUsername){
+    el('deniedReason').textContent = 'You are not authorized to view this page.';
+    hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
+    return;
+  }
+
+  // Layer 2 — Server-side ID check
+  try{
+    const res = await api('/api/admin/me');
+    adminInfo = res.admin;
+    el('adminWho').textContent = 'Connected as @' + (adminInfo.username || adminInfo.id);
+    hide('loadingScreen');
+    el('adminUI').style.display = 'flex';
+    loadDashboard();
+    loadUnreadBadge();
+  }catch(err){
+    el('deniedReason').textContent = err.message || 'You are not authorized to view this page.';
+    hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
+  }
+}
+
+function logout(){
+  if(!confirm('Close admin panel?')) return;
+  try{ window.Telegram.WebApp.close(); }catch(e){ window.location.reload(); }
+}
+
+/* ================ TABS ================ */
+function switchView(name, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el('view-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='dashboard') loadDashboard();
+  if(name==='users') loadUsers(1);
+  if(name==='chats') loadChats();
+  if(name==='broadcast') el('broadcastText').focus();
+}
+
+/* ================ DASHBOARD ================ */
+async function loadDashboard(){
+  const grid = el('statsGrid');
+  grid.innerHTML = '<div class="stat-card"><div class="stat-label">Loading…</div></div>';
+  try{
+    const res = await api('/api/admin/stats');
+    const s = res.stats;
+    grid.innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value cyan">${s.totalUsers}</div><div class="stat-foot">+${s.newUsers7d} in last 7d</div></div>
+      <div class="stat-card"><div class="stat-label">Total FDX</div><div class="stat-value yellow">${fmt(s.totalBalance)}</div><div class="stat-foot">across wallets</div></div>
+      <div class="stat-card"><div class="stat-label">Total Mined</div><div class="stat-value green">${fmt(s.totalMined)}</div><div class="stat-foot">lifetime</div></div>
+      <div class="stat-card"><div class="stat-label">Referrals</div><div class="stat-value">${s.totalReferrals}</div><div class="stat-foot">all-time</div></div>
+      <div class="stat-card"><div class="stat-label">Burning Users</div><div class="stat-value red">${s.usersBurning}</div><div class="stat-foot">in burn now</div></div>
+      <div class="stat-card"><div class="stat-label">Recoverable</div><div class="stat-value yellow">${fmt(s.totalRecoverable)}</div><div class="stat-foot">locked pool</div></div>
+      <div class="stat-card"><div class="stat-label">Unread Chats</div><div class="stat-value purple">${s.unreadChats}</div><div class="stat-foot">need reply</div></div>
+      <div class="stat-card"><div class="stat-label">Banned</div><div class="stat-value red">${s.totalBanned}</div><div class="stat-foot">total</div></div>
+    `;
+  }catch(err){
+    grid.innerHTML = `<div class="stat-card"><div class="stat-label">Error</div><div class="stat-value red" style="font-size:14px;">${esc(err.message)}</div></div>`;
+  }
+}
+
+/* ================ USERS ================ */
+async function loadUsers(page){
+  if(page < 1) page = 1;
+  currentUsersPage = page;
+  const list = el('usersList');
+  list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
+  const search = el('userSearch').value.trim();
+  try{
+    const res = await api(`/api/admin/users?page=${page}&limit=30&search=${encodeURIComponent(search)}`);
+    const users = res.users || [];
+    if(!users.length){
+      list.innerHTML = '<div class="empty">No users found.</div>';
+      el('usersPagination').style.display = 'none';
+      return;
+    }
+    list.innerHTML = users.map(u=>`
+      <div class="user-row" onclick="openUserDetail('${u.id}')">
+        <div class="user-row-left">
+          <div class="user-name">${esc(u.username||('User '+u.id))}
+            ${u.banned?'<span class="badge banned">BANNED</span>':''}
+            ${u.hasMined?'<span class="badge active">ACTIVE</span>':''}
+          </div>
+          <div class="user-meta">ID: ${u.id} · Joined ${timeAgo(u.createdAt)}</div>
+        </div>
+        <div class="user-balance">${fmt(u.balance)} $FDX</div>
+      </div>
+    `).join('');
+    const totalPages = Math.max(1, Math.ceil((res.total||0)/(res.limit||30)));
+    el('usersPagination').style.display = 'flex';
+    el('pageInfo').textContent = `Page ${res.page} of ${totalPages} (${res.total} users)`;
+    el('prevPageBtn').disabled = res.page <= 1;
+    el('nextPageBtn').disabled = res.page >= totalPages;
+  }catch(err){
+    list.innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function openUserDetail(id){
+  el('userModalTitle').textContent = 'User ' + id;
+  el('userModalBody').innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
+  el('userModal').classList.add('active');
+  try{
+    const res = await api('/api/admin/users/' + id);
+    const u = res.user;
+    const recovery = u.recovery || {};
+    el('userModalBody').innerHTML = `
+      <div class="detail-section">
+        <div class="detail-label">Profile</div>
+        <div class="detail-value">${esc(u.username||('User '+u.id))}</div>
+        <div class="user-meta" style="margin-top:4px;">ID ${u.id} · Joined ${new Date(u.createdAt).toLocaleString()}</div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-cell"><div class="detail-cell-label">Balance</div><div class="detail-cell-value" style="color:var(--yellow);">${fmt(u.balance)}</div></div>
+        <div class="detail-cell"><div class="detail-cell-label">Total Mined</div><div class="detail-cell-value" style="color:var(--green);">${fmt(u.totalMined)}</div></div>
+        <div class="detail-cell"><div class="detail-cell-label">Referrals</div><div class="detail-cell-value">${u.referrals.length}</div></div>
+        <div class="detail-cell"><div class="detail-cell-label">Referred By</div><div class="detail-cell-value" style="font-size:13px;">${u.referredBy?u.referredBy.referrerId:'—'}</div></div>
+        <div class="detail-cell"><div class="detail-cell-label">Recoverable</div><div class="detail-cell-value" style="color:var(--yellow);font-size:14px;">${fmt(recovery.recoverable_balance)}</div></div>
+        <div class="detail-cell"><div class="detail-cell-label">Burning Streak</div><div class="detail-cell-value" style="font-size:14px;">${recovery.burning_streak||0} days</div></div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Adjust Balance</div>
+        <div class="balance-adjust">
+          <input id="adjustAmount" class="balance-input" type="number" placeholder="Amount" step="1">
+          <button class="balance-btn" onclick="adjustBalance('${u.id}', 1)">ADD</button>
+          <button class="balance-btn danger" onclick="adjustBalance('${u.id}', -1)">REMOVE</button>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Account Status</div>
+        ${u.ban ? `<div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:11px;color:var(--red);font-weight:700;">BANNED: ${esc(u.ban.reason||'No reason')}</div>
+        <button class="balance-btn" style="background:linear-gradient(135deg,#10b981,#059669);width:100%;" onclick="toggleBan('${u.id}','unban')">UNBAN USER</button>` :
+        `<button class="balance-btn danger" style="width:100%;" onclick="toggleBan('${u.id}','ban')">BAN USER</button>`}
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Recent Mining Sessions</div>
+        <div class="detail-list">
+          ${u.miningSessions.length ? u.miningSessions.map(s=>`
+            <div class="detail-list-item"><span>${new Date(s.start_time).toLocaleDateString()}</span><strong>${fmt(s.total_reward)} · ${s.status}</strong></div>
+          `).join('') : '<div class="detail-list-item">No sessions</div>'}
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-label">Recent Claims</div>
+        <div class="detail-list">
+          ${u.claims.length ? u.claims.map(c=>`
+            <div class="detail-list-item"><span>${esc(c.claim_type)}</span><strong>${fmt(c.amount)} $FDX</strong></div>
+          `).join('') : '<div class="detail-list-item">No claims</div>'}
+        </div>
+      </div>
+    `;
+  }catch(err){
+    el('userModalBody').innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+  }
+}
+function closeUserModal(){ el('userModal').classList.remove('active'); }
+
+async function adjustBalance(userId, sign){
+  const input = el('adjustAmount');
+  const raw = parseFloat(input.value);
+  if(!raw || isNaN(raw)){ showToast('Enter an amount first.'); return; }
+  const delta = sign > 0 ? Math.abs(raw) : -Math.abs(raw);
+  if(!confirm(`${delta>0?'Add':'Deduct'} ${Math.abs(delta)} $FDX?`)) return;
+  try{
+    const res = await api('/api/admin/users/'+userId+'/balance', { method:'POST', body:{ delta, reason:'Admin adjustment' } });
+    showToast(`Done. New balance: ${fmt(res.totalBalance)}`);
+    input.value = '';
+    openUserDetail(userId);
+  }catch(err){ showToast('Error: ' + err.message); }
+}
+
+async function toggleBan(userId, action){
+  const reason = action === 'ban' ? (prompt('Reason for ban?')||'No reason provided') : '';
+  if(action === 'ban' && !confirm('Ban this user?')) return;
+  try{
+    await api('/api/admin/users/'+userId+'/ban', { method:'POST', body:{ action, reason } });
+    showToast(action === 'ban' ? 'User banned.' : 'User unbanned.');
+    openUserDetail(userId);
+  }catch(err){ showToast('Error: ' + err.message); }
+}
+
+/* ================ CHATS ================ */
+async function loadChats(){
+  const list = el('chatsList');
+  el('chatDetailView').style.display = 'none';
+  list.style.display = 'block';
+  list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
+  try{
+    const res = await api('/api/admin/chats');
+    const chats = res.chats || [];
+    if(!chats.length){
+      list.innerHTML = '<div class="empty">No conversations yet.</div>';
+      el('unreadBadge').style.display = 'none';
+      return;
+    }
+    list.innerHTML = chats.map(c=>`
+      <div class="chat-row ${c.unread>0?'unread':''}" onclick="openChatDetail('${c.userId}','${esc(c.username||('User '+c.userId))}')">
+        <div class="chat-top">
+          <div class="chat-name">${c.unread>0?'<span class="chat-unread-dot"></span>':''}${esc(c.username||('User '+c.userId))}</div>
+          <div class="chat-time">${timeAgo(c.lastAt)}</div>
+        </div>
+        <div class="chat-preview">${c.lastSender==='admin'?'<b style="color:var(--cyan);">You: </b>':''}${esc(c.lastMessage)}</div>
+      </div>
+    `).join('');
+  }catch(err){
+    list.innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function loadUnreadBadge(){
+  try{
+    const res = await api('/api/admin/stats');
+    const unread = res.stats.unreadChats;
+    const b = el('unreadBadge');
+    if(unread > 0){ b.textContent = unread; b.style.display = 'inline-flex'; }
+    else b.style.display = 'none';
+  }catch(e){}
+}
+
+async function openChatDetail(userId, name){
+  currentChatUserId = userId;
+  el('chatDetailName').textContent = name;
+  el('chatsList').style.display = 'none';
+  el('chatDetailView').style.display = 'block';
+  el('chatMessages').innerHTML = '<div class="loader"><div class="loader-spinner"></div></div>';
+  try{
+    const res = await api('/api/admin/chats/' + userId);
+    const msgs = res.messages || [];
+    el('chatMessages').innerHTML = msgs.length ? msgs.map(m=>`
+      <div class="msg-wrap ${m.sender}">
+        <div class="msg-bubble ${m.sender}">${esc(m.text)}</div>
+        <div class="msg-time">${timeAgo(m.created_at)}</div>
+      </div>
+    `).join('') : '<div class="empty">No messages.</div>';
+    el('chatMessages').scrollTop = el('chatMessages').scrollHeight;
+    loadUnreadBadge();
+  }catch(err){
+    el('chatMessages').innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+  }
+}
+function closeChatDetail(){
+  el('chatDetailView').style.display = 'none';
+  el('chatsList').style.display = 'block';
+  currentChatUserId = null;
+  loadChats();
+}
+
+async function sendAdminReply(){
+  if(!currentChatUserId) return;
+  const input = el('chatReplyInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.disabled = true;
+  try{
+    await api('/api/admin/chats/'+currentChatUserId+'/reply', { method:'POST', body:{ text } });
+    input.value = '';
+    await openChatDetail(currentChatUserId, el('chatDetailName').textContent);
+  }catch(err){
+    showToast('Error: ' + err.message);
+  }finally{
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+/* ================ BROADCAST ================ */
+async function sendBroadcast(){
+  const text = el('broadcastText').value.trim();
+  if(!text){ showToast('Type a message first.'); return; }
+  if(!confirm('Send this announcement to ALL users?')) return;
+  const btn = el('broadcastBtn');
+  btn.disabled = true; btn.textContent = 'SENDING…';
+  el('broadcastInfo').textContent = 'Sending…';
+  try{
+    const res = await api('/api/admin/broadcast', { method:'POST', body:{ text } });
+    el('broadcastInfo').innerHTML = `✅ Sent: <b>${res.sent}</b> · Failed: <b>${res.failed}</b>`;
+    el('broadcastText').value = '';
+    showToast(`Broadcast delivered to ${res.sent} users.`);
+  }catch(err){
+    el('broadcastInfo').textContent = 'Error: ' + err.message;
+  }finally{
+    btn.disabled = false; btn.textContent = 'SEND BROADCAST';
+  }
+}
+
+/* ================ START ================ */
+window.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
