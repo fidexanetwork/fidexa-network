@@ -872,7 +872,7 @@ async function syncRecoveryFromServer(force){
         if(data.inactiveDays!==undefined) state.inactiveDays=Number(data.inactiveDays);
         if(data.activeDays!==undefined) state.activeDays=Number(data.activeDays);
         if(data.recoveryTriggered!==undefined) state.recoveryTriggered=Boolean(data.recoveryTriggered);
-        if(data.recoveryQualified!==booleanSafeCheck(data.recoveryQualified)) state.recoveryQualified=Boolean(data.recoveryQualified);
+        if(data.recoveryQualified!==undefined) state.recoveryQualified=Boolean(data.recoveryQualified);
         if(data.recoveryActiveDays!==undefined) state.recoveryActiveDays=Number(data.recoveryActiveDays);
         if(data.recoveryLastUnlockAt!==undefined) state.recoveryLastUnlockAt=Number(data.recoveryLastUnlockAt);
         updateAllUI();
@@ -1428,23 +1428,28 @@ async function handleMiningAction(){
             if(state.miningState==='IDLE' && button){ button.textContent=previousText || 'START MINING'; button.style.pointerEvents='auto'; }
         }
     }else if(state.miningState==='READY_TO_CLAIM'){
-        showAdsgramAd(async function(){
-            try{
-                const data=await fidexaApiRequest('/api/mining/claim', { method:'POST', body:{ adCompleted:true } });
-                if(!data || data.success!==true) throw new Error(data?.error || 'Invalid mining claim response.');
-                if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance)||0;
-                if(data.totalMined!==undefined) state.totalMined=Number(data.totalMined)||0;
-                state.miningState='IDLE';
-                state.miningStartedAt=0;
-                state.sessionAccumulated=0;
-                updateAllUI();
-                const reward=Number(data.reward || 0);
-                showToast(`Successfully claimed ${formatNumber(reward)} $FDX!`);
-            }catch(error){
-                console.warn('Mining claim failed:', error);
-                showToast(error.message || 'Claim failed. Your mining reward was not lost.');
+        const button=document.getElementById('miningToggleBtn');
+        if(button){ button.textContent='CLAIMING...'; button.style.pointerEvents='none'; }
+        try{
+            const data=await fidexaApiRequest('/api/mining/claim', { method:'POST', body:{} });
+            if(!data || data.success!==true) throw new Error(data?.error || 'Invalid mining claim response.');
+            if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance)||0;
+            if(data.totalMined!==undefined) state.totalMined=Number(data.totalMined)||0;
+            state.miningState='IDLE';
+            state.miningStartedAt=0;
+            state.sessionAccumulated=0;
+            updateAllUI();
+            const reward=Number(data.reward || 0);
+            showToast(`Successfully claimed ${formatNumber(reward)} $FDX!`);
+        }catch(error){
+            console.warn('Mining claim failed:', error);
+            showToast(error.message || 'Claim failed. Your mining reward was not lost.');
+        }finally{
+            if(button && state.miningState==='READY_TO_CLAIM'){
+                button.textContent='CLAIM REWARD';
+                button.style.pointerEvents='auto';
             }
-        });
+        }
     }
 }
 
