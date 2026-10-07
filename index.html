@@ -559,24 +559,26 @@ function applyApiMeData(data){
         }
         return undefined;
     };
-    const remoteUserId=readValue(user.userId, user.user_id, user.telegramId, user.telegram_id, data?.userId, data?.user_id);
+
+    const remoteUserId=readValue(user.userId, user.user_id);
     if(remoteUserId !== undefined && remoteUserId !== null){
         currentUserId=String(remoteUserId);
     }
-    const remoteUsername=readValue(user.username, user.telegramUsername, user.telegram_username, data?.username);
+    const remoteUsername=readValue(user.username);
     if(remoteUsername){
         currentUserName=String(remoteUsername);
     }
-    const totalBalance=readNumber(user.totalBalance, user.total_balance, data?.totalBalance, data?.total_balance);
-    const totalMined=readNumber(user.totalMined, user.total_mined, data?.totalMined, data?.total_mined);
-    const miningState=readValue(user.miningState, user.mining_state);
-    const miningStartedAt=readNumber(user.miningStartedAt, user.mining_started_at);
-    const sessionAccumulated=readNumber(user.sessionAccumulated, user.session_accumulated);
-    const baseMiningRate=readNumber(user.baseMiningRate, user.base_mining_rate);
-    const boosterBonusRate=readNumber(user.boosterBonusRate, user.booster_bonus_rate);
-    const referralBonusRate=readNumber(user.referralBonusRate, user.referral_bonus_rate);
-    const boosterChancesLeft=readNumber(user.boosterChancesLeft, user.booster_chances_left, data?.boosterChancesLeft, data?.booster_chances_left);
-    const luckyBoxChances=readNumber(user.luckyBoxChances, user.lucky_box_chances, data?.luckyBoxChances, data?.lucky_box_chances);
+
+    const totalBalance=readNumber(user.totalBalance);
+    const totalMined=readNumber(user.totalMined);
+    const miningState=readValue(user.miningState);
+    const miningStartedAt=readNumber(user.miningStartedAt);
+    const sessionAccumulated=readNumber(user.sessionAccumulated);
+    const baseMiningRate=readNumber(user.baseMiningRate);
+    const boosterBonusRate=readNumber(user.boosterBonusRate);
+    const referralBonusRate=readNumber(user.referralBonusRate);
+    const boosterChancesLeft=readNumber(user.boosterChancesLeft);
+    const luckyBoxChances=readNumber(user.luckyBoxChances);
 
     if(totalBalance!==null) state.totalBalance=totalBalance;
     if(totalMined!==null) state.totalMined=totalMined;
@@ -594,8 +596,35 @@ function applyApiMeData(data){
     if(boosterChancesLeft!==null) state.boosterChancesLeft=Math.max(0, Math.min(5, Math.floor(boosterChancesLeft)));
     if(luckyBoxChances!==null) state.luckyBoxChances=Math.max(0, Math.min(5, Math.floor(luckyBoxChances)));
 
-    const activeReferrals=readValue(user.activeReferrals, user.active_referrals, data?.activeReferrals, data?.active_referrals);
-    if(Array.isArray(activeReferrals)) state.friends=activeReferrals;
+    /* ===== RECOVERY (all from server) ===== */
+    const burningStreak=readNumber(user.burningStreak);
+    const recoverableBalance=readNumber(user.recoverableBalance);
+    const recoveryUnlockedBalance=readNumber(user.recoveryUnlockedBalance);
+    const recoveryActiveDays=readNumber(user.recoveryActiveDays);
+    const recoveryLastUnlockAt=readNumber(user.recoveryLastUnlockAt);
+    const inactiveDays=readNumber(user.inactiveDays);
+    const activeDays=readNumber(user.activeDays);
+    const recoveryTriggered=readValue(user.recoveryTriggered);
+    const recoveryQualified=readValue(user.recoveryQualified);
+
+    if(burningStreak!==null) state.burningStreak=burningStreak;
+    if(recoverableBalance!==null) state.recoverableBalance=recoverableBalance;
+    if(recoveryUnlockedBalance!==null) state.recoveryUnlockedBalance=recoveryUnlockedBalance;
+    if(recoveryActiveDays!==null) state.recoveryActiveDays=recoveryActiveDays;
+    if(recoveryLastUnlockAt!==null) state.recoveryLastUnlockAt=recoveryLastUnlockAt;
+    if(inactiveDays!==null) state.inactiveDays=inactiveDays;
+    if(activeDays!==null) state.activeDays=activeDays;
+    if(typeof recoveryTriggered==='boolean') state.recoveryTriggered=recoveryTriggered;
+    if(typeof recoveryQualified==='boolean') state.recoveryQualified=recoveryQualified;
+
+    const claimedTasks=readValue(user.claimedTasks);
+    if(claimedTasks && typeof claimedTasks==='object'){
+        state.claimedTasks = {
+            telegram: Boolean(claimedTasks.telegram),
+            x: Boolean(claimedTasks.x),
+            youtube: Boolean(claimedTasks.youtube)
+        };
+    }
 
     fidexaApiAuthenticated=true;
     try{ saveState(); }catch(error){ console.warn('Fidexa API: local state save after /api/me failed:', error); }
@@ -637,11 +666,10 @@ async function loadReferralData(){
         const referrals = Array.isArray(data?.referrals) ? data.referrals : [];
         state.friends = referrals;
         renderFriends();
-        try{ saveState(); }catch(error){ console.warn('Fidexa referral local state save failed:', error); }
+        try{ saveState(); }catch(error){}
         return true;
     }catch(error){
         console.warn('Fidexa referral data load failed:', error);
-        showToast('Could not load referrals: ' + (error.message || 'Check console'));
         return false;
     }
 }
@@ -696,7 +724,7 @@ async function loadTransactions(){
     try{
         const data = await fidexaApiRequest('/api/wallet/transactions');
         const raw = Array.isArray(data?.transactions) ? data.transactions : [];
-        /* ONLY keep SEND and RECEIVE — filter out MINING, TASK_*, etc. */
+        /* ONLY keep SEND and RECEIVE — hide mining/task rewards */
         state.transactions = raw.filter(function(tx){
             const t = String(tx?.type||'').toUpperCase();
             return t === 'SEND' || t === 'RECEIVE';
@@ -745,7 +773,7 @@ async function loadFidexaProfile(){
     function refreshTelegramInitData(){
         if(window.Telegram && window.Telegram.WebApp){
             const webApp=window.Telegram.WebApp;
-            try{ webApp.ready(); webApp.expand(); }catch(error){ console.warn('Fidexa API: Telegram WebApp ready/expand warning:', error); }
+            try{ webApp.ready(); webApp.expand(); }catch(error){}
             if(webApp.initData) currentTelegramInitData=webApp.initData;
             if(webApp.initDataUnsafe && webApp.initDataUnsafe.user){
                 const tgUser=webApp.initDataUnsafe.user;
@@ -758,10 +786,7 @@ async function loadFidexaProfile(){
     for(let attempt=1; attempt<=3; attempt++){
         refreshTelegramInitData();
         if(!currentTelegramInitData){
-            if(attempt<3){
-                await new Promise(function(resolve){ setTimeout(resolve, 500); });
-                continue;
-            }
+            if(attempt<3){ await new Promise(function(resolve){ setTimeout(resolve, 500); }); continue; }
             console.warn('Fidexa API: Telegram initData is unavailable after retries.');
             return false;
         }
@@ -772,7 +797,7 @@ async function loadFidexaProfile(){
             applyApiMeData(data);
             fidexaApiAuthenticated=true;
             if(incomingRef){
-                try{ await registerIncomingReferral(); }catch(referralError){ console.warn('Fidexa referral fallback registration failed:', referralError); }
+                try{ await registerIncomingReferral(); }catch(e){ console.warn('Fidexa referral fallback:', e); }
             }
             await loadReferralData();
             await loadTransactions();
@@ -811,10 +836,7 @@ function initializeAdsgram(){
             try{ adsgramController.addEventListener('onBannerNotFound', function(){ console.warn('Adsgram: no advertisement available.'); }); }catch(e){}
             try{ adsgramController.addEventListener('onError', function(event){ console.warn('Adsgram error:', event); }); }catch(e){}
         }
-    }catch(error){
-        console.warn('Adsgram initialization error:', error);
-        adsgramController=null;
-    }
+    }catch(error){ console.warn('Adsgram initialization error:', error); adsgramController=null; }
 }
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', initializeAdsgram); }else{ initializeAdsgram(); }
 
@@ -822,294 +844,40 @@ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded
    CONSTANTS
 ========================================================= */
 const MIN_TRANSFER_AMOUNT = 100;
-const INACTIVITY_THRESHOLD_DAYS = 7;
-const BURN_PERCENT_PER_DAY = 0.10;
 
 /* =========================================================
-   STORAGE
+   STORAGE (only for UI cache — recovery is server-side)
 ========================================================= */
-const STORAGE_KEY='fidexa_prototype_state_v11';
+const STORAGE_KEY='fidexa_prototype_state_v12';
 const defaultState={
     totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, miningCycleDuration:14400,
-    baseMiningRate:1.0, boosterBonusRate:0, boostLuckyResetAt:0, boosterResetAt:0, referralBonusRate:0,
-    boosterChancesLeft:5, luckyBoxChances:5, luckyBoxResetAt:0, sessionAccumulated:0, burningStreak:0,
-    burningDaysApplied:0,
-    lastActivityDay:'', inactiveDays:0, activeDays:0, recoverableBalance:0, friends:[], transactions:[],
-    claimedTasks:{telegram:false, x:false, youtube:false},
-    lastActivityTimestamp:0, recoveryTriggered:false, recoveryQualified:false, recoveryQualificationStartDay:'',
-    recoveryActiveDays:0, recoveryLastUnlockAt:0, recoveryUnlockedBalance:0, recoveryTriggerTimestamp:0
+    baseMiningRate:1.0, boosterBonusRate:0, boostLuckyResetAt:0, referralBonusRate:0,
+    boosterChancesLeft:5, luckyBoxChances:5, sessionAccumulated:0,
+    burningStreak:0, recoverableBalance:0, recoveryUnlockedBalance:0,
+    recoveryTriggered:false, recoveryQualified:false, recoveryActiveDays:0,
+    recoveryLastUnlockAt:0, inactiveDays:0, activeDays:0,
+    friends:[], transactions:[],
+    claimedTasks:{telegram:false, x:false, youtube:false}
 };
 let state={ ...defaultState };
 
-function getAllUsersRegistry(){
-    try{ const data=localStorage.getItem('fidexa_global_users'); return data ? JSON.parse(data) : {}; }catch(e){ return {}; }
-}
-function saveAllUsersRegistry(registry){
-    try{ localStorage.setItem('fidexa_global_users', JSON.stringify(registry)); }catch(e){}
-}
-
-/* =========================================================
-   DATE HELPERS
-========================================================= */
-function getDateKey(timestamp=Date.now()){
-    const d=new Date(timestamp);
-    return [d.getFullYear(), String(d.getMonth()+1).padStart(2,'0'), String(d.getDate()).padStart(2,'0')].join('-');
-}
-function getPreviousDateKey(dateKey){
-    const parts=dateKey.split('-').map(Number);
-    const d=new Date(parts[0], parts[1]-1, parts[2]);
-    d.setDate(d.getDate()-1);
-    return getDateKey(d.getTime());
-}
-function daysBetween(timestamp){
-    if(!timestamp) return 0;
-    return Math.floor((Date.now() - Number(timestamp)) / (24*60*60*1000));
-}
-
-/* =========================================================
-   RECOVERY STATE NORMALIZATION
-========================================================= */
-function normalizeRecoveryState(){
-    state.totalBalance=Number(state.totalBalance)||0;
-    state.recoverableBalance=Number(state.recoverableBalance)||0;
-    state.recoveryUnlockedBalance=Number(state.recoveryUnlockedBalance)||0;
-    state.lastActivityTimestamp=Number(state.lastActivityTimestamp)||0;
-    state.recoveryLastUnlockAt=Number(state.recoveryLastUnlockAt)||0;
-    state.recoveryTriggerTimestamp=Number(state.recoveryTriggerTimestamp)||0;
-    state.recoveryActiveDays=Number(state.recoveryActiveDays)||0;
-    state.burningStreak=Number(state.burningStreak)||0;
-    state.burningDaysApplied=Number(state.burningDaysApplied)||0;
-    if(state.burningStreak<0) state.burningStreak=0;
-    if(state.burningDaysApplied<0) state.burningDaysApplied=0;
-    if(!Number.isFinite(state.recoveryActiveDays)) state.recoveryActiveDays=0;
-    if(typeof state.recoveryTriggered!=='boolean') state.recoveryTriggered=Number(state.recoverableBalance)>0;
-    if(typeof state.recoveryQualified!=='boolean') state.recoveryQualified=false;
-    if(typeof state.recoveryQualificationStartDay!=='string') state.recoveryQualificationStartDay='';
-    if(!state.lastActivityDay && state.lastActivityTimestamp) state.lastActivityDay=getDateKey(state.lastActivityTimestamp);
-}
-
-/* =========================================================
-   BURNING: APPLY DAILY 10% BURNS AFTER 7 DAYS INACTIVE
-   - burningStreak counts burn days (0 while safe)
-   - each burn day: 10% of current totalBalance → recoverableBalance
-========================================================= */
-function processBurning(){
-    normalizeRecoveryState();
-    if(!state.lastActivityTimestamp){
-        state.burningStreak=0;
-        state.burningDaysApplied=0;
-        return false;
-    }
-    /* If user is in recovery-unlock phase, no more burning */
-    if(state.recoveryQualified){
-        return false;
-    }
-    const inactive = daysBetween(state.lastActivityTimestamp);
-    state.inactiveDays = Math.min(30, inactive);
-    /* Below threshold — safe, no burning */
-    if(inactive < INACTIVITY_THRESHOLD_DAYS){
-        state.burningStreak=0;
-        state.burningDaysApplied=0;
-        return false;
-    }
-    /* Burn days: first burn is on day (INACTIVITY_THRESHOLD_DAYS - 1)?? 
-       User said: "inactive for 7 days then deduction starts"
-       -> on the day 7 mark is reached, first burn occurs.
-       burnDayNumber = inactive - 6  (7 → 1, 8 → 2, ...) */
-    const targetBurns = inactive - (INACTIVITY_THRESHOLD_DAYS - 1);
-    const applied = Number(state.burningDaysApplied||0);
-    const newBurns = Math.max(0, targetBurns - applied);
-    if(newBurns > 0){
-        for(let i=0; i<newBurns; i++){
-            const cur = Number(state.totalBalance||0);
-            if(cur <= 0) break;
-            const burn = parseFloat((cur * BURN_PERCENT_PER_DAY).toFixed(8));
-            if(burn <= 0) break;
-            state.totalBalance = parseFloat((cur - burn).toFixed(8));
-            state.recoverableBalance = parseFloat((Number(state.recoverableBalance||0) + burn).toFixed(8));
-        }
-        state.burningDaysApplied = targetBurns;
-        state.burningStreak = targetBurns;
-        state.recoveryTriggered = true;
-        state.recoveryQualified = false;
-        state.recoveryActiveDays = 0;
-        state.recoveryQualificationStartDay = '';
-        state.recoveryLastUnlockAt = 0;
-        state.recoveryTriggerTimestamp = Date.now();
-        saveState();
-        return true;
-    }
-    /* No new burn yet, but burning is active */
-    state.burningStreak = targetBurns;
-    if(!state.recoveryTriggered && Number(state.recoverableBalance||0) > 0){
-        state.recoveryTriggered = true;
-        saveState();
-    }
-    return false;
-}
-
-/* =========================================================
-   RECOVERY: MARK USER ACTIVE
-   - If user was burning, stop burning and start active-day counter
-========================================================= */
-function markUserActive(){
-    normalizeRecoveryState();
-    /* Apply any pending burns BEFORE updating activity, based on old lastActivityTimestamp */
-    processBurning();
-
-    const now=Date.now();
-    const today=getDateKey(now);
-    const previousDay=state.lastActivityDay;
-
-    /* Update activity timestamp */
-    state.lastActivityTimestamp=now;
-    state.lastActivityDay=today;
-    state.inactiveDays=0;
-
-    /* If user is in recovery (burning happened) → start qualification counter */
-    if(state.recoveryTriggered && !state.recoveryQualified){
-        if(!state.recoveryQualificationStartDay){
-            state.recoveryQualificationStartDay=today;
-            state.recoveryActiveDays=1;
-        }else if(today !== previousDay){
-            const expectedPrev=getPreviousDateKey(today);
-            if(previousDay === expectedPrev){
-                state.recoveryActiveDays=Math.min(7, Number(state.recoveryActiveDays||0)+1);
-            }else{
-                state.recoveryActiveDays=1;
-                state.recoveryQualificationStartDay=today;
-            }
-        }
-        state.activeDays=state.recoveryActiveDays;
-        if(state.recoveryActiveDays>=7){
-            state.recoveryQualified=true;
-            if(!state.recoveryLastUnlockAt) state.recoveryLastUnlockAt=now;
-        }
-        /* Reset burning counters because user is now active */
-        state.burningStreak=0;
-        state.burningDaysApplied=0;
-        saveState();
-        return;
-    }
-
-    /* Normal active tracking */
-    if(previousDay===getPreviousDateKey(today)){
-        state.activeDays=Math.min(7, Number(state.activeDays||0)+1);
-    }else if(previousDay!==today){
-        state.activeDays=1;
-    }
-    state.burningStreak=0;
-    state.burningDaysApplied=0;
-    saveState();
-}
-
-/* =========================================================
-   RECOVERY: UNLOCK 10% OF POOL EVERY 24H (after qualification)
-========================================================= */
-function processRecoveryUnlock(){
-    normalizeRecoveryState();
-    if(!state.recoveryTriggered) return;
-    if(!state.recoveryQualified) return;
-    const pool=Number(state.recoverableBalance)||0;
-    if(pool<=0) return;
-    const unlocked=Number(state.recoveryUnlockedBalance||0);
-    if(!state.recoveryLastUnlockAt){
-        state.recoveryLastUnlockAt=Date.now();
-        saveState();
-        return;
-    }
-    const now=Date.now();
-    const elapsed=now - Number(state.recoveryLastUnlockAt);
-    const periods=Math.floor(elapsed / (24*60*60*1000));
-    if(periods<=0) return;
-    let newUnlocked=unlocked;
-    let poolRemaining=pool;
-    let unlockTimestamp=Number(state.recoveryLastUnlockAt);
-    for(let i=0; i<periods; i++){
-        if(poolRemaining<=0) break;
-        const amount=parseFloat((poolRemaining*0.10).toFixed(8));
-        if(amount<=0) break;
-        poolRemaining=parseFloat(Math.max(0, poolRemaining-amount).toFixed(8));
-        newUnlocked=parseFloat((newUnlocked+amount).toFixed(8));
-        unlockTimestamp+=24*60*60*1000;
-    }
-    state.recoverableBalance=poolRemaining;
-    state.recoveryUnlockedBalance=newUnlocked;
-    state.recoveryLastUnlockAt=unlockTimestamp;
-    saveState();
-}
-
-function completeRecoveryIfFinished(){
-    if(state.recoveryTriggered && Number(state.recoverableBalance||0)<=0 && Number(state.recoveryUnlockedBalance||0)<=0){
-        state.recoveryTriggered=false;
-        state.recoveryQualified=false;
-        state.recoveryQualificationStartDay='';
-        state.recoveryActiveDays=0;
-        state.recoveryLastUnlockAt=0;
-        state.recoveryTriggerTimestamp=0;
-        state.activeDays=0;
-        state.burningStreak=0;
-        state.burningDaysApplied=0;
-        saveState();
-    }
-}
-
-/* =========================================================
-   LOAD STATE
-========================================================= */
 function loadState(){
     try{
-        const globalUsers=getAllUsersRegistry();
-        if(globalUsers[currentUserId]){
-            state={ ...defaultState, ...globalUsers[currentUserId] };
-        }else{
-            const saved=localStorage.getItem(STORAGE_KEY);
-            if(saved){
-                const parsed=JSON.parse(saved);
-                state={ ...defaultState, ...parsed };
-            }
+        const saved=localStorage.getItem(STORAGE_KEY);
+        if(saved){
+            const parsed=JSON.parse(saved);
+            state={ ...defaultState, ...parsed };
         }
-        state.boosterChancesLeft=Number(state.boosterChancesLeft);
-        if(!Number.isFinite(state.boosterChancesLeft)) state.boosterChancesLeft=5;
-        state.boosterBonusRate=Number(state.boosterBonusRate);
-        if(!Number.isFinite(state.boosterBonusRate)) state.boosterBonusRate=0;
-        state.luckyBoxChances=Number(state.luckyBoxChances);
-        if(!Number.isFinite(state.luckyBoxChances)) state.luckyBoxChances=5;
-        if(typeof state.claimedTasks!=='object' || state.claimedTasks===null){
-            state.claimedTasks={ telegram:false, x:false, youtube:false };
-        }
-        normalizeRecoveryState();
-        processBurning();
-        markUserActive();
-        processRecoveryUnlock();
-        completeRecoveryIfFinished();
-        saveState();
     }catch(error){ console.log('State load error', error); }
 }
 
-/* =========================================================
-   SAVE STATE
-========================================================= */
 function saveState(){
     try{
-        const globalUsers=getAllUsersRegistry();
-        globalUsers[currentUserId]={
-            username:currentUserName, totalBalance:state.totalBalance, totalMined:state.totalMined,
-            miningState:state.miningState, miningStartedAt:state.miningStartedAt, miningCycleDuration:state.miningCycleDuration,
-            baseMiningRate:state.baseMiningRate, boosterBonusRate:state.boosterBonusRate, boostLuckyResetAt:state.boostLuckyResetAt,
-            boosterChancesLeft:state.boosterChancesLeft, luckyBoxChances:state.luckyBoxChances, sessionAccumulated:state.sessionAccumulated,
-            burningStreak:state.burningStreak, burningDaysApplied:state.burningDaysApplied,
-            recoverableBalance:state.recoverableBalance, friends:state.friends,
-            transactions:state.transactions, claimedTasks:state.claimedTasks, lastActivityTimestamp:state.lastActivityTimestamp,
-            lastActivityDay:state.lastActivityDay, inactiveDays:state.inactiveDays, activeDays:state.activeDays,
-            recoveryTriggered:state.recoveryTriggered, recoveryQualified:state.recoveryQualified,
-            recoveryQualificationStartDay:state.recoveryQualificationStartDay, recoveryActiveDays:state.recoveryActiveDays,
-            recoveryLastUnlockAt:state.recoveryLastUnlockAt, recoveryUnlockedBalance:state.recoveryUnlockedBalance,
-            recoveryTriggerTimestamp:state.recoveryTriggerTimestamp
-        };
-        saveAllUsersRegistry(globalUsers);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }catch(error){ console.log('State save error', error); }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            username:currentUserName, friends:state.friends, transactions:state.transactions,
+            claimedTasks:state.claimedTasks
+        }));
+    }catch(error){}
 }
 
 /* =========================================================
@@ -1126,7 +894,38 @@ function showToast(message){
     if(!toast) return;
     toast.textContent=message;
     toast.classList.add('show');
-    setTimeout(function(){ toast.classList.remove('show'); }, 2600);
+    setTimeout(function(){ toast.classList.remove('show'); }, 2800);
+}
+function escapeHtml(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* =========================================================
+   RECOVERY SYNC (server-side is source of truth)
+========================================================= */
+let lastRecoverySyncAt=0;
+async function syncRecoveryFromServer(force){
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
+    const now=Date.now();
+    if(!force && (now - lastRecoverySyncAt) < 60000) return;
+    lastRecoverySyncAt=now;
+    try{
+        const data = await fidexaApiRequest('/api/recovery/sync', { method:'POST', body:{} });
+        if(!data || data.success!==true) return;
+        if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance);
+        if(data.recoverableBalance!==undefined) state.recoverableBalance=Number(data.recoverableBalance);
+        if(data.unlockedBalance!==undefined) state.recoveryUnlockedBalance=Number(data.unlockedBalance);
+        if(data.burningStreak!==undefined) state.burningStreak=Number(data.burningStreak);
+        if(data.inactiveDays!==undefined) state.inactiveDays=Number(data.inactiveDays);
+        if(data.activeDays!==undefined) state.activeDays=Number(data.activeDays);
+        if(data.recoveryTriggered!==undefined) state.recoveryTriggered=Boolean(data.recoveryTriggered);
+        if(data.recoveryQualified!==undefined) state.recoveryQualified=Boolean(data.recoveryQualified);
+        if(data.recoveryActiveDays!==undefined) state.recoveryActiveDays=Number(data.recoveryActiveDays);
+        if(data.recoveryLastUnlockAt!==undefined) state.recoveryLastUnlockAt=Number(data.recoveryLastUnlockAt);
+        updateAllUI();
+    }catch(error){
+        console.warn('Recovery sync failed:', error);
+    }
 }
 
 /* =========================================================
@@ -1138,10 +937,9 @@ function switchTab(tabName, btnElement){
     if(page) page.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(function(nav){ nav.classList.remove('active'); });
     if(btnElement) btnElement.classList.add('active');
-    markUserActive();
-    processRecoveryUnlock();
-    updateRecoveryUI();
     if(tabName==='wallet') loadTransactions();
+    syncRecoveryFromServer(false);
+    updateRecoveryUI();
 }
 
 /* =========================================================
@@ -1151,23 +949,18 @@ function getWalletAddress(){ return String(currentUserId); }
 let qrInstance=null;
 
 function openReceiveModal(){
-    markUserActive();
     const modal=document.getElementById('receiveModal');
     const addressBox=document.getElementById('receiveAddressBox');
     const qrContainer=document.getElementById('qrcodeCanvas');
     const userWallet=getWalletAddress();
     addressBox.value=userWallet;
     qrContainer.innerHTML='';
-    qrInstance=new QRCode(qrContainer, {
-        text:userWallet, width:160, height:160, colorDark:"#000000", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.H
-    });
+    qrInstance=new QRCode(qrContainer, { text:userWallet, width:160, height:160, colorDark:"#000000", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.H });
     modal.classList.add('active');
 }
-
 function closeReceiveModal(){ document.getElementById('receiveModal').classList.remove('active'); }
 
 async function copyReceiveAddress(){
-    markUserActive();
     const addressBox=document.getElementById('receiveAddressBox');
     try{
         await navigator.clipboard.writeText(addressBox.value);
@@ -1181,33 +974,27 @@ async function copyReceiveAddress(){
 }
 
 function openSendModal(){
-    markUserActive();
     document.getElementById('sendRecipientInput').value='';
     document.getElementById('sendAmountInput').value='';
     document.getElementById('sendModal').classList.add('active');
 }
-
 function closeSendModal(){ document.getElementById('sendModal').classList.remove('active'); }
 
 async function processSendTransaction(){
-    markUserActive();
     const recipientInput=document.getElementById('sendRecipientInput').value.trim();
     const amount=parseFloat(document.getElementById('sendAmountInput').value);
     if(!recipientInput){ showToast('Please enter a valid recipient ID or @username.'); return; }
     if(isNaN(amount) || amount<=0){ showToast('Please enter a valid send amount.'); return; }
     if(amount < MIN_TRANSFER_AMOUNT){ showToast(`Minimum transfer amount is ${MIN_TRANSFER_AMOUNT} $FDX.`); return; }
-    if(amount>Number(state.totalBalance)){ showToast('Insufficient Total Balance for transfer.'); return; }
+    if(amount > Number(state.totalBalance)){ showToast('Insufficient Total Balance for transfer.'); return; }
 
     const btn=document.querySelector('#sendModal .prompt-btn-confirm');
     if(btn){ btn.disabled=true; btn.textContent='SENDING...'; }
     try{
-        const data=await fidexaApiRequest('/api/wallet/send', {
-            method:'POST',
-            body:{ recipient:recipientInput, amount:amount }
-        });
+        const data=await fidexaApiRequest('/api/wallet/send', { method:'POST', body:{ recipient:recipientInput, amount:amount } });
         if(!data || data.success!==true) throw new Error(data?.error || 'Send failed.');
-        if(data.totalBalance!==undefined){ state.totalBalance=Number(data.totalBalance)||0; }
-        try{ saveState(); }catch(e){}
+        if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance)||0;
+        saveState();
         updateAllUI();
         closeSendModal();
         showToast(`Successfully sent ${formatNumber(amount)} $FDX!`);
@@ -1220,15 +1007,10 @@ async function processSendTransaction(){
     }
 }
 
-function escapeHtml(str){
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
 /* =========================================================
    TASK SYSTEM
 ========================================================= */
 function openTaskLinkAndVerify(type){
-    markUserActive();
     if(type==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
     else if(type==='x'){ window.open(FIDEXA_X, '_blank'); }
     else if(type==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
@@ -1238,21 +1020,16 @@ function openTaskLinkAndVerify(type){
 }
 
 async function claimTaskReward(type){
-    markUserActive();
     if(state.claimedTasks && state.claimedTasks[type]){ showToast('Task already claimed.'); return; }
     try{
-        const data=await fidexaApiRequest('/api/tasks/claim', {
-            method:'POST',
-            body:{ task:type }
-        });
+        const data=await fidexaApiRequest('/api/tasks/claim', { method:'POST', body:{ task:type } });
         if(!data || data.success!==true) throw new Error(data?.error || 'Claim failed.');
         if(!state.claimedTasks){ state.claimedTasks={ telegram:false, x:false, youtube:false }; }
         state.claimedTasks[type]=true;
         if(data.totalBalance!==undefined){ state.totalBalance=Number(data.totalBalance)||state.totalBalance; }
-        try{ saveState(); }catch(e){}
+        saveState();
         updateAllUI();
         showToast(`+${formatNumber(data.reward || 5)} $FDX added to Balance`);
-        loadTransactions();
     }catch(error){
         console.warn('Task claim failed:', error);
         showToast(error.message || 'Task claim failed. Please try again.');
@@ -1263,7 +1040,6 @@ async function claimTaskReward(type){
    PROFILE
 ========================================================= */
 function openProfileInfo(type){
-    markUserActive();
     const modal=document.getElementById('profileInfoModal');
     const titleEl=document.getElementById('sheetTitle');
     const bodyEl=document.getElementById('sheetContentBody');
@@ -1300,9 +1076,9 @@ function openProfileInfo(type){
         bodyEl.innerHTML=`<p style="color:var(--red);">Account deletion clears local state node configuration.</p>`;
     }
 }
+function closeProfileInfo(){ document.getElementById('profileInfoModal').classList.remove('active'); }
 
 function sendSupportMessage(){
-    markUserActive();
     const input=document.getElementById('supportInput');
     const messages=document.getElementById('supportMessages');
     if(!input || !messages || !input.value.trim()) return;
@@ -1322,10 +1098,7 @@ function sendSupportMessage(){
     }, 600);
 }
 
-function closeProfileInfo(){ document.getElementById('profileInfoModal').classList.remove('active'); }
-
 function openExternalLink(target){
-    markUserActive();
     if(target==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
     else if(target==='twitter'){ window.open(FIDEXA_X, '_blank'); }
     else if(target==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
@@ -1339,7 +1112,6 @@ function getReferralLink(){
 }
 
 async function copyReferralLink(){
-    markUserActive();
     const link=getReferralLink();
     try{
         if(navigator.clipboard && typeof navigator.clipboard.writeText==='function'){
@@ -1357,28 +1129,21 @@ async function copyReferralLink(){
         }
         showToast('Referral link copied!');
     }catch(e){
-        console.warn('Referral copy error:', e);
         try{
             const textarea=document.createElement('textarea');
             textarea.value=link;
             textarea.style.position='fixed';
-            textarea.style.top='0';
-            textarea.style.left='0';
             textarea.style.opacity='0';
             document.body.appendChild(textarea);
-            textarea.focus();
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
             showToast('Referral link copied!');
-        }catch(error){
-            showToast('Could not copy link automatically.');
-        }
+        }catch(error){ showToast('Could not copy link automatically.'); }
     }
 }
 
 function shareReferralLink(){
-    markUserActive();
     const refLink=getReferralLink();
     const shareText=encodeURIComponent("Join Fidexa Network and start mining $FDX with me!");
     if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
@@ -1398,16 +1163,8 @@ function ensureAdsgramController(){
     if(!window.Adsgram){ console.warn('Adsgram SDK is not available.'); return false; }
     try{
         adsgramController=window.Adsgram.init({ blockId:ADSGRAM_BLOCK_ID, debug:false });
-        if(adsgramController && typeof adsgramController.addEventListener==='function'){
-            try{ adsgramController.addEventListener('onBannerNotFound', function(){ console.warn('Adsgram: no advertisement available.'); }); }catch(e){}
-            try{ adsgramController.addEventListener('onError', function(event){ console.warn('Adsgram error:', event); }); }catch(e){}
-        }
         return !!(adsgramController && typeof adsgramController.show==='function');
-    }catch(error){
-        console.warn('Adsgram initialization error:', error);
-        adsgramController=null;
-        return false;
-    }
+    }catch(error){ console.warn('Adsgram init error:', error); adsgramController=null; return false; }
 }
 
 function showAdsgramAd(rewardCallback){
@@ -1418,14 +1175,10 @@ function showAdsgramAd(rewardCallback){
     Promise.resolve()
         .then(function(){ return adsgramController.show(); })
         .then(function(result){
-            console.log('Adsgram result:', result);
             if(result && result.done===true && result.error!==true){ rewardCallback(); }
             else{ showToast('Advertisement was not completed.'); }
         })
-        .catch(function(error){
-            console.warn('Adsgram show error:', error);
-            showToast('Advertisement is currently unavailable. Please try again.');
-        })
+        .catch(function(error){ console.warn('Adsgram show error:', error); showToast('Advertisement is currently unavailable. Please try again.'); })
         .finally(function(){ adsgramAdInProgress=false; });
 }
 
@@ -1433,25 +1186,21 @@ function showAdsgramAd(rewardCallback){
    MINING CORE
 ========================================================= */
 const MINING_CYCLE_SECONDS=14400;
-
 function getMiningElapsedSeconds(){
     if(state.miningState!=='ACTIVE' || !state.miningStartedAt) return 0;
     return Math.max(0, Math.min(MINING_CYCLE_SECONDS, Math.floor((Date.now()-state.miningStartedAt)/1000)));
 }
-
 function getSessionAccumulated(){
     if(state.miningState!=='ACTIVE') return Number(state.sessionAccumulated||0);
     const elapsed=getMiningElapsedSeconds();
     const completedHours=Math.floor(elapsed/3600);
     return parseFloat((completedHours*getCurrentRate()).toFixed(2));
 }
-
 function getRemainingSeconds(){
     if(state.miningState==='IDLE') return MINING_CYCLE_SECONDS;
     if(state.miningState==='READY_TO_CLAIM') return 0;
     return Math.max(0, MINING_CYCLE_SECONDS-getMiningElapsedSeconds());
 }
-
 function formatTimer(seconds){
     const h=Math.floor(seconds/3600).toString().padStart(2,'0');
     const m=Math.floor((seconds%3600)/60).toString().padStart(2,'0');
@@ -1459,23 +1208,13 @@ function formatTimer(seconds){
     return `${h}:${m}:${s}`;
 }
 
-function checkBoostLuckyReset(){
-    if(state.boostLuckyResetAt>0 && Date.now()>=state.boostLuckyResetAt && (state.miningState==='ACTIVE' || state.miningState==='READY_TO_CLAIM')){
-        return true;
-    }
-    return false;
-}
-
 /* =========================================================
    RECOVERY UI
 ========================================================= */
 function updateRecoveryUI(){
-    normalizeRecoveryState();
-    processRecoveryUnlock();
-    completeRecoveryIfFinished();
     const activityStatus=document.getElementById('activityStatus');
-    const inactiveDays=document.getElementById('inactiveDays');
-    const activeDays=document.getElementById('activeDays');
+    const inactiveDaysEl=document.getElementById('inactiveDays');
+    const activeDaysEl=document.getElementById('activeDays');
     const recoveryPool=document.getElementById('recoveryPoolDisplay');
     const unlocked=document.getElementById('recoveryUnlockedDisplay');
     const nextUnlock=document.getElementById('recoveryNextUnlock');
@@ -1484,11 +1223,13 @@ function updateRecoveryUI(){
     const now=Date.now();
     const pool=Number(state.recoverableBalance||0);
     const ready=Number(state.recoveryUnlockedBalance||0);
+
     if(recoveryPool) recoveryPool.textContent=`${formatNumber(pool)} $FDX`;
     if(unlocked) unlocked.textContent=`${formatNumber(ready)} $FDX`;
-    if(inactiveDays) inactiveDays.textContent=`${Math.min(7, Number(state.inactiveDays||0))} / 7`;
-    if(activeDays) activeDays.textContent=`${Math.min(7, Number(state.recoveryActiveDays||0))} / 7`;
+    if(inactiveDaysEl) inactiveDaysEl.textContent=`${Math.min(7, Number(state.inactiveDays||0))} / 7`;
+    if(activeDaysEl) activeDaysEl.textContent=`${Math.min(7, Number(state.recoveryActiveDays||0))} / 7`;
     if(claimBtn) claimBtn.classList.remove('visible');
+
     if(ready>0){
         if(activityStatus){ activityStatus.textContent='RECOVERY READY TO CLAIM'; activityStatus.style.color='var(--yellow)'; }
         if(claimBtn) claimBtn.classList.add('visible');
@@ -1535,15 +1276,6 @@ function updateMiningUI(){
         state.boosterChancesLeft=5;
         state.luckyBoxChances=5;
         state.boosterBonusRate=0;
-        state.boostLuckyResetAt=0;
-        saveState();
-    }
-    if(checkBoostLuckyReset()){
-        state.boosterChancesLeft=5;
-        state.luckyBoxChances=5;
-        state.boosterBonusRate=0;
-        state.boostLuckyResetAt=0;
-        saveState();
     }
     const rate=getCurrentRate();
     const rateEl=document.getElementById('currentRateDisplay');
@@ -1591,42 +1323,35 @@ function updateMiningUI(){
    MINING ACTION
 ========================================================= */
 let miningActionInProgress=false;
-
 async function handleMiningAction(){
     if(miningActionInProgress) return;
-    markUserActive();
     if(state.miningState==='IDLE'){
         miningActionInProgress=true;
         const button=document.getElementById('miningToggleBtn');
         const previousText=button ? button.textContent : 'START MINING';
         try{
-            if(!currentTelegramInitData){ if(typeof loadFidexaProfile==='function'){ await loadFidexaProfile(); } }
+            if(!currentTelegramInitData){ await loadFidexaProfile(); }
             if(!currentTelegramInitData){ throw new Error('Telegram authentication is not ready. Please reopen the Mini App and try again.'); }
             if(button){ button.textContent='STARTING MINING...'; button.style.pointerEvents='none'; }
             const data=await fidexaApiRequest('/api/mining/start', { method:'POST', body:{ ref:getIncomingReferralParam() } });
-            if(!data || data.success!==true){ throw new Error(data?.error || data?.message || 'Invalid mining start response.'); }
+            if(!data || data.success!==true){ throw new Error(data?.error || 'Invalid mining start response.'); }
             const mining=data.mining || data;
-            const backendMiningState=String(mining.miningState || mining.mining_state || mining.state || '').toUpperCase();
-            state.miningState = backendMiningState==='ACTIVE' || backendMiningState==='MINING' ? 'ACTIVE' : 'ACTIVE';
-            const backendStart=Number(mining.miningStartedAt || mining.mining_started_at || mining.startedAt || mining.started_at || Date.now());
+            state.miningState='ACTIVE';
+            const backendStart=Number(mining.miningStartedAt || Date.now());
             state.miningStartedAt = Number.isFinite(backendStart) && backendStart>0 ? backendStart : Date.now();
-            const backendDuration=Number(mining.cycleDuration || mining.miningCycleDuration || 14400);
+            const backendDuration=Number(mining.cycleDuration || 14400);
             state.miningCycleDuration = Number.isFinite(backendDuration) && backendDuration>0 ? backendDuration : 14400;
             state.sessionAccumulated=0;
             state.boosterChancesLeft=5;
             state.luckyBoxChances=5;
             state.boosterBonusRate=0;
-            state.boostLuckyResetAt=state.miningStartedAt+(state.miningCycleDuration*1000);
-            saveState();
             updateAllUI();
             showToast('Mining cycle started!');
         }catch(error){
-            console.warn('Fidexa backend mining start failed:', error);
+            console.warn('Mining start failed:', error);
             state.miningState='IDLE';
             state.miningStartedAt=0;
             state.sessionAccumulated=0;
-            state.boostLuckyResetAt=0;
-            saveState();
             updateAllUI();
             showToast(error?.message || 'Could not start mining. Please try again.');
         }finally{
@@ -1635,24 +1360,19 @@ async function handleMiningAction(){
         }
     }else if(state.miningState==='READY_TO_CLAIM'){
         showAdsgramAd(async function(){
-            const accumulated=Number(state.sessionAccumulated||0);
-            if(accumulated<=0){ showToast('No mining reward is available to claim.'); return; }
             try{
                 const data=await fidexaApiRequest('/api/mining/claim', { method:'POST', body:{ adCompleted:true } });
-                if(!data || data.success!==true){ throw new Error(data?.error || data?.message || 'Invalid mining claim response.'); }
+                if(!data || data.success!==true) throw new Error(data?.error || 'Invalid mining claim response.');
                 if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance)||0;
                 if(data.totalMined!==undefined) state.totalMined=Number(data.totalMined)||0;
                 state.miningState='IDLE';
                 state.miningStartedAt=0;
                 state.sessionAccumulated=0;
-                state.boostLuckyResetAt=0;
-                saveState();
                 updateAllUI();
-                const reward=Number(data.reward ?? data.claimedReward ?? accumulated);
+                const reward=Number(data.reward || 0);
                 showToast(`Successfully claimed ${formatNumber(reward)} $FDX!`);
-                loadTransactions();
             }catch(error){
-                console.warn('Fidexa backend mining claim failed:', error);
+                console.warn('Mining claim failed:', error);
                 showToast(error.message || 'Claim failed. Your mining reward was not lost.');
             }
         });
@@ -1663,9 +1383,8 @@ async function handleMiningAction(){
    MINING BOOST
 ========================================================= */
 function openBoosterPrompt(){
-    markUserActive();
     state.boosterChancesLeft=Number(state.boosterChancesLeft);
-    if(!Number.isFinite(state.boosterChancesLeft)){ state.boosterChancesLeft=5; saveState(); }
+    if(!Number.isFinite(state.boosterChancesLeft)){ state.boosterChancesLeft=5; }
     if(state.boosterChancesLeft<=0){ showToast('No booster chances left.'); return; }
     const modal=document.getElementById('boosterPromptModal');
     if(!modal){ showToast('Mining Boost is temporarily unavailable.'); return; }
@@ -1673,14 +1392,9 @@ function openBoosterPrompt(){
     if(chances){ chances.textContent=`${state.boosterChancesLeft}/5 Left`; }
     modal.classList.add('active');
 }
-
-function closeBoosterPrompt(){
-    const modal=document.getElementById('boosterPromptModal');
-    if(modal){ modal.classList.remove('active'); }
-}
+function closeBoosterPrompt(){ const modal=document.getElementById('boosterPromptModal'); if(modal) modal.classList.remove('active'); }
 
 function confirmWatchBoosterAd(){
-    markUserActive();
     if(adsgramAdInProgress){ showToast('Advertisement is already loading.'); return; }
     state.boosterChancesLeft=Number(state.boosterChancesLeft);
     if(!Number.isFinite(state.boosterChancesLeft)){ state.boosterChancesLeft=5; }
@@ -1689,14 +1403,13 @@ function confirmWatchBoosterAd(){
     showAdsgramAd(async function(){
         try{
             const data=await fidexaApiRequest('/api/mining/boost', { method:'POST', body:{ adCompleted:true } });
-            if(!data || data.success!==true){ throw new Error(data?.error || data?.message || 'Invalid mining boost response.'); }
+            if(!data || data.success!==true) throw new Error(data?.error || 'Invalid mining boost response.');
             if(data.boosterBonusRate !== undefined) state.boosterBonusRate=Number(data.boosterBonusRate);
             if(data.boosterChancesLeft !== undefined) state.boosterChancesLeft=Math.max(0, Math.min(5, Math.floor(Number(data.boosterChancesLeft))));
-            saveState();
             updateAllUI();
             showToast('Speed booster active (+0.5 $FDX/H)!');
         }catch(error){
-            console.warn('Fidexa backend mining boost failed:', error);
+            console.warn('Mining boost failed:', error);
             showToast(error?.message || 'Mining boost could not be saved. Please try again.');
         }
     });
@@ -1706,7 +1419,6 @@ function confirmWatchBoosterAd(){
    LUCKY BOX
 ========================================================= */
 function openLuckyBoxModal(){
-    markUserActive();
     if(Number(state.luckyBoxChances)<=0){ showToast('No Lucky Box chances left.'); return; }
     const modal=document.getElementById('luckyBoxModal');
     if(!modal){ showToast('Lucky Box is temporarily unavailable.'); return; }
@@ -1714,49 +1426,47 @@ function openLuckyBoxModal(){
     if(el) el.textContent=state.luckyBoxChances;
     modal.classList.add('active');
 }
-
 function closeLuckyBoxModal(){ document.getElementById('luckyBoxModal').classList.remove('active'); }
 
 function confirmOpenLuckyBox(){
-    markUserActive();
     if(adsgramAdInProgress){ showToast('Advertisement is already loading.'); return; }
     document.getElementById('luckyBoxModal').classList.remove('active');
     showAdsgramAd(async function(){
         try{
             const data=await fidexaApiRequest('/api/lucky-box', { method:'POST', body:{ adCompleted:true } });
-            if(!data || data.success!==true || data.reward===undefined){ throw new Error(data?.error || data?.message || 'Invalid Lucky Box response.'); }
+            if(!data || data.success!==true || data.reward===undefined) throw new Error(data?.error || 'Invalid Lucky Box response.');
             if(data.totalBalance !== undefined) state.totalBalance=Number(data.totalBalance);
             if(data.luckyBoxChances !== undefined) state.luckyBoxChances=Math.max(0, Math.min(5, Math.floor(Number(data.luckyBoxChances))));
-            saveState();
             updateAllUI();
             showToast(`🎁 Lucky Box opened! +${data.reward} $FDX credited.`);
-            loadTransactions();
         }catch(error){
-            console.warn('Fidexa backend Lucky Box failed:', error);
+            console.warn('Lucky Box failed:', error);
             showToast(error?.message || 'Lucky Box reward could not be saved. Please try again.');
         }
     });
 }
 
 /* =========================================================
-   RECOVERY CLAIM
+   RECOVERY CLAIM — server-side
 ========================================================= */
 function claimRecovery(){
-    markUserActive();
-    normalizeRecoveryState();
-    processRecoveryUnlock();
     const available=Number(state.recoveryUnlockedBalance||0);
     if(available<=0){ showToast('No unlocked recovery amount is available.'); return; }
     if(adsgramAdInProgress){ showToast('Advertisement is already loading.'); return; }
-    showAdsgramAd(function(){
-        const claimAmount=Number(state.recoveryUnlockedBalance||0);
-        if(claimAmount<=0){ showToast('No unlocked recovery amount is available.'); return; }
-        state.totalBalance=parseFloat((Number(state.totalBalance||0)+claimAmount).toFixed(8));
-        state.recoveryUnlockedBalance=0;
-        completeRecoveryIfFinished();
-        saveState();
-        updateAllUI();
-        showToast(`🔓 ${formatNumber(claimAmount)} $FDX recovered to Total Balance!`);
+    showAdsgramAd(async function(){
+        try{
+            const data=await fidexaApiRequest('/api/recovery/claim', { method:'POST', body:{ adCompleted:true } });
+            if(!data || data.success!==true) throw new Error(data?.error || 'Recovery claim failed.');
+            if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance);
+            state.recoveryUnlockedBalance=0;
+            updateAllUI();
+            const amount=Number(data.claimedAmount || 0);
+            showToast(`🔓 ${formatNumber(amount)} $FDX recovered to Total Balance!`);
+            syncRecoveryFromServer(true);
+        }catch(error){
+            console.warn('Recovery claim failed:', error);
+            showToast(error.message || 'Recovery claim failed. Please try again.');
+        }
     });
 }
 
@@ -1764,8 +1474,6 @@ function claimRecovery(){
    UPDATE ALL UI
 ========================================================= */
 function updateAllUI(){
-    processRecoveryUnlock();
-    completeRecoveryIfFinished();
     const formattedBal=formatNumber(state.totalBalance);
     const balEl=document.getElementById('balanceDisplay');
     const walletEl=document.getElementById('walletBalanceNum');
@@ -1776,20 +1484,15 @@ function updateAllUI(){
 }
 
 /* =========================================================
-   USER INTERACTION TRACKING
+   USER INTERACTION TRACKING (lightweight — server syncs)
 ========================================================= */
-document.addEventListener('click', function(event){
-    const today=getDateKey();
-    if(state.lastActivityDay!==today){
-        markUserActive();
-    }else{
-        /* Already active today — no burning to apply, just refresh timestamp */
-        state.lastActivityTimestamp=Date.now();
-        state.inactiveDays=0;
-        saveState();
+let lastActivityPingAt=0;
+document.addEventListener('click', function(){
+    const now=Date.now();
+    if(now - lastActivityPingAt > 120000){
+        lastActivityPingAt=now;
+        syncRecoveryFromServer(false);
     }
-    processRecoveryUnlock();
-    updateRecoveryUI();
 }, true);
 
 /* =========================================================
@@ -1797,19 +1500,17 @@ document.addEventListener('click', function(event){
 ========================================================= */
 window.addEventListener('DOMContentLoaded', async function(){
     loadState();
-    processRecoveryUnlock();
     updateAllUI();
     await loadFidexaProfile();
 });
 
-/* =========================================================
-   LIVE UI UPDATE
-========================================================= */
 setInterval(function(){
-    processBurning();
-    processRecoveryUnlock();
-    updateAllUI();
+    updateMiningUI();
 }, 1000);
+
+setInterval(function(){
+    syncRecoveryFromServer(false);
+}, 60000);
 </script>
 </body>
 </html>
