@@ -150,8 +150,7 @@ input,textarea{font:inherit;}
 .chat-sheet-title-wrap{display:flex;align-items:center;gap:12px;}
 .chat-sheet-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .chat-sheet-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;}
-.chat-sheet-status{font-size:10px;color:var(--green);font-weight:800;margin-top:2px;display:flex;align-items:center;gap:5px;}
-.chat-sheet-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+.chat-sheet-status{font-size:10px;color:var(--muted);font-weight:800;margin-top:2px;}
 .chat-sheet-clear{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);font-size:10px;font-weight:900;padding:6px 10px;border-radius:9px;letter-spacing:.4px;}
 .chat-messages-container{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;}
 .chat-bubble-wrap{display:flex;gap:8px;max-width:85%;align-items:flex-end;}
@@ -341,7 +340,7 @@ input,textarea{font:inherit;}
 <div class="chat-sheet-header">
 <div class="chat-sheet-title-wrap">
 <div class="chat-sheet-avatar">💬</div>
-<div><div class="chat-sheet-name">FIDEXA Support</div><div class="chat-sheet-status">Online now</div></div>
+<div><div class="chat-sheet-name">FIDEXA Support</div><div class="chat-sheet-status">Usually replies within 24h</div></div>
 </div>
 <div style="display:flex;gap:8px;align-items:center;">
 <button class="chat-sheet-clear" onclick="clearSupportChat()">REFRESH</button>
