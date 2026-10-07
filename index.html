@@ -17,7 +17,7 @@ html,body{min-height:100%;background:var(--bg);}
 body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
 button{font:inherit;cursor:pointer;}
 button:active{transform:scale(.98);}
-input{font:inherit;}
+input,textarea{font:inherit;}
 .app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:95px;position:relative;}
 .page-view{display:none;padding:24px 20px;min-height:calc(100vh - 95px);animation:fadeIn .2s ease-in-out;}
 .page-view.active{display:block;}
@@ -66,7 +66,10 @@ input{font:inherit;}
 .task-icon{width:42px;height:42px;border-radius:50%;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .task-name{font-size:15px;font-weight:900;color:#fff;}
 .task-reward{font-size:10px;font-weight:800;color:var(--yellow);margin-top:4px;}
-.task-button{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:var(--cyan);border-radius:11px;padding:10px 15px;font-size:12px;font-weight:900;white-space:nowrap;}
+.task-button{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:var(--cyan);border-radius:11px;padding:10px 15px;font-size:12px;font-weight:900;white-space:nowrap;transition:all .25s;min-width:96px;}
+.task-button.claim{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;color:#05080c;box-shadow:0 4px 15px rgba(250,204,21,.35);}
+.task-button.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);opacity:.8;}
+.task-button:disabled{cursor:default;}
 .friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
 .friend-stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:16px;padding:15px 8px;text-align:center;}
 .friend-stat-value{font-size:22px;font-weight:900;color:#fff;}
@@ -110,31 +113,83 @@ input{font:inherit;}
 .profile-menu-icon{font-size:20px;}
 .profile-menu-title{font-size:15px;font-weight:900;color:#fff;letter-spacing:.3px;}
 .profile-menu-arrow{font-size:16px;color:var(--muted);font-weight:900;}
-.chat-messages-container{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;padding-right:4px;}
-.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;max-width:85%;line-height:1.4;font-weight:700;}
-.chat-bubble.user{background:var(--blue);color:#fff;align-self:flex-end;border-bottom-right-radius:2px;}
-.chat-bubble.admin{background:#162235;color:var(--text);align-self:flex-start;border:1px solid var(--border);border-bottom-left-radius:2px;}
-.chat-input-row{display:flex;gap:8px;}
-.chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:12px;padding:12px;color:#fff;font-size:13px;outline:none;}
-.chat-send-btn{background:var(--cyan);border:0;border-radius:12px;padding:0 18px;color:#05080c;font-weight:900;font-size:13px;}
-.support-status{padding:13px;background:#111b27;border:1px solid rgba(56,189,248,.25);border-radius:13px;margin-bottom:14px;}
-.support-status-title{font-size:12px;font-weight:900;color:var(--cyan);}
-.support-status-text{font-size:11px;color:var(--muted);line-height:1.5;margin-top:5px;}
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,.95);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.active{display:flex;}
 .prompt-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:340px;padding:24px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.5);}
 .prompt-title{font-size:14px;font-weight:800;color:var(--yellow);margin-bottom:12px;letter-spacing:.5px;}
 .prompt-desc{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.4;}
+.prompt-desc strong{color:#fff;}
 .prompt-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--muted);font-size:12px;font-weight:800;}
 .prompt-btn-confirm{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:12px;font-weight:900;}
-.sheet-box{background:var(--panel);border:1px solid var(--border);border-radius:22px;width:100%;max-width:380px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 45px rgba(0,0,0,.6);}
-.sheet-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.sheet-title{font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:.5px;}
-.sheet-close{background:none;border:0;font-size:18px;color:var(--muted);font-weight:900;}
-.sheet-content{padding:20px;overflow-y:auto;font-size:13px;color:var(--muted);line-height:1.6;font-weight:700;}
-.sheet-content strong{color:#fff;}
-.sheet-content p{margin:0;}
+.prompt-btn-confirm:disabled{opacity:.5;cursor:not-allowed;}
+.sheet-box{background:var(--panel);border:1px solid var(--border);border-radius:22px;width:100%;max-width:420px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 45px rgba(0,0,0,.6);}
+.sheet-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--panel);z-index:2;}
+.sheet-title{font-size:15px;font-weight:900;color:var(--cyan);letter-spacing:.5px;}
+.sheet-close{background:none;border:0;font-size:18px;color:var(--muted);font-weight:900;padding:4px 8px;}
+.sheet-content{padding:20px;overflow-y:auto;font-size:13px;color:var(--muted);line-height:1.7;font-weight:600;}
+.sheet-content strong{color:#fff;font-weight:900;}
+.sheet-content p{margin:0 0 12px 0;}
+.sheet-content h3{font-size:13px;font-weight:900;color:var(--cyan);letter-spacing:.5px;margin:20px 0 10px 0;padding-bottom:6px;border-bottom:1px solid rgba(56,189,248,.15);}
+.sheet-content h3:first-of-type{margin-top:8px;}
+.sheet-content ul{margin:6px 0 14px 18px;padding:0;}
+.sheet-content li{font-size:12px;color:var(--muted);line-height:1.65;margin-bottom:6px;font-weight:600;}
+.sheet-content .wp-brand{font-size:20px;font-weight:900;color:var(--cyan);letter-spacing:2px;text-align:center;margin-bottom:4px;}
+.sheet-content .wp-version{font-size:12px;color:var(--muted);text-align:center;margin-bottom:6px;font-weight:700;}
+.sheet-content .wp-tagline{font-size:12.5px;color:#fff;text-align:center;margin-bottom:14px;font-weight:800;line-height:1.5;}
+.sheet-content .wp-meta{background:#0a111a;border:1px solid #1a2838;border-radius:12px;padding:12px;margin-bottom:16px;text-align:center;font-size:11px;color:var(--muted);font-weight:700;line-height:1.9;}
+.sheet-content .wp-meta strong{color:var(--yellow);}
+.sheet-content .wp-footer{margin-top:22px;padding-top:14px;border-top:1px solid rgba(56,189,248,.2);text-align:center;font-size:11px;color:var(--cyan);font-weight:900;letter-spacing:.8px;}
+.sheet-content .wp-callout{background:rgba(250,204,21,.08);border-left:3px solid var(--yellow);padding:10px 12px;border-radius:8px;margin:12px 0;font-size:11.5px;color:var(--muted);font-weight:700;line-height:1.6;}
+.sheet-content .wp-callout strong{color:var(--yellow);}
+.sheet-content .pp-effective{background:#0a111a;border:1px solid #1a2838;border-radius:10px;padding:12px;margin-bottom:14px;font-size:11px;color:var(--muted);font-weight:700;text-align:center;line-height:1.7;}
+
+/* Chat Support */
+.chat-sheet-box{background:var(--panel);border:1px solid var(--border);border-radius:22px;width:100%;max-width:420px;height:82vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 45px rgba(0,0,0,.6);}
+.chat-sheet-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--panel);flex-shrink:0;}
+.chat-sheet-title-wrap{display:flex;align-items:center;gap:12px;}
+.chat-sheet-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-sheet-name{font-size:14px;font-weight:900;color:#fff;letter-spacing:.3px;}
+.chat-sheet-status{font-size:10px;color:var(--green);font-weight:800;margin-top:2px;display:flex;align-items:center;gap:5px;}
+.chat-sheet-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+.chat-sheet-clear{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);font-size:10px;font-weight:900;padding:6px 10px;border-radius:9px;letter-spacing:.4px;}
+.chat-messages-container{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;}
+.chat-bubble-wrap{display:flex;gap:8px;max-width:85%;align-items:flex-end;}
+.chat-bubble-wrap.user{align-self:flex-end;flex-direction:row-reverse;}
+.chat-bubble-wrap.admin{align-self:flex-start;}
+.chat-bubble-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.chat-bubble-inner{display:flex;flex-direction:column;gap:3px;max-width:100%;}
+.chat-bubble{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.45;font-weight:600;word-wrap:break-word;word-break:break-word;white-space:pre-wrap;}
+.chat-bubble.user{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;border-bottom-right-radius:4px;}
+.chat-bubble.admin{background:#162235;color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.chat-bubble-time{font-size:9px;color:var(--muted);font-weight:700;padding:0 6px;}
+.chat-bubble-wrap.user .chat-bubble-time{text-align:right;}
+.chat-typing{display:flex;align-items:center;gap:5px;padding:12px 14px;background:#162235;border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;width:fit-content;}
+.chat-typing-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingBounce 1.4s infinite ease-in-out;}
+.chat-typing-dot:nth-child(2){animation-delay:.2s;}
+.chat-typing-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+.chat-input-bar{padding:12px;border-top:1px solid var(--border);background:#0a1018;display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:22px;padding:11px 16px;color:#fff;font-size:13px;outline:none;resize:none;max-height:100px;line-height:1.4;font-family:inherit;}
+.chat-input-field:focus{border-color:rgba(56,189,248,.5);}
+.chat-send-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border:0;border-radius:50%;width:42px;height:42px;color:#fff;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 15px rgba(56,189,248,.35);}
+
+/* Account Deletion */
+.del-warning{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:14px;padding:14px;margin-bottom:14px;}
+.del-warning-title{font-size:12px;font-weight:900;color:var(--red);letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.del-warning-text{font-size:11px;color:var(--muted);line-height:1.6;font-weight:700;}
+.del-consequences{background:#0a111a;border:1px solid #1a2838;border-radius:12px;padding:12px 14px;margin-bottom:14px;}
+.del-consequences ul{margin:6px 0 0 16px;padding:0;}
+.del-consequences li{font-size:11px;color:var(--muted);line-height:1.7;font-weight:700;}
+.del-consequences li strong{color:var(--red);}
+.del-confirm-label{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:6px;letter-spacing:.3px;}
+.del-confirm-input{width:100%;background:#111b27;border:1px solid rgba(248,113,113,.35);border-radius:12px;padding:12px;color:#fff;font-size:13px;text-align:center;letter-spacing:3px;font-weight:900;outline:none;text-transform:uppercase;}
+.del-confirm-input:focus{border-color:var(--red);}
+.del-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.del-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:13px;color:var(--muted);font-size:12px;font-weight:900;letter-spacing:.3px;}
+.del-btn-confirm{background:linear-gradient(135deg,#dc2626,#ef4444);border:0;border-radius:12px;padding:13px;color:#fff;font-size:12px;font-weight:900;letter-spacing:.3px;box-shadow:0 4px 15px rgba(239,68,68,.35);}
+.del-btn-confirm:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;}
 .nav-icon{font-size:18px;}
@@ -277,7 +332,7 @@ Mining Rate:
 <div class="task-reward">Reward: +5.00 $FDX</div>
 </div>
 </div>
-<button class="task-button" onclick="openTaskLinkAndVerify('telegram')">JOIN</button>
+<button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button>
 </div>
 </div>
 <div class="task-card">
@@ -289,7 +344,7 @@ Mining Rate:
 <div class="task-reward">Reward: +5.00 $FDX</div>
 </div>
 </div>
-<button class="task-button" onclick="openTaskLinkAndVerify('x')">JOIN</button>
+<button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">JOIN</button>
 </div>
 </div>
 <div class="task-card">
@@ -301,7 +356,7 @@ Mining Rate:
 <div class="task-reward">Reward: +5.00 $FDX</div>
 </div>
 </div>
-<button class="task-button" onclick="openTaskLinkAndVerify('youtube')">SUBSCRIBE</button>
+<button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button>
 </div>
 </div>
 </main>
@@ -389,6 +444,10 @@ Mining Rate:
 <div class="profile-menu-left"><span class="profile-menu-icon">📄</span><span class="profile-menu-title">White Paper</span></div>
 <span class="profile-menu-arrow">›</span>
 </div>
+<div class="profile-menu-item" onclick="openProfileInfo('roadmap')">
+<div class="profile-menu-left"><span class="profile-menu-icon">🗺️</span><span class="profile-menu-title">Official Roadmap</span></div>
+<span class="profile-menu-arrow">›</span>
+</div>
 <div class="profile-menu-item" onclick="openExternalLink('telegram')">
 <div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Official Telegram</span></div>
 <span class="profile-menu-arrow">↗</span>
@@ -407,13 +466,35 @@ Mining Rate:
 </div>
 </div>
 </main>
+</div>
+
 <div class="modal-overlay" id="profileInfoModal">
-<div class="sheet-box">
+<div class="sheet-box" id="profileSheetBox">
 <div class="sheet-header">
 <div class="sheet-title" id="sheetTitle">Information</div>
 <button class="sheet-close" onclick="closeProfileInfo()">✕</button>
 </div>
 <div class="sheet-content" id="sheetContentBody">Loading details...</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="supportModal">
+<div class="chat-sheet-box">
+<div class="chat-sheet-header">
+<div class="chat-sheet-title-wrap">
+<div class="chat-sheet-avatar">💬</div>
+<div>
+<div class="chat-sheet-name">FIDEXA Support</div>
+<div class="chat-sheet-status">Online now</div>
+</div>
+</div>
+<button class="chat-sheet-clear" onclick="clearSupportChat()">CLEAR</button>
+</div>
+<div id="supportMessages" class="chat-messages-container"></div>
+<div class="chat-input-bar">
+<textarea id="supportInput" class="chat-input-field" rows="1" maxlength="500" placeholder="Type your message..." oninput="autoGrowSupportInput(this)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendSupportMessage();}"></textarea>
+<button class="chat-send-btn" onclick="sendSupportMessage()" aria-label="Send">➤</button>
+</div>
 </div>
 </div>
 
@@ -433,7 +514,7 @@ Mining Rate:
 <div class="modal-overlay" id="sendModal">
 <div class="prompt-box" style="max-width:360px;">
 <div class="prompt-title">📤 SEND $FDX</div>
-<div class="prompt-desc">Transfer $FDX to another user via their Telegram ID or @username. Minimum: <strong style="color:#fff;">100 $FDX</strong>.</div>
+<div class="prompt-desc">Transfer $FDX to another user via their Telegram ID or @username. Minimum: <strong>100 $FDX</strong>.</div>
 <input type="text" id="sendRecipientInput" placeholder="Recipient Telegram ID or @username" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
 <input type="number" id="sendAmountInput" placeholder="Amount (min 100 $FDX)" min="100" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
 <div class="prompt-actions">
@@ -457,11 +538,7 @@ Mining Rate:
 <div class="modal-overlay" id="luckyBoxModal">
 <div class="prompt-box">
 <div class="prompt-title">🎁 LUCKY BOX</div>
-<div class="prompt-desc">
-You have
-<strong style="color:#fff;" id="luckyBoxPromptChances">5</strong>
-Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.
-</div>
+<div class="prompt-desc">You have <strong id="luckyBoxPromptChances">5</strong> Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.</div>
 <div class="prompt-actions">
 <button class="prompt-btn-cancel" onclick="closeLuckyBoxModal()">Close</button>
 <button class="prompt-btn-confirm" onclick="confirmOpenLuckyBox()">Open Box</button>
@@ -476,7 +553,6 @@ Lucky Box chances. Each 4-hour cycle gives 5 chances. Maximum reward: 10 $FDX.
 <button class="nav-item" onclick="switchTab('wallet',this)"><span class="nav-icon">👛</span>Wallet</button>
 <button class="nav-item" onclick="switchTab('profile',this)"><span class="nav-icon">🛡️</span>Profile</button>
 </nav>
-</div>
 
 <div class="toast" id="toast"></div>
 
@@ -510,28 +586,21 @@ const FIDEXA_API_BASE='https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fid
 let fidexaApiAuthenticated=false;
 
 async function fidexaApiRequest(path, options={}){
-    if(!currentTelegramInitData){
-        throw new Error('Telegram initData is not available.');
-    }
+    if(!currentTelegramInitData) throw new Error('Telegram initData is not available.');
     const method=options.method || 'GET';
     const headers={
         ...(options.headers || {}),
         'X-Telegram-Init-Data': currentTelegramInitData,
         'Authorization': `Bearer ${currentTelegramInitData}`
     };
-    if(options.body !== undefined){
-        headers['Content-Type']='application/json';
-    }
+    if(options.body !== undefined) headers['Content-Type']='application/json';
     const response=await fetch(`${FIDEXA_API_BASE}${path}`, {
         method, headers,
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined
     });
     let data=null;
-    try{
-        data=await response.json();
-    }catch(error){
-        throw new Error(`API returned invalid JSON (${response.status}).`);
-    }
+    try{ data=await response.json(); }
+    catch(error){ throw new Error(`API returned invalid JSON (${response.status}).`); }
     if(!response.ok || data?.success===false){
         throw new Error(data?.error || data?.message || `API request failed (${response.status}).`);
     }
@@ -540,34 +609,24 @@ async function fidexaApiRequest(path, options={}){
 
 function applyApiMeData(data){
     const user=data?.user || data?.profile || data?.data || data;
-    if(!user || typeof user!=='object'){
-        throw new Error('Invalid /api/me response.');
-    }
+    if(!user || typeof user!=='object') throw new Error('Invalid /api/me response.');
     const readNumber=function(){
         for(const value of arguments){
-            if(value !== undefined && value !== null && value !== '' && Number.isFinite(Number(value))){
-                return Number(value);
-            }
+            if(value !== undefined && value !== null && value !== '' && Number.isFinite(Number(value))) return Number(value);
         }
         return null;
     };
     const readValue=function(){
         for(const value of arguments){
-            if(value !== undefined && value !== null){
-                return value;
-            }
+            if(value !== undefined && value !== null) return value;
         }
         return undefined;
     };
 
     const remoteUserId=readValue(user.userId, user.user_id);
-    if(remoteUserId !== undefined && remoteUserId !== null){
-        currentUserId=String(remoteUserId);
-    }
+    if(remoteUserId !== undefined && remoteUserId !== null) currentUserId=String(remoteUserId);
     const remoteUsername=readValue(user.username);
-    if(remoteUsername){
-        currentUserName=String(remoteUsername);
-    }
+    if(remoteUsername) currentUserName=String(remoteUsername);
 
     const totalBalance=readNumber(user.totalBalance);
     const totalMined=readNumber(user.totalMined);
@@ -583,9 +642,9 @@ function applyApiMeData(data){
     if(totalBalance!==null) state.totalBalance=totalBalance;
     if(totalMined!==null) state.totalMined=totalMined;
     if(typeof miningState==='string'){
-        const normalized=miningState.toUpperCase();
-        if(normalized==='IDLE' || normalized==='ACTIVE' || normalized==='READY_TO_CLAIM' || normalized==='MINING'){
-            state.miningState = normalized === 'MINING' ? 'ACTIVE' : normalized;
+        const n=miningState.toUpperCase();
+        if(n==='IDLE' || n==='ACTIVE' || n==='READY_TO_CLAIM' || n==='MINING'){
+            state.miningState = n === 'MINING' ? 'ACTIVE' : n;
         }
     }
     if(miningStartedAt!==null) state.miningStartedAt=miningStartedAt;
@@ -596,7 +655,6 @@ function applyApiMeData(data){
     if(boosterChancesLeft!==null) state.boosterChancesLeft=Math.max(0, Math.min(5, Math.floor(boosterChancesLeft)));
     if(luckyBoxChances!==null) state.luckyBoxChances=Math.max(0, Math.min(5, Math.floor(luckyBoxChances)));
 
-    /* ===== RECOVERY (all from server) ===== */
     const burningStreak=readNumber(user.burningStreak);
     const recoverableBalance=readNumber(user.recoverableBalance);
     const recoveryUnlockedBalance=readNumber(user.recoveryUnlockedBalance);
@@ -627,8 +685,8 @@ function applyApiMeData(data){
     }
 
     fidexaApiAuthenticated=true;
-    try{ saveState(); }catch(error){ console.warn('Fidexa API: local state save after /api/me failed:', error); }
-    try{ updateAllUI(); }catch(error){ console.warn('Fidexa API: UI refresh after /api/me failed:', error); }
+    saveState();
+    updateAllUI();
 }
 
 function getIncomingReferralParam(){
@@ -640,38 +698,28 @@ function getIncomingReferralParam(){
         const value = initParams.get('start_param') || (webApp && webApp.initDataUnsafe ? webApp.initDataUnsafe.start_param : '') || urlParams.get('tgWebAppStartParam') || urlParams.get('startapp') || hashParams.get('tgWebAppStartParam') || '';
         const ref = String(value).trim();
         return /^ref_\d+$/i.test(ref) ? ref : '';
-    }catch(error){
-        console.warn('Fidexa referral parameter read failed:', error);
-        return '';
-    }
+    }catch(error){ return ''; }
 }
 
 async function registerIncomingReferral(){
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){ return; }
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
     const ref = getIncomingReferralParam();
-    if(!ref){ return; }
+    if(!ref) return;
     try{
-        const result = await fidexaApiRequest('/api/referrals/register', { method:'POST', body:{ref:ref} });
-        console.log('Fidexa referral registration:', result);
+        await fidexaApiRequest('/api/referrals/register', { method:'POST', body:{ref:ref} });
         await loadReferralData();
-    }catch(error){
-        console.warn('Fidexa incoming referral registration failed:', error);
-    }
+    }catch(error){ console.warn('Referral register failed:', error); }
 }
 
 async function loadReferralData(){
-    if(!fidexaApiAuthenticated || !currentTelegramInitData){ return false; }
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return false;
     try{
         const data = await fidexaApiRequest('/api/referrals');
-        const referrals = Array.isArray(data?.referrals) ? data.referrals : [];
-        state.friends = referrals;
+        state.friends = Array.isArray(data?.referrals) ? data.referrals : [];
         renderFriends();
-        try{ saveState(); }catch(error){}
+        saveState();
         return true;
-    }catch(error){
-        console.warn('Fidexa referral data load failed:', error);
-        return false;
-    }
+    }catch(error){ return false; }
 }
 
 function renderFriends(){
@@ -682,7 +730,7 @@ function renderFriends(){
     const countEl = document.getElementById('friendListCount');
     if(!list) return;
     const friends = Array.isArray(state.friends) ? state.friends : [];
-    const activeCount = friends.filter(function(friend){ return friend && friend.active === true; }).length;
+    const activeCount = friends.filter(function(f){ return f && f.active === true; }).length;
     const inactiveCount = friends.length - activeCount;
 
     if(totalEl) totalEl.textContent = String(friends.length);
@@ -724,16 +772,13 @@ async function loadTransactions(){
     try{
         const data = await fidexaApiRequest('/api/wallet/transactions');
         const raw = Array.isArray(data?.transactions) ? data.transactions : [];
-        /* ONLY keep SEND and RECEIVE — hide mining/task rewards */
         state.transactions = raw.filter(function(tx){
             const t = String(tx?.type||'').toUpperCase();
             return t === 'SEND' || t === 'RECEIVE';
         });
-        try{ saveState(); }catch(e){}
+        saveState();
         renderTransactions();
-    }catch(error){
-        console.warn('Load transactions failed:', error);
-    }
+    }catch(error){ console.warn('Load transactions failed:', error); }
 }
 
 function renderTransactions(){
@@ -753,7 +798,7 @@ function renderTransactions(){
         const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
         const labelText = isReceive ? `Received from ID ${escapeHtml(tx.senderId||'user')}` : `Sent to ID ${escapeHtml(tx.recipientId||'user')}`;
         const icon = isReceive ? '📥' : '📤';
-        const timeStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString([], { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' }) : (tx.time||'');
+        const timeStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString([], { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' }) : '';
         item.innerHTML=`
             <div class="friend-left">
                 <div class="friend-avatar">${icon}</div>
@@ -773,7 +818,7 @@ async function loadFidexaProfile(){
     function refreshTelegramInitData(){
         if(window.Telegram && window.Telegram.WebApp){
             const webApp=window.Telegram.WebApp;
-            try{ webApp.ready(); webApp.expand(); }catch(error){}
+            try{ webApp.ready(); webApp.expand(); }catch(e){}
             if(webApp.initData) currentTelegramInitData=webApp.initData;
             if(webApp.initDataUnsafe && webApp.initDataUnsafe.user){
                 const tgUser=webApp.initDataUnsafe.user;
@@ -786,8 +831,7 @@ async function loadFidexaProfile(){
     for(let attempt=1; attempt<=3; attempt++){
         refreshTelegramInitData();
         if(!currentTelegramInitData){
-            if(attempt<3){ await new Promise(function(resolve){ setTimeout(resolve, 500); }); continue; }
-            console.warn('Fidexa API: Telegram initData is unavailable after retries.');
+            if(attempt<3){ await new Promise(function(r){ setTimeout(r, 500); }); continue; }
             return false;
         }
         try{
@@ -796,16 +840,14 @@ async function loadFidexaProfile(){
             const data = await fidexaApiRequest(profilePath);
             applyApiMeData(data);
             fidexaApiAuthenticated=true;
-            if(incomingRef){
-                try{ await registerIncomingReferral(); }catch(e){ console.warn('Fidexa referral fallback:', e); }
-            }
+            if(incomingRef){ try{ await registerIncomingReferral(); }catch(e){} }
             await loadReferralData();
             await loadTransactions();
-            console.log('Fidexa API /api/me connected successfully:', data);
+            await refreshTaskStatus();
             return true;
         }catch(error){
-            console.warn(`Fidexa API /api/me attempt ${attempt} failed:`, error);
-            if(attempt<3){ await new Promise(function(resolve){ setTimeout(resolve, 700); }); }
+            console.warn(`Attempt ${attempt} failed:`, error);
+            if(attempt<3){ await new Promise(function(r){ setTimeout(r, 700); }); }
         }
     }
     fidexaApiAuthenticated=false;
@@ -829,59 +871,48 @@ let adsgramController=null;
 let adsgramAdInProgress=false;
 
 function initializeAdsgram(){
-    if(!window.Adsgram){ console.warn('Adsgram SDK is not available.'); return; }
+    if(!window.Adsgram) return;
     try{
         adsgramController=window.Adsgram.init({ blockId:ADSGRAM_BLOCK_ID, debug:false });
-        if(adsgramController && typeof adsgramController.addEventListener==='function'){
-            try{ adsgramController.addEventListener('onBannerNotFound', function(){ console.warn('Adsgram: no advertisement available.'); }); }catch(e){}
-            try{ adsgramController.addEventListener('onError', function(event){ console.warn('Adsgram error:', event); }); }catch(e){}
-        }
-    }catch(error){ console.warn('Adsgram initialization error:', error); adsgramController=null; }
+    }catch(error){ adsgramController=null; }
 }
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', initializeAdsgram); }else{ initializeAdsgram(); }
 
 /* =========================================================
-   CONSTANTS
+   CONSTANTS & STORAGE
 ========================================================= */
 const MIN_TRANSFER_AMOUNT = 100;
-
-/* =========================================================
-   STORAGE (only for UI cache — recovery is server-side)
-========================================================= */
-const STORAGE_KEY='fidexa_prototype_state_v12';
+const STORAGE_KEY='fidexa_prototype_state_v14';
 const defaultState={
     totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, miningCycleDuration:14400,
-    baseMiningRate:1.0, boosterBonusRate:0, boostLuckyResetAt:0, referralBonusRate:0,
+    baseMiningRate:1.0, boosterBonusRate:0, referralBonusRate:0,
     boosterChancesLeft:5, luckyBoxChances:5, sessionAccumulated:0,
     burningStreak:0, recoverableBalance:0, recoveryUnlockedBalance:0,
     recoveryTriggered:false, recoveryQualified:false, recoveryActiveDays:0,
     recoveryLastUnlockAt:0, inactiveDays:0, activeDays:0,
     friends:[], transactions:[],
-    claimedTasks:{telegram:false, x:false, youtube:false}
+    claimedTasks:{telegram:false, x:false, youtube:false},
+    taskStatus:null
 };
 let state={ ...defaultState };
 
 function loadState(){
     try{
         const saved=localStorage.getItem(STORAGE_KEY);
-        if(saved){
-            const parsed=JSON.parse(saved);
-            state={ ...defaultState, ...parsed };
-        }
-    }catch(error){ console.log('State load error', error); }
+        if(saved){ state={ ...defaultState, ...JSON.parse(saved) }; }
+    }catch(error){}
 }
-
 function saveState(){
     try{
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             username:currentUserName, friends:state.friends, transactions:state.transactions,
-            claimedTasks:state.claimedTasks
+            claimedTasks:state.claimedTasks, taskStatus:state.taskStatus
         }));
     }catch(error){}
 }
 
 /* =========================================================
-   UTILITY
+   UTILITIES
 ========================================================= */
 function formatNumber(value){
     return Number(value||0).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
@@ -901,7 +932,105 @@ function escapeHtml(str){
 }
 
 /* =========================================================
-   RECOVERY SYNC (server-side is source of truth)
+   TASK STATUS (JOIN → CLAIM → CLAIMED)
+========================================================= */
+async function refreshTaskStatus(){
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
+    try{
+        const data = await fidexaApiRequest('/api/tasks/status');
+        if(!data || !data.tasks) return;
+        state.taskStatus = data.tasks;
+        if(!state.claimedTasks) state.claimedTasks = { telegram:false, x:false, youtube:false };
+        state.claimedTasks.telegram = Boolean(data.tasks.telegram?.claimed);
+        state.claimedTasks.x = Boolean(data.tasks.x?.claimed);
+        state.claimedTasks.youtube = Boolean(data.tasks.youtube?.claimed);
+        renderTaskButtons();
+        saveState();
+    }catch(error){ console.warn('Task status refresh failed:', error); }
+}
+
+function renderTaskButtons(){
+    const tasks = state.taskStatus || {
+        telegram: { joined: false, claimed: Boolean(state.claimedTasks?.telegram) },
+        x: { joined: Boolean(state.claimedTasks?.x), claimed: Boolean(state.claimedTasks?.x) },
+        youtube: { joined: Boolean(state.claimedTasks?.youtube), claimed: Boolean(state.claimedTasks?.youtube) }
+    };
+    ['telegram','x','youtube'].forEach(function(type){
+        const btn = document.getElementById('taskBtn_' + type);
+        if(!btn) return;
+        btn.classList.remove('claim', 'claimed');
+        const t = tasks[type] || { joined:false, claimed:false };
+        if(t.claimed){
+            btn.textContent = 'CLAIMED';
+            btn.classList.add('claimed');
+            btn.disabled = true;
+        } else if(t.joined){
+            btn.textContent = 'CLAIM';
+            btn.classList.add('claim');
+            btn.disabled = false;
+        } else {
+            btn.textContent = (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
+            btn.disabled = false;
+        }
+    });
+}
+
+async function handleTaskAction(type){
+    const tasks = state.taskStatus || {};
+    const t = tasks[type] || { joined:false, claimed:false };
+    if(t.claimed){ showToast('Task already claimed.'); return; }
+    if(t.joined){ await claimTaskReward(type); return; }
+    openTaskLinkAndVerify(type);
+}
+
+function openTaskLinkAndVerify(type){
+    if(type==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
+    else if(type==='x'){ window.open(FIDEXA_X, '_blank'); }
+    else if(type==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
+
+    if(type === 'telegram'){
+        let tries = 0;
+        const poll = setInterval(async function(){
+            tries++;
+            await refreshTaskStatus();
+            const t = (state.taskStatus||{})[type] || {};
+            if(t.joined || tries >= 8){ clearInterval(poll); }
+        }, 2500);
+    } else {
+        setTimeout(function(){
+            if(!state.taskStatus) state.taskStatus = {};
+            state.taskStatus[type] = { joined: true, claimed: false };
+            renderTaskButtons();
+            saveState();
+            showToast('Tap CLAIM now to get your reward.');
+        }, 4000);
+    }
+}
+
+async function claimTaskReward(type){
+    if(state.claimedTasks && state.claimedTasks[type]){ showToast('Task already claimed.'); return; }
+    try{
+        const data=await fidexaApiRequest('/api/tasks/claim', { method:'POST', body:{ task:type } });
+        if(!data || data.success!==true) throw new Error(data?.error || 'Claim failed.');
+        if(!state.claimedTasks){ state.claimedTasks={ telegram:false, x:false, youtube:false }; }
+        state.claimedTasks[type]=true;
+        if(!state.taskStatus) state.taskStatus = {};
+        if(!state.taskStatus[type]) state.taskStatus[type] = {};
+        state.taskStatus[type].claimed = true;
+        state.taskStatus[type].joined = true;
+        if(data.totalBalance!==undefined) state.totalBalance=Number(data.totalBalance)||state.totalBalance;
+        saveState();
+        updateAllUI();
+        showToast(`+${formatNumber(data.reward || 5)} $FDX added to Balance`);
+    }catch(error){
+        console.warn('Task claim failed:', error);
+        showToast(error.message || 'Task claim failed. Please try again.');
+        refreshTaskStatus();
+    }
+}
+
+/* =========================================================
+   RECOVERY SYNC
 ========================================================= */
 let lastRecoverySyncAt=0;
 async function syncRecoveryFromServer(force){
@@ -923,9 +1052,7 @@ async function syncRecoveryFromServer(force){
         if(data.recoveryActiveDays!==undefined) state.recoveryActiveDays=Number(data.recoveryActiveDays);
         if(data.recoveryLastUnlockAt!==undefined) state.recoveryLastUnlockAt=Number(data.recoveryLastUnlockAt);
         updateAllUI();
-    }catch(error){
-        console.warn('Recovery sync failed:', error);
-    }
+    }catch(error){ console.warn('Recovery sync failed:', error); }
 }
 
 /* =========================================================
@@ -938,6 +1065,7 @@ function switchTab(tabName, btnElement){
     document.querySelectorAll('.nav-item').forEach(function(nav){ nav.classList.remove('active'); });
     if(btnElement) btnElement.classList.add('active');
     if(tabName==='wallet') loadTransactions();
+    if(tabName==='tasks') refreshTaskStatus();
     syncRecoveryFromServer(false);
     updateRecoveryUI();
 }
@@ -966,8 +1094,7 @@ async function copyReceiveAddress(){
         await navigator.clipboard.writeText(addressBox.value);
         showToast('Your Telegram ID copied!');
     }catch(e){
-        addressBox.select();
-        document.execCommand('copy');
+        addressBox.select(); document.execCommand('copy');
         showToast('Your Telegram ID copied!');
     }
     closeReceiveModal();
@@ -1008,42 +1135,15 @@ async function processSendTransaction(){
 }
 
 /* =========================================================
-   TASK SYSTEM
-========================================================= */
-function openTaskLinkAndVerify(type){
-    if(type==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
-    else if(type==='x'){ window.open(FIDEXA_X, '_blank'); }
-    else if(type==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
-    setTimeout(function(){
-        if(confirm(`Confirm you completed the ${type} task?`)){ claimTaskReward(type); }
-    }, 1200);
-}
-
-async function claimTaskReward(type){
-    if(state.claimedTasks && state.claimedTasks[type]){ showToast('Task already claimed.'); return; }
-    try{
-        const data=await fidexaApiRequest('/api/tasks/claim', { method:'POST', body:{ task:type } });
-        if(!data || data.success!==true) throw new Error(data?.error || 'Claim failed.');
-        if(!state.claimedTasks){ state.claimedTasks={ telegram:false, x:false, youtube:false }; }
-        state.claimedTasks[type]=true;
-        if(data.totalBalance!==undefined){ state.totalBalance=Number(data.totalBalance)||state.totalBalance; }
-        saveState();
-        updateAllUI();
-        showToast(`+${formatNumber(data.reward || 5)} $FDX added to Balance`);
-    }catch(error){
-        console.warn('Task claim failed:', error);
-        showToast(error.message || 'Task claim failed. Please try again.');
-    }
-}
-
-/* =========================================================
    PROFILE
 ========================================================= */
 function openProfileInfo(type){
     const modal=document.getElementById('profileInfoModal');
     const titleEl=document.getElementById('sheetTitle');
     const bodyEl=document.getElementById('sheetContentBody');
+    const sheetBox = document.getElementById('profileSheetBox');
     modal.classList.add('active');
+
     if(type==='account'){
         titleEl.textContent='Account Information';
         bodyEl.innerHTML=`
@@ -1051,57 +1151,276 @@ function openProfileInfo(type){
             <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml(currentUserName)}</p>
             <p style="margin-top:10px;"><strong>Wallet ID:</strong> ${escapeHtml(getWalletAddress())}</p>
             <p style="margin-top:10px;"><strong>Balance:</strong> ${formatNumber(state.totalBalance)} $FDX</p>`;
-    }else if(type==='support'){
-        titleEl.textContent='Chat Support';
-        bodyEl.innerHTML=`
-            <div class="support-status">
-                <div class="support-status-title">💬 FIDEXA SUPPORT</div>
-                <div class="support-status-text">How can our support team assist you today?</div>
-            </div>
-            <div id="supportMessages" class="chat-messages-container">
-                <div class="chat-bubble admin">Hello! Welcome to Fidexa support.</div>
-            </div>
-            <div class="chat-input-row">
-                <input id="supportInput" class="chat-input-field" type="text" maxlength="500" placeholder="Type a message...">
-                <button class="chat-send-btn" onclick="sendSupportMessage()">SEND</button>
-            </div>`;
     }else if(type==='privacy'){
         titleEl.textContent='Privacy Policy';
-        bodyEl.innerHTML=`<p>Fidexa Network protects your user data and maintains secure decentralized node records.</p>`;
+        bodyEl.innerHTML = PRIVACY_POLICY_HTML;
     }else if(type==='whitepaper'){
         titleEl.textContent='Whitepaper v1.0';
-        bodyEl.innerHTML=`<p>Fidexa Network is a Web3 Telegram Mini App designed for gamified rewards and token distribution.</p>`;
+        bodyEl.innerHTML = WHITEPAPER_HTML;
+    }else if(type==='roadmap'){
+        titleEl.textContent='Official Roadmap';
+        bodyEl.innerHTML = ROADMAP_HTML;
     }else if(type==='deletion'){
         titleEl.textContent='Account Deletion';
-        bodyEl.innerHTML=`<p style="color:var(--red);">Account deletion clears local state node configuration.</p>`;
+        bodyEl.innerHTML=`
+            <div class="del-warning">
+                <div class="del-warning-title">⚠️ DANGER ZONE</div>
+                <div class="del-warning-text">Deleting your account is permanent and cannot be undone. Please read carefully before continuing.</div>
+            </div>
+            <div class="del-consequences">
+                <div style="font-size:11px;font-weight:900;color:#fff;letter-spacing:.3px;margin-bottom:6px;">THE FOLLOWING WILL BE PERMANENTLY DELETED:</div>
+                <ul>
+                    <li>Your <strong>entire $FDX balance</strong></li>
+                    <li>Your mining history & statistics</li>
+                    <li>Your referral network and referrals</li>
+                    <li>All claimed tasks and rewards</li>
+                    <li>Your recovery pool & streak data</li>
+                    <li>Your transaction history</li>
+                </ul>
+            </div>
+            <div class="del-confirm-label">TYPE "DELETE" TO CONFIRM</div>
+            <input id="deleteConfirmInput" class="del-confirm-input" type="text" maxlength="6" placeholder="DELETE" oninput="checkDeleteInput()" autocomplete="off" autocapitalize="characters">
+            <div class="del-actions">
+                <button class="del-btn-cancel" onclick="closeProfileInfo()">Cancel</button>
+                <button id="deleteConfirmBtn" class="del-btn-confirm" disabled onclick="confirmAccountDeletion()">Delete Account</button>
+            </div>`;
     }
+    if(sheetBox) sheetBox.scrollTop = 0;
 }
 function closeProfileInfo(){ document.getElementById('profileInfoModal').classList.remove('active'); }
-
-function sendSupportMessage(){
-    const input=document.getElementById('supportInput');
-    const messages=document.getElementById('supportMessages');
-    if(!input || !messages || !input.value.trim()) return;
-    const txt=input.value.trim();
-    const userBubble=document.createElement('div');
-    userBubble.className='chat-bubble user';
-    userBubble.textContent=txt;
-    messages.appendChild(userBubble);
-    input.value='';
-    messages.scrollTop=messages.scrollHeight;
-    setTimeout(function(){
-        const adminBubble=document.createElement('div');
-        adminBubble.className='chat-bubble admin';
-        adminBubble.textContent='Thank you. Your ticket has been logged with support.';
-        messages.appendChild(adminBubble);
-        messages.scrollTop=messages.scrollHeight;
-    }, 600);
-}
 
 function openExternalLink(target){
     if(target==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
     else if(target==='twitter'){ window.open(FIDEXA_X, '_blank'); }
     else if(target==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
+}
+
+/* =========================================================
+   CHAT SUPPORT
+========================================================= */
+function getSupportStorageKey(){ return 'fidexa_support_chat_' + String(currentUserId); }
+
+function loadSupportMessages(){
+    try{
+        const raw = localStorage.getItem(getSupportStorageKey());
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : null;
+    }catch(e){ return null; }
+}
+
+function saveSupportMessages(messages){
+    try{ localStorage.setItem(getSupportStorageKey(), JSON.stringify(messages.slice(-200))); }catch(e){}
+}
+
+function getDefaultSupportMessages(){
+    const now = Date.now();
+    return [
+        { sender:'admin', text:'Hello! Welcome to FIDEXA Support 👋', time: now - 1000*60*3 },
+        { sender:'admin', text:'How can we help you today? You can ask about mining, referrals, tasks, your balance, or anything else about the app.', time: now - 1000*60*3 + 600 }
+    ];
+}
+
+let supportMessages = null;
+let supportTypingTimeout = null;
+
+function formatChatTime(ts){
+    const d = new Date(ts);
+    return d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+}
+
+function renderSupportMessages(){
+    const container = document.getElementById('supportMessages');
+    if(!container) return;
+    const messages = supportMessages || [];
+    container.innerHTML = '';
+    messages.forEach(function(msg){
+        const wrap = document.createElement('div');
+        wrap.className = 'chat-bubble-wrap ' + (msg.sender === 'user' ? 'user' : 'admin');
+        if(msg.sender === 'user'){
+            wrap.innerHTML = `
+                <div class="chat-bubble-inner">
+                    <div class="chat-bubble user">${escapeHtml(msg.text)}</div>
+                    <div class="chat-bubble-time">${formatChatTime(msg.time)}</div>
+                </div>`;
+        }else{
+            wrap.innerHTML = `
+                <div class="chat-bubble-avatar">💬</div>
+                <div class="chat-bubble-inner">
+                    <div class="chat-bubble admin">${escapeHtml(msg.text)}</div>
+                    <div class="chat-bubble-time">${formatChatTime(msg.time)}</div>
+                </div>`;
+        }
+        container.appendChild(wrap);
+    });
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTypingIndicator(){
+    const container = document.getElementById('supportMessages');
+    if(!container) return;
+    const existing = document.getElementById('chatTypingIndicator');
+    if(existing) existing.remove();
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-bubble-wrap admin';
+    wrap.id = 'chatTypingIndicator';
+    wrap.innerHTML = `
+        <div class="chat-bubble-avatar">💬</div>
+        <div class="chat-typing">
+            <div class="chat-typing-dot"></div>
+            <div class="chat-typing-dot"></div>
+            <div class="chat-typing-dot"></div>
+        </div>`;
+    container.appendChild(wrap);
+    container.scrollTop = container.scrollHeight;
+}
+
+function hideTypingIndicator(){
+    const el = document.getElementById('chatTypingIndicator');
+    if(el) el.remove();
+}
+
+function pickAutoReply(userText){
+    const t = String(userText).toLowerCase();
+    if(t.includes('withdraw') || t.includes('cash') || t.includes('bank')){
+        return "Withdrawals aren't enabled yet. FDX currently lives inside the FIDEXA Mini App. We'll announce when withdrawal functionality is ready.";
+    }
+    if(t.includes('referral') || t.includes('invite') || t.includes('friend')){
+        return "You earn +0.1 $FDX/H for each friend who joins and starts mining. Share your referral link from the Friends tab!";
+    }
+    if(t.includes('task') || t.includes('join') || t.includes('claim')){
+        return "Community tasks are on the Tasks tab. Make sure you actually join the channel first — our system verifies membership before you can tap CLAIM.";
+    }
+    if(t.includes('balance') || t.includes('fdx') || t.includes('token')){
+        return "Your FDX balance is shown at the top of the Mining tab and on the Wallet page. It updates automatically when rewards are credited.";
+    }
+    if(t.includes('recovery') || t.includes('burn') || t.includes('streak')){
+        return "The Recovery system protects your balance. Stay active to avoid burning, and once in recovery, stay active 7 days then 10% unlocks every 24 hours via a rewarded ad.";
+    }
+    if(t.includes('bug') || t.includes('error') || t.includes('issue') || t.includes('problem')){
+        return "Thanks for reporting this. Could you describe what happened step by step? Screenshots help too. Our team reviews all tickets.";
+    }
+    if(t.includes('mining') || t.includes('mine') || t.includes('start')){
+        return "To start mining, go to the Mining tab and tap START MINING. Your session runs for 4 hours, then you can claim your reward.";
+    }
+    if(t.includes('hello') || t.includes('hi') || t.includes('hey')){
+        return "Hi there! 👋 How can we help you today?";
+    }
+    if(t.includes('thank')){
+        return "You're welcome! Anything else we can help with?";
+    }
+    return "Thanks for your message. A support agent will follow up shortly. In the meantime, feel free to describe your issue in more detail.";
+}
+
+function openSupportChat(){
+    const modal = document.getElementById('supportModal');
+    modal.classList.add('active');
+    if(!supportMessages){
+        const stored = loadSupportMessages();
+        supportMessages = stored && stored.length ? stored : getDefaultSupportMessages();
+        saveSupportMessages(supportMessages);
+    }
+    renderSupportMessages();
+    setTimeout(function(){
+        const input = document.getElementById('supportInput');
+        if(input) input.focus();
+    }, 250);
+}
+
+function closeSupportChat(){
+    document.getElementById('supportModal').classList.remove('active');
+}
+
+function sendSupportMessage(){
+    const input = document.getElementById('supportInput');
+    if(!input) return;
+    const txt = input.value.trim();
+    if(!txt) return;
+
+    if(!supportMessages) supportMessages = getDefaultSupportMessages();
+    supportMessages.push({ sender:'user', text: txt, time: Date.now() });
+    saveSupportMessages(supportMessages);
+    renderSupportMessages();
+    input.value='';
+    input.style.height='auto';
+
+    if(supportTypingTimeout) clearTimeout(supportTypingTimeout);
+    supportTypingTimeout = setTimeout(function(){
+        showTypingIndicator();
+        const replyDelay = 900 + Math.random() * 900;
+        setTimeout(function(){
+            hideTypingIndicator();
+            const reply = pickAutoReply(txt);
+            supportMessages.push({ sender:'admin', text: reply, time: Date.now() });
+            saveSupportMessages(supportMessages);
+            renderSupportMessages();
+        }, replyDelay);
+    }, 400);
+}
+
+function clearSupportChat(){
+    if(!confirm('Clear your chat history? This cannot be undone.')) return;
+    supportMessages = getDefaultSupportMessages();
+    saveSupportMessages(supportMessages);
+    renderSupportMessages();
+    showToast('Chat history cleared.');
+}
+
+function autoGrowSupportInput(el){
+    el.style.height = 'auto';
+    el.style.height = Math.min(100, el.scrollHeight) + 'px';
+}
+
+/* =========================================================
+   ACCOUNT DELETION
+========================================================= */
+function checkDeleteInput(){
+    const input = document.getElementById('deleteConfirmInput');
+    const btn = document.getElementById('deleteConfirmBtn');
+    if(!input || !btn) return;
+    const val = String(input.value || '').trim().toUpperCase();
+    btn.disabled = val !== 'DELETE';
+}
+
+async function confirmAccountDeletion(){
+    const input = document.getElementById('deleteConfirmInput');
+    const btn = document.getElementById('deleteConfirmBtn');
+    if(!input || !btn) return;
+    const val = String(input.value || '').trim().toUpperCase();
+    if(val !== 'DELETE'){ showToast('Please type DELETE to confirm.'); return; }
+
+    const confirmed = confirm('Final confirmation: permanently delete your FIDEXA account and all associated data?');
+    if(!confirmed) return;
+
+    btn.disabled = true;
+    btn.textContent = 'DELETING...';
+
+    let backendDeleted = false;
+    try{
+        const data = await fidexaApiRequest('/api/account/delete', { method:'POST', body:{} });
+        if(data && data.success === true) backendDeleted = true;
+    }catch(error){
+        console.warn('Backend delete failed:', error);
+    }
+
+    try{
+        const keysToRemove = [];
+        for(let i=0; i<localStorage.length; i++){
+            const k = localStorage.key(i);
+            if(!k) continue;
+            if(k.startsWith('fidexa_')) keysToRemove.push(k);
+        }
+        keysToRemove.forEach(function(k){ localStorage.removeItem(k); });
+    }catch(e){}
+
+    closeProfileInfo();
+    if(backendDeleted){
+        showToast('Account deleted. Reloading...');
+    }else{
+        showToast('Local data cleared. Reloading...');
+    }
+
+    setTimeout(function(){ window.location.reload(); }, 1400);
 }
 
 /* =========================================================
@@ -1160,11 +1479,11 @@ function shareReferralLink(){
 ========================================================= */
 function ensureAdsgramController(){
     if(adsgramController && typeof adsgramController.show==='function') return true;
-    if(!window.Adsgram){ console.warn('Adsgram SDK is not available.'); return false; }
+    if(!window.Adsgram) return false;
     try{
         adsgramController=window.Adsgram.init({ blockId:ADSGRAM_BLOCK_ID, debug:false });
         return !!(adsgramController && typeof adsgramController.show==='function');
-    }catch(error){ console.warn('Adsgram init error:', error); adsgramController=null; return false; }
+    }catch(error){ adsgramController=null; return false; }
 }
 
 function showAdsgramAd(rewardCallback){
@@ -1380,7 +1699,7 @@ async function handleMiningAction(){
 }
 
 /* =========================================================
-   MINING BOOST
+   BOOSTER
 ========================================================= */
 function openBoosterPrompt(){
     state.boosterChancesLeft=Number(state.boosterChancesLeft);
@@ -1447,7 +1766,7 @@ function confirmOpenLuckyBox(){
 }
 
 /* =========================================================
-   RECOVERY CLAIM — server-side
+   RECOVERY CLAIM
 ========================================================= */
 function claimRecovery(){
     const available=Number(state.recoveryUnlockedBalance||0);
@@ -1481,10 +1800,11 @@ function updateAllUI(){
     if(walletEl) walletEl.innerHTML=`${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
     updateMiningUI();
     renderFriends();
+    renderTaskButtons();
 }
 
 /* =========================================================
-   USER INTERACTION TRACKING (lightweight — server syncs)
+   ACTIVITY PING
 ========================================================= */
 let lastActivityPingAt=0;
 document.addEventListener('click', function(){
@@ -1495,6 +1815,312 @@ document.addEventListener('click', function(){
     }
 }, true);
 
+document.addEventListener('visibilitychange', function(){
+    if(!document.hidden){ refreshTaskStatus(); }
+});
+
+/* =========================================================
+   CONTENT: WHITEPAPER / ROADMAP / PRIVACY
+========================================================= */
+const WHITEPAPER_HTML = `
+<div class="wp-brand">FIDEXA NETWORK</div>
+<div class="wp-version">Whitepaper v1.0</div>
+<div class="wp-tagline">A Gamified Digital Mining & Community Rewards Ecosystem</div>
+<div class="wp-meta">
+Ticker: <strong>FDX</strong><br>
+Platform: <strong>Telegram Mini App</strong><br>
+Status: <strong>Live App Experience</strong>
+</div>
+
+<h3>1. Vision &amp; Mission</h3>
+<p>FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.</p>
+<p>The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.</p>
+<p>FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.</p>
+
+<h3>2. FIDEXA Mining System</h3>
+<p>FIDEXA uses a timed mining-session system. Users start a mining session from the Mini App and the session runs for a defined period.</p>
+<p><strong>Current Mining Structure</strong></p>
+<ul>
+<li>Mining cycle: 4 hours</li>
+<li>Base mining rate: 1.0 FDX per hour</li>
+<li>Base reward per completed 4-hour cycle: 4 FDX</li>
+</ul>
+<p>Users can return after the mining timer has completed and claim their accumulated reward. After claiming, users can begin another mining session.</p>
+<p>The mining system is designed around participation rather than requiring users to keep their device continuously active.</p>
+
+<h3>3. Reward Claim &amp; Advertising System</h3>
+<p>Advertising is integrated into the reward-claim process. Advertisements are not intended to run continuously while the user is mining.</p>
+<p>The current flow is:</p>
+<p style="text-align:center;color:#fff;font-weight:900;letter-spacing:.5px;">Start Mining → 4-Hour Session → Timer Completes → Claim Reward → Advertisement → Reward Credited</p>
+<p>When a mining session finishes, the user enters the claim process. A supported advertisement may be displayed as part of that process, and after the claim flow is successfully completed, the accumulated mining reward is added to the user's FDX balance.</p>
+<p><strong>Why FIDEXA Uses Advertising</strong></p>
+<p>Advertising provides an additional sustainability mechanism for the platform. Revenue generated through supported advertising can contribute toward the ongoing operation, infrastructure, development, and improvement of the FIDEXA ecosystem.</p>
+<div class="wp-callout"><strong>Important:</strong> The advertisement is not presented as a separate mining system. The user's mining reward comes from the completed mining session; advertising is incorporated into the claim process.</div>
+
+<h3>4. Boosters &amp; Gamification</h3>
+<p>FIDEXA includes gamification mechanisms designed to encourage continued participation.</p>
+<p><strong>Mining Boosters</strong></p>
+<p>Active users can access supported boosting mechanisms that can increase their effective mining rate. The current system supports mining-rate increases of up to +2.5 FDX/hour through the available booster mechanisms.</p>
+<p><strong>Lucky Boxes</strong></p>
+<p>Lucky Boxes provide an additional gamified element within the FIDEXA ecosystem. They are designed to give users another interactive way to participate in the platform beyond the standard mining cycle.</p>
+<p><strong>Streak Recovery</strong></p>
+<p>FIDEXA also incorporates a streak-recovery mechanism designed to help users maintain their participation streak when an interruption occurs.</p>
+
+<h3>5. Community Tasks</h3>
+<p>FIDEXA includes a community-task system that allows users to participate in activities connected to the FIDEXA ecosystem. These activities can include community engagement through supported platforms such as:</p>
+<ul>
+<li>Telegram</li>
+<li>X</li>
+</ul>
+<p>Community tasks provide another participation layer beyond the mining timer and help connect user activity with the growth of the FIDEXA community.</p>
+
+<h3>6. Referral System</h3>
+<p>FIDEXA includes a referral mechanism designed to encourage community growth. Users can invite other participants through their referral link.</p>
+<p>The referral system is integrated into the Mini App so users can access and share their referral information. The purpose of the referral system is to encourage organic community expansion while rewarding participation within the FIDEXA ecosystem.</p>
+
+<h3>7. User Balance &amp; Rewards</h3>
+<p>FDX rewards earned through supported activities are reflected in the user's in-app balance. The current ecosystem connects the user's mining activity and reward mechanisms to their FDX balance.</p>
+<p>The balance system provides users with a clear view of their accumulated in-app rewards.</p>
+
+<h3>8. User Profile &amp; Account</h3>
+<p>FIDEXA provides a user-focused interface that allows participants to access their account information and interact with the Mini App. The platform is designed for use through Telegram, allowing the application to work within the Telegram Mini App environment.</p>
+
+<h3>9. Support &amp; Account Controls</h3>
+<p>FIDEXA includes user-support and account-management functionality within the application. Users can access:</p>
+<ul>
+<li>Chat Support</li>
+<li>Account information</li>
+<li>Profile functionality</li>
+<li>Account deletion controls</li>
+</ul>
+<p>These features are included to provide users with greater control over their interaction with the platform.</p>
+
+<h3>10. FDX Token / Reward Model</h3>
+<p>FDX is the internal reward unit used throughout the current FIDEXA ecosystem.</p>
+<p>The current mining system is structured around:</p>
+<ul>
+<li>1.0 FDX/hour base mining rate</li>
+<li>4-hour mining cycles</li>
+</ul>
+<p>The actual reward received by a user can depend on the applicable mining mechanisms and supported features available within the application.</p>
+<div class="wp-callout">FIDEXA does not claim that in-app FDX balances are currently transferable to an external blockchain unless and until such functionality is actually implemented.</div>
+
+<h3>11. Platform Principles</h3>
+<p><strong>Accessibility</strong> — The platform is designed to allow users to participate through a mobile-friendly Telegram Mini App.</p>
+<p><strong>Community</strong> — Referrals and community activities encourage users to grow and participate in the ecosystem.</p>
+<p><strong>Engagement</strong> — Mining sessions, Lucky Boxes, streaks, tasks, and other gamification mechanisms encourage continued interaction.</p>
+<p><strong>Sustainability</strong> — The advertising-supported claim model provides a mechanism that can help support the continued operation and development of the platform.</p>
+<p><strong>Transparency</strong> — FIDEXA documentation should describe the functionality actually available in the application rather than presenting future concepts as completed technology.</p>
+
+<h3>12. Current Platform Summary</h3>
+<p>The current FIDEXA ecosystem combines:</p>
+<ul>
+<li>4-hour mining sessions</li>
+<li>1.0 FDX/hour base mining</li>
+<li>Mining boosters</li>
+<li>Lucky Boxes</li>
+<li>Streak recovery</li>
+<li>Reward claiming</li>
+<li>Advertising-supported reward claims</li>
+<li>FDX in-app balance</li>
+<li>Referral system</li>
+<li>Community tasks</li>
+<li>Telegram integration</li>
+<li>X-related community activities</li>
+<li>User profile</li>
+<li>Chat Support</li>
+<li>Account controls</li>
+</ul>
+<p>FIDEXA is designed as a continuously developing community-driven digital rewards ecosystem.</p>
+
+<div class="wp-footer">FIDEXA NETWORK · MINE · PARTICIPATE · GROW</div>
+`;
+
+const ROADMAP_HTML = `
+<div class="wp-brand">FIDEXA NETWORK</div>
+<div class="wp-version">Official Roadmap</div>
+<div class="wp-tagline">Development Phases &amp; Current Progress</div>
+
+<h3>Phase 1 — Foundation &amp; Mini App Launch</h3>
+<p><strong style="color:var(--green);">COMPLETED</strong></p>
+<ul>
+<li>FIDEXA Telegram Mini App interface</li>
+<li>User profile integration</li>
+<li>Core mining system</li>
+<li>4-hour mining sessions</li>
+<li>1.0 FDX/hour base mining rate</li>
+<li>In-app FDX balance</li>
+<li>Basic referral system</li>
+<li>Initial community-task structure</li>
+<li>Account and support interface</li>
+</ul>
+
+<h3>Phase 2 — Engagement &amp; Gamification</h3>
+<p><strong style="color:var(--yellow);">ACTIVE</strong></p>
+<ul>
+<li>Mining boosters</li>
+<li>Lucky Boxes</li>
+<li>Streak recovery</li>
+<li>Reward-claim advertising integration</li>
+<li>Community task expansion</li>
+<li>Telegram community activities</li>
+<li>X community activities</li>
+<li>Continued improvements to the referral system</li>
+<li>Improvements to the overall user experience</li>
+</ul>
+
+<h3>Phase 3 — Ecosystem Growth</h3>
+<p><strong style="color:var(--cyan);">CURRENT DEVELOPMENT</strong></p>
+<ul>
+<li>Expansion of community participation</li>
+<li>Improvement of mining and reward interfaces</li>
+<li>Expansion of gamification features already integrated into the platform</li>
+<li>Continued optimization of the referral and task systems</li>
+<li>Improvement of user-support and account-management features</li>
+<li>Platform performance and usability improvements</li>
+</ul>
+
+<h3>Development Philosophy</h3>
+<p>FIDEXA will continue to develop based on actual platform implementation and community participation. New functionality will be introduced progressively as the ecosystem develops.</p>
+
+<div class="wp-footer">MINE · PARTICIPATE · GROW</div>
+`;
+
+const PRIVACY_POLICY_HTML = `
+<div class="wp-brand">FIDEXA NETWORK</div>
+<div class="wp-version">Privacy Policy</div>
+<div class="pp-effective">
+Effective Date: <strong>September 26, 2026</strong><br>
+Last Updated: <strong>September 26, 2026</strong>
+</div>
+
+<p>FIDEXA Network ("FIDEXA", "we", "our", or "us") respects your privacy and is committed to protecting information associated with your use of the FIDEXA Telegram Mini App and related services.</p>
+<p>This Privacy Policy explains what information FIDEXA may collect, how it is used, how it may be shared, and the choices available to users.</p>
+<p>By accessing or using the FIDEXA Mini App, you acknowledge that you have read and understood this Privacy Policy.</p>
+
+<h3>1. Information We Collect</h3>
+<p>FIDEXA collects and processes information that is necessary to operate the Mini App and provide its features.</p>
+<p><strong>1.1 Telegram Account Information</strong></p>
+<p>When you open FIDEXA through Telegram, the Mini App may receive information made available by Telegram, which may include:</p>
+<ul>
+<li>Telegram user ID</li>
+<li>First name</li>
+<li>Last name, where available</li>
+<li>Telegram username, where available</li>
+<li>Language information</li>
+<li>Telegram profile information made available to the Mini App</li>
+</ul>
+<p>FIDEXA uses this information primarily to identify your account and provide personalized features within the application.</p>
+
+<h3>2. FIDEXA Activity Information</h3>
+<p>When you use FIDEXA, the platform may record information associated with your activity within the application, including:</p>
+<ul>
+<li>Mining session information</li>
+<li>Mining start and completion times</li>
+<li>Mining rewards</li>
+<li>FDX balance information</li>
+<li>Booster activity</li>
+<li>Lucky Box activity</li>
+<li>Streak information</li>
+<li>Referral information</li>
+<li>Community-task activity</li>
+<li>Reward-claim activity</li>
+<li>Account and support interactions</li>
+</ul>
+<p>This information is used to operate the FIDEXA reward system and maintain the functionality of the application.</p>
+
+<h3>3. Advertising Information</h3>
+<p>FIDEXA incorporates advertising into the mining reward-claim process.</p>
+<p>When a mining session has completed and you initiate the reward-claim process, a supported advertisement may be displayed before the completed reward is credited to your FDX balance.</p>
+<p>FIDEXA may use third-party advertising technology, including <strong>AdsGram</strong>, to deliver advertisements. Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.</p>
+<p>FIDEXA does not sell your FDX balance or personal information to advertisers.</p>
+
+<h3>4. How We Use Information</h3>
+<p>FIDEXA may use collected information to:</p>
+<ul>
+<li>Create and maintain your FIDEXA account</li>
+<li>Identify users within the Mini App</li>
+<li>Operate mining sessions</li>
+<li>Calculate and display rewards</li>
+<li>Maintain FDX balances</li>
+<li>Process reward claims</li>
+<li>Operate boosters and gamification features</li>
+<li>Maintain referral functionality</li>
+<li>Manage community tasks</li>
+<li>Provide customer support</li>
+<li>Improve application performance and functionality</li>
+<li>Detect abuse, manipulation, or fraudulent activity</li>
+<li>Maintain platform security</li>
+<li>Communicate important service-related information</li>
+<li>Comply with applicable legal obligations</li>
+</ul>
+
+<h3>5. How We Share Information</h3>
+<p>FIDEXA may share or permit access to information where reasonably necessary to operate the service.</p>
+<p><strong>Telegram</strong> — FIDEXA operates through Telegram's Mini App environment. Telegram processes information according to its own policies and platform functionality.</p>
+<p><strong>Advertising Providers</strong> — FIDEXA may use third-party advertising providers to display advertisements within the application. These providers may independently process technical or advertising information according to their own privacy policies.</p>
+<p><strong>Service Providers</strong> — FIDEXA may use infrastructure, hosting, database, analytics, security, or other technical service providers necessary to operate the platform.</p>
+<p><strong>Legal Requirements</strong> — FIDEXA may disclose information when reasonably necessary to comply with applicable law, respond to lawful requests, protect the rights or security of FIDEXA or its users, investigate fraud, abuse, or security incidents, or prevent harm or misuse of the platform.</p>
+
+<h3>6. Data Security</h3>
+<p>FIDEXA takes reasonable technical and organizational measures to protect information against unauthorized access, alteration, disclosure, loss, or misuse. However, no internet service or electronic storage system can be guaranteed to be completely secure.</p>
+<p>Users should also protect access to their Telegram account and device.</p>
+
+<h3>7. Data Retention</h3>
+<p>FIDEXA retains information for as long as reasonably necessary to provide the service, maintain account and reward records, operate referrals and community features, prevent abuse and fraud, resolve disputes, maintain security, and meet applicable legal obligations.</p>
+<p>When information is no longer reasonably required, it may be deleted, anonymized, or otherwise securely disposed of, subject to applicable legal and operational requirements.</p>
+
+<h3>8. Your Privacy Rights</h3>
+<p>Depending on applicable law, you may have rights concerning your personal information, which may include the right to:</p>
+<ul>
+<li>Request access to personal information we hold about you</li>
+<li>Request correction of inaccurate information</li>
+<li>Request deletion of information where applicable</li>
+<li>Request restriction of certain processing</li>
+<li>Object to certain processing</li>
+<li>Withdraw consent where processing is based on consent</li>
+<li>Raise a privacy complaint</li>
+</ul>
+<p>Requests concerning your personal information can be submitted through the FIDEXA support channel.</p>
+
+<h3>9. Account Deletion</h3>
+<p>FIDEXA provides an account-deletion option within the application where available.</p>
+<p>When an account-deletion request is submitted, FIDEXA may delete or anonymize information associated with the account, subject to information that must reasonably be retained for security, fraud prevention, dispute resolution, legal compliance, or other legitimate purposes.</p>
+<p>Deletion of an account may result in the permanent loss of associated FDX balances, mining history, referral information, tasks, streaks, or other account-related data where such information is deleted.</p>
+<div class="wp-callout"><strong>Important:</strong> Users should carefully review the consequences before confirming account deletion.</div>
+
+<h3>10. Children's Privacy</h3>
+<p>FIDEXA is not intended to knowingly collect personal information from children in violation of applicable law. If we become aware that personal information has been collected from a child where such collection is not permitted, we may take appropriate steps to delete the information.</p>
+<p>Parents or legal guardians who believe that a child has provided personal information to FIDEXA may contact us through the official support channel.</p>
+
+<h3>11. Third-Party Services</h3>
+<p>FIDEXA may integrate with third-party platforms and services, including Telegram and advertising providers. These third parties operate under their own terms and privacy policies.</p>
+<p>FIDEXA does not control the privacy practices of independent third-party services. Users should review the privacy policies of those services before using features that interact with them.</p>
+
+<h3>12. Cookies and Local Storage</h3>
+<p>FIDEXA may use browser, Telegram Mini App, or device storage technologies where necessary to maintain application functionality, preferences, sessions, or other technical information.</p>
+<p>FIDEXA does not use such technologies to intentionally collect information unrelated to the operation of the service.</p>
+
+<h3>13. Changes to This Privacy Policy</h3>
+<p>FIDEXA may update this Privacy Policy from time to time to reflect changes to the application, services, technology, or applicable legal requirements.</p>
+<p>When significant changes are made, we may provide notice through the application or other appropriate communication channels. The Last Updated date at the beginning of this Privacy Policy will indicate when the policy was most recently revised.</p>
+
+<h3>14. Contact Us</h3>
+<p>If you have questions, concerns, requests, or complaints concerning this Privacy Policy or the handling of your information, please contact FIDEXA through the official support channel provided within the FIDEXA Mini App.</p>
+<p><strong>Project:</strong> FIDEXA Network<br>
+<strong>Platform:</strong> Telegram Mini App<br>
+<strong>Support:</strong> FIDEXA Chat Support</p>
+
+<div class="wp-footer">FIDEXA NETWORK · PRIVACY FIRST</div>
+`;
+
+/* =========================================================
+   SUPPORT MODAL CLOSE ON BACKDROP
+========================================================= */
+document.getElementById('supportModal').addEventListener('click', function(e){
+    if(e.target === this) closeSupportChat();
+});
+
 /* =========================================================
    APPLICATION START
 ========================================================= */
@@ -1504,13 +2130,8 @@ window.addEventListener('DOMContentLoaded', async function(){
     await loadFidexaProfile();
 });
 
-setInterval(function(){
-    updateMiningUI();
-}, 1000);
-
-setInterval(function(){
-    syncRecoveryFromServer(false);
-}, 60000);
+setInterval(function(){ updateMiningUI(); }, 1000);
+setInterval(function(){ syncRecoveryFromServer(false); }, 60000);
 </script>
 </body>
 </html>
