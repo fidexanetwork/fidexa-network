@@ -264,8 +264,6 @@ input,textarea{font:inherit;}
 <div class="full-page-header">📋 SYSTEM TASKS</div>
 <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards.</div>
 <div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">📢</div><div><div class="task-name">Join Telegram</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button></div></div>
-<div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">𝕏</div><div><div class="task-name">Join X</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">JOIN</button></div></div>
-<div class="task-card"><div class="task-row"><div class="task-left"><div class="task-icon">▶️</div><div><div class="task-name">Subscribe YouTube (@Fidexa_Network)</div><div class="task-reward">Reward: +5.00 $FDX</div></div></div><button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button></div></div>
 </main>
 
 <main class="page-view" id="page-friends">
@@ -775,11 +773,9 @@ async function refreshTaskStatus(){
 
 function renderTaskButtons(){
     const tasks = state.taskStatus || {
-        telegram: { joined: false, claimed: Boolean(state.claimedTasks?.telegram) },
-        x: { joined: Boolean(state.claimedTasks?.x), claimed: Boolean(state.claimedTasks?.x) },
-        youtube: { joined: Boolean(state.claimedTasks?.youtube), claimed: Boolean(state.claimedTasks?.youtube) }
+        telegram: { joined: false, claimed: Boolean(state.claimedTasks?.telegram) }
     };
-    ['telegram','x','youtube'].forEach(function(type){
+    ['telegram'].forEach(function(type){
         const btn = document.getElementById('taskBtn_' + type);
         if(!btn) return;
         btn.classList.remove('claim', 'claimed');
@@ -793,7 +789,7 @@ function renderTaskButtons(){
             btn.classList.add('claim');
             btn.disabled = false;
         } else {
-            btn.textContent = (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
+            btn.textContent = 'JOIN';
             btn.disabled = false;
         }
     });
@@ -809,8 +805,6 @@ async function handleTaskAction(type){
 
 function openTaskLinkAndVerify(type){
     if(type==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
-    else if(type==='x'){ window.open(FIDEXA_X, '_blank'); }
-    else if(type==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
 
     if(type === 'telegram'){
         let tries = 0;
@@ -820,14 +814,6 @@ function openTaskLinkAndVerify(type){
             const t = (state.taskStatus||{})[type] || {};
             if(t.joined || tries >= 8){ clearInterval(poll); }
         }, 2500);
-    } else {
-        setTimeout(function(){
-            if(!state.taskStatus) state.taskStatus = {};
-            state.taskStatus[type] = { joined: true, claimed: false };
-            renderTaskButtons();
-            saveState();
-            showToast('Tap CLAIM now to get your reward.');
-        }, 4000);
     }
 }
 
@@ -1584,22 +1570,20 @@ const WHITEPAPER_HTML = `
 <div class="wp-meta">Ticker: <strong>FDX</strong><br>Platform: <strong>Telegram Mini App</strong><br>Status: <strong>Live App Experience</strong></div>
 <h3>1. Vision &amp; Mission</h3>
 <p>FIDEXA Network is a gamified digital mining and community rewards platform designed to make participation in a digital-asset ecosystem simple, accessible, and engaging.</p>
-<p>The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and advertising-supported reward claims into a single mobile-friendly experience.</p>
+<p>The platform combines timed mining sessions, community participation, referrals, rewards, gamification, and optional bonus features into a single mobile-friendly experience.</p>
 <p>FIDEXA's mission is to build an active community-driven ecosystem where users can participate, earn in-app FDX rewards, complete activities, and contribute to the growth of the network.</p>
 <h3>2. FIDEXA Mining System</h3>
 <p>FIDEXA uses a timed mining-session system. Users start a mining session from the Mini App and the session runs for a defined period.</p>
 <p><strong>Current Mining Structure</strong></p>
 <ul><li>Mining cycle: 4 hours</li><li>Base mining rate: 1.0 FDX per hour</li><li>Base reward per completed 4-hour cycle: 4 FDX</li></ul>
-<p>Users can return after the mining timer has completed and claim their accumulated reward. After claiming, users can begin another mining session.</p>
+<p>Users can return after the mining timer has completed and claim their accumulated reward directly. After claiming, users can begin another mining session.</p>
 <p>The mining system is designed around participation rather than requiring users to keep their device continuously active.</p>
-<h3>3. Reward Claim &amp; Advertising System</h3>
-<p>Advertising is integrated into the reward-claim process. Advertisements are not intended to run continuously while the user is mining.</p>
-<p>The current flow is:</p>
-<p style="text-align:center;color:#fff;font-weight:900;letter-spacing:.5px;">Start Mining → 4-Hour Session → Timer Completes → Claim Reward → Advertisement → Reward Credited</p>
-<p>When a mining session finishes, the user enters the claim process. A supported advertisement may be displayed as part of that process, and after the claim flow is successfully completed, the accumulated mining reward is added to the user's FDX balance.</p>
-<p><strong>Why FIDEXA Uses Advertising</strong></p>
-<p>Advertising provides an additional sustainability mechanism for the platform. Revenue generated through supported advertising can contribute toward the ongoing operation, infrastructure, development, and improvement of the FIDEXA ecosystem.</p>
-<div class="wp-callout"><strong>Important:</strong> The advertisement is not presented as a separate mining system. The user's mining reward comes from the completed mining session; advertising is incorporated into the claim process.</div>
+<h3>3. Reward Claim &amp; Optional Bonus Features</h3>
+<p>The base mining reward is credited directly when the user claims it. No advertisement is required to start mining, complete a mining session, or claim the base mining reward.</p>
+<p><strong>Optional Bonus Features</strong></p>
+<p>FIDEXA offers optional bonus features — Mining Boosters, Lucky Boxes, and Recovery Claims — that may include a supported advertisement as part of accessing the bonus. These features are additive and voluntary; they are not required for the user's core mining reward.</p>
+<p>When a user chooses an optional bonus feature, the interface clearly indicates that a short advertisement will be shown to unlock the bonus reward. Users who do not wish to watch an advertisement can skip the bonus and continue using the base mining system normally.</p>
+<div class="wp-callout"><strong>Important:</strong> Advertisements are not required to use the core FIDEXA mining system. Ads appear only when the user voluntarily chooses an optional bonus feature.</div>
 <h3>4. Boosters &amp; Gamification</h3>
 <p>FIDEXA includes gamification mechanisms designed to encourage continued participation.</p>
 <p><strong>Mining Boosters</strong></p>
@@ -1609,8 +1593,8 @@ const WHITEPAPER_HTML = `
 <p><strong>Streak Recovery</strong></p>
 <p>FIDEXA also incorporates a streak-recovery mechanism designed to help users maintain their participation streak when an interruption occurs.</p>
 <h3>5. Community Tasks</h3>
-<p>FIDEXA includes a community-task system that allows users to participate in activities connected to the FIDEXA ecosystem. These activities can include community engagement through supported platforms such as:</p>
-<ul><li>Telegram</li><li>X</li></ul>
+<p>FIDEXA includes a community-task system that allows users to participate in activities connected to the FIDEXA ecosystem. These activities currently include community engagement through supported platforms such as:</p>
+<ul><li>Telegram</li></ul>
 <p>Community tasks provide another participation layer beyond the mining timer and help connect user activity with the growth of the FIDEXA community.</p>
 <h3>6. Referral System</h3>
 <p>FIDEXA includes a referral mechanism designed to encourage community growth. Users can invite other participants through their referral link.</p>
@@ -1634,11 +1618,11 @@ const WHITEPAPER_HTML = `
 <p><strong>Accessibility</strong> — The platform is designed to allow users to participate through a mobile-friendly Telegram Mini App.</p>
 <p><strong>Community</strong> — Referrals and community activities encourage users to grow and participate in the ecosystem.</p>
 <p><strong>Engagement</strong> — Mining sessions, Lucky Boxes, streaks, tasks, and other gamification mechanisms encourage continued interaction.</p>
-<p><strong>Sustainability</strong> — The advertising-supported claim model provides a mechanism that can help support the continued operation and development of the platform.</p>
-<p><strong>Transparency</strong> — FIDEXA documentation should describe the functionality actually available in the application rather than presenting future concepts as completed technology.</p>
+<p><strong>Sustainability</strong> — The advertising-supported bonus model provides a mechanism that can help support the continued operation and development of the platform, without requiring advertisements for the core mining function.</p>
+<p><strong>Transparency</strong> — FIDEXA documentation describes the functionality actually available in the application rather than presenting future concepts as completed technology.</p>
 <h3>12. Current Platform Summary</h3>
 <p>The current FIDEXA ecosystem combines:</p>
-<ul><li>4-hour mining sessions</li><li>1.0 FDX/hour base mining</li><li>Mining boosters</li><li>Lucky Boxes</li><li>Streak recovery</li><li>Reward claiming</li><li>Advertising-supported reward claims</li><li>FDX in-app balance</li><li>Referral system</li><li>Community tasks</li><li>Telegram integration</li><li>X-related community activities</li><li>User profile</li><li>Chat Support</li><li>Account controls</li></ul>
+<ul><li>4-hour mining sessions</li><li>1.0 FDX/hour base mining</li><li>Direct reward claiming (no ad required)</li><li>Optional ad-supported bonus features (Boosters, Lucky Boxes, Recovery)</li><li>FDX in-app balance</li><li>Referral system</li><li>Telegram community task</li><li>Telegram integration</li><li>User profile</li><li>Chat Support</li><li>Account controls</li></ul>
 <p>FIDEXA is designed as a continuously developing community-driven digital rewards ecosystem.</p>
 <div class="wp-footer">FIDEXA NETWORK · MINE · PARTICIPATE · GROW</div>
 `;
@@ -1652,7 +1636,7 @@ const ROADMAP_HTML = `
 <ul><li>FIDEXA Telegram Mini App interface</li><li>User profile integration</li><li>Core mining system</li><li>4-hour mining sessions</li><li>1.0 FDX/hour base mining rate</li><li>In-app FDX balance</li><li>Basic referral system</li><li>Initial community-task structure</li><li>Account and support interface</li></ul>
 <h3>Phase 2 — Engagement &amp; Gamification</h3>
 <p><strong style="color:var(--yellow);">ACTIVE</strong></p>
-<ul><li>Mining boosters</li><li>Lucky Boxes</li><li>Streak recovery</li><li>Reward-claim advertising integration</li><li>Community task expansion</li><li>Telegram community activities</li><li>X community activities</li><li>Continued improvements to the referral system</li><li>Improvements to the overall user experience</li></ul>
+<ul><li>Mining boosters</li><li>Lucky Boxes</li><li>Streak recovery</li><li>Optional ad-supported bonus features</li><li>Community task expansion</li><li>Telegram community activities</li><li>Continued improvements to the referral system</li><li>Improvements to the overall user experience</li></ul>
 <h3>Phase 3 — Ecosystem Growth</h3>
 <p><strong style="color:var(--cyan);">CURRENT DEVELOPMENT</strong></p>
 <ul><li>Expansion of community participation</li><li>Improvement of mining and reward interfaces</li><li>Expansion of gamification features already integrated into the platform</li><li>Continued optimization of the referral and task systems</li><li>Improvement of user-support and account-management features</li><li>Platform performance and usability improvements</li></ul>
@@ -1679,9 +1663,9 @@ const PRIVACY_POLICY_HTML = `
 <ul><li>Mining session information</li><li>Mining start and completion times</li><li>Mining rewards</li><li>FDX balance information</li><li>Booster activity</li><li>Lucky Box activity</li><li>Streak information</li><li>Referral information</li><li>Community-task activity</li><li>Reward-claim activity</li><li>Account and support interactions</li></ul>
 <p>This information is used to operate the FIDEXA reward system and maintain the functionality of the application.</p>
 <h3>3. Advertising Information</h3>
-<p>FIDEXA incorporates advertising into the mining reward-claim process.</p>
-<p>When a mining session has completed and you initiate the reward-claim process, a supported advertisement may be displayed before the completed reward is credited to your FDX balance.</p>
-<p>FIDEXA may use third-party advertising technology, including <strong>AdsGram</strong>, to deliver advertisements. Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.</p>
+<p>FIDEXA offers optional bonus features (Mining Boosters, Lucky Boxes, Recovery Claims) that may include a supported advertisement as part of accessing the bonus.</p>
+<p>The core mining reward is credited directly and does not require watching an advertisement.</p>
+<p>FIDEXA may use third-party advertising technology, including <strong>AdsGram</strong>, to deliver advertisements within optional bonus features. Third-party advertising providers may process certain technical or advertising-related information in accordance with their own privacy policies.</p>
 <p>FIDEXA does not sell your FDX balance or personal information to advertisers.</p>
 <h3>4. How We Use Information</h3>
 <p>FIDEXA may use collected information to:</p>
@@ -1689,7 +1673,7 @@ const PRIVACY_POLICY_HTML = `
 <h3>5. How We Share Information</h3>
 <p>FIDEXA may share or permit access to information where reasonably necessary to operate the service.</p>
 <p><strong>Telegram</strong> — FIDEXA operates through Telegram's Mini App environment. Telegram processes information according to its own policies and platform functionality.</p>
-<p><strong>Advertising Providers</strong> — FIDEXA may use third-party advertising providers to display advertisements within the application. These providers may independently process technical or advertising information according to their own privacy policies.</p>
+<p><strong>Advertising Providers</strong> — FIDEXA may use third-party advertising providers to display advertisements within optional bonus features in the application. These providers may independently process technical or advertising information according to their own privacy policies.</p>
 <p><strong>Service Providers</strong> — FIDEXA may use infrastructure, hosting, database, analytics, security, or other technical service providers necessary to operate the platform.</p>
 <p><strong>Legal Requirements</strong> — FIDEXA may disclose information when reasonably necessary to comply with applicable law, respond to lawful requests, protect the rights or security of FIDEXA or its users, investigate fraud, abuse, or security incidents, or prevent harm or misuse of the platform.</p>
 <h3>6. Data Security</h3>
