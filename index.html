@@ -88,6 +88,11 @@ input{font:inherit;}
 .friend-empty-icon{font-size:32px;margin-bottom:10px;}
 .friend-empty-title{font-size:15px;font-weight:900;color:#fff;}
 .friend-empty-text{font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px;}
+.referral-info-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid rgba(56,189,248,.35);border-radius:16px;padding:16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px;}
+.referral-info-icon{font-size:26px;flex-shrink:0;}
+.referral-info-title{font-size:12px;font-weight:900;color:var(--cyan);letter-spacing:.4px;margin-bottom:5px;}
+.referral-info-text{font-size:11px;color:var(--muted);line-height:1.5;font-weight:600;}
+.referral-info-text strong{color:var(--yellow);font-weight:900;}
 .wallet-main-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);}
 .wallet-balance-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;}
 .wallet-balance-num{font-size:38px;font-weight:900;color:#fff;margin-top:6px;}
@@ -215,7 +220,7 @@ Mining Rate:
 <div class="info-box-label">BURNING<br>STREAK</div>
 <div class="info-box-icon">🔥</div>
 </div>
-<div class="info-box-value" id="burningStreak">1 Day</div>
+<div class="info-box-value" id="burningStreak">Safe</div>
 </div>
 <div class="info-box">
 <div class="info-box-top">
@@ -304,6 +309,13 @@ Mining Rate:
 <main class="page-view" id="page-friends">
 <div class="full-page-header">👥 REFERRAL NETWORK</div>
 <div class="full-page-sub">View the users you personally invited and their current activity status.</div>
+<div class="referral-info-card">
+<div class="referral-info-icon">💎</div>
+<div>
+<div class="referral-info-title">EARN +0.1 $FDX/H PER ACTIVE FRIEND</div>
+<div class="referral-info-text">Invite a friend and once they start mining, your mining rate increases by <strong>+0.1 $FDX/H</strong> permanently. Invite more friends, earn more!</div>
+</div>
+</div>
 <div class="friends-stats-grid">
 <div class="friend-stat-card">
 <div class="friend-stat-value" id="totalFriendsCount">0</div>
@@ -347,11 +359,11 @@ Mining Rate:
 <button class="wallet-btn primary" onclick="openReceiveModal()">📥 Receive</button>
 </div>
 <div class="tx-history-card">
-<div class="tx-header">📜 RECENT TRANSACTIONS</div>
+<div class="tx-header">📜 TRANSFER HISTORY</div>
 <div class="friend-empty-state" id="txEmptyState">
 <div class="friend-empty-icon">💸</div>
-<div class="friend-empty-title">No Transactions Yet</div>
-<div class="friend-empty-text">Your send and receive transfers will appear here.</div>
+<div class="friend-empty-title">No Transfers Yet</div>
+<div class="friend-empty-text">Your sent and received transfers will appear here.</div>
 </div>
 <div id="txListContainer" style="max-height:220px;overflow-y:auto;"></div>
 </div>
@@ -421,9 +433,9 @@ Mining Rate:
 <div class="modal-overlay" id="sendModal">
 <div class="prompt-box" style="max-width:360px;">
 <div class="prompt-title">📤 SEND $FDX</div>
-<div class="prompt-desc">Transfer $FDX directly to another user via their Telegram ID or @username.</div>
+<div class="prompt-desc">Transfer $FDX to another user via their Telegram ID or @username. Minimum: <strong style="color:#fff;">100 $FDX</strong>.</div>
 <input type="text" id="sendRecipientInput" placeholder="Recipient Telegram ID or @username" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
-<input type="number" id="sendAmountInput" placeholder="Amount to send ($FDX)" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
+<input type="number" id="sendAmountInput" placeholder="Amount (min 100 $FDX)" min="100" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
 <div class="prompt-actions">
 <button class="prompt-btn-cancel" onclick="closeSendModal()">Cancel</button>
 <button class="prompt-btn-confirm" onclick="processSendTransaction()">Confirm Send</button>
@@ -665,7 +677,7 @@ function renderFriends(){
         item.className = 'friend-row-item';
         const referredId = String(friend?.referredId || friend?.referred_id || '');
         const isActive = friend?.active === true || String(friend?.status || '').toLowerCase() === 'active';
-        const statusText = isActive ? 'ACTIVE' : 'INACTIVE';
+        const statusText = isActive ? 'ACTIVE · +0.1 $FDX/H' : 'INACTIVE';
         const statusClass = isActive ? 'active' : 'inactive';
         item.innerHTML = `
             <div class="friend-left">
@@ -683,7 +695,12 @@ async function loadTransactions(){
     if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
     try{
         const data = await fidexaApiRequest('/api/wallet/transactions');
-        state.transactions = Array.isArray(data?.transactions) ? data.transactions : [];
+        const raw = Array.isArray(data?.transactions) ? data.transactions : [];
+        /* ONLY keep SEND and RECEIVE — filter out MINING, TASK_*, etc. */
+        state.transactions = raw.filter(function(tx){
+            const t = String(tx?.type||'').toUpperCase();
+            return t === 'SEND' || t === 'RECEIVE';
+        });
         try{ saveState(); }catch(e){}
         renderTransactions();
     }catch(error){
@@ -703,17 +720,11 @@ function renderTransactions(){
         const item=document.createElement('div');
         item.className='friend-row-item';
         const type = String(tx.type||'').toUpperCase();
-        const isReceive = (type==='RECEIVE' || type.startsWith('TASK_') || type==='MINING');
+        const isReceive = type==='RECEIVE';
         const sign = isReceive ? '+' : '-';
         const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
-        let labelText = 'Transaction';
-        let icon = '💸';
-        if(type==='SEND'){ labelText = `Sent to ID ${escapeHtml(tx.recipientId||'user')}`; icon='📤'; }
-        else if(type==='RECEIVE'){ labelText = `Received from ID ${escapeHtml(tx.senderId||'user')}`; icon='📥'; }
-        else if(type==='MINING'){ labelText = 'Mining reward'; icon='⛏️'; }
-        else if(type==='TASK_TELEGRAM'){ labelText = 'Telegram task'; icon='📢'; }
-        else if(type==='TASK_X'){ labelText = 'X task'; icon='𝕏'; }
-        else if(type==='TASK_YOUTUBE'){ labelText = 'YouTube task'; icon='▶️'; }
+        const labelText = isReceive ? `Received from ID ${escapeHtml(tx.senderId||'user')}` : `Sent to ID ${escapeHtml(tx.recipientId||'user')}`;
+        const icon = isReceive ? '📥' : '📤';
         const timeStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString([], { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' }) : (tx.time||'');
         item.innerHTML=`
             <div class="friend-left">
@@ -808,13 +819,21 @@ function initializeAdsgram(){
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', initializeAdsgram); }else{ initializeAdsgram(); }
 
 /* =========================================================
+   CONSTANTS
+========================================================= */
+const MIN_TRANSFER_AMOUNT = 100;
+const INACTIVITY_THRESHOLD_DAYS = 7;
+const BURN_PERCENT_PER_DAY = 0.10;
+
+/* =========================================================
    STORAGE
 ========================================================= */
-const STORAGE_KEY='fidexa_prototype_state_v10';
+const STORAGE_KEY='fidexa_prototype_state_v11';
 const defaultState={
     totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, miningCycleDuration:14400,
     baseMiningRate:1.0, boosterBonusRate:0, boostLuckyResetAt:0, boosterResetAt:0, referralBonusRate:0,
-    boosterChancesLeft:5, luckyBoxChances:5, luckyBoxResetAt:0, sessionAccumulated:0, burningStreak:1,
+    boosterChancesLeft:5, luckyBoxChances:5, luckyBoxResetAt:0, sessionAccumulated:0, burningStreak:0,
+    burningDaysApplied:0,
     lastActivityDay:'', inactiveDays:0, activeDays:0, recoverableBalance:0, friends:[], transactions:[],
     claimedTasks:{telegram:false, x:false, youtube:false},
     lastActivityTimestamp:0, recoveryTriggered:false, recoveryQualified:false, recoveryQualificationStartDay:'',
@@ -822,9 +841,6 @@ const defaultState={
 };
 let state={ ...defaultState };
 
-/* =========================================================
-   GLOBAL USER REGISTRY
-========================================================= */
 function getAllUsersRegistry(){
     try{ const data=localStorage.getItem('fidexa_global_users'); return data ? JSON.parse(data) : {}; }catch(e){ return {}; }
 }
@@ -845,6 +861,10 @@ function getPreviousDateKey(dateKey){
     d.setDate(d.getDate()-1);
     return getDateKey(d.getTime());
 }
+function daysBetween(timestamp){
+    if(!timestamp) return 0;
+    return Math.floor((Date.now() - Number(timestamp)) / (24*60*60*1000));
+}
 
 /* =========================================================
    RECOVERY STATE NORMALIZATION
@@ -857,8 +877,10 @@ function normalizeRecoveryState(){
     state.recoveryLastUnlockAt=Number(state.recoveryLastUnlockAt)||0;
     state.recoveryTriggerTimestamp=Number(state.recoveryTriggerTimestamp)||0;
     state.recoveryActiveDays=Number(state.recoveryActiveDays)||0;
-    state.burningStreak=Number(state.burningStreak)||1;
-    if(state.burningStreak<1) state.burningStreak=1;
+    state.burningStreak=Number(state.burningStreak)||0;
+    state.burningDaysApplied=Number(state.burningDaysApplied)||0;
+    if(state.burningStreak<0) state.burningStreak=0;
+    if(state.burningDaysApplied<0) state.burningDaysApplied=0;
     if(!Number.isFinite(state.recoveryActiveDays)) state.recoveryActiveDays=0;
     if(typeof state.recoveryTriggered!=='boolean') state.recoveryTriggered=Number(state.recoverableBalance)>0;
     if(typeof state.recoveryQualified!=='boolean') state.recoveryQualified=false;
@@ -867,83 +889,91 @@ function normalizeRecoveryState(){
 }
 
 /* =========================================================
-   RECOVERY: TRIGGER AFTER 7 FULL INACTIVE DAYS
+   BURNING: APPLY DAILY 10% BURNS AFTER 7 DAYS INACTIVE
+   - burningStreak counts burn days (0 while safe)
+   - each burn day: 10% of current totalBalance → recoverableBalance
 ========================================================= */
-function processInactivityTrigger(){
+function processBurning(){
     normalizeRecoveryState();
-    if(state.recoveryTriggered || Number(state.recoverableBalance)>0) return false;
     if(!state.lastActivityTimestamp){
-        state.lastActivityTimestamp=Date.now();
-        state.lastActivityDay=getDateKey();
-        state.inactiveDays=0;
-        saveState();
+        state.burningStreak=0;
+        state.burningDaysApplied=0;
         return false;
     }
-    const elapsed=Date.now() - Number(state.lastActivityTimestamp);
-    const fullInactiveDays=Math.floor(elapsed / (24*60*60*1000));
-    state.inactiveDays=Math.min(7, fullInactiveDays);
-    if(fullInactiveDays>=7){
-        const balance=Math.max(0, Number(state.totalBalance)||0);
-        const deduction=parseFloat((balance*0.10).toFixed(8));
-        state.totalBalance=parseFloat(Math.max(0, balance-deduction).toFixed(8));
-        state.recoverableBalance=parseFloat((Number(state.recoverableBalance||0) + deduction).toFixed(8));
-        state.recoveryTriggered=true;
-        state.recoveryQualified=false;
-        state.recoveryQualificationStartDay='';
-        state.recoveryActiveDays=0;
-        state.recoveryLastUnlockAt=0;
-        state.recoveryUnlockedBalance=0;
-        state.recoveryTriggerTimestamp=Date.now();
-        state.burningStreak=1;
-        state.inactiveDays=7;
+    /* If user is in recovery-unlock phase, no more burning */
+    if(state.recoveryQualified){
+        return false;
+    }
+    const inactive = daysBetween(state.lastActivityTimestamp);
+    state.inactiveDays = Math.min(30, inactive);
+    /* Below threshold — safe, no burning */
+    if(inactive < INACTIVITY_THRESHOLD_DAYS){
+        state.burningStreak=0;
+        state.burningDaysApplied=0;
+        return false;
+    }
+    /* Burn days: first burn is on day (INACTIVITY_THRESHOLD_DAYS - 1)?? 
+       User said: "inactive for 7 days then deduction starts"
+       -> on the day 7 mark is reached, first burn occurs.
+       burnDayNumber = inactive - 6  (7 → 1, 8 → 2, ...) */
+    const targetBurns = inactive - (INACTIVITY_THRESHOLD_DAYS - 1);
+    const applied = Number(state.burningDaysApplied||0);
+    const newBurns = Math.max(0, targetBurns - applied);
+    if(newBurns > 0){
+        for(let i=0; i<newBurns; i++){
+            const cur = Number(state.totalBalance||0);
+            if(cur <= 0) break;
+            const burn = parseFloat((cur * BURN_PERCENT_PER_DAY).toFixed(8));
+            if(burn <= 0) break;
+            state.totalBalance = parseFloat((cur - burn).toFixed(8));
+            state.recoverableBalance = parseFloat((Number(state.recoverableBalance||0) + burn).toFixed(8));
+        }
+        state.burningDaysApplied = targetBurns;
+        state.burningStreak = targetBurns;
+        state.recoveryTriggered = true;
+        state.recoveryQualified = false;
+        state.recoveryActiveDays = 0;
+        state.recoveryQualificationStartDay = '';
+        state.recoveryLastUnlockAt = 0;
+        state.recoveryTriggerTimestamp = Date.now();
         saveState();
         return true;
+    }
+    /* No new burn yet, but burning is active */
+    state.burningStreak = targetBurns;
+    if(!state.recoveryTriggered && Number(state.recoverableBalance||0) > 0){
+        state.recoveryTriggered = true;
+        saveState();
     }
     return false;
 }
 
 /* =========================================================
-   RECOVERY: MARK USER ACTIVE + BURNING STREAK
+   RECOVERY: MARK USER ACTIVE
+   - If user was burning, stop burning and start active-day counter
 ========================================================= */
 function markUserActive(){
     normalizeRecoveryState();
+    /* Apply any pending burns BEFORE updating activity, based on old lastActivityTimestamp */
+    processBurning();
+
     const now=Date.now();
     const today=getDateKey(now);
-    const burningTriggered=processInactivityTrigger();
     const previousDay=state.lastActivityDay;
+
+    /* Update activity timestamp */
     state.lastActivityTimestamp=now;
     state.lastActivityDay=today;
     state.inactiveDays=0;
 
-    /* --- BURNING STREAK: increment only on a new consecutive day --- */
-    if(!burningTriggered){
-        if(previousDay && previousDay !== today){
-            const expectedPrev=getPreviousDateKey(today);
-            if(previousDay === expectedPrev){
-                state.burningStreak=Math.max(1, Number(state.burningStreak||1) + 1);
-            }else{
-                state.burningStreak=1;
-            }
-        }else if(!previousDay){
-            state.burningStreak=Math.max(1, Number(state.burningStreak||1));
-        }
-    }
-
-    if(burningTriggered){
-        state.recoveryQualificationStartDay=today;
-        state.recoveryActiveDays=1;
-        state.recoveryQualified=false;
-        state.activeDays=1;
-        saveState();
-        return;
-    }
+    /* If user is in recovery (burning happened) → start qualification counter */
     if(state.recoveryTriggered && !state.recoveryQualified){
         if(!state.recoveryQualificationStartDay){
             state.recoveryQualificationStartDay=today;
             state.recoveryActiveDays=1;
         }else if(today !== previousDay){
-            const expectedPrevious=getPreviousDateKey(today);
-            if(previousDay===expectedPrevious){
+            const expectedPrev=getPreviousDateKey(today);
+            if(previousDay === expectedPrev){
                 state.recoveryActiveDays=Math.min(7, Number(state.recoveryActiveDays||0)+1);
             }else{
                 state.recoveryActiveDays=1;
@@ -955,21 +985,26 @@ function markUserActive(){
             state.recoveryQualified=true;
             if(!state.recoveryLastUnlockAt) state.recoveryLastUnlockAt=now;
         }
+        /* Reset burning counters because user is now active */
+        state.burningStreak=0;
+        state.burningDaysApplied=0;
         saveState();
         return;
     }
-    if(!state.recoveryTriggered){
-        if(previousDay===getPreviousDateKey(today)){
-            state.activeDays=Math.min(7, Number(state.activeDays||0)+1);
-        }else if(previousDay!==today){
-            state.activeDays=1;
-        }
-        saveState();
+
+    /* Normal active tracking */
+    if(previousDay===getPreviousDateKey(today)){
+        state.activeDays=Math.min(7, Number(state.activeDays||0)+1);
+    }else if(previousDay!==today){
+        state.activeDays=1;
     }
+    state.burningStreak=0;
+    state.burningDaysApplied=0;
+    saveState();
 }
 
 /* =========================================================
-   RECOVERY: UNLOCK 10% EVERY 24 HOURS
+   RECOVERY: UNLOCK 10% OF POOL EVERY 24H (after qualification)
 ========================================================= */
 function processRecoveryUnlock(){
     normalizeRecoveryState();
@@ -978,8 +1013,6 @@ function processRecoveryUnlock(){
     const pool=Number(state.recoverableBalance)||0;
     if(pool<=0) return;
     const unlocked=Number(state.recoveryUnlockedBalance||0);
-    const remainingPool=Math.max(0, pool);
-    if(remainingPool<=0) return;
     if(!state.recoveryLastUnlockAt){
         state.recoveryLastUnlockAt=Date.now();
         saveState();
@@ -987,12 +1020,12 @@ function processRecoveryUnlock(){
     }
     const now=Date.now();
     const elapsed=now - Number(state.recoveryLastUnlockAt);
-    const full24HourPeriods=Math.floor(elapsed / (24*60*60*1000));
-    if(full24HourPeriods<=0) return;
+    const periods=Math.floor(elapsed / (24*60*60*1000));
+    if(periods<=0) return;
     let newUnlocked=unlocked;
-    let poolRemaining=remainingPool;
+    let poolRemaining=pool;
     let unlockTimestamp=Number(state.recoveryLastUnlockAt);
-    for(let i=0; i<full24HourPeriods; i++){
+    for(let i=0; i<periods; i++){
         if(poolRemaining<=0) break;
         const amount=parseFloat((poolRemaining*0.10).toFixed(8));
         if(amount<=0) break;
@@ -1015,6 +1048,8 @@ function completeRecoveryIfFinished(){
         state.recoveryLastUnlockAt=0;
         state.recoveryTriggerTimestamp=0;
         state.activeDays=0;
+        state.burningStreak=0;
+        state.burningDaysApplied=0;
         saveState();
     }
 }
@@ -1044,7 +1079,7 @@ function loadState(){
             state.claimedTasks={ telegram:false, x:false, youtube:false };
         }
         normalizeRecoveryState();
-        processInactivityTrigger();
+        processBurning();
         markUserActive();
         processRecoveryUnlock();
         completeRecoveryIfFinished();
@@ -1063,7 +1098,8 @@ function saveState(){
             miningState:state.miningState, miningStartedAt:state.miningStartedAt, miningCycleDuration:state.miningCycleDuration,
             baseMiningRate:state.baseMiningRate, boosterBonusRate:state.boosterBonusRate, boostLuckyResetAt:state.boostLuckyResetAt,
             boosterChancesLeft:state.boosterChancesLeft, luckyBoxChances:state.luckyBoxChances, sessionAccumulated:state.sessionAccumulated,
-            burningStreak:state.burningStreak, recoverableBalance:state.recoverableBalance, friends:state.friends,
+            burningStreak:state.burningStreak, burningDaysApplied:state.burningDaysApplied,
+            recoverableBalance:state.recoverableBalance, friends:state.friends,
             transactions:state.transactions, claimedTasks:state.claimedTasks, lastActivityTimestamp:state.lastActivityTimestamp,
             lastActivityDay:state.lastActivityDay, inactiveDays:state.inactiveDays, activeDays:state.activeDays,
             recoveryTriggered:state.recoveryTriggered, recoveryQualified:state.recoveryQualified,
@@ -1159,6 +1195,7 @@ async function processSendTransaction(){
     const amount=parseFloat(document.getElementById('sendAmountInput').value);
     if(!recipientInput){ showToast('Please enter a valid recipient ID or @username.'); return; }
     if(isNaN(amount) || amount<=0){ showToast('Please enter a valid send amount.'); return; }
+    if(amount < MIN_TRANSFER_AMOUNT){ showToast(`Minimum transfer amount is ${MIN_TRANSFER_AMOUNT} $FDX.`); return; }
     if(amount>Number(state.totalBalance)){ showToast('Insufficient Total Balance for transfer.'); return; }
 
     const btn=document.querySelector('#sendModal .prompt-btn-confirm');
@@ -1422,17 +1459,6 @@ function formatTimer(seconds){
     return `${h}:${m}:${s}`;
 }
 
-/* =========================================================
-   BOOST + LUCKY RESET
-========================================================= */
-function resetBoostAndLuckyBox(){
-    state.boosterChancesLeft=5;
-    state.luckyBoxChances=5;
-    state.boosterBonusRate=0;
-    state.boostLuckyResetAt=0;
-    saveState();
-}
-
 function checkBoostLuckyReset(){
     if(state.boostLuckyResetAt>0 && Date.now()>=state.boostLuckyResetAt && (state.miningState==='ACTIVE' || state.miningState==='READY_TO_CLAIM')){
         return true;
@@ -1541,7 +1567,11 @@ function updateMiningUI(){
     if(boosterEl) boosterEl.textContent=`${state.boosterChancesLeft}/5 Left`;
     if(luckyPromptEl) luckyPromptEl.textContent=state.luckyBoxChances;
     if(recFdxEl) recFdxEl.textContent=formatNumber(state.recoverableBalance);
-    if(streakEl) streakEl.textContent=`${state.burningStreak} Day${state.burningStreak===1?'':'s'}`;
+    if(streakEl){
+        const bs=Number(state.burningStreak||0);
+        streakEl.textContent = bs > 0 ? `${bs} Day${bs===1?'':'s'} 🔥` : 'Safe';
+        streakEl.style.color = bs > 0 ? 'var(--red)' : 'var(--green)';
+    }
     const pill=document.getElementById('systemPill');
     const button=document.getElementById('miningToggleBtn');
     if(state.miningState==='IDLE'){
@@ -1753,6 +1783,7 @@ document.addEventListener('click', function(event){
     if(state.lastActivityDay!==today){
         markUserActive();
     }else{
+        /* Already active today — no burning to apply, just refresh timestamp */
         state.lastActivityTimestamp=Date.now();
         state.inactiveDays=0;
         saveState();
@@ -1775,6 +1806,7 @@ window.addEventListener('DOMContentLoaded', async function(){
    LIVE UI UPDATE
 ========================================================= */
 setInterval(function(){
+    processBurning();
     processRecoveryUnlock();
     updateAllUI();
 }, 1000);
