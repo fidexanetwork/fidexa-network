@@ -408,12 +408,12 @@ Mining Rate:
 <div class="modal-overlay" id="receiveModal">
 <div class="prompt-box" style="max-width:360px;">
 <div class="prompt-title">📥 RECEIVE $FDX</div>
-<div class="prompt-desc">Scan QR code or copy address to receive funds directly into your node wallet.</div>
+<div class="prompt-desc">Scan the QR code or copy your Telegram ID to receive $FDX directly into your wallet.</div>
 <div class="qr-container" id="qrcodeCanvas"></div>
-<input type="text" id="receiveAddressBox" readonly style="width:100%;padding:10px;background:#111b27;border:1px solid var(--border);border-radius:10px;color:#fff;font-size:11px;text-align:center;margin-bottom:14px;" onclick="this.select();">
+<input type="text" id="receiveAddressBox" readonly style="width:100%;padding:10px;background:#111b27;border:1px solid var(--border);border-radius:10px;color:#fff;font-size:14px;text-align:center;margin-bottom:14px;letter-spacing:1px;font-weight:900;" onclick="this.select();">
 <div class="prompt-actions">
 <button class="prompt-btn-cancel" onclick="closeReceiveModal()">Close</button>
-<button class="prompt-btn-confirm" onclick="copyReceiveAddress()">Copy Address</button>
+<button class="prompt-btn-confirm" onclick="copyReceiveAddress()">Copy ID</button>
 </div>
 </div>
 </div>
@@ -421,8 +421,8 @@ Mining Rate:
 <div class="modal-overlay" id="sendModal">
 <div class="prompt-box" style="max-width:360px;">
 <div class="prompt-title">📤 SEND $FDX</div>
-<div class="prompt-desc">Transfer available tokens directly to another user node address or @username securely.</div>
-<input type="text" id="sendRecipientInput" placeholder="Recipient Address or @username" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
+<div class="prompt-desc">Transfer $FDX directly to another user via their Telegram ID or @username.</div>
+<input type="text" id="sendRecipientInput" placeholder="Recipient Telegram ID or @username" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:10px;outline:none;">
 <input type="number" id="sendAmountInput" placeholder="Amount to send ($FDX)" style="width:100%;padding:12px;background:#111b27;border:1px solid var(--border);border-radius:12px;color:#fff;font-size:12px;margin-bottom:16px;outline:none;">
 <div class="prompt-actions">
 <button class="prompt-btn-cancel" onclick="closeSendModal()">Cancel</button>
@@ -679,6 +679,57 @@ function renderFriends(){
     });
 }
 
+async function loadTransactions(){
+    if(!fidexaApiAuthenticated || !currentTelegramInitData) return;
+    try{
+        const data = await fidexaApiRequest('/api/wallet/transactions');
+        state.transactions = Array.isArray(data?.transactions) ? data.transactions : [];
+        try{ saveState(); }catch(e){}
+        renderTransactions();
+    }catch(error){
+        console.warn('Load transactions failed:', error);
+    }
+}
+
+function renderTransactions(){
+    const container=document.getElementById('txListContainer');
+    const emptyState=document.getElementById('txEmptyState');
+    if(!container || !emptyState) return;
+    const txs = Array.isArray(state.transactions) ? state.transactions : [];
+    if(txs.length===0){ emptyState.style.display='block'; container.innerHTML=''; return; }
+    emptyState.style.display='none';
+    container.innerHTML='';
+    txs.forEach(function(tx){
+        const item=document.createElement('div');
+        item.className='friend-row-item';
+        const type = String(tx.type||'').toUpperCase();
+        const isReceive = (type==='RECEIVE' || type.startsWith('TASK_') || type==='MINING');
+        const sign = isReceive ? '+' : '-';
+        const colorClass = isReceive ? 'var(--green)' : 'var(--red)';
+        let labelText = 'Transaction';
+        let icon = '💸';
+        if(type==='SEND'){ labelText = `Sent to ID ${escapeHtml(tx.recipientId||'user')}`; icon='📤'; }
+        else if(type==='RECEIVE'){ labelText = `Received from ID ${escapeHtml(tx.senderId||'user')}`; icon='📥'; }
+        else if(type==='MINING'){ labelText = 'Mining reward'; icon='⛏️'; }
+        else if(type==='TASK_TELEGRAM'){ labelText = 'Telegram task'; icon='📢'; }
+        else if(type==='TASK_X'){ labelText = 'X task'; icon='𝕏'; }
+        else if(type==='TASK_YOUTUBE'){ labelText = 'YouTube task'; icon='▶️'; }
+        const timeStr = tx.createdAt ? new Date(tx.createdAt).toLocaleString([], { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short' }) : (tx.time||'');
+        item.innerHTML=`
+            <div class="friend-left">
+                <div class="friend-avatar">${icon}</div>
+                <div>
+                    <div class="friend-name">${labelText}</div>
+                    <div class="friend-status inactive">${timeStr}</div>
+                </div>
+            </div>
+            <div style="font-size:13px;color:${colorClass};font-weight:900;">
+                ${sign}${formatNumber(tx.amount)} $FDX
+            </div>`;
+        container.appendChild(item);
+    });
+}
+
 async function loadFidexaProfile(){
     function refreshTelegramInitData(){
         if(window.Telegram && window.Telegram.WebApp){
@@ -713,6 +764,7 @@ async function loadFidexaProfile(){
                 try{ await registerIncomingReferral(); }catch(referralError){ console.warn('Fidexa referral fallback registration failed:', referralError); }
             }
             await loadReferralData();
+            await loadTransactions();
             console.log('Fidexa API /api/me connected successfully:', data);
             return true;
         }catch(error){
@@ -758,7 +810,7 @@ if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded
 /* =========================================================
    STORAGE
 ========================================================= */
-const STORAGE_KEY='fidexa_prototype_state_v9';
+const STORAGE_KEY='fidexa_prototype_state_v10';
 const defaultState={
     totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, miningCycleDuration:14400,
     baseMiningRate:1.0, boosterBonusRate:0, boostLuckyResetAt:0, boosterResetAt:0, referralBonusRate:0,
@@ -805,6 +857,8 @@ function normalizeRecoveryState(){
     state.recoveryLastUnlockAt=Number(state.recoveryLastUnlockAt)||0;
     state.recoveryTriggerTimestamp=Number(state.recoveryTriggerTimestamp)||0;
     state.recoveryActiveDays=Number(state.recoveryActiveDays)||0;
+    state.burningStreak=Number(state.burningStreak)||1;
+    if(state.burningStreak<1) state.burningStreak=1;
     if(!Number.isFinite(state.recoveryActiveDays)) state.recoveryActiveDays=0;
     if(typeof state.recoveryTriggered!=='boolean') state.recoveryTriggered=Number(state.recoverableBalance)>0;
     if(typeof state.recoveryQualified!=='boolean') state.recoveryQualified=false;
@@ -840,7 +894,7 @@ function processInactivityTrigger(){
         state.recoveryLastUnlockAt=0;
         state.recoveryUnlockedBalance=0;
         state.recoveryTriggerTimestamp=Date.now();
-        state.burningStreak=Math.max(1, Number(state.burningStreak||1));
+        state.burningStreak=1;
         state.inactiveDays=7;
         saveState();
         return true;
@@ -849,7 +903,7 @@ function processInactivityTrigger(){
 }
 
 /* =========================================================
-   RECOVERY: MARK USER ACTIVE
+   RECOVERY: MARK USER ACTIVE + BURNING STREAK
 ========================================================= */
 function markUserActive(){
     normalizeRecoveryState();
@@ -860,6 +914,21 @@ function markUserActive(){
     state.lastActivityTimestamp=now;
     state.lastActivityDay=today;
     state.inactiveDays=0;
+
+    /* --- BURNING STREAK: increment only on a new consecutive day --- */
+    if(!burningTriggered){
+        if(previousDay && previousDay !== today){
+            const expectedPrev=getPreviousDateKey(today);
+            if(previousDay === expectedPrev){
+                state.burningStreak=Math.max(1, Number(state.burningStreak||1) + 1);
+            }else{
+                state.burningStreak=1;
+            }
+        }else if(!previousDay){
+            state.burningStreak=Math.max(1, Number(state.burningStreak||1));
+        }
+    }
+
     if(burningTriggered){
         state.recoveryQualificationStartDay=today;
         state.recoveryActiveDays=1;
@@ -937,9 +1006,6 @@ function processRecoveryUnlock(){
     saveState();
 }
 
-/* =========================================================
-   RECOVERY: COMPLETE RESET AFTER EVERYTHING IS CLAIMED
-========================================================= */
 function completeRecoveryIfFinished(){
     if(state.recoveryTriggered && Number(state.recoverableBalance||0)<=0 && Number(state.recoveryUnlockedBalance||0)<=0){
         state.recoveryTriggered=false;
@@ -1039,13 +1105,13 @@ function switchTab(tabName, btnElement){
     markUserActive();
     processRecoveryUnlock();
     updateRecoveryUI();
-    if(tabName==='wallet') renderTransactions();
+    if(tabName==='wallet') loadTransactions();
 }
 
 /* =========================================================
    WALLET
 ========================================================= */
-function getWalletAddress(){ return `FDX_NODE_${currentUserId}`; }
+function getWalletAddress(){ return String(currentUserId); }
 let qrInstance=null;
 
 function openReceiveModal(){
@@ -1069,11 +1135,11 @@ async function copyReceiveAddress(){
     const addressBox=document.getElementById('receiveAddressBox');
     try{
         await navigator.clipboard.writeText(addressBox.value);
-        showToast('Wallet address copied to clipboard!');
+        showToast('Your Telegram ID copied!');
     }catch(e){
         addressBox.select();
         document.execCommand('copy');
-        showToast('Wallet address copied!');
+        showToast('Your Telegram ID copied!');
     }
     closeReceiveModal();
 }
@@ -1087,88 +1153,34 @@ function openSendModal(){
 
 function closeSendModal(){ document.getElementById('sendModal').classList.remove('active'); }
 
-function processSendTransaction(){
+async function processSendTransaction(){
     markUserActive();
     const recipientInput=document.getElementById('sendRecipientInput').value.trim();
     const amount=parseFloat(document.getElementById('sendAmountInput').value);
-    if(!recipientInput){ showToast('Please enter a valid recipient address or @username.'); return; }
+    if(!recipientInput){ showToast('Please enter a valid recipient ID or @username.'); return; }
     if(isNaN(amount) || amount<=0){ showToast('Please enter a valid send amount.'); return; }
     if(amount>Number(state.totalBalance)){ showToast('Insufficient Total Balance for transfer.'); return; }
 
-    state.totalBalance=Number(state.totalBalance)-amount;
-    const txTime=new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    if(!state.transactions) state.transactions=[];
-    state.transactions.unshift({ type:'SEND', recipient:recipientInput, amount:amount, time:txTime });
-
-    const globalUsers=getAllUsersRegistry();
-    globalUsers[currentUserId]={
-        username:currentUserName, totalBalance:state.totalBalance, totalMined:state.totalMined,
-        miningState:state.miningState, miningStartedAt:state.miningStartedAt, miningCycleDuration:state.miningCycleDuration,
-        baseMiningRate:state.baseMiningRate, boosterBonusRate:state.boosterBonusRate, boostLuckyResetAt:state.boostLuckyResetAt,
-        boosterChancesLeft:state.boosterChancesLeft, luckyBoxChances:state.luckyBoxChances, sessionAccumulated:state.sessionAccumulated,
-        burningStreak:state.burningStreak, recoverableBalance:state.recoverableBalance, friends:state.friends,
-        transactions:state.transactions, claimedTasks:state.claimedTasks, lastActivityTimestamp:state.lastActivityTimestamp,
-        lastActivityDay:state.lastActivityDay, inactiveDays:state.inactiveDays, activeDays:state.activeDays,
-        recoveryTriggered:state.recoveryTriggered, recoveryQualified:state.recoveryQualified,
-        recoveryQualificationStartDay:state.recoveryQualificationStartDay, recoveryActiveDays:state.recoveryActiveDays,
-        recoveryLastUnlockAt:state.recoveryLastUnlockAt, recoveryUnlockedBalance:state.recoveryUnlockedBalance,
-        recoveryTriggerTimestamp:state.recoveryTriggerTimestamp
-    };
-
-    let recipientKey=null;
-    for(let userId in globalUsers){
-        const userNode=`FDX_NODE_${userId}`;
-        if(userNode.toLowerCase()===recipientInput.toLowerCase() ||
-           (globalUsers[userId].username && globalUsers[userId].username.toLowerCase()===recipientInput.toLowerCase().replace('@',''))){
-            recipientKey=userId;
-            break;
-        }
+    const btn=document.querySelector('#sendModal .prompt-btn-confirm');
+    if(btn){ btn.disabled=true; btn.textContent='SENDING...'; }
+    try{
+        const data=await fidexaApiRequest('/api/wallet/send', {
+            method:'POST',
+            body:{ recipient:recipientInput, amount:amount }
+        });
+        if(!data || data.success!==true) throw new Error(data?.error || 'Send failed.');
+        if(data.totalBalance!==undefined){ state.totalBalance=Number(data.totalBalance)||0; }
+        try{ saveState(); }catch(e){}
+        updateAllUI();
+        closeSendModal();
+        showToast(`Successfully sent ${formatNumber(amount)} $FDX!`);
+        loadTransactions();
+    }catch(error){
+        console.warn('Send failed:', error);
+        showToast(error.message || 'Send failed. Please try again.');
+    }finally{
+        if(btn){ btn.disabled=false; btn.textContent='Confirm Send'; }
     }
-
-    if(recipientKey){
-        globalUsers[recipientKey].totalBalance=Number(globalUsers[recipientKey].totalBalance||0)+amount;
-        if(!globalUsers[recipientKey].transactions) globalUsers[recipientKey].transactions=[];
-        globalUsers[recipientKey].transactions.unshift({ type:'RECEIVE', sender:currentUserName, amount:amount, time:txTime });
-        showToast(`Successfully sent ${formatNumber(amount)} $FDX to ${recipientInput}!`);
-    }else{
-        const dummyId=recipientInput.replace('FDX_NODE_','').replace('@','');
-        globalUsers[dummyId]={ username:recipientInput, totalBalance:amount, transactions:[{ type:'RECEIVE', sender:currentUserName, amount:amount, time:txTime }] };
-        showToast(`Sent ${formatNumber(amount)} $FDX (Recipient node initialized)!`);
-    }
-    saveAllUsersRegistry(globalUsers);
-    saveState();
-    updateAllUI();
-    closeSendModal();
-}
-
-function renderTransactions(){
-    const container=document.getElementById('txListContainer');
-    const emptyState=document.getElementById('txEmptyState');
-    const txs=state.transactions||[];
-    if(txs.length===0){ emptyState.style.display='block'; container.innerHTML=''; return; }
-    emptyState.style.display='none';
-    container.innerHTML='';
-    txs.forEach(function(tx){
-        const item=document.createElement('div');
-        item.className='friend-row-item';
-        const isReceive=tx.type==='RECEIVE';
-        const sign=isReceive?'+':'-';
-        const colorClass=isReceive?'var(--green)':'var(--red)';
-        const labelText=isReceive?`Received from ${escapeHtml(tx.sender||'Node')}`:`Sent to ${escapeHtml(tx.recipient)}`;
-        const iconSymbol=isReceive?'📥':'📤';
-        item.innerHTML=`
-            <div class="friend-left">
-                <div class="friend-avatar">${iconSymbol}</div>
-                <div>
-                    <div class="friend-name">${labelText}</div>
-                    <div class="friend-status inactive">${tx.time}</div>
-                </div>
-            </div>
-            <div style="font-size:13px;color:${colorClass};font-weight:900;">
-                ${sign}${formatNumber(tx.amount)} $FDX
-            </div>`;
-        container.appendChild(item);
-    });
 }
 
 function escapeHtml(str){
@@ -1188,14 +1200,26 @@ function openTaskLinkAndVerify(type){
     }, 1200);
 }
 
-function claimTaskReward(type){
+async function claimTaskReward(type){
     markUserActive();
-    if(state.claimedTasks[type]){ showToast('Task already claimed.'); return; }
-    state.claimedTasks[type]=true;
-    state.totalBalance=Number(state.totalBalance)+5;
-    saveState();
-    updateAllUI();
-    showToast('+5.00 $FDX added to Balance');
+    if(state.claimedTasks && state.claimedTasks[type]){ showToast('Task already claimed.'); return; }
+    try{
+        const data=await fidexaApiRequest('/api/tasks/claim', {
+            method:'POST',
+            body:{ task:type }
+        });
+        if(!data || data.success!==true) throw new Error(data?.error || 'Claim failed.');
+        if(!state.claimedTasks){ state.claimedTasks={ telegram:false, x:false, youtube:false }; }
+        state.claimedTasks[type]=true;
+        if(data.totalBalance!==undefined){ state.totalBalance=Number(data.totalBalance)||state.totalBalance; }
+        try{ saveState(); }catch(e){}
+        updateAllUI();
+        showToast(`+${formatNumber(data.reward || 5)} $FDX added to Balance`);
+        loadTransactions();
+    }catch(error){
+        console.warn('Task claim failed:', error);
+        showToast(error.message || 'Task claim failed. Please try again.');
+    }
 }
 
 /* =========================================================
@@ -1212,7 +1236,7 @@ function openProfileInfo(type){
         bodyEl.innerHTML=`
             <p><strong>Telegram ID:</strong> ${escapeHtml(currentUserId)}</p>
             <p style="margin-top:10px;"><strong>Username:</strong> ${escapeHtml(currentUserName)}</p>
-            <p style="margin-top:10px;"><strong>Wallet Address:</strong> ${escapeHtml(getWalletAddress())}</p>
+            <p style="margin-top:10px;"><strong>Wallet ID:</strong> ${escapeHtml(getWalletAddress())}</p>
             <p style="margin-top:10px;"><strong>Balance:</strong> ${formatNumber(state.totalBalance)} $FDX</p>`;
     }else if(type==='support'){
         titleEl.textContent='Chat Support';
@@ -1434,46 +1458,43 @@ function updateRecoveryUI(){
     const now=Date.now();
     const pool=Number(state.recoverableBalance||0);
     const ready=Number(state.recoveryUnlockedBalance||0);
-    recoveryPool.textContent=`${formatNumber(pool)} $FDX`;
-    unlocked.textContent=`${formatNumber(ready)} $FDX`;
-    inactiveDays.textContent=`${Math.min(7, Number(state.inactiveDays||0))} / 7`;
-    activeDays.textContent=`${Math.min(7, Number(state.recoveryActiveDays||0))} / 7`;
-    claimBtn.classList.remove('visible');
+    if(recoveryPool) recoveryPool.textContent=`${formatNumber(pool)} $FDX`;
+    if(unlocked) unlocked.textContent=`${formatNumber(ready)} $FDX`;
+    if(inactiveDays) inactiveDays.textContent=`${Math.min(7, Number(state.inactiveDays||0))} / 7`;
+    if(activeDays) activeDays.textContent=`${Math.min(7, Number(state.recoveryActiveDays||0))} / 7`;
+    if(claimBtn) claimBtn.classList.remove('visible');
     if(ready>0){
-        activityStatus.textContent='RECOVERY READY TO CLAIM';
-        activityStatus.style.color='var(--yellow)';
-        claimBtn.classList.add('visible');
-        nextUnlock.textContent='AVAILABLE NOW';
-        note.textContent='Watch a rewarded ad to move the unlocked $FDX into Total Balance.';
+        if(activityStatus){ activityStatus.textContent='RECOVERY READY TO CLAIM'; activityStatus.style.color='var(--yellow)'; }
+        if(claimBtn) claimBtn.classList.add('visible');
+        if(nextUnlock) nextUnlock.textContent='AVAILABLE NOW';
+        if(note) note.textContent='Watch a rewarded ad to move the unlocked $FDX into Total Balance.';
         return;
     }
-    activityStatus.style.color='';
+    if(activityStatus) activityStatus.style.color='';
     if(!state.recoveryTriggered && pool<=0){
-        activityStatus.textContent='ACTIVE';
-        nextUnlock.textContent='Not active';
-        note.textContent='Stay active to protect your $FDX balance.';
+        if(activityStatus) activityStatus.textContent='ACTIVE';
+        if(nextUnlock) nextUnlock.textContent='Not active';
+        if(note) note.textContent='Stay active to protect your $FDX balance.';
         return;
     }
     if(state.recoveryTriggered && !state.recoveryQualified){
-        activityStatus.textContent='RECOVERY QUALIFICATION';
-        activityStatus.style.color='var(--cyan)';
-        nextUnlock.textContent='After 7 active days';
-        note.textContent='Stay active on 7 consecutive days to begin recovery unlocking.';
+        if(activityStatus){ activityStatus.textContent='RECOVERY QUALIFICATION'; activityStatus.style.color='var(--cyan)'; }
+        if(nextUnlock) nextUnlock.textContent='After 7 active days';
+        if(note) note.textContent='Stay active on 7 consecutive days to begin recovery unlocking.';
         return;
     }
     if(state.recoveryQualified && pool>0){
-        activityStatus.textContent='RECOVERY ACTIVE';
-        activityStatus.style.color='var(--green)';
+        if(activityStatus){ activityStatus.textContent='RECOVERY ACTIVE'; activityStatus.style.color='var(--green)'; }
         if(state.recoveryLastUnlockAt>0){
             const remaining=Math.max(0, (Number(state.recoveryLastUnlockAt)+24*60*60*1000)-now);
-            if(remaining<=0){ nextUnlock.textContent='PROCESSING...'; }
+            if(remaining<=0){ if(nextUnlock) nextUnlock.textContent='PROCESSING...'; }
             else{
                 const hours=Math.floor(remaining/3600000);
                 const minutes=Math.floor((remaining%3600000)/60000);
-                nextUnlock.textContent=`${hours}h ${minutes}m`;
+                if(nextUnlock) nextUnlock.textContent=`${hours}h ${minutes}m`;
             }
         }
-        note.textContent='10% of the remaining Recovery Pool unlocks every 24 hours.';
+        if(note) note.textContent='10% of the remaining Recovery Pool unlocks every 24 hours.';
     }
 }
 
@@ -1499,35 +1520,39 @@ function updateMiningUI(){
         saveState();
     }
     const rate=getCurrentRate();
-    document.getElementById('currentRateDisplay').textContent=rate.toFixed(1);
-    document.getElementById('statRate').textContent=`${rate.toFixed(1)} $FDX/H`;
-    document.getElementById('timerDisplay').textContent=formatTimer(getRemainingSeconds());
+    const rateEl=document.getElementById('currentRateDisplay');
+    const statRateEl=document.getElementById('statRate');
+    const timerEl=document.getElementById('timerDisplay');
+    const sessEl=document.getElementById('sessionAccumulated');
+    const hoursEl=document.getElementById('completedHours');
+    const totalMinedEl=document.getElementById('totalMined');
+    const boosterEl=document.getElementById('boosterChances');
+    const luckyPromptEl=document.getElementById('luckyBoxPromptChances');
+    const recFdxEl=document.getElementById('recoverableFdx');
+    const streakEl=document.getElementById('burningStreak');
+    if(rateEl) rateEl.textContent=rate.toFixed(1);
+    if(statRateEl) statRateEl.textContent=`${rate.toFixed(1)} $FDX/H`;
+    if(timerEl) timerEl.textContent=formatTimer(getRemainingSeconds());
     const sessionAmount=state.miningState==='ACTIVE' ? getSessionAccumulated() : Number(state.sessionAccumulated||0);
-    document.getElementById('sessionAccumulated').textContent=`${formatNumber(sessionAmount)} $FDX`;
+    if(sessEl) sessEl.textContent=`${formatNumber(sessionAmount)} $FDX`;
     const elapsed=state.miningState==='ACTIVE' ? getMiningElapsedSeconds() : (state.miningState==='READY_TO_CLAIM' ? MINING_CYCLE_SECONDS : 0);
-    document.getElementById('completedHours').textContent=`${Math.min(4, Math.floor(elapsed/3600))} / 4`;
-    document.getElementById('totalMined').textContent=`${formatNumber(state.totalMined)} $FDX`;
-    document.getElementById('boosterChances').textContent=`${state.boosterChancesLeft}/5 Left`;
-    document.getElementById('luckyBoxPromptChances').textContent=state.luckyBoxChances;
-    document.getElementById('recoverableFdx').textContent=formatNumber(state.recoverableBalance);
-    document.getElementById('burningStreak').textContent=`${state.burningStreak} Day`;
+    if(hoursEl) hoursEl.textContent=`${Math.min(4, Math.floor(elapsed/3600))} / 4`;
+    if(totalMinedEl) totalMinedEl.textContent=`${formatNumber(state.totalMined)} $FDX`;
+    if(boosterEl) boosterEl.textContent=`${state.boosterChancesLeft}/5 Left`;
+    if(luckyPromptEl) luckyPromptEl.textContent=state.luckyBoxChances;
+    if(recFdxEl) recFdxEl.textContent=formatNumber(state.recoverableBalance);
+    if(streakEl) streakEl.textContent=`${state.burningStreak} Day${state.burningStreak===1?'':'s'}`;
     const pill=document.getElementById('systemPill');
     const button=document.getElementById('miningToggleBtn');
     if(state.miningState==='IDLE'){
-        pill.textContent='READY TO MINE';
-        button.textContent='START MINING';
-        button.style.background='linear-gradient(90deg,#0284c7,#38bdf8)';
-        button.style.pointerEvents='auto';
+        if(pill) pill.textContent='READY TO MINE';
+        if(button){ button.textContent='START MINING'; button.style.background='linear-gradient(90deg,#0284c7,#38bdf8)'; button.style.pointerEvents='auto'; }
     }else if(state.miningState==='ACTIVE'){
-        pill.textContent='ACTIVE MINING';
-        button.textContent='MINING IN PROGRESS';
-        button.style.background='rgba(56,189,248,.2)';
-        button.style.pointerEvents='none';
+        if(pill) pill.textContent='ACTIVE MINING';
+        if(button){ button.textContent='MINING IN PROGRESS'; button.style.background='rgba(56,189,248,.2)'; button.style.pointerEvents='none'; }
     }else if(state.miningState==='READY_TO_CLAIM'){
-        pill.textContent='SESSION ENDED';
-        button.textContent='CLAIM REWARD';
-        button.style.background='linear-gradient(90deg,#facc15,#f59e0b)';
-        button.style.pointerEvents='auto';
+        if(pill) pill.textContent='SESSION ENDED';
+        if(button){ button.textContent='CLAIM REWARD'; button.style.background='linear-gradient(90deg,#facc15,#f59e0b)'; button.style.pointerEvents='auto'; }
     }
     updateRecoveryUI();
 }
@@ -1595,6 +1620,7 @@ async function handleMiningAction(){
                 updateAllUI();
                 const reward=Number(data.reward ?? data.claimedReward ?? accumulated);
                 showToast(`Successfully claimed ${formatNumber(reward)} $FDX!`);
+                loadTransactions();
             }catch(error){
                 console.warn('Fidexa backend mining claim failed:', error);
                 showToast(error.message || 'Claim failed. Your mining reward was not lost.');
@@ -1654,7 +1680,8 @@ function openLuckyBoxModal(){
     if(Number(state.luckyBoxChances)<=0){ showToast('No Lucky Box chances left.'); return; }
     const modal=document.getElementById('luckyBoxModal');
     if(!modal){ showToast('Lucky Box is temporarily unavailable.'); return; }
-    document.getElementById('luckyBoxPromptChances').textContent=state.luckyBoxChances;
+    const el=document.getElementById('luckyBoxPromptChances');
+    if(el) el.textContent=state.luckyBoxChances;
     modal.classList.add('active');
 }
 
@@ -1673,6 +1700,7 @@ function confirmOpenLuckyBox(){
             saveState();
             updateAllUI();
             showToast(`🎁 Lucky Box opened! +${data.reward} $FDX credited.`);
+            loadTransactions();
         }catch(error){
             console.warn('Fidexa backend Lucky Box failed:', error);
             showToast(error?.message || 'Lucky Box reward could not be saved. Please try again.');
@@ -1709,8 +1737,10 @@ function updateAllUI(){
     processRecoveryUnlock();
     completeRecoveryIfFinished();
     const formattedBal=formatNumber(state.totalBalance);
-    document.getElementById('balanceDisplay').textContent=formattedBal;
-    document.getElementById('walletBalanceNum').innerHTML=`${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
+    const balEl=document.getElementById('balanceDisplay');
+    const walletEl=document.getElementById('walletBalanceNum');
+    if(balEl) balEl.textContent=formattedBal;
+    if(walletEl) walletEl.innerHTML=`${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
     updateMiningUI();
     renderFriends();
 }
