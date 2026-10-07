@@ -319,8 +319,6 @@ input,textarea{font:inherit;}
 <div class="profile-menu-item" onclick="openProfileInfo('whitepaper')"><div class="profile-menu-left"><span class="profile-menu-icon">📄</span><span class="profile-menu-title">White Paper</span></div><span class="profile-menu-arrow">›</span></div>
 <div class="profile-menu-item" onclick="openProfileInfo('roadmap')"><div class="profile-menu-left"><span class="profile-menu-icon">🗺️</span><span class="profile-menu-title">Official Roadmap</span></div><span class="profile-menu-arrow">›</span></div>
 <div class="profile-menu-item" onclick="openExternalLink('telegram')"><div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Official Telegram</span></div><span class="profile-menu-arrow">↗</span></div>
-<div class="profile-menu-item" onclick="openExternalLink('twitter')"><div class="profile-menu-left"><span class="profile-menu-icon">🌐</span><span class="profile-menu-title">Official X</span></div><span class="profile-menu-arrow">↗</span></div>
-<div class="profile-menu-item" onclick="openExternalLink('youtube')"><div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Official YouTube (@Fidexa_Network)</span></div><span class="profile-menu-arrow">↗</span></div>
 <div class="profile-menu-item" onclick="openProfileInfo('deletion')" style="border-color:rgba(248,113,113,.3);"><div class="profile-menu-left"><span class="profile-menu-icon">⚠️</span><span class="profile-menu-title" style="color:var(--red);">Account Deletion</span></div><span class="profile-menu-arrow" style="color:var(--red);">›</span></div>
 </div>
 </main>
@@ -681,8 +679,6 @@ async function loadFidexaProfile(){
    OFFICIAL LINKS
 ========================================================= */
 const FIDEXA_TELEGRAM='https://t.me/fidexa_Network';
-const FIDEXA_X='https://x.com/Fidexa_Network';
-const FIDEXA_YOUTUBE='https://youtube.com/@Fidexa_Network';
 const FIDEXA_BOT='https://t.me/FIDEXANetworkBot';
 
 /* =========================================================
@@ -1002,8 +998,6 @@ function closeProfileInfo(){ document.getElementById('profileInfoModal').classLi
 
 function openExternalLink(target){
     if(target==='telegram'){ window.open(FIDEXA_TELEGRAM, '_blank'); }
-    else if(target==='twitter'){ window.open(FIDEXA_X, '_blank'); }
-    else if(target==='youtube'){ window.open(FIDEXA_YOUTUBE, '_blank'); }
 }
 
 /* =========================================================
