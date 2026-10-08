@@ -12,7 +12,7 @@
 html,body{min-height:100%;background:var(--bg);}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;}
 button{font:inherit;cursor:pointer;border:0;background:none;color:inherit;}
-input,textarea{font:inherit;}
+input,textarea,select{font:inherit;}
 .app{max-width:720px;margin:auto;min-height:100vh;display:flex;flex-direction:column;}
 .screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;flex-direction:column;gap:16px;}
 .screen.hidden{display:none;}
@@ -46,8 +46,8 @@ input,textarea{font:inherit;}
 .stat-value.red{color:var(--red);}
 .stat-value.purple{color:var(--purple);}
 .stat-foot{font-size:10px;color:var(--muted);font-weight:700;margin-top:4px;}
-.search-bar{display:flex;gap:8px;margin-bottom:12px;}
-.search-input{flex:1;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;outline:none;}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.search-input{flex:1;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:#fff;font-size:13px;outline:none;min-width:150px;}
 .search-input:focus{border-color:rgba(56,189,248,.5);}
 .user-row{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s;}
 .user-row:hover{border-color:rgba(56,189,248,.4);}
@@ -58,6 +58,8 @@ input,textarea{font:inherit;}
 .badge{display:inline-block;font-size:9px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px;letter-spacing:.3px;}
 .badge.banned{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
 .badge.active{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3);}
+.badge.kyc{background:rgba(56,189,248,.15);color:var(--cyan);border:1px solid rgba(56,189,248,.3);}
+.badge.nokyc{background:rgba(136,153,166,.1);color:var(--muted);border:1px solid rgba(136,153,166,.3);}
 .pagination{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px;}
 .page-btn{background:#111b27;border:1px solid #223247;border-radius:10px;padding:9px 14px;color:var(--muted);font-size:12px;font-weight:800;}
 .page-btn:disabled{opacity:.4;cursor:not-allowed;}
@@ -107,6 +109,7 @@ input,textarea{font:inherit;}
 .balance-input{flex:1;background:#111b27;border:1px solid var(--border);border-radius:10px;padding:11px;color:#fff;font-size:13px;outline:none;}
 .balance-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:10px;padding:0 16px;color:#fff;font-weight:900;font-size:12px;white-space:nowrap;}
 .balance-btn.danger{background:linear-gradient(135deg,#dc2626,#ef4444);}
+.balance-btn.success{background:linear-gradient(135deg,#10b981,#059669);}
 .detail-list{background:#0a111a;border:1px solid #1a2838;border-radius:10px;padding:10px 14px;max-height:200px;overflow-y:auto;}
 .detail-list-item{display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid rgba(27,38,54,.6);font-weight:700;color:var(--muted);}
 .detail-list-item:last-child{border-bottom:0;}
@@ -116,6 +119,20 @@ input,textarea{font:inherit;}
 .loader{padding:40px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
 .loader-spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px;}
 .empty{padding:40px 20px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
+
+/* AIRDROP SPECIFIC STYLES */
+.airdrop-calc-box{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(27,38,54,.5);}
+.calc-row:last-child{border-bottom:0;}
+.calc-label{font-size:12px;color:var(--muted);font-weight:700;}
+.calc-value{font-size:15px;font-weight:900;color:#fff;}
+.calc-value.green{color:var(--green);}
+.calc-value.yellow{color:var(--yellow);}
+.airdrop-btn{width:100%;background:linear-gradient(135deg,#a78bfa,#8b5cf6);border-radius:12px;padding:14px;color:#fff;font-weight:900;font-size:13px;letter-spacing:.4px;margin-bottom:10px;}
+.airdrop-btn.secondary{background:#111b27;border:1px solid #223247;color:var(--muted);}
+.airdrop-user-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0a111a;border:1px solid #1a2838;border-radius:10px;margin-bottom:6px;font-size:11px;font-weight:700;}
+.airdrop-user-row div{color:var(--muted);}
+.airdrop-user-row strong{color:#fff;}
 </style>
 </head>
 <body>
@@ -149,21 +166,30 @@ input,textarea{font:inherit;}
 <button class="tab active" data-tab="dashboard" onclick="switchView('dashboard',this)">📊 Dashboard</button>
 <button class="tab" data-tab="users" onclick="switchView('users',this)">👥 Users</button>
 <button class="tab" data-tab="chats" onclick="switchView('chats',this)">💬 Chats <span id="unreadBadge" class="tab-badge" style="display:none;">0</span></button>
+<button class="tab" data-tab="withdrawals" onclick="switchView('withdrawals',this)">💸 Withdrawals <span id="withdrawBadge" class="tab-badge" style="display:none;">0</span></button>
+<button class="tab" data-tab="airdrop" onclick="switchView('airdrop',this)">💎 Airdrop</button>
 <button class="tab" data-tab="broadcast" onclick="switchView('broadcast',this)">📢 Broadcast</button>
 </div>
 </div>
 
 <div class="content">
 
+<!-- DASHBOARD -->
 <div class="view active" id="view-dashboard">
 <div class="stats-grid" id="statsGrid">
 <div class="stat-card"><div class="stat-label">Loading…</div></div>
 </div>
 </div>
 
+<!-- USERS -->
 <div class="view" id="view-users">
 <div class="search-bar">
 <input id="userSearch" class="search-input" type="text" placeholder="Search by ID or @username…" onkeydown="if(event.key==='Enter') loadUsers(1);">
+<select id="kycFilter" class="search-input" style="flex:0 0 auto; width:auto;" onchange="loadUsers(1)">
+    <option value="all">All Users</option>
+    <option value="paid">KYC Paid</option>
+    <option value="unpaid">KYC Unpaid</option>
+</select>
 <button class="page-btn" onclick="loadUsers(1)">SEARCH</button>
 </div>
 <div id="usersList"><div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div></div>
@@ -174,6 +200,7 @@ input,textarea{font:inherit;}
 </div>
 </div>
 
+<!-- CHATS -->
 <div class="view" id="view-chats">
 <div id="chatsList"><div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div></div>
 <div id="chatDetailView" style="display:none;">
@@ -189,6 +216,52 @@ input,textarea{font:inherit;}
 </div>
 </div>
 
+<!-- WITHDRAWALS -->
+<div class="view" id="view-withdrawals">
+<div id="withdrawalsList"><div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div></div>
+</div>
+
+<!-- AIRDROP -->
+<div class="view" id="view-airdrop">
+    <div class="airdrop-calc-box">
+        <div class="detail-label">Airdrop Settings</div>
+        <div class="calc-row">
+            <div class="calc-label">Total FDX Points in Circulation</div>
+            <div class="calc-value yellow" id="totalPointsDisplay">0</div>
+        </div>
+        <div class="calc-row">
+            <div class="calc-label">Total Users with TON Wallet</div>
+            <div class="calc-value cyan" id="totalWalletUsersDisplay">0</div>
+        </div>
+        <div class="calc-row">
+            <div class="calc-label">Total TON Collected (KYC)</div>
+            <div class="calc-value green" id="totalTonDisplay">0</div>
+        </div>
+        <div style="margin-top:12px;">
+            <div class="detail-label">Set Conversion Rate</div>
+            <div style="display:flex; gap:8px; margin-top:6px;">
+                <input id="tokenSupplyInput" class="balance-input" type="number" placeholder="Total Token Supply (e.g. 100000000)" step="1000">
+                <button class="balance-btn" onclick="calculateAirdrop()">CALCULATE</button>
+            </div>
+            <div class="calc-row" style="margin-top:10px;">
+                <div class="calc-label">Calculated Rate</div>
+                <div class="calc-value green" id="conversionRateDisplay">—</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
+        <button class="airdrop-btn" onclick="generateAirdropList()">📋 GENERATE LIST</button>
+        <button class="airdrop-btn secondary" onclick="exportAirdropCSV()">📥 EXPORT CSV</button>
+    </div>
+
+    <div class="detail-label">Airdrop List Preview</div>
+    <div id="airdropListContainer">
+        <div class="empty">Click "Generate List" to preview the airdrop.</div>
+    </div>
+</div>
+
+<!-- BROADCAST -->
 <div class="view" id="view-broadcast">
 <div class="broadcast-box">
 <div class="detail-label">Broadcast to all users</div>
@@ -224,6 +297,7 @@ let initData = "";
 let adminInfo = null;
 let currentUsersPage = 1;
 let currentChatUserId = null;
+let currentAirdropData = []; // Stores the generated airdrop list
 
 /* ================ HELPERS ================ */
 function el(id){ return document.getElementById(id); }
@@ -283,7 +357,6 @@ async function boot(){
     return;
   }
 
-  // Layer 1 — Username gate
   const tgUser = (tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
   const actualUsername = String(tgUser.username || "").toLowerCase().trim();
   const requiredUsername = String(ADMIN_USERNAME).toLowerCase().trim();
@@ -293,7 +366,6 @@ async function boot(){
     return;
   }
 
-  // Layer 2 — Server-side ID check
   try{
     const res = await api('/api/admin/me');
     adminInfo = res.admin;
@@ -302,6 +374,7 @@ async function boot(){
     el('adminUI').style.display = 'flex';
     loadDashboard();
     loadUnreadBadge();
+    loadWithdrawBadge();
   }catch(err){
     el('deniedReason').textContent = err.message || 'You are not authorized to view this page.';
     hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
@@ -322,6 +395,8 @@ function switchView(name, btn){
   if(name==='dashboard') loadDashboard();
   if(name==='users') loadUsers(1);
   if(name==='chats') loadChats();
+  if(name==='withdrawals') loadWithdrawals();
+  if(name==='airdrop') loadAirdropStats();
   if(name==='broadcast') el('broadcastText').focus();
 }
 
@@ -335,11 +410,11 @@ async function loadDashboard(){
     grid.innerHTML = `
       <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value cyan">${s.totalUsers}</div><div class="stat-foot">+${s.newUsers7d} in last 7d</div></div>
       <div class="stat-card"><div class="stat-label">Total FDX</div><div class="stat-value yellow">${fmt(s.totalBalance)}</div><div class="stat-foot">across wallets</div></div>
-      <div class="stat-card"><div class="stat-label">Total Mined</div><div class="stat-value green">${fmt(s.totalMined)}</div><div class="stat-foot">lifetime</div></div>
+      <div class="stat-card"><div class="stat-label">KYC Paid Users</div><div class="stat-value green">${s.kycPaidUsers || 0}</div><div class="stat-foot">wallets connected</div></div>
+      <div class="stat-card"><div class="stat-label">Total TON Collected</div><div class="stat-value purple">${fmt(s.totalTonCollected || 0)}</div><div class="stat-foot">from KYC fees</div></div>
       <div class="stat-card"><div class="stat-label">Referrals</div><div class="stat-value">${s.totalReferrals}</div><div class="stat-foot">all-time</div></div>
-      <div class="stat-card"><div class="stat-label">Burning Users</div><div class="stat-value red">${s.usersBurning}</div><div class="stat-foot">in burn now</div></div>
-      <div class="stat-card"><div class="stat-label">Recoverable</div><div class="stat-value yellow">${fmt(s.totalRecoverable)}</div><div class="stat-foot">locked pool</div></div>
       <div class="stat-card"><div class="stat-label">Unread Chats</div><div class="stat-value purple">${s.unreadChats}</div><div class="stat-foot">need reply</div></div>
+      <div class="stat-card"><div class="stat-label">Pending Withdrawals</div><div class="stat-value yellow">${s.pendingWithdrawals || 0}</div><div class="stat-foot">need review</div></div>
       <div class="stat-card"><div class="stat-label">Banned</div><div class="stat-value red">${s.totalBanned}</div><div class="stat-foot">total</div></div>
     `;
   }catch(err){
@@ -354,8 +429,9 @@ async function loadUsers(page){
   const list = el('usersList');
   list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
   const search = el('userSearch').value.trim();
+  const kycFilter = el('kycFilter').value;
   try{
-    const res = await api(`/api/admin/users?page=${page}&limit=30&search=${encodeURIComponent(search)}`);
+    const res = await api(`/api/admin/users?page=${page}&limit=30&search=${encodeURIComponent(search)}&kyc=${kycFilter}`);
     const users = res.users || [];
     if(!users.length){
       list.innerHTML = '<div class="empty">No users found.</div>';
@@ -367,6 +443,7 @@ async function loadUsers(page){
         <div class="user-row-left">
           <div class="user-name">${esc(u.username||('User '+u.id))}
             ${u.banned?'<span class="badge banned">BANNED</span>':''}
+            ${u.kyc_paid?'<span class="badge kyc">KYC PAID</span>':'<span class="badge nokyc">NO KYC</span>'}
             ${u.hasMined?'<span class="badge active">ACTIVE</span>':''}
           </div>
           <div class="user-meta">ID: ${u.id} · Joined ${timeAgo(u.createdAt)}</div>
@@ -391,20 +468,37 @@ async function openUserDetail(id){
   try{
     const res = await api('/api/admin/users/' + id);
     const u = res.user;
-    const recovery = u.recovery || {};
+    
+    const hasWallet = u.ton_wallet_address && u.ton_wallet_address.length > 0;
+    const walletDisplay = hasWallet 
+        ? `<div style="color:var(--cyan); font-size:12px; word-break:break-all; font-weight:800; margin-top:4px;">${esc(u.ton_wallet_address)}</div>
+           <div style="font-size:10px; color:var(--green); font-weight:700; margin-top:4px;">✅ Wallet Connected</div>`
+        : `<div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:4px;">❌ Not Connected</div>`;
+
+    const kycDisplay = u.kyc_paid 
+        ? `<div style="color:var(--green); font-weight:800;">✅ PAID (0.5 TON)</div>`
+        : `<div style="color:var(--red); font-weight:800;">❌ UNPAID</div>`;
+
     el('userModalBody').innerHTML = `
       <div class="detail-section">
         <div class="detail-label">Profile</div>
         <div class="detail-value">${esc(u.username||('User '+u.id))}</div>
         <div class="user-meta" style="margin-top:4px;">ID ${u.id} · Joined ${new Date(u.createdAt).toLocaleString()}</div>
       </div>
+      <div class="detail-section" style="background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.2); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div class="detail-label">TON Wallet Connection</div>
+        ${walletDisplay}
+      </div>
+      <div class="detail-section" style="background: rgba(250,204,21,0.05); border: 1px solid rgba(250,204,21,0.2); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+        <div class="detail-label">KYC Payment Status</div>
+        ${kycDisplay}
+        ${!u.kyc_paid ? `<button class="balance-btn success" style="width:100%; margin-top:8px;" onclick="markKycPaid('${u.id}')">MARK AS PAID (MANUAL)</button>` : ''}
+      </div>
       <div class="detail-grid">
         <div class="detail-cell"><div class="detail-cell-label">Balance</div><div class="detail-cell-value" style="color:var(--yellow);">${fmt(u.balance)}</div></div>
         <div class="detail-cell"><div class="detail-cell-label">Total Mined</div><div class="detail-cell-value" style="color:var(--green);">${fmt(u.totalMined)}</div></div>
         <div class="detail-cell"><div class="detail-cell-label">Referrals</div><div class="detail-cell-value">${u.referrals.length}</div></div>
         <div class="detail-cell"><div class="detail-cell-label">Referred By</div><div class="detail-cell-value" style="font-size:13px;">${u.referredBy?u.referredBy.referrerId:'—'}</div></div>
-        <div class="detail-cell"><div class="detail-cell-label">Recoverable</div><div class="detail-cell-value" style="color:var(--yellow);font-size:14px;">${fmt(recovery.recoverable_balance)}</div></div>
-        <div class="detail-cell"><div class="detail-cell-label">Burning Streak</div><div class="detail-cell-value" style="font-size:14px;">${recovery.burning_streak||0} days</div></div>
       </div>
       <div class="detail-section">
         <div class="detail-label">Adjust Balance</div>
@@ -417,24 +511,8 @@ async function openUserDetail(id){
       <div class="detail-section">
         <div class="detail-label">Account Status</div>
         ${u.ban ? `<div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:11px;color:var(--red);font-weight:700;">BANNED: ${esc(u.ban.reason||'No reason')}</div>
-        <button class="balance-btn" style="background:linear-gradient(135deg,#10b981,#059669);width:100%;" onclick="toggleBan('${u.id}','unban')">UNBAN USER</button>` :
+        <button class="balance-btn success" style="width:100%;" onclick="toggleBan('${u.id}','unban')">UNBAN USER</button>` :
         `<button class="balance-btn danger" style="width:100%;" onclick="toggleBan('${u.id}','ban')">BAN USER</button>`}
-      </div>
-      <div class="detail-section">
-        <div class="detail-label">Recent Mining Sessions</div>
-        <div class="detail-list">
-          ${u.miningSessions.length ? u.miningSessions.map(s=>`
-            <div class="detail-list-item"><span>${new Date(s.start_time).toLocaleDateString()}</span><strong>${fmt(s.total_reward)} · ${s.status}</strong></div>
-          `).join('') : '<div class="detail-list-item">No sessions</div>'}
-        </div>
-      </div>
-      <div class="detail-section">
-        <div class="detail-label">Recent Claims</div>
-        <div class="detail-list">
-          ${u.claims.length ? u.claims.map(c=>`
-            <div class="detail-list-item"><span>${esc(c.claim_type)}</span><strong>${fmt(c.amount)} $FDX</strong></div>
-          `).join('') : '<div class="detail-list-item">No claims</div>'}
-        </div>
       </div>
     `;
   }catch(err){
@@ -465,6 +543,17 @@ async function toggleBan(userId, action){
     showToast(action === 'ban' ? 'User banned.' : 'User unbanned.');
     openUserDetail(userId);
   }catch(err){ showToast('Error: ' + err.message); }
+}
+
+async function markKycPaid(userId) {
+    if(!confirm('Manually mark this user as KYC PAID? This will also set their wallet address if missing.')) return;
+    const wallet = prompt('Enter TON Wallet Address (if missing):');
+    if (!wallet) return;
+    try {
+        await api('/api/admin/users/'+userId+'/kyc', { method:'POST', body:{ walletAddress: wallet } });
+        showToast('User marked as KYC Paid.');
+        openUserDetail(userId);
+    } catch(err) { showToast('Error: ' + err.message); }
 }
 
 /* ================ CHATS ================ */
@@ -549,6 +638,121 @@ async function sendAdminReply(){
     input.disabled = false;
     input.focus();
   }
+}
+
+/* ================ WITHDRAWALS ================ */
+async function loadWithdrawals(){
+    const list = el('withdrawalsList');
+    list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
+    try{
+        const res = await api('/api/admin/withdrawals');
+        const reqs = res.withdrawals || [];
+        if(!reqs.length){
+            list.innerHTML = '<div class="empty">No pending withdrawal requests.</div>';
+            return;
+        }
+        list.innerHTML = reqs.map(r => `
+            <div class="user-row" style="flex-direction: column; align-items: flex-start; cursor: default;">
+                <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:8px;">
+                    <div class="user-name">${esc(r.username || ('User ' + r.userId))}</div>
+                    <div style="font-size:12px; font-weight:900; color:var(--yellow);">${fmt(r.amount)} FDX</div>
+                </div>
+                <div class="user-meta" style="margin-bottom:8px;">Wallet: <span style="color:var(--cyan);">${esc(r.walletAddress || 'Not Connected')}</span></div>
+                <div class="user-meta" style="margin-bottom:12px;">Requested: ${timeAgo(r.createdAt)}</div>
+                <div style="display:flex; gap:8px; width:100%;">
+                    <button class="balance-btn danger" style="flex:1;" onclick="processWithdrawal('${r.id}', 'reject')">REJECT</button>
+                    <button class="balance-btn success" style="flex:1;" onclick="processWithdrawal('${r.id}', 'approve')">MARK AS PAID</button>
+                </div>
+            </div>
+        `).join('');
+    }catch(err){
+        list.innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+    }
+}
+
+async function processWithdrawal(id, action){
+    if(!confirm(`Are you sure you want to ${action.toUpperCase()} this withdrawal?`)) return;
+    try{
+        await api('/api/admin/withdrawals/' + id, { method:'POST', body:{ action } });
+        showToast(`Withdrawal ${action}d successfully.`);
+        loadWithdrawals();
+        loadWithdrawBadge();
+    }catch(err){
+        showToast('Error: ' + err.message);
+    }
+}
+
+async function loadWithdrawBadge() {
+    try {
+        const res = await api('/api/admin/stats');
+        const badge = el('withdrawBadge');
+        if (res.stats.pendingWithdrawals > 0) {
+            badge.textContent = res.stats.pendingWithdrawals;
+            badge.style.display = 'inline-flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    } catch(e) {}
+}
+
+/* ================ AIRDROP ================ */
+async function loadAirdropStats() {
+    try {
+        const res = await api('/api/admin/airdrop/stats');
+        el('totalPointsDisplay').textContent = fmt(res.totalPoints);
+        el('totalWalletUsersDisplay').textContent = res.totalWalletUsers;
+        el('totalTonDisplay').textContent = fmt(res.totalTonCollected) + ' TON';
+    } catch(err) {
+        showToast('Error loading airdrop stats: ' + err.message);
+    }
+}
+
+async function calculateAirdrop() {
+    const supply = parseFloat(el('tokenSupplyInput').value);
+    if (!supply || supply <= 0) { showToast('Enter a valid token supply.'); return; }
+    try {
+        const res = await api('/api/admin/airdrop/calculate', { method: 'POST', body: { totalSupply: supply } });
+        el('conversionRateDisplay').textContent = `1 Point = ${res.rate} Tokens`;
+        showToast('Conversion rate calculated!');
+    } catch(err) {
+        showToast('Error: ' + err.message);
+    }
+}
+
+async function generateAirdropList() {
+    const container = el('airdropListContainer');
+    container.innerHTML = '<div class="loader"><div class="loader-spinner"></div></div>';
+    try {
+        const res = await api('/api/admin/airdrop/generate');
+        currentAirdropData = res.airdrop || [];
+        if (!currentAirdropData.length) {
+            container.innerHTML = '<div class="empty">No eligible users (must have TON wallet and KYC paid).</div>';
+            return;
+        }
+        container.innerHTML = currentAirdropData.map(u => `
+            <div class="airdrop-user-row">
+                <div>${esc(u.username)} <br><span style="font-size:9px;">${esc(u.walletAddress.slice(0, 10))}...</span></div>
+                <div style="text-align:right;">${fmt(u.points)} Points<br><strong>${fmt(u.tokens)} FDX</strong></div>
+            </div>
+        `).join('');
+        showToast(`Generated list for ${currentAirdropData.length} users.`);
+    } catch(err) {
+        container.innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+    }
+}
+
+function exportAirdropCSV() {
+    if (!currentAirdropData.length) { showToast('Generate the list first.'); return; }
+    const headers = ['WalletAddress', 'Amount', 'Username', 'Points'];
+    const rows = currentAirdropData.map(u => [u.walletAddress, u.tokens, u.username, u.points].join(','));
+    const csv = headers.join(',') + '\n' + rows.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fidexa_airdrop_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    showToast('CSV Downloaded!');
 }
 
 /* ================ BROADCAST ================ */
