@@ -141,9 +141,13 @@ input,textarea{font:inherit;}
 .chat-timestamp{font-size:9px;color:rgba(255,255,255,0.6);margin-top:4px; text-align:right; display:block;}
 .chat-bubble.admin .chat-timestamp{color:var(--muted);}
 .chat-input-bar{padding:12px;border-top:1px solid var(--border);background:#0a1018;display:flex;gap:8px;align-items:center;}
-.chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:20px;padding:10px 15px;color:#fff;font-size:12px;outline:none; transition: border 0.2s;}
+.chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:20px;padding:10px 15px;color:#fff;font-size:12px;outline:none;}
 .chat-input-field:focus{border-color: rgba(56,189,248,0.5);}
 .chat-send-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border:0;border-radius:50%;width:40px;height:40px;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 15px rgba(56,189,248,.3);}
+.loading-overlay{position:fixed;inset:0;background:rgba(5,8,12,.85);z-index:3000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.loading-overlay.active{display:flex;}
+.loading-spinner{width:44px;height:44px;border:3px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;}
+.loading-text{font-size:12px;font-weight:800;color:var(--cyan);letter-spacing:.5px;}
 </style>
 </head>
 <body>
@@ -160,13 +164,13 @@ input,textarea{font:inherit;}
         </div>
         <div class="mining-node-container">
             <div class="ring-wrapper">
-                <div class="system-status-pill" id="systemPill">READY TO MINE</div>
-                <div class="mining-timer" id="timerDisplay">04:00:00</div>
+                <div class="system-status-pill" id="systemPill">LOADING...</div>
+                <div class="mining-timer" id="timerDisplay">--:--:--</div>
                 <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">50</span> FDX/H</div>
             </div>
         </div>
         <div class="action-controls">
-            <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">START MINING</button>
+            <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">LOADING...</button>
             <div class="interactive-grid">
                 <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);" id="boosterTile">
                     <div class="action-tile-icon">🚀</div>
@@ -225,7 +229,7 @@ input,textarea{font:inherit;}
             <div class="task-row" style="border-bottom: 1px solid var(--border); padding-bottom: 10px;">
                 <div class="task-left"><div class="task-icon" style="background: rgba(56,189,248, 0.1); border-color: rgba(56,189,248, 0.3); color: var(--cyan);">🏆</div><div><div class="task-name">Referral Milestones</div><div class="task-reward" style="color: var(--cyan);">Unlock bonus rewards!</div></div></div>
             </div>
-            <div id="milestoneList" style="padding: 0 16px 16px 16px;"></div>
+            <div id="milestoneList" style="padding: 0 16px 16px 16px;"><div style="text-align:center; padding:20px; font-size:11px; color:var(--muted);">Loading...</div></div>
         </div>
         <div class="referral-info-card">
             <div class="referral-info-icon">💎</div>
@@ -343,6 +347,11 @@ input,textarea{font:inherit;}
     </div>
 </div>
 
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Syncing with server...</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -355,109 +364,151 @@ let currentUserName = 'Fidexa User';
 let currentUserHandle = '@fidexa_user';
 let currentTelegramInitData = '';
 let isSelfReferral = false;
-let appState = { 
-    totalBalance: 0, totalMined: 0, miningState: 'IDLE', 
-    miningStartedAt: 0, miningEndAt: 0, sessionAccumulated: 0,
-    boosterChancesLeft: 2, tonWalletAddress: null, kycPaid: false,
-    milestonesClaimed: {}, claimedTasks: {}, friends: []
-};
+let isProcessing = false;
 let supportPollingTimer = null;
 
+let appState = {
+    totalBalance: 0,
+    totalMined: 0,
+    miningState: 'IDLE',
+    miningStartedAt: 0,
+    miningEndAt: 0,
+    sessionAccumulated: 0,
+    boosterChancesLeft: 2,
+    tonWalletAddress: null,
+    kycPaid: false,
+    milestonesClaimed: {},
+    claimedTasks: { telegram: { joined: false, claimed: false }, x: { joined: false, claimed: false }, youtube: { joined: false, claimed: false } },
+    friends: []
+};
+
+/* =========================================================
+   INIT TELEGRAM USER
+========================================================= */
 function initializeTelegramUser() {
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
-        webApp.ready(); webApp.expand();
+        webApp.ready();
+        webApp.expand();
         currentTelegramInitData = webApp.initData || '';
         if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
             const tgUser = webApp.initDataUnsafe.user;
             currentUserId = tgUser.id ? String(tgUser.id) : 'demo_user';
-            currentUserName = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+            currentUserName = (tgUser.first_name || '') + (tgUser.last_name ? ' ' + tgUser.last_name : '');
             currentUserHandle = tgUser.username ? '@' + tgUser.username : 'No username';
         }
         const startParam = webApp.initDataUnsafe?.start_param || '';
         if (startParam === `ref_${currentUserId}`) isSelfReferral = true;
     }
-    document.getElementById('profileName').textContent = currentUserName;
-    document.getElementById('profileUsername').textContent = currentUserHandle;
-    document.getElementById('profileId').textContent = 'ID: ' + currentUserId;
+    const nameEl = document.getElementById('profileName');
+    const handleEl = document.getElementById('profileUsername');
+    const idEl = document.getElementById('profileId');
+    if (nameEl) nameEl.textContent = currentUserName || 'Fidexa User';
+    if (handleEl) handleEl.textContent = currentUserHandle;
+    if (idEl) idEl.textContent = 'ID: ' + currentUserId;
 }
 initializeTelegramUser();
+
+/* =========================================================
+   UI HELPERS
+========================================================= */
+function formatNumber(value) {
+    return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+function showLoading(text) {
+    document.getElementById('loadingText').textContent = text || 'Loading...';
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+function switchTab(tabName, btnElement) {
+    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    const target = document.getElementById(`page-${tabName}`);
+    if (target) target.classList.add('active');
+    if (btnElement) btnElement.classList.add('active');
+    if (tabName === 'tasks') renderTasks();
+    if (tabName === 'friends') renderFriends();
+    if (tabName === 'wallet') initTonConnect();
+}
 
 /* =========================================================
    API HELPER
 ========================================================= */
 async function apiCall(path, options = {}) {
-    if (!currentTelegramInitData) throw new Error("Telegram authentication is not available.");
+    if (!currentTelegramInitData) throw new Error("Telegram authentication is not available. Please reopen the app.");
     const headers = {
         ...(options.headers || {}),
         'X-Telegram-Init-Data': currentTelegramInitData,
         'Authorization': `Bearer ${currentTelegramInitData}`
     };
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
-    
+
     const response = await fetch(`${API_BASE}${path}`, {
         method: options.method || 'GET',
         headers,
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined
     });
-    
+
     let data = null;
-    try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON response (${response.status})`); }
+    try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON (${response.status})`); }
     if (!response.ok || data?.success === false) {
         throw new Error(data?.error || data?.message || `Request failed (${response.status})`);
     }
     return data;
 }
 
-async function loadState() {
+/* =========================================================
+   LOAD STATE FROM BACKEND
+========================================================= */
+async function loadState(showLoader) {
+    if (showLoader) showLoading('Syncing your account...');
     try {
-        const data = await apiCall('/api/me');
-        appState.totalBalance = data.user.totalBalance || 0;
-        appState.totalMined = data.user.totalMined || 0;
-        appState.miningState = data.user.miningState || 'IDLE';
-        appState.miningStartedAt = data.user.miningStartedAt || 0;
-        appState.miningEndAt = data.user.miningEndAt || 0;
-        appState.sessionAccumulated = data.user.sessionAccumulated || 0;
-        appState.boosterChancesLeft = data.user.boosterChancesLeft || 0;
-        appState.tonWalletAddress = data.user.tonWalletAddress;
-        appState.kycPaid = data.user.kycPaid;
-        appState.milestonesClaimed = data.user.milestonesClaimed || {};
-        appState.claimedTasks = data.user.claimedTasks || {};
+        const url = new URL(window.location.href);
+        const startParam = url.searchParams.get('tgWebAppStartParam') || '';
+        const refParam = startParam.startsWith('ref_') ? `?ref=${startParam}` : '';
+        
+        const data = await apiCall(`/api/me${refParam}`);
+        const u = data.user;
+        appState.totalBalance = Number(u.totalBalance) || 0;
+        appState.totalMined = Number(u.totalMined) || 0;
+        appState.miningState = u.miningState || 'IDLE';
+        appState.miningStartedAt = Number(u.miningStartedAt) || 0;
+        appState.miningEndAt = Number(u.miningEndAt) || 0;
+        appState.sessionAccumulated = Number(u.sessionAccumulated) || 0;
+        appState.boosterChancesLeft = Number(u.boosterChancesLeft) || 0;
+        appState.tonWalletAddress = u.tonWalletAddress || null;
+        appState.kycPaid = Boolean(u.kycPaid);
+        appState.milestonesClaimed = u.milestonesClaimed || {};
+        appState.claimedTasks = u.claimedTasks || appState.claimedTasks;
         updateAllUI();
         renderTasks();
+        renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        showToast("Failed to sync with server. Please reload.");
+        showToast(error.message || "Failed to sync. Please reload.");
+    } finally {
+        if (showLoader) hideLoading();
     }
 }
 
 /* =========================================================
-   UI HELPERS
-========================================================= */
-function formatNumber(value) { return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-function switchTab(tabName, btnElement) {
-    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-    document.getElementById(`page-${tabName}`).classList.add('active');
-    if (btnElement) btnElement.classList.add('active');
-    if (tabName === 'tasks') renderTasks();
-    if (tabName === 'friends') renderFriends();
-    updateAllUI();
-}
-
-/* =========================================================
-   MINING LOGIC
+   MINING UI
 ========================================================= */
 function getRemainingSeconds() {
-    if (appState.miningState === 'IDLE') return 14400; // 4 hours
+    if (appState.miningState === 'IDLE') return 14400;
     if (appState.miningState === 'READY_TO_CLAIM') return 0;
-    return Math.max(0, Math.floor((appState.miningEndAt - Date.now()) / 1000));
+    const remaining = Math.floor((appState.miningEndAt - Date.now()) / 1000);
+    return Math.max(0, remaining);
 }
 function formatTimer(seconds) {
     const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -466,74 +517,126 @@ function formatTimer(seconds) {
     return `${h}:${m}:${s}`;
 }
 function updateAllUI() {
-    document.getElementById('balanceDisplay').textContent = formatNumber(appState.totalBalance);
-    document.getElementById('walletBalanceNum').innerHTML = `${formatNumber(appState.totalBalance)}<span class="wallet-balance-token">FDX</span>`;
-    document.getElementById('timerDisplay').textContent = formatTimer(getRemainingSeconds());
-    document.getElementById('sessionAccumulated').textContent = `${formatNumber(appState.sessionAccumulated)} FDX`;
-    document.getElementById('totalMined').textContent = `${formatNumber(appState.totalMined)} FDX`;
-    
-    const elapsed = appState.miningState === 'ACTIVE' ? (14400 - getRemainingSeconds()) : (appState.miningState === 'READY_TO_CLAIM' ? 14400 : 0);
-    const totalHours = Math.floor(appState.miningEndAt > 0 ? (appState.miningEndAt - appState.miningStartedAt) / 3600000 : 4);
-    document.getElementById('completedHours').textContent = `${Math.min(totalHours, Math.floor(elapsed / 3600))} / ${totalHours}`;
-
+    const balEl = document.getElementById('balanceDisplay');
+    const timerEl = document.getElementById('timerDisplay');
+    const sessEl = document.getElementById('sessionAccumulated');
+    const totalMinedEl = document.getElementById('totalMined');
+    const hoursEl = document.getElementById('completedHours');
     const pill = document.getElementById('systemPill');
     const button = document.getElementById('miningToggleBtn');
-    
-    if (appState.miningState === 'IDLE') {
-        pill.textContent = 'READY TO MINE';
-        button.textContent = 'START MINING (4 HOURS)';
-        button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
-        button.style.pointerEvents = 'auto';
-    } else if (appState.miningState === 'ACTIVE') {
-        pill.textContent = `BOOSTED (${appState.boosterChancesLeft}/2)`;
-        button.textContent = 'MINING IN PROGRESS';
-        button.style.background = 'rgba(56,189,248,.2)';
-        button.style.pointerEvents = 'none';
-    } else if (appState.miningState === 'READY_TO_CLAIM') {
-        pill.textContent = 'SESSION ENDED';
-        button.textContent = 'CLAIM REWARD';
-        button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
-        button.style.pointerEvents = 'auto';
-    }
-
     const boosterTile = document.getElementById('boosterTile');
     const boosterSubText = document.getElementById('boosterSubText');
-    if (appState.boosterChancesLeft <= 0) {
-        boosterTile.style.opacity = '0.5'; boosterTile.style.pointerEvents = 'none';
-        boosterSubText.textContent = 'Limit Reached';
-    } else {
-        boosterTile.style.opacity = '1'; boosterTile.style.pointerEvents = 'auto';
-        boosterSubText.textContent = `+250 FDX & +4 Hours (${appState.boosterChancesLeft}/2)`;
-    }
-}
+    
+    if (balEl) balEl.textContent = formatNumber(appState.totalBalance);
+    if (timerEl) timerEl.textContent = formatTimer(getRemainingSeconds());
+    if (sessEl) sessEl.textContent = `${formatNumber(appState.sessionAccumulated)} FDX`;
+    if (totalMinedEl) totalMinedEl.textContent = `${formatNumber(appState.totalMined)} FDX`;
 
-async function handleMiningAction() {
+    const totalDuration = (appState.miningEndAt > appState.miningStartedAt && appState.miningStartedAt > 0) 
+        ? (appState.miningEndAt - appState.miningStartedAt) / 3600000 
+        : 4;
+    const elapsed = appState.miningState === 'ACTIVE' 
+        ? (totalDuration * 3600 - getRemainingSeconds()) 
+        : (appState.miningState === 'READY_TO_CLAIM' ? totalDuration * 3600 : 0);
+    if (hoursEl) hoursEl.textContent = `${Math.min(Math.floor(totalDuration), Math.floor(elapsed / 3600))} / ${Math.floor(totalDuration)}`;
+
     if (appState.miningState === 'IDLE') {
-        try {
-            showToast('Starting mining...');
-            await apiCall('/api/mining/start', { method: 'POST', body: {} });
-            await loadState();
-            showToast('Mining cycle started!');
-        } catch (error) { showToast(error.message); }
+        if (pill) pill.textContent = 'READY TO MINE';
+        if (button) {
+            button.textContent = 'START MINING (4 HOURS)';
+            button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
+            button.style.pointerEvents = 'auto';
+        }
+    } else if (appState.miningState === 'ACTIVE') {
+        const boosted = appState.boosterChancesLeft < 2;
+        if (pill) pill.textContent = boosted ? `BOOSTED (${2 - appState.boosterChancesLeft}/2)` : 'ACTIVE MINING';
+        if (button) {
+            button.textContent = 'MINING IN PROGRESS';
+            button.style.background = 'rgba(56,189,248,.2)';
+            button.style.pointerEvents = 'none';
+        }
     } else if (appState.miningState === 'READY_TO_CLAIM') {
-        try {
-            showToast('Requesting ad token...');
-            const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
-            // ⚠️ HERE: Show Monetag/Adsgram Ad using tokenRes.adToken
-            // For now, we simulate the ad:
-            setTimeout(async () => {
-                try {
-                    const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
-                    await loadState();
-                    showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
-                } catch (err) { showToast(err.message); }
-            }, 1500);
-        } catch (error) { showToast(error.message); }
+        if (pill) pill.textContent = 'SESSION ENDED';
+        if (button) {
+            button.textContent = 'CLAIM REWARD';
+            button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
+            button.style.pointerEvents = 'auto';
+        }
+    }
+
+    if (boosterTile && boosterSubText) {
+        if (appState.boosterChancesLeft <= 0) {
+            boosterTile.style.opacity = '0.5';
+            boosterTile.style.pointerEvents = 'none';
+            boosterSubText.textContent = 'Limit Reached (0/2)';
+        } else {
+            boosterTile.style.opacity = '1';
+            boosterTile.style.pointerEvents = 'auto';
+            boosterSubText.textContent = `+250 FDX & +4 Hours (${appState.boosterChancesLeft}/2)`;
+        }
     }
 }
 
 /* =========================================================
-   BOOSTER LOGIC
+   MINING ACTIONS
+========================================================= */
+async function handleMiningAction() {
+    if (isProcessing) return;
+    isProcessing = true;
+    const button = document.getElementById('miningToggleBtn');
+    const originalText = button ? button.textContent : '';
+
+    if (appState.miningState === 'IDLE') {
+        if (button) { button.textContent = 'STARTING...'; button.style.pointerEvents = 'none'; }
+        try {
+            showLoading('Starting mining...');
+            await apiCall('/api/mining/start', { method: 'POST', body: {} });
+            await loadState(false);
+            showToast('Mining cycle started!');
+        } catch (error) {
+            showToast(error.message || 'Failed to start mining.');
+            await loadState(false);
+        } finally {
+            hideLoading();
+            if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
+            isProcessing = false;
+        }
+    } else if (appState.miningState === 'READY_TO_CLAIM') {
+        if (button) { button.textContent = 'CLAIMING...'; button.style.pointerEvents = 'none'; }
+        try {
+            showLoading('Requesting ad token...');
+            const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
+            
+            // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
+            // In production: window.Monetag.showRewarded({ ... onReward: () => claimWithToken(tokenRes.adToken) })
+            hideLoading();
+            showLoading('Showing ad...');
+            setTimeout(async () => {
+                try {
+                    const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
+                    await loadState(false);
+                    showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
+                } catch (err) {
+                    showToast(err.message || 'Claim failed.');
+                    await loadState(false);
+                } finally {
+                    hideLoading();
+                    if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
+                    isProcessing = false;
+                }
+            }, 1500);
+        } catch (error) {
+            hideLoading();
+            showToast(error.message || 'Failed to claim.');
+            await loadState(false);
+            if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
+            isProcessing = false;
+        }
+    }
+}
+
+/* =========================================================
+   BOOSTER
 ========================================================= */
 function openBoosterPrompt() {
     if (appState.boosterChancesLeft <= 0) { showToast('No booster chances left. Resets in 12 hours.'); return; }
@@ -543,63 +646,94 @@ function openBoosterPrompt() {
 function closeBoosterPrompt() { document.getElementById('boosterPromptModal').classList.remove('active'); }
 
 async function confirmWatchBoosterAd() {
+    if (isProcessing) return;
+    isProcessing = true;
     closeBoosterPrompt();
+    const confirmBtn = document.getElementById('boosterConfirmBtn');
+    if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'LOADING...'; }
+
     try {
-        showToast('Requesting ad token...');
+        showLoading('Requesting ad token...');
         const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
         
-        // ⚠️ HERE: Show Monetag/Adsgram Ad using tokenRes.adToken
-        // For now, simulate the ad:
+        // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
+        hideLoading();
+        showLoading('Showing ad...');
         setTimeout(async () => {
             try {
                 const boostRes = await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
-                await loadState();
+                await loadState(false);
                 showToast('Booster Applied! +250 FDX and +4 Hours!');
-            } catch (err) { showToast(err.message); }
+            } catch (err) {
+                showToast(err.message || 'Booster failed.');
+                await loadState(false);
+            } finally {
+                hideLoading();
+                if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
+                isProcessing = false;
+            }
         }, 1500);
-    } catch (error) { showToast(error.message); }
+    } catch (error) {
+        hideLoading();
+        showToast(error.message || 'Failed to load ad.');
+        if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
+        isProcessing = false;
+    }
 }
 
 /* =========================================================
-   TASKS LOGIC
+   TASKS
 ========================================================= */
 function renderTasks() {
-    const tasks = appState.claimedTasks || { telegram: { joined: false, claimed: false }, x: { joined: false, claimed: false }, youtube: { joined: false, claimed: false } };
+    const tasks = appState.claimedTasks || {};
     ['telegram', 'x', 'youtube'].forEach(type => {
         const btn = document.getElementById(`taskBtn_${type}`);
         if (!btn) return;
+        const t = tasks[type] || { joined: false, claimed: false };
         btn.className = 'task-button';
-        if (tasks[type].claimed) {
-            btn.textContent = 'CLAIMED'; btn.classList.add('claimed'); btn.disabled = true;
-        } else if (tasks[type].joined) {
-            btn.textContent = 'CLAIM'; btn.classList.add('claim'); btn.disabled = false;
+        btn.disabled = false;
+        if (t.claimed) {
+            btn.textContent = 'CLAIMED';
+            btn.classList.add('claimed');
+            btn.disabled = true;
+        } else if (t.joined) {
+            btn.textContent = 'CLAIM';
+            btn.classList.add('claim');
         } else {
             btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
-            btn.disabled = false;
         }
     });
 }
 
 async function handleTaskAction(type) {
-    const tasks = appState.claimedTasks || {};
-    const t = tasks[type] || { joined: false, claimed: false };
-    if (t.claimed) { showToast('Task already claimed.'); return; }
-    
+    if (isProcessing) return;
+    const t = (appState.claimedTasks || {})[type] || { joined: false, claimed: false };
+    if (t.claimed) { showToast('Task already claimed. Resets in 24 hours.'); return; }
+
     if (!t.joined) {
         if (type === 'telegram') window.open('https://t.me/fidexa_Network', '_blank');
         else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
         else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
-        
+
+        if (!appState.claimedTasks[type]) appState.claimedTasks[type] = {};
         appState.claimedTasks[type].joined = true;
         renderTasks();
         showToast('Complete the action, then click CLAIM.');
         setTimeout(renderTasks, 10000);
     } else {
+        isProcessing = true;
         try {
+            showLoading('Verifying task...');
             const res = await apiCall('/api/tasks/claim', { method: 'POST', body: { task: type } });
-            await loadState();
+            await loadState(false);
             showToast(`+${res.reward} FDX added!`);
-        } catch (error) { showToast(error.message); }
+        } catch (error) {
+            showToast(error.message || 'Task claim failed.');
+            await loadState(false);
+        } finally {
+            hideLoading();
+            isProcessing = false;
+        }
     }
 }
 
@@ -609,7 +743,7 @@ async function handleTaskAction(type) {
 function copyReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
     const link = `https://t.me/FIDEXANetworkBot?startapp=ref_${currentUserId}`;
-    navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!')).catch(() => showToast('Could not copy.'));
+    navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!')).catch(() => showToast('Could not copy link.'));
 }
 function shareReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
@@ -620,10 +754,49 @@ function shareReferralLink() {
     } else { copyReferralLink(); }
 }
 
+async function loadReferralData() {
+    try {
+        const res = await apiCall('/api/referrals');
+        appState.friends = Array.isArray(res.referrals) ? res.referrals : [];
+        renderFriends();
+    } catch (e) { console.warn("Referral load failed:", e); }
+}
+
 function renderFriends() {
+    const friends = appState.friends || [];
     const totalEl = document.getElementById('totalFriendsCount');
-    if (totalEl) totalEl.textContent = String(appState.friends?.length || 0);
-    renderMilestones(appState.friends?.length || 0);
+    const activeEl = document.getElementById('activeFriendsCount');
+    const inactiveEl = document.getElementById('inactiveFriendsCount');
+    const countEl = document.getElementById('friendListCount');
+    const listEl = document.getElementById('friendsList');
+
+    const activeCount = friends.filter(f => f.active).length;
+    const inactiveCount = friends.length - activeCount;
+
+    if (totalEl) totalEl.textContent = String(friends.length);
+    if (activeEl) activeEl.textContent = String(activeCount);
+    if (inactiveEl) inactiveEl.textContent = String(inactiveCount);
+    if (countEl) countEl.textContent = `${friends.length} MEMBER${friends.length === 1 ? '' : 'S'}`;
+
+    if (listEl) {
+        if (friends.length === 0) {
+            listEl.innerHTML = '<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>';
+        } else {
+            listEl.innerHTML = friends.map(f => `
+                <div class="friend-row-item">
+                    <div class="friend-left">
+                        <div class="friend-avatar">👤</div>
+                        <div>
+                            <div class="friend-name">User ${f.referredId}</div>
+                            <div class="friend-status ${f.active ? 'active' : 'inactive'}">${f.active ? 'ACTIVE · +100 FDX Earned' : 'INACTIVE'}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    renderMilestones(friends.length);
 }
 
 function renderMilestones(currentCount) {
@@ -638,9 +811,11 @@ function renderMilestones(currentCount) {
     ];
     let html = '';
     milestones.forEach(m => {
-        const isClaimed = appState.milestonesClaimed[m.req];
+        const isClaimed = appState.milestonesClaimed[m.req] === true;
         const isUnlocked = currentCount >= m.req;
-        let btnClass = 'milestone-btn ', btnText = '', btnDisabled = '';
+        let btnClass = 'milestone-btn ';
+        let btnText = '';
+        let btnDisabled = '';
         if (isClaimed) { btnClass += 'claimed'; btnText = 'CLAIMED'; btnDisabled = 'disabled'; }
         else if (isUnlocked) { btnClass += 'claimable'; btnText = 'CLAIM'; }
         else { btnClass += 'locked'; btnText = 'LOCKED'; btnDisabled = 'disabled'; }
@@ -650,34 +825,48 @@ function renderMilestones(currentCount) {
 }
 
 async function claimMilestone(req) {
+    if (isProcessing) return;
     if (appState.milestonesClaimed[req]) return;
+    isProcessing = true;
     try {
+        showLoading('Claiming milestone...');
         const res = await apiCall('/api/milestones/claim', { method: 'POST', body: { milestoneReq: req } });
-        await loadState();
+        await loadState(false);
         showToast(`Milestone reached! +${res.reward} FDX added.`);
-    } catch (error) { showToast(error.message); }
+    } catch (error) {
+        showToast(error.message || 'Milestone claim failed.');
+        await loadState(false);
+    } finally {
+        hideLoading();
+        isProcessing = false;
+    }
 }
 
 /* =========================================================
    TON CONNECT
 ========================================================= */
-function initializeTonConnect() {
+let tonConnectInitialized = false;
+function initTonConnect() {
+    if (tonConnectInitialized) return;
+    tonConnectInitialized = true;
     try {
-        const manifestUrl = 'https://YOUR_DOMAIN_HERE/tonconnect-manifest.json'; 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl, buttonRootId: 'ton-connect' });
+        const manifestUrl = 'https://YOUR_DOMAIN_HERE/tonconnect-manifest.json';
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: manifestUrl,
+            buttonRootId: 'ton-connect'
+        });
         tonConnectUI.onStatusChange(async wallet => {
             if (wallet && wallet.account) {
                 const address = wallet.account.address.toString();
                 showToast('Wallet Connected!');
                 try {
                     await apiCall('/api/user/connect-wallet', { method: 'POST', body: { walletAddress: address } });
-                    await loadState();
+                    await loadState(false);
                 } catch (e) { console.warn("Wallet sync failed:", e); }
             }
         });
     } catch (e) { console.warn("TON Connect failed to load.", e); }
 }
-setTimeout(initializeTonConnect, 1000);
 
 /* =========================================================
    CHAT SUPPORT
@@ -692,13 +881,16 @@ async function openSupportChat() {
 }
 function closeSupportChat() {
     document.getElementById('supportModal').classList.remove('active');
-    if (supportPollingTimer) clearInterval(supportPollingTimer);
+    if (supportPollingTimer) { clearInterval(supportPollingTimer); supportPollingTimer = null; }
 }
 async function fetchSupportMessages() {
     try {
         const data = await apiCall('/api/support/messages');
         renderSupportMessages(data.messages || []);
     } catch (e) { console.warn("Chat fetch failed:", e); }
+}
+function escapeHtml(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 function renderSupportMessages(messages) {
     const container = document.getElementById('chatMessages');
@@ -709,7 +901,7 @@ function renderSupportMessages(messages) {
     }
     container.innerHTML = messages.map(msg => {
         const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return `<div class="chat-bubble-wrap ${msg.sender}"><div class="chat-bubble ${msg.sender}">${msg.text}<span class="chat-timestamp">${time}</span></div></div>`;
+        return `<div class="chat-bubble-wrap ${msg.sender}"><div class="chat-bubble ${msg.sender}">${escapeHtml(msg.text)}<span class="chat-timestamp">${time}</span></div></div>`;
     }).join('');
     container.scrollTop = container.scrollHeight;
 }
@@ -732,26 +924,51 @@ function closeDeleteModal() { document.getElementById('deleteModal').classList.r
 async function confirmDeleteAccount() {
     closeDeleteModal();
     try {
+        showLoading('Deleting account...');
         await apiCall('/api/account/delete', { method: 'POST', body: {} });
         localStorage.clear();
         showToast('Account deleted. Reloading...');
         setTimeout(() => window.location.reload(), 1500);
-    } catch (e) { showToast("Deletion failed. Try again."); }
+    } catch (e) {
+        hideLoading();
+        showToast("Deletion failed. Try again.");
+    }
 }
 
 /* =========================================================
-   INIT
+   TIMER (Local ticker, syncs with backend)
 ========================================================= */
-window.addEventListener('DOMContentLoaded', () => {
-    loadState();
-});
 setInterval(() => {
     if (appState.miningState === 'ACTIVE') {
-        document.getElementById('timerDisplay').textContent = formatTimer(getRemainingSeconds());
-        const elapsedHours = Math.floor((14400 - getRemainingSeconds()) / 3600);
-        document.getElementById('sessionAccumulated').textContent = `${formatNumber(elapsedHours * 50)} FDX`;
+        const remaining = getRemainingSeconds();
+        const timerEl = document.getElementById('timerDisplay');
+        if (timerEl) timerEl.textContent = formatTimer(remaining);
+        
+        const totalDuration = (appState.miningEndAt - appState.miningStartedAt) / 3600000;
+        const elapsedHours = Math.floor((totalDuration * 3600 - remaining) / 3600);
+        const sessEl = document.getElementById('sessionAccumulated');
+        if (sessEl) sessEl.textContent = `${formatNumber(elapsedHours * 50)} FDX`;
+        const hoursEl = document.getElementById('completedHours');
+        if (hoursEl) hoursEl.textContent = `${Math.min(Math.floor(totalDuration), elapsedHours)} / ${Math.floor(totalDuration)}`;
+
+        if (remaining <= 0) {
+            appState.miningState = 'READY_TO_CLAIM';
+            updateAllUI();
+            loadState(false); // Re-sync with backend
+        }
     }
 }, 1000);
+
+/* =========================================================
+   BOOT
+========================================================= */
+window.addEventListener('DOMContentLoaded', () => {
+    showLoading('Connecting to Fidexa...');
+    loadState(true).then(() => {
+        loadReferralData();
+        initTonConnect();
+    });
+});
 </script>
 </body>
 </html>
