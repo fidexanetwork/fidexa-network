@@ -94,7 +94,7 @@ input,textarea{font:inherit;}
 .wallet-balance-num{font-size:38px;font-weight:900;color:#fff;margin-top:6px;}
 .wallet-balance-token{font-size:18px;font-weight:800;color:var(--yellow);margin-left:6px;}
 .ton-connect-container{display:flex;justify-content:center;margin-top:10px;}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;}
 .nav-icon{font-size:18px;}
 .nav-item.active{color:var(--cyan);}
@@ -120,6 +120,34 @@ input,textarea{font:inherit;}
 .milestone-btn.locked{background:#111b27;color:var(--muted);cursor:not-allowed;}
 .milestone-btn.claimable{background:linear-gradient(90deg,#facc15,#f59e0b);color:#05080c;box-shadow:0 2px 10px rgba(250,204,21,.3);}
 .milestone-btn.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);cursor:default;}
+
+/* PROFILE STYLES */
+.profile-header-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:20px;padding:20px;text-align:center;margin-bottom:18px;}
+.profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);margin:0 auto 12px auto;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid rgba(255,255,255,0.1);}
+.profile-name{font-size:18px;font-weight:900;color:#fff;}
+.profile-username{font-size:12px;color:var(--cyan);font-weight:800;margin-top:4px;}
+.profile-id{font-size:10px;color:var(--muted);font-weight:700;margin-top:4px;}
+.profile-menu-item{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:pointer;}
+.profile-menu-left{display:flex;align-items:center;gap:12px;}
+.profile-menu-icon{font-size:20px;}
+.profile-menu-title{font-size:14px;font-weight:800;color:#fff;}
+.profile-menu-arrow{color:var(--muted);font-weight:900;}
+
+/* CHAT SUPPORT STYLES */
+.chat-sheet-box{background:var(--panel);border:1px solid var(--border);border-radius:22px;width:100%;max-width:400px;height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 45px rgba(0,0,0,.6);}
+.chat-sheet-header{padding:15px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--panel);}
+.chat-messages-container{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:15px;background:#070b10;}
+.chat-bubble-wrap{display:flex;gap:8px;max-width:85%;align-items:flex-end;}
+.chat-bubble-wrap.user{align-self:flex-end;flex-direction:row-reverse;}
+.chat-bubble{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.4;font-weight:600;word-wrap:break-word; position:relative;}
+.chat-bubble.user{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;border-bottom-right-radius:4px;}
+.chat-bubble.admin{background:#162235;color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
+.chat-timestamp{font-size:9px;color:rgba(255,255,255,0.6);margin-top:4px; text-align:right; display:block;}
+.chat-bubble.admin .chat-timestamp{color:var(--muted);}
+.chat-input-bar{padding:12px;border-top:1px solid var(--border);background:#0a1018;display:flex;gap:8px;align-items:center;}
+.chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:20px;padding:10px 15px;color:#fff;font-size:12px;outline:none; transition: border 0.2s;}
+.chat-input-field:focus{border-color: rgba(56,189,248,0.5);}
+.chat-send-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border:0;border-radius:50%;width:40px;height:40px;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 15px rgba(56,189,248,.3);}
 </style>
 </head>
 <body>
@@ -223,7 +251,6 @@ input,textarea{font:inherit;}
         <div class="full-page-header">👥 REFERRAL NETWORK</div>
         <div class="full-page-sub">Invite friends and earn instant rewards.</div>
         
-        <!-- Milestone Card -->
         <div class="task-card" style="background: linear-gradient(145deg, #0a1018, #0d1520); border-color: rgba(56,189,248,0.3);">
             <div class="task-row" style="border-bottom: 1px solid var(--border); padding-bottom: 10px;">
                 <div class="task-left">
@@ -272,7 +299,6 @@ input,textarea{font:inherit;}
             </div>
         </div>
 
-        <!-- Withdraw Card -->
         <div class="task-card" style="border-color: rgba(250,204,21,0.3); margin-bottom: 20px;">
             <div class="task-row">
                 <div class="task-left">
@@ -292,14 +318,50 @@ input,textarea{font:inherit;}
             <div id="ton-connect" class="ton-connect-container"></div>
         </div>
     </main>
+
+    <!-- PROFILE TAB (5th Tab) -->
+    <main class="page-view" id="page-profile">
+        <div class="full-page-header">👤 MY PROFILE</div>
+        
+        <div class="profile-header-card">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name" id="profileName">Loading...</div>
+            <div class="profile-username" id="profileUsername">@loading</div>
+            <div class="profile-id" id="profileId">ID: ...</div>
+        </div>
+
+        <div class="profile-menu-item" onclick="window.open('https://t.me/fidexa_Network', '_blank')">
+            <div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Join Telegram Channel</span></div>
+            <span class="profile-menu-arrow">↗</span>
+        </div>
+        <div class="profile-menu-item" onclick="window.open('https://x.com/Fidexa_Network', '_blank')">
+            <div class="profile-menu-left"><span class="profile-menu-icon">𝕏</span><span class="profile-menu-title">Follow on X</span></div>
+            <span class="profile-menu-arrow">↗</span>
+        </div>
+        <div class="profile-menu-item" onclick="window.open('https://youtube.com/@Fidexa_Network', '_blank')">
+            <div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Subscribe on YouTube</span></div>
+            <span class="profile-menu-arrow">↗</span>
+        </div>
+
+        <div class="profile-menu-item" onclick="openSupportChat()" style="margin-top: 15px;">
+            <div class="profile-menu-left"><span class="profile-menu-icon">💬</span><span class="profile-menu-title">Chat Support</span></div>
+            <span class="profile-menu-arrow">›</span>
+        </div>
+        <div class="profile-menu-item" onclick="openDeleteModal()" style="border-color: rgba(248,113,113,0.3);">
+            <div class="profile-menu-left"><span class="profile-menu-icon">⚠️</span><span class="profile-menu-title" style="color:var(--red);">Delete Account</span></div>
+            <span class="profile-menu-arrow" style="color:var(--red);">›</span>
+        </div>
+    </main>
+
 </div>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAVIGATION (5 TABS) -->
 <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('home',this)"><span class="nav-icon">🏠</span>Home</button>
     <button class="nav-item" onclick="switchTab('tasks',this)"><span class="nav-icon">📋</span>Tasks</button>
     <button class="nav-item" onclick="switchTab('friends',this)"><span class="nav-icon">👥</span>Friends</button>
     <button class="nav-item" onclick="switchTab('wallet',this)"><span class="nav-icon">👛</span>Wallet</button>
+    <button class="nav-item" onclick="switchTab('profile',this)"><span class="nav-icon">👤</span>Profile</button>
 </nav>
 
 <!-- MODALS -->
@@ -314,6 +376,39 @@ input,textarea{font:inherit;}
     </div>
 </div>
 
+<div class="modal-overlay" id="supportModal">
+    <div class="chat-sheet-box">
+        <div class="chat-sheet-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:35px; height:35px; border-radius:50%; background:linear-gradient(135deg,#0284c7,#38bdf8); display:flex; align-items:center; justify-content:center; font-size:16px;">💬</div>
+                <div>
+                    <div class="chat-sheet-title">FIDEXA Support</div>
+                    <div style="font-size:10px; color:var(--muted); font-weight:700;">Our team typically replies within 24 hours.</div>
+                </div>
+            </div>
+            <button class="prompt-btn-cancel" style="padding:6px 10px; font-size:12px;" onclick="closeSupportChat()">✕</button>
+        </div>
+        <div class="chat-messages-container" id="chatMessages"></div>
+        <div class="chat-input-bar">
+            <input type="text" class="chat-input-field" id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="prompt-box" style="border-color: rgba(248,113,113,0.5);">
+        <div class="prompt-title" style="color: var(--red);">⚠️ DELETE ACCOUNT</div>
+        <div class="prompt-desc">
+            Are you absolutely sure? This will permanently delete your mining progress, balance, referrals, task history, and chat messages. This action <strong>cannot</strong> be undone.
+        </div>
+        <div class="prompt-actions">
+            <button class="prompt-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="prompt-btn-confirm" style="background: linear-gradient(135deg, #dc2626, #ef4444);" onclick="confirmDeleteAccount()">Delete</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -321,7 +416,8 @@ input,textarea{font:inherit;}
    TELEGRAM USER & SECURITY
 ========================================================= */
 let currentUserId='demo_user';
-let currentUserName='FidexaUser';
+let currentUserName='Fidexa User';
+let currentUserHandle='@fidexa_user';
 let currentTelegramInitData='';
 let isSelfReferral = false;
 
@@ -334,15 +430,19 @@ function initializeTelegramUser(){
         if(webApp.initDataUnsafe && webApp.initDataUnsafe.user){
             const tgUser=webApp.initDataUnsafe.user;
             currentUserId=tgUser.id ? String(tgUser.id) : 'demo_user';
-            currentUserName=tgUser.username || tgUser.first_name || 'FidexaUser';
+            currentUserName=tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+            currentUserHandle=tgUser.username ? '@' + tgUser.username : 'No username';
         }
         
         const startParam = webApp.initDataUnsafe?.start_param || '';
         if(startParam === `ref_${currentUserId}`) {
             isSelfReferral = true;
-            console.warn("Self-referral detected and blocked.");
         }
     }
+    
+    document.getElementById('profileName').textContent = currentUserName;
+    document.getElementById('profileUsername').textContent = currentUserHandle;
+    document.getElementById('profileId').textContent = 'ID: ' + currentUserId;
 }
 initializeTelegramUser();
 
@@ -371,25 +471,12 @@ const BASE_RATE_PER_HOUR = 50; // 50 FDX per hour
 const BOOSTER_RESET_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours
 const TASK_RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
-const STORAGE_KEY='fidexa_prototype_state_v20';
+const STORAGE_KEY='fidexa_prototype_state_v22';
 const defaultState={
-    totalBalance:0, 
-    totalMined:0, 
-    miningState:'IDLE', 
-    miningStartedAt:0, 
-    miningCycleDuration: MINING_CYCLE_SECONDS,
-    baseMiningRate: BASE_RATE_PER_HOUR,
-    sessionAccumulated:0,
-    boosterAdsWatched: 0, 
-    lastBoosterReset: Date.now(),
-    friends:[],
-    milestonesClaimed: {
-        1: false,
-        3: false,
-        10: false,
-        50: false,
-        100: false
-    }
+    totalBalance:0, totalMined:0, miningState:'IDLE', miningStartedAt:0, 
+    miningCycleDuration: MINING_CYCLE_SECONDS, baseMiningRate: BASE_RATE_PER_HOUR,
+    sessionAccumulated:0, boosterAdsWatched: 0, lastBoosterReset: Date.now(),
+    friends:[], milestonesClaimed: { 1: false, 3: false, 10: false, 50: false, 100: false }
 };
 let state={ ...defaultState };
 
@@ -439,63 +526,45 @@ function getMiningElapsedSeconds(){
     if(state.miningState!=='ACTIVE' || !state.miningStartedAt) return 0;
     return Math.max(0, Math.min(state.miningCycleDuration, Math.floor((Date.now()-state.miningStartedAt)/1000)));
 }
-
 function getSessionAccumulated(){
     if(state.miningState!=='ACTIVE') return Number(state.sessionAccumulated||0);
     const elapsed=getMiningElapsedSeconds();
     const completedHours=Math.floor(elapsed/3600);
     return parseFloat((completedHours * state.baseMiningRate).toFixed(2));
 }
-
 function getRemainingSeconds(){
     if(state.miningState==='IDLE') return state.miningCycleDuration;
     if(state.miningState==='READY_TO_CLAIM') return 0;
     return Math.max(0, state.miningCycleDuration - getMiningElapsedSeconds());
 }
-
 function formatTimer(seconds){
     const h=Math.floor(seconds/3600).toString().padStart(2,'0');
     const m=Math.floor((seconds%3600)/60).toString().padStart(2,'0');
     const s=(seconds%60).toString().padStart(2,'0');
     return `${h}:${m}:${s}`;
 }
-
 function handleMiningAction(){
     if(state.miningState==='IDLE'){
-        state.miningState='ACTIVE';
-        state.miningStartedAt = Date.now();
-        state.miningCycleDuration = MINING_CYCLE_SECONDS;
-        state.sessionAccumulated = 0;
-        saveState();
-        updateAllUI();
-        showToast('Mining cycle started!');
+        state.miningState='ACTIVE'; state.miningStartedAt = Date.now(); state.miningCycleDuration = MINING_CYCLE_SECONDS; state.sessionAccumulated = 0;
+        saveState(); updateAllUI(); showToast('Mining cycle started!');
     }else if(state.miningState==='READY_TO_CLAIM'){
         const finalReward = (state.miningCycleDuration / 3600) * state.baseMiningRate;
-        state.totalBalance += finalReward;
-        state.totalMined += finalReward;
-        state.miningState='IDLE';
-        state.miningStartedAt=0;
-        state.sessionAccumulated=0;
-        saveState();
-        updateAllUI();
+        state.totalBalance += finalReward; state.totalMined += finalReward; state.miningState='IDLE';
+        state.miningStartedAt=0; state.sessionAccumulated=0; saveState(); updateAllUI();
         showToast(`Successfully claimed ${formatNumber(finalReward)} FDX!`);
     }
 }
 
 /* =========================================================
-   BOOSTER LOGIC (2 Ads Maximum, Reset every 12 Hours)
+   BOOSTER LOGIC
 ========================================================= */
 function checkBoosterReset() {
     const now = Date.now();
     if (now - state.lastBoosterReset > BOOSTER_RESET_INTERVAL) {
-        state.boosterAdsWatched = 0;
-        state.lastBoosterReset = now;
-        saveState();
-        return true;
+        state.boosterAdsWatched = 0; state.lastBoosterReset = now; saveState(); return true;
     }
     return false;
 }
-
 function openBoosterPrompt(){
     checkBoosterReset();
     if(state.boosterAdsWatched >= 2) {
@@ -505,246 +574,177 @@ function openBoosterPrompt(){
         showToast(`Limit reached. Resets in ${hoursLeft}h ${minsLeft}m.`);
         return;
     }
-    if(state.miningState !== 'ACTIVE') {
-        showToast('You must be actively mining to use a booster.');
-        return;
-    }
+    if(state.miningState !== 'ACTIVE') { showToast('You must be actively mining to use a booster.'); return; }
     document.getElementById('boosterPromptModal').classList.add('active');
 }
-function closeBoosterPrompt(){ 
-    document.getElementById('boosterPromptModal').classList.remove('active'); 
-}
-
+function closeBoosterPrompt(){ document.getElementById('boosterPromptModal').classList.remove('active'); }
 function confirmWatchBoosterAd(){
     if(state.boosterAdsWatched >= 2) return;
-    closeBoosterPrompt();
-    
-    // ⚠️ THIS IS WHERE THE AD SDK WILL GO
-    showToast('Loading Advertisement...');
-    
+    closeBoosterPrompt(); showToast('Loading Advertisement...');
+    // ⚠️ REPLACE THIS TIMEOUT WITH YOUR MONETAG SDK CODE
     setTimeout(() => {
-        state.totalBalance += 250;
-        state.miningCycleDuration += 14400; // +4 Hours
-        state.boosterAdsWatched++;
-        
-        saveState();
-        updateAllUI();
-        showToast('Booster Applied! +250 FDX and +4 Hours Added!');
-        
-    }, 1500); // 1.5 second fake delay
+        state.totalBalance += 250; state.miningCycleDuration += 14400; state.boosterAdsWatched++;
+        saveState(); updateAllUI(); showToast('Booster Applied! +250 FDX and +4 Hours Added!');
+    }, 1500);
 }
 
 /* =========================================================
-   TASKS LOGIC & SECURITY (Reset every 24 Hours)
+   TASKS LOGIC
 ========================================================= */
 const TASKS_CONFIG = {
     telegram: { url: 'https://t.me/fidexa_Network', reward: 100, name: 'Telegram' },
     x: { url: 'https://x.com/Fidexa_Network', reward: 100, name: 'X' },
     youtube: { url: 'https://youtube.com/@Fidexa_Network', reward: 100, name: 'YouTube' }
 };
-
-let taskStatus = {
-    telegram: { joined: false, claimed: false, lastClaimedAt: 0 },
-    x: { joined: false, claimed: false, lastClaimedAt: 0 },
-    youtube: { joined: false, claimed: false, lastClaimedAt: 0 }
-};
-
-try {
-    const savedTasks = localStorage.getItem('fidexa_tasks_v2');
-    if(savedTasks) taskStatus = JSON.parse(savedTasks);
-} catch(e) {}
-
-function saveTaskStatus() {
-    localStorage.setItem('fidexa_tasks_v2', JSON.stringify(taskStatus));
-}
-
+let taskStatus = { telegram: { joined: false, claimed: false, lastClaimedAt: 0 }, x: { joined: false, claimed: false, lastClaimedAt: 0 }, youtube: { joined: false, claimed: false, lastClaimedAt: 0 } };
+try { const savedTasks = localStorage.getItem('fidexa_tasks_v2'); if(savedTasks) taskStatus = JSON.parse(savedTasks); } catch(e) {}
+function saveTaskStatus() { localStorage.setItem('fidexa_tasks_v2', JSON.stringify(taskStatus)); }
 function handleTaskAction(type){
-    const task = TASKS_CONFIG[type];
-    if(!task) return;
-    
-    refreshTaskStatus(); 
-
+    const task = TASKS_CONFIG[type]; if(!task) return; refreshTaskStatus(); 
     if(!taskStatus[type].joined){
-        window.open(task.url, '_blank');
-        taskStatus[type].joined = true;
-        saveTaskStatus();
-        refreshTaskStatus();
-        showToast(`Please complete the action on ${task.name}. You can claim in 10 seconds.`);
-        
-        setTimeout(() => { refreshTaskStatus(); }, 10000);
-        
+        window.open(task.url, '_blank'); taskStatus[type].joined = true; saveTaskStatus(); refreshTaskStatus();
+        showToast(`Complete the action on ${task.name}. Claim in 10 seconds.`); setTimeout(() => { refreshTaskStatus(); }, 10000);
     } else if (!taskStatus[type].claimed) {
-        taskStatus[type].claimed = true;
-        taskStatus[type].lastClaimedAt = Date.now();
-        state.totalBalance += task.reward;
-        saveTaskStatus();
-        saveState();
-        updateAllUI();
-        refreshTaskStatus();
-        showToast(`+${task.reward} FDX added to Balance`);
+        taskStatus[type].claimed = true; taskStatus[type].lastClaimedAt = Date.now(); state.totalBalance += task.reward;
+        saveTaskStatus(); saveState(); updateAllUI(); refreshTaskStatus(); showToast(`+${task.reward} FDX added!`);
     }
 }
-
 function refreshTaskStatus(){
-    const now = Date.now();
-    let changed = false;
-
+    const now = Date.now(); let changed = false;
     ['telegram', 'x', 'youtube'].forEach(type => {
         if (taskStatus[type].claimed && (now - taskStatus[type].lastClaimedAt > TASK_RESET_INTERVAL)) {
-            taskStatus[type].joined = false;
-            taskStatus[type].claimed = false;
-            changed = true;
+            taskStatus[type].joined = false; taskStatus[type].claimed = false; changed = true;
         }
-
-        const btn = document.getElementById(`taskBtn_${type}`);
-        if(!btn) return;
-        
-        if(taskStatus[type].claimed){
-            btn.textContent = 'CLAIMED';
-            btn.className = 'task-button claimed';
-            btn.disabled = true;
-        } else if(taskStatus[type].joined){
-            btn.textContent = 'CLAIM';
-            btn.className = 'task-button claim';
-            btn.disabled = false;
-        } else {
-            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
-            btn.className = 'task-button';
-            btn.disabled = false;
-        }
+        const btn = document.getElementById(`taskBtn_${type}`); if(!btn) return;
+        if(taskStatus[type].claimed){ btn.textContent = 'CLAIMED'; btn.className = 'task-button claimed'; btn.disabled = true; }
+        else if(taskStatus[type].joined){ btn.textContent = 'CLAIM'; btn.className = 'task-button claim'; btn.disabled = false; }
+        else { btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN'); btn.className = 'task-button'; btn.disabled = false; }
     });
-
     if (changed) saveTaskStatus();
 }
 
 /* =========================================================
-   FRIENDS / REFERRAL LOGIC & MILESTONES
+   FRIENDS / REFERRAL LOGIC
 ========================================================= */
-function getReferralLink(){
-    return `https://t.me/FIDEXANetworkBot?startapp=ref_${encodeURIComponent(currentUserId)}`;
-}
-
+function getReferralLink(){ return `https://t.me/FIDEXANetworkBot?startapp=ref_${encodeURIComponent(currentUserId)}`; }
 function copyReferralLink(){
-    if(isSelfReferral) {
-        showToast('Self-referral is not allowed.');
-        return;
-    }
-    const link = getReferralLink();
-    navigator.clipboard.writeText(link).then(() => {
-        showToast('Referral link copied!');
-    }).catch(() => {
-        showToast('Could not copy link.');
-    });
+    if(isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
+    navigator.clipboard.writeText(getReferralLink()).then(() => { showToast('Referral link copied!'); }).catch(() => { showToast('Could not copy link.'); });
 }
-
 function shareReferralLink(){
-    if(isSelfReferral) {
-        showToast('Self-referral is not allowed.');
-        return;
-    }
-    const refLink = getReferralLink();
-    const shareText = encodeURIComponent("Join Fidexa Network and start mining FDX with me! Earn real rewards.");
+    if(isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
+    const refLink = getReferralLink(); const shareText = encodeURIComponent("Join Fidexa Network and start mining FDX with me!");
     if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
         window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`);
-    } else {
-        copyReferralLink();
-    }
+    } else { copyReferralLink(); }
 }
-
 function renderFriends(){
-    const list = document.getElementById('friendsList');
-    const totalEl = document.getElementById('totalFriendsCount');
-    const mockFriends = state.friends || [];
-    
+    const list = document.getElementById('friendsList'); const totalEl = document.getElementById('totalFriendsCount'); const mockFriends = state.friends || [];
     if(totalEl) totalEl.textContent = String(mockFriends.length);
     if(mockFriends.length === 0){
         list.innerHTML = `<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>`;
     } else {
         list.innerHTML = '';
         mockFriends.forEach(friend => {
-            const item = document.createElement('div');
-            item.className = 'friend-row-item';
-            item.innerHTML = `
-                <div class="friend-left">
-                    <div class="friend-avatar">👤</div>
-                    <div>
-                        <div class="friend-name">User ${friend.id}</div>
-                        <div class="friend-status active">Active · +100 FDX Earned</div>
-                    </div>
-                </div>
-            `;
+            const item = document.createElement('div'); item.className = 'friend-row-item';
+            item.innerHTML = `<div class="friend-left"><div class="friend-avatar">👤</div><div><div class="friend-name">User ${friend.id}</div><div class="friend-status active">Active · +100 FDX Earned</div></div></div>`;
             list.appendChild(item);
         });
     }
-
     renderMilestones(mockFriends.length);
 }
-
 function renderMilestones(currentCount) {
-    const container = document.getElementById('milestoneList');
-    if(!container) return;
-
-    // UPDATED MILESTONE REWARDS
+    const container = document.getElementById('milestoneList'); if(!container) return;
     const milestones = [
-        { req: 1, reward: 100, label: "Invite 1 Friend" },
-        { req: 3, reward: 300, label: "Invite 3 Friends" },
-        { req: 10, reward: 1000, label: "Invite 10 Friends" },
-        { req: 50, reward: 2000, label: "Invite 50 Friends" },
+        { req: 1, reward: 100, label: "Invite 1 Friend" }, { req: 3, reward: 300, label: "Invite 3 Friends" },
+        { req: 10, reward: 1000, label: "Invite 10 Friends" }, { req: 50, reward: 2000, label: "Invite 50 Friends" },
         { req: 100, reward: 5000, label: "Invite 100 Friends" }
     ];
-
     let html = '';
-    
     milestones.forEach(m => {
-        const isClaimed = state.milestonesClaimed[m.req];
-        const isUnlocked = currentCount >= m.req;
-        
-        let btnClass = 'milestone-btn ';
-        let btnText = '';
-        let btnDisabled = '';
-        
-        if (isClaimed) {
-            btnClass += 'claimed';
-            btnText = 'CLAIMED';
-            btnDisabled = 'disabled';
-        } else if (isUnlocked) {
-            btnClass += 'claimable';
-            btnText = 'CLAIM';
-            btnDisabled = '';
-        } else {
-            btnClass += 'locked';
-            btnText = 'LOCKED';
-            btnDisabled = 'disabled';
-        }
-
-        html += `
-            <div class="milestone-row">
-                <div class="milestone-info">
-                    <div class="milestone-title">${m.label}</div>
-                    <div class="milestone-reward">+${m.reward} FDX</div>
-                    <div class="milestone-progress">Progress: ${Math.min(currentCount, m.req)}/${m.req}</div>
-                </div>
-                <button class="${btnClass}" onclick="claimMilestone(${m.req}, ${m.reward})" ${btnDisabled}>${btnText}</button>
-            </div>
-        `;
+        const isClaimed = state.milestonesClaimed[m.req]; const isUnlocked = currentCount >= m.req;
+        let btnClass = 'milestone-btn '; let btnText = ''; let btnDisabled = '';
+        if (isClaimed) { btnClass += 'claimed'; btnText = 'CLAIMED'; btnDisabled = 'disabled'; }
+        else if (isUnlocked) { btnClass += 'claimable'; btnText = 'CLAIM'; btnDisabled = ''; }
+        else { btnClass += 'locked'; btnText = 'LOCKED'; btnDisabled = 'disabled'; }
+        html += `<div class="milestone-row"><div class="milestone-info"><div class="milestone-title">${m.label}</div><div class="milestone-reward">+${m.reward} FDX</div><div class="milestone-progress">Progress: ${Math.min(currentCount, m.req)}/${m.req}</div></div><button class="${btnClass}" onclick="claimMilestone(${m.req}, ${m.reward})" ${btnDisabled}>${btnText}</button></div>`;
     });
-
     container.innerHTML = html;
 }
-
 function claimMilestone(req, reward) {
     if (state.milestonesClaimed[req]) return;
-    if (state.friends.length < req) {
-        showToast('You need more friends to claim this reward!');
+    if (state.friends.length < req) { showToast('You need more friends!'); return; }
+    state.milestonesClaimed[req] = true; state.totalBalance += reward;
+    saveState(); updateAllUI(); renderFriends(); showToast(`Milestone reached! +${reward} FDX added.`);
+}
+
+/* =========================================================
+   CHAT SUPPORT LOGIC (Asynchronous, Local Storage)
+========================================================= */
+let supportMessages = [];
+try {
+    const savedChat = localStorage.getItem('fidexa_chat');
+    if(savedChat) supportMessages = JSON.parse(savedChat);
+} catch(e) {}
+
+function openSupportChat() {
+    document.getElementById('supportModal').classList.add('active');
+    renderChatMessages();
+}
+function closeSupportChat() { document.getElementById('supportModal').classList.remove('active'); }
+
+function renderChatMessages() {
+    const container = document.getElementById('chatMessages');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (supportMessages.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding:30px 10px; font-size:11px; color:var(--muted); font-weight:700; line-height:1.5;">
+                👋 Welcome to FIDEXA Support.<br>Send us a message below. Our team typically replies within 24 hours.
+            </div>`;
         return;
     }
 
-    state.milestonesClaimed[req] = true;
-    state.totalBalance += reward;
-    saveState();
-    updateAllUI();
-    renderFriends(); 
-    showToast(`Milestone reached! +${reward} FDX added to balance.`);
+    supportMessages.forEach(msg => {
+        const wrap = document.createElement('div');
+        wrap.className = `chat-bubble-wrap ${msg.sender}`;
+        wrap.innerHTML = `
+            <div class="chat-bubble ${msg.sender}">
+                ${msg.text}
+                <span class="chat-timestamp">${msg.time}</span>
+            </div>`;
+        container.appendChild(wrap);
+    });
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const timeNow = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    supportMessages.push({ sender: 'user', text: text, time: timeNow });
+    localStorage.setItem('fidexa_chat', JSON.stringify(supportMessages));
+    
+    input.value = '';
+    renderChatMessages();
+    
+    // Note: In the future, a backend will send this to your Telegram Admin panel.
+    // For now, it just saves locally so the user sees their message.
+}
+
+/* =========================================================
+   ACCOUNT DELETION LOGIC
+========================================================= */
+function openDeleteModal() { document.getElementById('deleteModal').classList.add('active'); }
+function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
+function confirmDeleteAccount() {
+    closeDeleteModal();
+    localStorage.clear();
+    showToast('Account deleted. Resetting app...');
+    setTimeout(() => { window.location.reload(); }, 1500);
 }
 
 /* =========================================================
@@ -752,28 +752,21 @@ function claimMilestone(req, reward) {
 ========================================================= */
 function updateAllUI(){
     checkBoosterReset();
-
     const formattedBal = formatNumber(state.totalBalance);
     const balEl = document.getElementById('balanceDisplay');
     if(balEl) balEl.textContent = formattedBal;
     
     const rate = state.baseMiningRate;
-    const rateEl = document.getElementById('currentRateDisplay');
-    const statRateEl = document.getElementById('statRate');
-    const timerEl = document.getElementById('timerDisplay');
-    const sessEl = document.getElementById('sessionAccumulated');
-    const hoursEl = document.getElementById('completedHours');
-    const totalMinedEl = document.getElementById('totalMined');
-    const pill = document.getElementById('systemPill');
-    const button = document.getElementById('miningToggleBtn');
+    const rateEl = document.getElementById('currentRateDisplay'); const statRateEl = document.getElementById('statRate');
+    const timerEl = document.getElementById('timerDisplay'); const sessEl = document.getElementById('sessionAccumulated');
+    const hoursEl = document.getElementById('completedHours'); const totalMinedEl = document.getElementById('totalMined');
+    const pill = document.getElementById('systemPill'); const button = document.getElementById('miningToggleBtn');
     
     if(rateEl) rateEl.textContent = rate.toFixed(0);
     if(statRateEl) statRateEl.textContent = `${rate.toFixed(0)} FDX/H`;
     if(timerEl) timerEl.textContent = formatTimer(getRemainingSeconds());
-    
     const sessionAmount = state.miningState === 'ACTIVE' ? getSessionAccumulated() : Number(state.sessionAccumulated||0);
     if(sessEl) sessEl.textContent = `${formatNumber(sessionAmount)} FDX`;
-    
     const elapsed = state.miningState === 'ACTIVE' ? getMiningElapsedSeconds() : (state.miningState === 'READY_TO_CLAIM' ? state.miningCycleDuration : 0);
     const totalHours = state.miningCycleDuration / 3600;
     if(hoursEl) hoursEl.textContent = `${Math.min(totalHours, Math.floor(elapsed/3600))} / ${totalHours}`;
@@ -785,41 +778,28 @@ function updateAllUI(){
     } else if(state.miningState === 'ACTIVE'){
         if(pill) pill.textContent = state.boosterAdsWatched > 0 ? `BOOSTED (${state.boosterAdsWatched}/2)` : 'ACTIVE MINING';
         if(button){ button.textContent = 'MINING IN PROGRESS'; button.style.background = 'rgba(56,189,248,.2)'; button.style.pointerEvents = 'none'; }
-        
-        if(getMiningElapsedSeconds() >= state.miningCycleDuration) {
-            state.miningState = 'READY_TO_CLAIM';
-            saveState();
-            updateAllUI();
-        }
+        if(getMiningElapsedSeconds() >= state.miningCycleDuration) { state.miningState = 'READY_TO_CLAIM'; saveState(); updateAllUI(); }
     } else if(state.miningState === 'READY_TO_CLAIM'){
         if(pill) pill.textContent = 'SESSION ENDED';
         if(button){ button.textContent = 'CLAIM REWARD'; button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)'; button.style.pointerEvents = 'auto'; }
     }
     
-    const boosterTile = document.getElementById('boosterTile');
-    const boosterSubText = document.getElementById('boosterSubText');
+    const boosterTile = document.getElementById('boosterTile'); const boosterSubText = document.getElementById('boosterSubText');
     if(boosterTile && boosterSubText) {
         if(state.boosterAdsWatched >= 2) {
-            boosterTile.style.opacity = '0.5';
-            boosterTile.style.pointerEvents = 'none';
+            boosterTile.style.opacity = '0.5'; boosterTile.style.pointerEvents = 'none';
             boosterSubText.textContent = 'Limit Reached (2/2)';
         } else {
-            boosterTile.style.opacity = '1';
-            boosterTile.style.pointerEvents = 'auto';
+            boosterTile.style.opacity = '1'; boosterTile.style.pointerEvents = 'auto';
             boosterSubText.textContent = `+250 FDX & +4 Hours (${state.boosterAdsWatched}/2)`;
         }
     }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    loadState();
-    updateAllUI();
-    refreshTaskStatus();
-    renderFriends(); 
+    loadState(); updateAllUI(); refreshTaskStatus(); renderFriends(); 
 });
-
 setInterval(updateAllUI, 1000);
-
 </script>
 </body>
 </html>
