@@ -8,6 +8,7 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
+<script src="https://w.tads.me/widget.js"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
@@ -361,6 +362,7 @@ input,textarea{font:inherit;}
    CONFIG & STATE
 ========================================================= */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+const TADS_WIDGET_ID = 12546;
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -535,6 +537,65 @@ async function apiCall(path, options = {}) {
 function serverNow() { return Date.now() + serverTimeOffsetMs; }
 
 /* =========================================================
+   ⚡ TADS REWARDED AD WRAPPER
+   Wraps TADS's callback-based API into a Promise so we can
+   await it in the mining/boost flows.
+   Resolves ONLY when onShowReward fires (user watched full ad).
+========================================================= */
+function showRewardedAd() {
+    return new Promise((resolve, reject) => {
+        if (!window.tads || typeof window.tads.init !== 'function') {
+            return reject(new Error("Ad service not loaded. Please reload the app."));
+        }
+
+        let settled = false;
+        const timeoutId = setTimeout(() => {
+            if (!settled) { settled = true; reject(new Error("Ad timed out. Please try again.")); }
+        }, 180000); // 3 minutes
+
+        const onShowRewardCallback = (adId) => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeoutId);
+            resolve(adId || true);
+        };
+
+        const onAdsNotFound = () => {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeoutId);
+            reject(new Error("No ads available right now. Please try again later."));
+        };
+
+        try {
+            const adController = window.tads.init({
+                widgetId: TADS_WIDGET_ID,
+                type: 'fullscreen',
+                debug: false,
+                onShowReward: onShowRewardCallback,
+                onAdsNotFound: onAdsNotFound
+            });
+
+            // NOTE: for fullscreen, do NOT call loadAd() — showAd() fetches + opens the overlay.
+            const showResult = adController.showAd();
+            if (showResult && typeof showResult.catch === 'function') {
+                showResult.catch((err) => {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timeoutId);
+                    reject(new Error(err?.message || "Failed to show ad."));
+                });
+            }
+        } catch (e) {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timeoutId);
+            reject(e);
+        }
+    });
+}
+
+/* =========================================================
    LOAD STATE
 ========================================================= */
 function mergeTasks(serverTasks) {
@@ -670,14 +731,17 @@ async function handleMiningAction() {
             showToast('Mining cycle started!');
         } else if (appState.miningState === 'READY_TO_CLAIM') {
             if (button) button.textContent = 'CLAIMING...';
-            showLoading('Requesting ad token...');
+
+            // 1. Get one-time token from backend
+            showLoading('Preparing ad...');
             const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
 
-            // ⚠️ TODO: replace this simulated delay with the real Monetag SDK rewarded-ad callback
+            // 2. Show TADS rewarded ad — resolves only on onShowReward
             hideLoading();
-            showLoading('Showing ad...');
-            await new Promise(r => setTimeout(r, 1500));
+            await showRewardedAd();
 
+            // 3. Ad watched — submit token to claim reward
+            showLoading('Claiming reward...');
             const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
             await loadState(false);
             showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
@@ -711,14 +775,16 @@ async function confirmWatchBoosterAd() {
     if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'LOADING...'; }
 
     try {
-        showLoading('Requesting ad token...');
+        // 1. Get one-time token from backend
+        showLoading('Preparing ad...');
         const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
 
-        // ⚠️ TODO: replace this simulated delay with the real Monetag SDK rewarded-ad callback
+        // 2. Show TADS rewarded ad — resolves only on onShowReward
         hideLoading();
-        showLoading('Showing ad...');
-        await new Promise(r => setTimeout(r, 1500));
+        await showRewardedAd();
 
+        // 3. Ad watched — submit token to apply booster
+        showLoading('Applying booster...');
         await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
         await loadState(false);
         showToast('Booster Applied! +250 FDX and +4 Hours!');
