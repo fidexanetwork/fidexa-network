@@ -110,6 +110,16 @@ input,textarea{font:inherit;}
 .prompt-btn-cancel{background:#111b27;border:1px solid #223247;border-radius:12px;padding:12px;color:var(--muted);font-size:12px;font-weight:800;}
 .prompt-btn-confirm{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;border-radius:12px;padding:12px;color:#05080c;font-size:12px;font-weight:900;}
 .prompt-btn-confirm:disabled{opacity:.5;cursor:not-allowed;}
+.milestone-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(27,38,54,.5);}
+.milestone-row:last-child{border-bottom:0;}
+.milestone-info{display:flex;flex-direction:column;gap:2px;}
+.milestone-title{font-size:12px;font-weight:800;color:#fff;}
+.milestone-reward{font-size:10px;font-weight:700;color:var(--yellow);}
+.milestone-progress{font-size:9px;color:var(--muted);font-weight:600;}
+.milestone-btn{padding:6px 12px;border-radius:8px;font-size:10px;font-weight:900;border:0;cursor:pointer;transition:0.2s;}
+.milestone-btn.locked{background:#111b27;color:var(--muted);cursor:not-allowed;}
+.milestone-btn.claimable{background:linear-gradient(90deg,#facc15,#f59e0b);color:#05080c;box-shadow:0 2px 10px rgba(250,204,21,.3);}
+.milestone-btn.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);cursor:default;}
 </style>
 </head>
 <body>
@@ -212,6 +222,21 @@ input,textarea{font:inherit;}
     <main class="page-view" id="page-friends">
         <div class="full-page-header">👥 REFERRAL NETWORK</div>
         <div class="full-page-sub">Invite friends and earn instant rewards.</div>
+        
+        <!-- Milestone Card -->
+        <div class="task-card" style="background: linear-gradient(145deg, #0a1018, #0d1520); border-color: rgba(56,189,248,0.3);">
+            <div class="task-row" style="border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <div class="task-left">
+                    <div class="task-icon" style="background: rgba(56,189,248, 0.1); border-color: rgba(56,189,248, 0.3); color: var(--cyan);">🏆</div>
+                    <div>
+                        <div class="task-name">Referral Milestones</div>
+                        <div class="task-reward" style="color: var(--cyan);">Unlock bonus rewards!</div>
+                    </div>
+                </div>
+            </div>
+            <div id="milestoneList" style="padding: 0 16px 16px 16px;"></div>
+        </div>
+
         <div class="referral-info-card">
             <div class="referral-info-icon">💎</div>
             <div>
@@ -219,6 +244,7 @@ input,textarea{font:inherit;}
                 <div class="referral-info-text">Invite a friend. Once they start mining, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
             </div>
         </div>
+        
         <div class="friends-stats-grid">
             <div class="friend-stat-card"><div class="friend-stat-value" id="totalFriendsCount">0</div><div class="friend-stat-label">Invited</div></div>
             <div class="friend-stat-card"><div class="friend-stat-value" id="activeFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Active</div></div>
@@ -243,6 +269,20 @@ input,textarea{font:inherit;}
             <div class="wallet-balance-title" style="color: var(--cyan);">ALLOCATION PENDING</div>
             <div style="font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.5;">
                 Your mining balance is accumulating safely on the Home tab. Wallet syncing and distribution will become available soon.
+            </div>
+        </div>
+
+        <!-- Withdraw Card -->
+        <div class="task-card" style="border-color: rgba(250,204,21,0.3); margin-bottom: 20px;">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon" style="background: rgba(250,204,21, 0.1); border-color: rgba(250,204,21,0.3); color: var(--yellow);">💸</div>
+                    <div>
+                        <div class="task-name">Withdraw</div>
+                        <div class="task-reward" style="color: var(--muted);">Coming Soon</div>
+                    </div>
+                </div>
+                <button class="task-button" style="background: #111b27; border-color: #223247; color: var(--muted);" disabled>LOCKED</button>
             </div>
         </div>
         
@@ -297,7 +337,6 @@ function initializeTelegramUser(){
             currentUserName=tgUser.username || tgUser.first_name || 'FidexaUser';
         }
         
-        // SECURITY: Prevent Self-Referral
         const startParam = webApp.initDataUnsafe?.start_param || '';
         if(startParam === `ref_${currentUserId}`) {
             isSelfReferral = true;
@@ -329,10 +368,10 @@ setTimeout(initializeTonConnect, 1000);
 ========================================================= */
 const MINING_CYCLE_SECONDS = 14400; // 4 Hours
 const BASE_RATE_PER_HOUR = 50; // 50 FDX per hour
-const BOOSTER_RESET_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours in ms
-const TASK_RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours in ms
+const BOOSTER_RESET_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours
+const TASK_RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
-const STORAGE_KEY='fidexa_prototype_state_v18';
+const STORAGE_KEY='fidexa_prototype_state_v20';
 const defaultState={
     totalBalance:0, 
     totalMined:0, 
@@ -343,7 +382,14 @@ const defaultState={
     sessionAccumulated:0,
     boosterAdsWatched: 0, 
     lastBoosterReset: Date.now(),
-    friends:[]
+    friends:[],
+    milestonesClaimed: {
+        1: false,
+        3: false,
+        10: false,
+        50: false,
+        100: false
+    }
 };
 let state={ ...defaultState };
 
@@ -420,7 +466,6 @@ function handleMiningAction(){
         state.miningStartedAt = Date.now();
         state.miningCycleDuration = MINING_CYCLE_SECONDS;
         state.sessionAccumulated = 0;
-        // Note: We do NOT reset boosterAdsWatched here. It resets based on the 12h timer.
         saveState();
         updateAllUI();
         showToast('Mining cycle started!');
@@ -452,8 +497,7 @@ function checkBoosterReset() {
 }
 
 function openBoosterPrompt(){
-    checkBoosterReset(); // Check if 12 hours have passed
-
+    checkBoosterReset();
     if(state.boosterAdsWatched >= 2) {
         const timeLeft = BOOSTER_RESET_INTERVAL - (Date.now() - state.lastBoosterReset);
         const hoursLeft = Math.floor(timeLeft / 3600000);
@@ -479,9 +523,8 @@ function confirmWatchBoosterAd(){
     showToast('Loading Advertisement...');
     
     setTimeout(() => {
-        // Simulating the user watching the ad successfully
-        state.totalBalance += 250; // +250 FDX
-        state.miningCycleDuration += 14400; // +4 Hours (14,400 seconds)
+        state.totalBalance += 250;
+        state.miningCycleDuration += 14400; // +4 Hours
         state.boosterAdsWatched++;
         
         saveState();
@@ -519,7 +562,6 @@ function handleTaskAction(type){
     const task = TASKS_CONFIG[type];
     if(!task) return;
     
-    // Check reset before allowing action
     refreshTaskStatus(); 
 
     if(!taskStatus[type].joined){
@@ -548,11 +590,9 @@ function refreshTaskStatus(){
     let changed = false;
 
     ['telegram', 'x', 'youtube'].forEach(type => {
-        // SECURITY: Check if 24 hours passed to reset the task
         if (taskStatus[type].claimed && (now - taskStatus[type].lastClaimedAt > TASK_RESET_INTERVAL)) {
             taskStatus[type].joined = false;
             taskStatus[type].claimed = false;
-            // Don't reset lastClaimedAt so the timer doesn't loop infinitely if they don't claim
             changed = true;
         }
 
@@ -578,7 +618,7 @@ function refreshTaskStatus(){
 }
 
 /* =========================================================
-   FRIENDS / REFERRAL LOGIC & SECURITY
+   FRIENDS / REFERRAL LOGIC & MILESTONES
 ========================================================= */
 function getReferralLink(){
     return `https://t.me/FIDEXANetworkBot?startapp=ref_${encodeURIComponent(currentUserId)}`;
@@ -619,37 +659,104 @@ function renderFriends(){
     if(totalEl) totalEl.textContent = String(mockFriends.length);
     if(mockFriends.length === 0){
         list.innerHTML = `<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>`;
-        return;
-    }
-    
-    list.innerHTML = '';
-    mockFriends.forEach(friend => {
-        const item = document.createElement('div');
-        item.className = 'friend-row-item';
-        item.innerHTML = `
-            <div class="friend-left">
-                <div class="friend-avatar">👤</div>
-                <div>
-                    <div class="friend-name">User ${friend.id}</div>
-                    <div class="friend-status active">Active · +100 FDX Earned</div>
+    } else {
+        list.innerHTML = '';
+        mockFriends.forEach(friend => {
+            const item = document.createElement('div');
+            item.className = 'friend-row-item';
+            item.innerHTML = `
+                <div class="friend-left">
+                    <div class="friend-avatar">👤</div>
+                    <div>
+                        <div class="friend-name">User ${friend.id}</div>
+                        <div class="friend-status active">Active · +100 FDX Earned</div>
+                    </div>
                 </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    renderMilestones(mockFriends.length);
+}
+
+function renderMilestones(currentCount) {
+    const container = document.getElementById('milestoneList');
+    if(!container) return;
+
+    // UPDATED MILESTONE REWARDS
+    const milestones = [
+        { req: 1, reward: 100, label: "Invite 1 Friend" },
+        { req: 3, reward: 300, label: "Invite 3 Friends" },
+        { req: 10, reward: 1000, label: "Invite 10 Friends" },
+        { req: 50, reward: 2000, label: "Invite 50 Friends" },
+        { req: 100, reward: 5000, label: "Invite 100 Friends" }
+    ];
+
+    let html = '';
+    
+    milestones.forEach(m => {
+        const isClaimed = state.milestonesClaimed[m.req];
+        const isUnlocked = currentCount >= m.req;
+        
+        let btnClass = 'milestone-btn ';
+        let btnText = '';
+        let btnDisabled = '';
+        
+        if (isClaimed) {
+            btnClass += 'claimed';
+            btnText = 'CLAIMED';
+            btnDisabled = 'disabled';
+        } else if (isUnlocked) {
+            btnClass += 'claimable';
+            btnText = 'CLAIM';
+            btnDisabled = '';
+        } else {
+            btnClass += 'locked';
+            btnText = 'LOCKED';
+            btnDisabled = 'disabled';
+        }
+
+        html += `
+            <div class="milestone-row">
+                <div class="milestone-info">
+                    <div class="milestone-title">${m.label}</div>
+                    <div class="milestone-reward">+${m.reward} FDX</div>
+                    <div class="milestone-progress">Progress: ${Math.min(currentCount, m.req)}/${m.req}</div>
+                </div>
+                <button class="${btnClass}" onclick="claimMilestone(${m.req}, ${m.reward})" ${btnDisabled}>${btnText}</button>
             </div>
         `;
-        list.appendChild(item);
     });
+
+    container.innerHTML = html;
+}
+
+function claimMilestone(req, reward) {
+    if (state.milestonesClaimed[req]) return;
+    if (state.friends.length < req) {
+        showToast('You need more friends to claim this reward!');
+        return;
+    }
+
+    state.milestonesClaimed[req] = true;
+    state.totalBalance += reward;
+    saveState();
+    updateAllUI();
+    renderFriends(); 
+    showToast(`Milestone reached! +${reward} FDX added to balance.`);
 }
 
 /* =========================================================
    UPDATE UI
 ========================================================= */
 function updateAllUI(){
-    checkBoosterReset(); // Ensure booster state is correct before rendering
+    checkBoosterReset();
 
     const formattedBal = formatNumber(state.totalBalance);
     const balEl = document.getElementById('balanceDisplay');
     if(balEl) balEl.textContent = formattedBal;
     
-    // Mining UI
     const rate = state.baseMiningRate;
     const rateEl = document.getElementById('currentRateDisplay');
     const statRateEl = document.getElementById('statRate');
@@ -672,7 +779,6 @@ function updateAllUI(){
     if(hoursEl) hoursEl.textContent = `${Math.min(totalHours, Math.floor(elapsed/3600))} / ${totalHours}`;
     if(totalMinedEl) totalMinedEl.textContent = `${formatNumber(state.totalMined)} FDX`;
     
-    // Button State
     if(state.miningState === 'IDLE'){
         if(pill) pill.textContent = 'READY TO MINE';
         if(button){ button.textContent = 'START MINING (4 HOURS)'; button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)'; button.style.pointerEvents = 'auto'; }
@@ -690,7 +796,6 @@ function updateAllUI(){
         if(button){ button.textContent = 'CLAIM REWARD'; button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)'; button.style.pointerEvents = 'auto'; }
     }
     
-    // Booster Button UI
     const boosterTile = document.getElementById('boosterTile');
     const boosterSubText = document.getElementById('boosterSubText');
     if(boosterTile && boosterSubText) {
@@ -706,14 +811,13 @@ function updateAllUI(){
     }
 }
 
-// Start
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     updateAllUI();
     refreshTaskStatus();
+    renderFriends(); 
 });
 
-// Update timer every second
 setInterval(updateAllUI, 1000);
 
 </script>
