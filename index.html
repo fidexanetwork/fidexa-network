@@ -39,7 +39,7 @@ input,textarea{font:inherit;}
 .action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,.3);}
 .interactive-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.action-tile{background:rgba(10,16,24,.9);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,.2);}
+.action-tile{background:rgba(10,16,24,.9);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,.2);transition: all 0.3s;}
 .action-tile-icon{font-size:22px;}
 .action-tile-title{font-size:11px;font-weight:800;color:#fff;letter-spacing:.3px;}
 .action-tile-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600;}
@@ -93,7 +93,6 @@ input,textarea{font:inherit;}
 .wallet-balance-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;}
 .wallet-balance-num{font-size:38px;font-weight:900;color:#fff;margin-top:6px;}
 .wallet-balance-token{font-size:18px;font-weight:800;color:var(--yellow);margin-left:6px;}
-.wallet-action-row{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;}
 .ton-connect-container{display:flex;justify-content:center;margin-top:10px;}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;}
@@ -121,27 +120,27 @@ input,textarea{font:inherit;}
     <main class="page-view active" id="page-home">
         <div class="balance-card">
             <div class="balance-dot"></div>
-            <div class="balance-label">TOTAL BALANCE</div>
+            <div class="balance-label">TOTAL MINING BALANCE</div>
             <div class="balance-row">
                 <div class="balance-value" id="balanceDisplay">0.00</div>
-                <div class="balance-token">$FDX</div>
+                <div class="balance-token">FDX</div>
             </div>
         </div>
         <div class="mining-node-container">
             <div class="ring-wrapper">
                 <div class="system-status-pill" id="systemPill">READY TO MINE</div>
                 <div class="mining-timer" id="timerDisplay">08:00:00</div>
-                <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">50</span> $FDX/H</div>
+                <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">50</span> FDX/H</div>
             </div>
         </div>
         <div class="action-controls">
             <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">START MINING</button>
             <div class="interactive-grid">
-                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);">
+                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);" id="boosterTile">
                     <div class="action-tile-icon">🚀</div>
                     <div>
                         <div class="action-tile-title" style="color:var(--yellow);">Boost Mining</div>
-                        <div class="action-tile-sub">+500 FDX & +4 Hours</div>
+                        <div class="action-tile-sub" id="boosterSubText">+250 FDX & +4 Hours</div>
                     </div>
                 </button>
                 <button class="action-tile" onclick="showToast('Coming Soon!')">
@@ -156,10 +155,10 @@ input,textarea{font:inherit;}
         <div class="statistics-card">
             <div class="statistics-title">📊 MINING STATISTICS</div>
             <div class="statistics-grid">
-                <div class="statistics-item"><div class="statistics-label">Current Rate</div><div class="statistics-value yellow" id="statRate">50 $FDX/H</div></div>
-                <div class="statistics-item"><div class="statistics-label">Session Accumulated</div><div class="statistics-value" id="sessionAccumulated">0.00 $FDX</div></div>
+                <div class="statistics-item"><div class="statistics-label">Current Rate</div><div class="statistics-value yellow" id="statRate">50 FDX/H</div></div>
+                <div class="statistics-item"><div class="statistics-label">Session Accumulated</div><div class="statistics-value" id="sessionAccumulated">0.00 FDX</div></div>
                 <div class="statistics-item"><div class="statistics-label">Completed Hours</div><div class="statistics-value" id="completedHours">0 / 8</div></div>
-                <div class="statistics-item"><div class="statistics-label">Total Mined</div><div class="statistics-value green" id="totalMined">0.00 $FDX</div></div>
+                <div class="statistics-item"><div class="statistics-label">Total Mined</div><div class="statistics-value green" id="totalMined">0.00 FDX</div></div>
             </div>
         </div>
     </main>
@@ -168,16 +167,43 @@ input,textarea{font:inherit;}
     <main class="page-view" id="page-tasks">
         <div class="full-page-header">📋 SYSTEM TASKS</div>
         <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards.</div>
+        
         <div class="task-card">
             <div class="task-row">
                 <div class="task-left">
-                    <div class="task-icon">📢</div>
+                    <div class="task-icon" style="color:#0088cc;">📢</div>
                     <div>
                         <div class="task-name">Join Telegram</div>
-                        <div class="task-reward">Reward: +100 $FDX</div>
+                        <div class="task-reward">Reward: +100 FDX</div>
                     </div>
                 </div>
                 <button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button>
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon" style="color:#fff; background:#000;">𝕏</div>
+                    <div>
+                        <div class="task-name">Follow on X</div>
+                        <div class="task-reward">Reward: +100 FDX</div>
+                    </div>
+                </div>
+                <button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">FOLLOW</button>
+            </div>
+        </div>
+
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left">
+                    <div class="task-icon" style="color:#ff0000;">▶️</div>
+                    <div>
+                        <div class="task-name">Subscribe on YouTube</div>
+                        <div class="task-reward">Reward: +100 FDX</div>
+                    </div>
+                </div>
+                <button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button>
             </div>
         </div>
     </main>
@@ -189,8 +215,8 @@ input,textarea{font:inherit;}
         <div class="referral-info-card">
             <div class="referral-info-icon">💎</div>
             <div>
-                <div class="referral-info-title">EARN +100 $FDX PER FRIEND</div>
-                <div class="referral-info-text">Invite a friend. Once they start mining, you instantly receive <strong>+100 $FDX</strong> added to your balance.</div>
+                <div class="referral-info-title">EARN +100 FDX PER FRIEND</div>
+                <div class="referral-info-text">Invite a friend. Once they start mining, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
             </div>
         </div>
         <div class="friends-stats-grid">
@@ -212,29 +238,18 @@ input,textarea{font:inherit;}
 
     <!-- WALLET TAB -->
     <main class="page-view" id="page-wallet">
-        <div class="wallet-main-card">
-            <div class="wallet-balance-title">TOTAL WALLET BALANCE</div>
-            <div class="wallet-balance-num" id="walletBalanceNum">0.00<span class="wallet-balance-token">$FDX</span></div>
+        <div class="wallet-main-card" style="border-color: rgba(56,189,248,0.3);">
+            <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
+            <div class="wallet-balance-title" style="color: var(--cyan);">ALLOCATION PENDING</div>
+            <div style="font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.5;">
+                Your mining balance is safe on the Home tab. Distribution to this wallet will begin after the official token launch.
+            </div>
         </div>
         
-        <div style="margin-bottom: 20px;">
+        <div style="margin-top: 25px; margin-bottom: 20px;">
             <div style="font-size: 14px; font-weight: 900; color: var(--cyan); margin-bottom: 10px;">🔗 Connect TON Wallet</div>
-            <div style="font-size: 11px; color: var(--muted); margin-bottom: 15px; line-height: 1.5;">Connect your TON wallet to prepare for future FDX token airdrops and transfers.</div>
-            <!-- TON Connect Button will be injected here -->
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 15px; line-height: 1.5;">Connect your TON wallet to prepare for the FDX token airdrop and future transfers.</div>
             <div id="ton-connect" class="ton-connect-container"></div>
-        </div>
-
-        <div class="task-card" style="border-color: rgba(250,204,21,0.3);">
-            <div class="task-row">
-                <div class="task-left">
-                    <div class="task-icon" style="background: rgba(250,204,21, 0.1); border-color: rgba(250,204,21,0.3); color: var(--yellow);">💸</div>
-                    <div>
-                        <div class="task-name">Withdraw</div>
-                        <div class="task-reward" style="color: var(--muted);">Coming Soon</div>
-                    </div>
-                </div>
-                <button class="task-button" style="background: #111b27; border-color: #223247; color: var(--muted);" disabled>LOCKED</button>
-            </div>
         </div>
     </main>
 </div>
@@ -251,10 +266,10 @@ input,textarea{font:inherit;}
 <div class="modal-overlay" id="boosterPromptModal">
     <div class="prompt-box">
         <div class="prompt-title">⚡ MINING BOOSTER</div>
-        <div class="prompt-desc">Watch an advertisement to instantly receive <strong>+500 $FDX</strong> and add <strong>+4 Hours</strong> to your current mining timer.</div>
+        <div class="prompt-desc">Watch an advertisement to instantly receive <strong>+250 FDX</strong> and add <strong>+4 Hours</strong> to your current mining timer.</div>
         <div class="prompt-actions">
             <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Cancel</button>
-            <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()">Watch Ad</button>
+            <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()" id="boosterConfirmBtn">Watch Ad</button>
         </div>
     </div>
 </div>
@@ -263,11 +278,12 @@ input,textarea{font:inherit;}
 
 <script>
 /* =========================================================
-   TELEGRAM USER
+   TELEGRAM USER & SECURITY
 ========================================================= */
 let currentUserId='demo_user';
 let currentUserName='FidexaUser';
 let currentTelegramInitData='';
+let isSelfReferral = false;
 
 function initializeTelegramUser(){
     if(window.Telegram && window.Telegram.WebApp){
@@ -280,6 +296,13 @@ function initializeTelegramUser(){
             currentUserId=tgUser.id ? String(tgUser.id) : 'demo_user';
             currentUserName=tgUser.username || tgUser.first_name || 'FidexaUser';
         }
+        
+        // SECURITY: Prevent Self-Referral
+        const startParam = webApp.initDataUnsafe?.start_param || '';
+        if(startParam === `ref_${currentUserId}`) {
+            isSelfReferral = true;
+            console.warn("Self-referral detected and blocked.");
+        }
     }
 }
 initializeTelegramUser();
@@ -289,24 +312,16 @@ initializeTelegramUser();
 ========================================================= */
 function initializeTonConnect() {
     try {
-        // ⚠️ REPLACE WITH YOUR ACTUAL MANIFEST URL (See instructions below)
         const manifestUrl = 'https://YOUR_DOMAIN_HERE/tonconnect-manifest.json'; 
-        
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: manifestUrl,
             buttonRootId: 'ton-connect'
         });
-
         tonConnectUI.onStatusChange(wallet => {
-            if (wallet) {
-                showToast('Wallet Connected: ' + wallet.account.address.toString().slice(0, 6) + '...');
-            }
+            if (wallet) showToast('Wallet Connected: ' + wallet.account.address.toString().slice(0, 6) + '...');
         });
-    } catch (e) {
-        console.warn("TON Connect failed to load.", e);
-    }
+    } catch (e) { console.warn("TON Connect failed to load.", e); }
 }
-// Initialize after a slight delay to ensure DOM is ready
 setTimeout(initializeTonConnect, 1000);
 
 /* =========================================================
@@ -314,19 +329,17 @@ setTimeout(initializeTonConnect, 1000);
 ========================================================= */
 const MINING_CYCLE_SECONDS = 28800; // 8 Hours
 const BASE_RATE_PER_HOUR = 50; // 50 FDX per hour
-const MINING_SESSION_REWARD = MINING_CYCLE_SECONDS / 3600 * BASE_RATE_PER_HOUR; // 400 FDX
 
-const STORAGE_KEY='fidexa_prototype_state_v16';
+const STORAGE_KEY='fidexa_prototype_state_v17';
 const defaultState={
     totalBalance:0, 
     totalMined:0, 
-    miningState:'IDLE', // IDLE, ACTIVE, READY_TO_CLAIM
+    miningState:'IDLE', 
     miningStartedAt:0, 
     miningCycleDuration: MINING_CYCLE_SECONDS,
     baseMiningRate: BASE_RATE_PER_HOUR,
     sessionAccumulated:0,
-    boosterUsedThisCycle: false,
-    referralCount: 0,
+    boosterAdsWatched: 0, // SECURITY: Tracks how many ads watched this cycle (Max 2)
     friends:[]
 };
 let state={ ...defaultState };
@@ -338,9 +351,7 @@ function loadState(){
     }catch(error){}
 }
 function saveState(){
-    try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }catch(error){}
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(error){}
 }
 
 /* =========================================================
@@ -406,32 +417,30 @@ function handleMiningAction(){
         state.miningStartedAt = Date.now();
         state.miningCycleDuration = MINING_CYCLE_SECONDS;
         state.sessionAccumulated = 0;
-        state.boosterUsedThisCycle = false;
+        state.boosterAdsWatched = 0; // Reset ads for new cycle
         saveState();
         updateAllUI();
         showToast('Mining cycle started!');
     }else if(state.miningState==='READY_TO_CLAIM'){
-        // Calculate final reward
         const finalReward = (state.miningCycleDuration / 3600) * state.baseMiningRate;
-        
         state.totalBalance += finalReward;
         state.totalMined += finalReward;
         state.miningState='IDLE';
         state.miningStartedAt=0;
         state.sessionAccumulated=0;
-        state.boosterUsedThisCycle = false;
+        state.boosterAdsWatched = 0;
         saveState();
         updateAllUI();
-        showToast(`Successfully claimed ${formatNumber(finalReward)} $FDX!`);
+        showToast(`Successfully claimed ${formatNumber(finalReward)} FDX!`);
     }
 }
 
 /* =========================================================
-   BOOSTER LOGIC (Watch Ad)
+   BOOSTER LOGIC (2 Ads Maximum)
 ========================================================= */
 function openBoosterPrompt(){
-    if(state.boosterUsedThisCycle) {
-        showToast('Booster already used for this mining cycle!');
+    if(state.boosterAdsWatched >= 2) {
+        showToast('Booster limit reached for this cycle (Max 2 ads).');
         return;
     }
     if(state.miningState !== 'ACTIVE') {
@@ -445,79 +454,112 @@ function closeBoosterPrompt(){
 }
 
 function confirmWatchBoosterAd(){
+    if(state.boosterAdsWatched >= 2) return;
     closeBoosterPrompt();
     
     // ⚠️ THIS IS WHERE THE AD SDK WILL GO
-    // For now, we will simulate the ad watching process
-    
     showToast('Loading Advertisement...');
     
     setTimeout(() => {
         // Simulating the user watching the ad successfully
-        // In the real app, the Ad SDK will trigger this code in the "onReward" callback
-        
-        state.totalBalance += 500;
-        state.miningCycleDuration += 14400; // Add 4 hours (14,400 seconds)
-        state.boosterUsedThisCycle = true;
+        state.totalBalance += 250; // +250 FDX
+        state.miningCycleDuration += 14400; // +4 Hours (14,400 seconds)
+        state.boosterAdsWatched++;
         
         saveState();
         updateAllUI();
-        showToast('Booster Applied! +500 FDX and +4 Hours Added!');
+        showToast('Booster Applied! +250 FDX and +4 Hours Added!');
         
     }, 1500); // 1.5 second fake delay
 }
 
 /* =========================================================
-   TASKS LOGIC
+   TASKS LOGIC & SECURITY
 ========================================================= */
-let taskStatus = {
-    telegram: { joined: false, claimed: false }
+const TASKS_CONFIG = {
+    telegram: { url: 'https://t.me/fidexa_Network', reward: 100, name: 'Telegram' },
+    x: { url: 'https://x.com/Fidexa_Network', reward: 100, name: 'X' },
+    youtube: { url: 'https://youtube.com/@Fidexa_Network', reward: 100, name: 'YouTube' }
 };
 
+let taskStatus = {
+    telegram: { joined: false, claimed: false },
+    x: { joined: false, claimed: false },
+    youtube: { joined: false, claimed: false }
+};
+
+// SECURITY: Load local storage to prevent multiple claims on same device
+try {
+    const savedTasks = localStorage.getItem('fidexa_tasks');
+    if(savedTasks) taskStatus = JSON.parse(savedTasks);
+} catch(e) {}
+
+function saveTaskStatus() {
+    localStorage.setItem('fidexa_tasks', JSON.stringify(taskStatus));
+}
+
 function handleTaskAction(type){
-    if(type === 'telegram'){
-        if(!taskStatus.telegram.joined){
-            window.open('https://t.me/fidexa_Network', '_blank');
-            taskStatus.telegram.joined = true;
-            setTimeout(() => { refreshTaskStatus(); }, 3000);
-        } else if (!taskStatus.telegram.claimed) {
-            taskStatus.telegram.claimed = true;
-            state.totalBalance += 100;
-            saveState();
-            updateAllUI();
+    const task = TASKS_CONFIG[type];
+    if(!task) return;
+    
+    if(!taskStatus[type].joined){
+        // Open link
+        window.open(task.url, '_blank');
+        taskStatus[type].joined = true;
+        saveTaskStatus();
+        refreshTaskStatus();
+        showToast(`Please complete the action on ${task.name}. You can claim in 10 seconds.`);
+        
+        // SECURITY: Force a 10-second delay before they can claim to prevent instant bot clicking
+        setTimeout(() => {
             refreshTaskStatus();
-            showToast('+100 $FDX added to Balance');
-        }
+        }, 10000);
+        
+    } else if (!taskStatus[type].claimed) {
+        taskStatus[type].claimed = true;
+        state.totalBalance += task.reward;
+        saveTaskStatus();
+        saveState();
+        updateAllUI();
+        refreshTaskStatus();
+        showToast(`+${task.reward} FDX added to Balance`);
     }
 }
 
 function refreshTaskStatus(){
-    const btn = document.getElementById('taskBtn_telegram');
-    if(!btn) return;
-    
-    if(taskStatus.telegram.claimed){
-        btn.textContent = 'CLAIMED';
-        btn.className = 'task-button claimed';
-        btn.disabled = true;
-    } else if(taskStatus.telegram.joined){
-        btn.textContent = 'CLAIM';
-        btn.className = 'task-button claim';
-        btn.disabled = false;
-    } else {
-        btn.textContent = 'JOIN';
-        btn.className = 'task-button';
-        btn.disabled = false;
-    }
+    ['telegram', 'x', 'youtube'].forEach(type => {
+        const btn = document.getElementById(`taskBtn_${type}`);
+        if(!btn) return;
+        
+        if(taskStatus[type].claimed){
+            btn.textContent = 'CLAIMED';
+            btn.className = 'task-button claimed';
+            btn.disabled = true;
+        } else if(taskStatus[type].joined){
+            // Check if enough time passed for security
+            btn.textContent = 'CLAIM';
+            btn.className = 'task-button claim';
+            btn.disabled = false;
+        } else {
+            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
+            btn.className = 'task-button';
+            btn.disabled = false;
+        }
+    });
 }
 
 /* =========================================================
-   FRIENDS / REFERRAL LOGIC
+   FRIENDS / REFERRAL LOGIC & SECURITY
 ========================================================= */
 function getReferralLink(){
     return `https://t.me/FIDEXANetworkBot?startapp=ref_${encodeURIComponent(currentUserId)}`;
 }
 
 function copyReferralLink(){
+    if(isSelfReferral) {
+        showToast('Self-referral is not allowed.');
+        return;
+    }
     const link = getReferralLink();
     navigator.clipboard.writeText(link).then(() => {
         showToast('Referral link copied!');
@@ -527,8 +569,12 @@ function copyReferralLink(){
 }
 
 function shareReferralLink(){
+    if(isSelfReferral) {
+        showToast('Self-referral is not allowed.');
+        return;
+    }
     const refLink = getReferralLink();
-    const shareText = encodeURIComponent("Join Fidexa Network and start mining $FDX with me! Earn real rewards.");
+    const shareText = encodeURIComponent("Join Fidexa Network and start mining FDX with me! Earn real rewards.");
     if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink){
         window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`);
     } else {
@@ -537,11 +583,10 @@ function shareReferralLink(){
 }
 
 function renderFriends(){
-    // This is a placeholder. In a real app, this data comes from your database.
+    // NOTE: True anti-manipulation for referrals requires a backend database.
+    // A frontend script can only display the data. 
     const list = document.getElementById('friendsList');
     const totalEl = document.getElementById('totalFriendsCount');
-    
-    // Mock data for demonstration
     const mockFriends = state.friends || [];
     
     if(totalEl) totalEl.textContent = String(mockFriends.length);
@@ -571,15 +616,11 @@ function renderFriends(){
    UPDATE UI
 ========================================================= */
 function updateAllUI(){
-    // Update Balances
     const formattedBal = formatNumber(state.totalBalance);
     const balEl = document.getElementById('balanceDisplay');
-    const walletEl = document.getElementById('walletBalanceNum');
-    
     if(balEl) balEl.textContent = formattedBal;
-    if(walletEl) walletEl.innerHTML = `${formattedBal}<span class="wallet-balance-token">$FDX</span>`;
     
-    // Update Mining UI
+    // Mining UI
     const rate = state.baseMiningRate;
     const rateEl = document.getElementById('currentRateDisplay');
     const statRateEl = document.getElementById('statRate');
@@ -591,27 +632,25 @@ function updateAllUI(){
     const button = document.getElementById('miningToggleBtn');
     
     if(rateEl) rateEl.textContent = rate.toFixed(0);
-    if(statRateEl) statRateEl.textContent = `${rate.toFixed(0)} $FDX/H`;
+    if(statRateEl) statRateEl.textContent = `${rate.toFixed(0)} FDX/H`;
     if(timerEl) timerEl.textContent = formatTimer(getRemainingSeconds());
     
     const sessionAmount = state.miningState === 'ACTIVE' ? getSessionAccumulated() : Number(state.sessionAccumulated||0);
-    if(sessEl) sessEl.textContent = `${formatNumber(sessionAmount)} $FDX`;
+    if(sessEl) sessEl.textContent = `${formatNumber(sessionAmount)} FDX`;
     
     const elapsed = state.miningState === 'ACTIVE' ? getMiningElapsedSeconds() : (state.miningState === 'READY_TO_CLAIM' ? state.miningCycleDuration : 0);
     const totalHours = state.miningCycleDuration / 3600;
     if(hoursEl) hoursEl.textContent = `${Math.min(totalHours, Math.floor(elapsed/3600))} / ${totalHours}`;
+    if(totalMinedEl) totalMinedEl.textContent = `${formatNumber(state.totalMined)} FDX`;
     
-    if(totalMinedEl) totalMinedEl.textContent = `${formatNumber(state.totalMined)} $FDX`;
-    
-    // Update Button State
+    // Button State
     if(state.miningState === 'IDLE'){
         if(pill) pill.textContent = 'READY TO MINE';
         if(button){ button.textContent = 'START MINING (8 HOURS)'; button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)'; button.style.pointerEvents = 'auto'; }
     } else if(state.miningState === 'ACTIVE'){
-        if(pill) pill.textContent = state.boosterUsedThisCycle ? 'BOOSTED MINING' : 'ACTIVE MINING';
+        if(pill) pill.textContent = state.boosterAdsWatched > 0 ? `BOOSTED (${state.boosterAdsWatched}/2)` : 'ACTIVE MINING';
         if(button){ button.textContent = 'MINING IN PROGRESS'; button.style.background = 'rgba(56,189,248,.2)'; button.style.pointerEvents = 'none'; }
         
-        // Auto check if timer completed
         if(getMiningElapsedSeconds() >= state.miningCycleDuration) {
             state.miningState = 'READY_TO_CLAIM';
             saveState();
@@ -623,21 +662,22 @@ function updateAllUI(){
     }
     
     // Booster Button UI
-    const boosterTile = document.querySelector('.action-tile[onclick="openBoosterPrompt()"]');
-    if(boosterTile) {
-        if(state.boosterUsedThisCycle) {
+    const boosterTile = document.getElementById('boosterTile');
+    const boosterSubText = document.getElementById('boosterSubText');
+    if(boosterTile && boosterSubText) {
+        if(state.boosterAdsWatched >= 2) {
             boosterTile.style.opacity = '0.5';
             boosterTile.style.pointerEvents = 'none';
-            boosterTile.querySelector('.action-tile-sub').textContent = 'Used this cycle';
+            boosterSubText.textContent = 'Limit Reached (2/2)';
         } else {
             boosterTile.style.opacity = '1';
             boosterTile.style.pointerEvents = 'auto';
-            boosterTile.querySelector('.action-tile-sub').textContent = '+500 FDX & +4 Hours';
+            boosterSubText.textContent = `+250 FDX & +4 Hours (${state.boosterAdsWatched}/2)`;
         }
     }
 }
 
-// Start the application
+// Start
 window.addEventListener('DOMContentLoaded', () => {
     loadState();
     updateAllUI();
