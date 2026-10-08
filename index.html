@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +9,6 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-
-<!-- 🚀 ADSTERRA POPUNDER SCRIPT -->
-<script data-cfasync="false" src="https://afders.org/1/5c83df1b99255c0116525ae918e1f05c"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
@@ -581,7 +579,7 @@ function updateAllUI() {
 }
 
 /* =========================================================
-   MINING ACTIONS (ADSTERRA INTEGRATED)
+   MINING ACTIONS
 ========================================================= */
 async function handleMiningAction() {
     if (isProcessing) return;
@@ -610,10 +608,10 @@ async function handleMiningAction() {
             showLoading('Requesting ad token...');
             const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
             
+            // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
+            // In production: window.Monetag.showRewarded({ ... onReward: () => claimWithToken(tokenRes.adToken) })
             hideLoading();
-            showLoading('Showing ad... Please wait 8 seconds.');
-            
-            // 🚀 Adsterra Popunder fires in the background. Wait 8 seconds for it to register.
+            showLoading('Showing ad...');
             setTimeout(async () => {
                 try {
                     const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
@@ -627,7 +625,7 @@ async function handleMiningAction() {
                     if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
                     isProcessing = false;
                 }
-            }, 8000);
+            }, 1500);
         } catch (error) {
             hideLoading();
             showToast(error.message || 'Failed to claim.');
@@ -639,7 +637,7 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER (ADSTERRA INTEGRATED)
+   BOOSTER
 ========================================================= */
 function openBoosterPrompt() {
     if (appState.boosterChancesLeft <= 0) { showToast('No booster chances left. Resets in 12 hours.'); return; }
@@ -659,10 +657,9 @@ async function confirmWatchBoosterAd() {
         showLoading('Requesting ad token...');
         const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
         
+        // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
         hideLoading();
-        showLoading('Showing ad... Please wait 8 seconds.');
-
-        // 🚀 Adsterra Popunder fires in the background. Wait 8 seconds for it to register.
+        showLoading('Showing ad...');
         setTimeout(async () => {
             try {
                 const boostRes = await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
@@ -676,7 +673,7 @@ async function confirmWatchBoosterAd() {
                 if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
                 isProcessing = false;
             }
-        }, 8000);
+        }, 1500);
     } catch (error) {
         hideLoading();
         showToast(error.message || 'Failed to load ad.');
@@ -974,8 +971,5 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-
-<!-- 🚀 ADSTERRA SOCIAL BAR SCRIPT -->
-<script data-cfasync="false" src="https://bicea.org/14/d7e8afaf396b91518c2a418b817a4069"></script>
 </body>
 </html>
