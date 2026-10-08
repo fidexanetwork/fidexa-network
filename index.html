@@ -129,7 +129,7 @@ input,textarea{font:inherit;}
         <div class="mining-node-container">
             <div class="ring-wrapper">
                 <div class="system-status-pill" id="systemPill">READY TO MINE</div>
-                <div class="mining-timer" id="timerDisplay">08:00:00</div>
+                <div class="mining-timer" id="timerDisplay">04:00:00</div>
                 <div class="mining-rate-indicator">Mining Rate: <span id="currentRateDisplay">50</span> FDX/H</div>
             </div>
         </div>
@@ -157,7 +157,7 @@ input,textarea{font:inherit;}
             <div class="statistics-grid">
                 <div class="statistics-item"><div class="statistics-label">Current Rate</div><div class="statistics-value yellow" id="statRate">50 FDX/H</div></div>
                 <div class="statistics-item"><div class="statistics-label">Session Accumulated</div><div class="statistics-value" id="sessionAccumulated">0.00 FDX</div></div>
-                <div class="statistics-item"><div class="statistics-label">Completed Hours</div><div class="statistics-value" id="completedHours">0 / 8</div></div>
+                <div class="statistics-item"><div class="statistics-label">Completed Hours</div><div class="statistics-value" id="completedHours">0 / 4</div></div>
                 <div class="statistics-item"><div class="statistics-label">Total Mined</div><div class="statistics-value green" id="totalMined">0.00 FDX</div></div>
             </div>
         </div>
@@ -166,7 +166,7 @@ input,textarea{font:inherit;}
     <!-- TASKS TAB -->
     <main class="page-view" id="page-tasks">
         <div class="full-page-header">📋 SYSTEM TASKS</div>
-        <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards.</div>
+        <div class="full-page-sub">Complete official FIDEXA community tasks to earn rewards. Tasks reset every 24 hours.</div>
         
         <div class="task-card">
             <div class="task-row">
@@ -242,13 +242,13 @@ input,textarea{font:inherit;}
             <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
             <div class="wallet-balance-title" style="color: var(--cyan);">ALLOCATION PENDING</div>
             <div style="font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.5;">
-                Your mining balance is safe on the Home tab. Distribution to this wallet will begin after the official token launch.
+                Your mining balance is accumulating safely on the Home tab. Wallet syncing and distribution will become available soon.
             </div>
         </div>
         
         <div style="margin-top: 25px; margin-bottom: 20px;">
             <div style="font-size: 14px; font-weight: 900; color: var(--cyan); margin-bottom: 10px;">🔗 Connect TON Wallet</div>
-            <div style="font-size: 11px; color: var(--muted); margin-bottom: 15px; line-height: 1.5;">Connect your TON wallet to prepare for the FDX token airdrop and future transfers.</div>
+            <div style="font-size: 11px; color: var(--muted); margin-bottom: 15px; line-height: 1.5;">Connect your TON wallet to prepare for future FDX token distribution and transfers.</div>
             <div id="ton-connect" class="ton-connect-container"></div>
         </div>
     </main>
@@ -327,10 +327,12 @@ setTimeout(initializeTonConnect, 1000);
 /* =========================================================
    CONSTANTS & STATE
 ========================================================= */
-const MINING_CYCLE_SECONDS = 28800; // 8 Hours
+const MINING_CYCLE_SECONDS = 14400; // 4 Hours
 const BASE_RATE_PER_HOUR = 50; // 50 FDX per hour
+const BOOSTER_RESET_INTERVAL = 12 * 60 * 60 * 1000; // 12 hours in ms
+const TASK_RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours in ms
 
-const STORAGE_KEY='fidexa_prototype_state_v17';
+const STORAGE_KEY='fidexa_prototype_state_v18';
 const defaultState={
     totalBalance:0, 
     totalMined:0, 
@@ -339,7 +341,8 @@ const defaultState={
     miningCycleDuration: MINING_CYCLE_SECONDS,
     baseMiningRate: BASE_RATE_PER_HOUR,
     sessionAccumulated:0,
-    boosterAdsWatched: 0, // SECURITY: Tracks how many ads watched this cycle (Max 2)
+    boosterAdsWatched: 0, 
+    lastBoosterReset: Date.now(),
     friends:[]
 };
 let state={ ...defaultState };
@@ -417,7 +420,7 @@ function handleMiningAction(){
         state.miningStartedAt = Date.now();
         state.miningCycleDuration = MINING_CYCLE_SECONDS;
         state.sessionAccumulated = 0;
-        state.boosterAdsWatched = 0; // Reset ads for new cycle
+        // Note: We do NOT reset boosterAdsWatched here. It resets based on the 12h timer.
         saveState();
         updateAllUI();
         showToast('Mining cycle started!');
@@ -428,7 +431,6 @@ function handleMiningAction(){
         state.miningState='IDLE';
         state.miningStartedAt=0;
         state.sessionAccumulated=0;
-        state.boosterAdsWatched = 0;
         saveState();
         updateAllUI();
         showToast(`Successfully claimed ${formatNumber(finalReward)} FDX!`);
@@ -436,11 +438,27 @@ function handleMiningAction(){
 }
 
 /* =========================================================
-   BOOSTER LOGIC (2 Ads Maximum)
+   BOOSTER LOGIC (2 Ads Maximum, Reset every 12 Hours)
 ========================================================= */
+function checkBoosterReset() {
+    const now = Date.now();
+    if (now - state.lastBoosterReset > BOOSTER_RESET_INTERVAL) {
+        state.boosterAdsWatched = 0;
+        state.lastBoosterReset = now;
+        saveState();
+        return true;
+    }
+    return false;
+}
+
 function openBoosterPrompt(){
+    checkBoosterReset(); // Check if 12 hours have passed
+
     if(state.boosterAdsWatched >= 2) {
-        showToast('Booster limit reached for this cycle (Max 2 ads).');
+        const timeLeft = BOOSTER_RESET_INTERVAL - (Date.now() - state.lastBoosterReset);
+        const hoursLeft = Math.floor(timeLeft / 3600000);
+        const minsLeft = Math.floor((timeLeft % 3600000) / 60000);
+        showToast(`Limit reached. Resets in ${hoursLeft}h ${minsLeft}m.`);
         return;
     }
     if(state.miningState !== 'ACTIVE') {
@@ -474,7 +492,7 @@ function confirmWatchBoosterAd(){
 }
 
 /* =========================================================
-   TASKS LOGIC & SECURITY
+   TASKS LOGIC & SECURITY (Reset every 24 Hours)
 ========================================================= */
 const TASKS_CONFIG = {
     telegram: { url: 'https://t.me/fidexa_Network', reward: 100, name: 'Telegram' },
@@ -483,40 +501,39 @@ const TASKS_CONFIG = {
 };
 
 let taskStatus = {
-    telegram: { joined: false, claimed: false },
-    x: { joined: false, claimed: false },
-    youtube: { joined: false, claimed: false }
+    telegram: { joined: false, claimed: false, lastClaimedAt: 0 },
+    x: { joined: false, claimed: false, lastClaimedAt: 0 },
+    youtube: { joined: false, claimed: false, lastClaimedAt: 0 }
 };
 
-// SECURITY: Load local storage to prevent multiple claims on same device
 try {
-    const savedTasks = localStorage.getItem('fidexa_tasks');
+    const savedTasks = localStorage.getItem('fidexa_tasks_v2');
     if(savedTasks) taskStatus = JSON.parse(savedTasks);
 } catch(e) {}
 
 function saveTaskStatus() {
-    localStorage.setItem('fidexa_tasks', JSON.stringify(taskStatus));
+    localStorage.setItem('fidexa_tasks_v2', JSON.stringify(taskStatus));
 }
 
 function handleTaskAction(type){
     const task = TASKS_CONFIG[type];
     if(!task) return;
     
+    // Check reset before allowing action
+    refreshTaskStatus(); 
+
     if(!taskStatus[type].joined){
-        // Open link
         window.open(task.url, '_blank');
         taskStatus[type].joined = true;
         saveTaskStatus();
         refreshTaskStatus();
         showToast(`Please complete the action on ${task.name}. You can claim in 10 seconds.`);
         
-        // SECURITY: Force a 10-second delay before they can claim to prevent instant bot clicking
-        setTimeout(() => {
-            refreshTaskStatus();
-        }, 10000);
+        setTimeout(() => { refreshTaskStatus(); }, 10000);
         
     } else if (!taskStatus[type].claimed) {
         taskStatus[type].claimed = true;
+        taskStatus[type].lastClaimedAt = Date.now();
         state.totalBalance += task.reward;
         saveTaskStatus();
         saveState();
@@ -527,7 +544,18 @@ function handleTaskAction(type){
 }
 
 function refreshTaskStatus(){
+    const now = Date.now();
+    let changed = false;
+
     ['telegram', 'x', 'youtube'].forEach(type => {
+        // SECURITY: Check if 24 hours passed to reset the task
+        if (taskStatus[type].claimed && (now - taskStatus[type].lastClaimedAt > TASK_RESET_INTERVAL)) {
+            taskStatus[type].joined = false;
+            taskStatus[type].claimed = false;
+            // Don't reset lastClaimedAt so the timer doesn't loop infinitely if they don't claim
+            changed = true;
+        }
+
         const btn = document.getElementById(`taskBtn_${type}`);
         if(!btn) return;
         
@@ -536,7 +564,6 @@ function refreshTaskStatus(){
             btn.className = 'task-button claimed';
             btn.disabled = true;
         } else if(taskStatus[type].joined){
-            // Check if enough time passed for security
             btn.textContent = 'CLAIM';
             btn.className = 'task-button claim';
             btn.disabled = false;
@@ -546,6 +573,8 @@ function refreshTaskStatus(){
             btn.disabled = false;
         }
     });
+
+    if (changed) saveTaskStatus();
 }
 
 /* =========================================================
@@ -583,8 +612,6 @@ function shareReferralLink(){
 }
 
 function renderFriends(){
-    // NOTE: True anti-manipulation for referrals requires a backend database.
-    // A frontend script can only display the data. 
     const list = document.getElementById('friendsList');
     const totalEl = document.getElementById('totalFriendsCount');
     const mockFriends = state.friends || [];
@@ -616,6 +643,8 @@ function renderFriends(){
    UPDATE UI
 ========================================================= */
 function updateAllUI(){
+    checkBoosterReset(); // Ensure booster state is correct before rendering
+
     const formattedBal = formatNumber(state.totalBalance);
     const balEl = document.getElementById('balanceDisplay');
     if(balEl) balEl.textContent = formattedBal;
@@ -646,7 +675,7 @@ function updateAllUI(){
     // Button State
     if(state.miningState === 'IDLE'){
         if(pill) pill.textContent = 'READY TO MINE';
-        if(button){ button.textContent = 'START MINING (8 HOURS)'; button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)'; button.style.pointerEvents = 'auto'; }
+        if(button){ button.textContent = 'START MINING (4 HOURS)'; button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)'; button.style.pointerEvents = 'auto'; }
     } else if(state.miningState === 'ACTIVE'){
         if(pill) pill.textContent = state.boosterAdsWatched > 0 ? `BOOSTED (${state.boosterAdsWatched}/2)` : 'ACTIVE MINING';
         if(button){ button.textContent = 'MINING IN PROGRESS'; button.style.background = 'rgba(56,189,248,.2)'; button.style.pointerEvents = 'none'; }
