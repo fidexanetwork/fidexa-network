@@ -1,20 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#05080c">
 <title>Fidexa Network</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{min-height:100%;background:var(--bg);}
-body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
+body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;}
 button{font:inherit;cursor:pointer;}
 button:active{transform:scale(.98);}
 input,textarea{font:inherit;}
@@ -39,7 +38,7 @@ input,textarea{font:inherit;}
 .action-controls{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
 .start-mining-btn{width:100%;background:linear-gradient(90deg,#0284c7,#38bdf8);border:0;border-radius:14px;padding:16px;color:#fff;font-size:14px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(56,189,248,.3);}
 .interactive-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.action-tile{background:rgba(10,16,24,.9);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,.2);transition: all 0.3s;}
+.action-tile{background:rgba(10,16,24,.9);border:1px solid var(--border);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,.2);transition:all .3s;}
 .action-tile-icon{font-size:22px;}
 .action-tile-title{font-size:11px;font-weight:800;color:#fff;letter-spacing:.3px;}
 .action-tile-sub{font-size:9px;color:var(--muted);margin-top:2px;font-weight:600;}
@@ -91,14 +90,12 @@ input,textarea{font:inherit;}
 .referral-info-text strong{color:var(--yellow);font-weight:900;}
 .wallet-main-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);}
 .wallet-balance-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;}
-.wallet-balance-num{font-size:38px;font-weight:900;color:#fff;margin-top:6px;}
-.wallet-balance-token{font-size:18px;font-weight:800;color:var(--yellow);margin-left:6px;}
 .ton-connect-container{display:flex;justify-content:center;margin-top:10px;}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;}
 .nav-icon{font-size:18px;}
 .nav-item.active{color:var(--cyan);}
-.toast{position:fixed;left:50%;bottom:105px;transform:translateX(-50%) translateY(20px);background:#111b27;border:1px solid var(--cyan);color:#fff;padding:12px 18px;border-radius:12px;font-size:12px;font-weight:800;z-index:2000;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;}
+.toast{position:fixed;left:50%;bottom:105px;transform:translateX(-50%) translateY(20px);background:#111b27;border:1px solid var(--cyan);color:#fff;padding:12px 18px;border-radius:12px;font-size:12px;font-weight:800;z-index:4000;opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .modal-overlay{position:fixed;inset:0;background:rgba(5,8,12,.95);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.active{display:flex;}
@@ -116,12 +113,12 @@ input,textarea{font:inherit;}
 .milestone-title{font-size:12px;font-weight:800;color:#fff;}
 .milestone-reward{font-size:10px;font-weight:700;color:var(--yellow);}
 .milestone-progress{font-size:9px;color:var(--muted);font-weight:600;}
-.milestone-btn{padding:6px 12px;border-radius:8px;font-size:10px;font-weight:900;border:0;cursor:pointer;transition:0.2s;}
+.milestone-btn{padding:6px 12px;border-radius:8px;font-size:10px;font-weight:900;border:0;cursor:pointer;transition:.2s;}
 .milestone-btn.locked{background:#111b27;color:var(--muted);cursor:not-allowed;}
 .milestone-btn.claimable{background:linear-gradient(90deg,#facc15,#f59e0b);color:#05080c;box-shadow:0 2px 10px rgba(250,204,21,.3);}
 .milestone-btn.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);cursor:default;}
 .profile-header-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:20px;padding:20px;text-align:center;margin-bottom:18px;}
-.profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);margin:0 auto 12px auto;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid rgba(255,255,255,0.1);}
+.profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);margin:0 auto 12px auto;display:flex;align-items:center;justify-content:center;font-size:30px;border:2px solid rgba(255,255,255,.1);}
 .profile-name{font-size:18px;font-weight:900;color:#fff;}
 .profile-username{font-size:12px;color:var(--cyan);font-weight:800;margin-top:4px;}
 .profile-id{font-size:10px;color:var(--muted);font-weight:700;margin-top:4px;}
@@ -136,22 +133,26 @@ input,textarea{font:inherit;}
 .chat-messages-container{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:15px;background:#070b10;}
 .chat-bubble-wrap{display:flex;gap:8px;max-width:85%;align-items:flex-end;}
 .chat-bubble-wrap.user{align-self:flex-end;flex-direction:row-reverse;}
-.chat-bubble{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.4;font-weight:600;word-wrap:break-word; position:relative;}
+.chat-bubble{padding:10px 14px;border-radius:14px;font-size:12px;line-height:1.4;font-weight:600;word-wrap:break-word;position:relative;}
 .chat-bubble.user{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;border-bottom-right-radius:4px;}
 .chat-bubble.admin{background:#162235;color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px;}
-.chat-timestamp{font-size:9px;color:rgba(255,255,255,0.6);margin-top:4px; text-align:right; display:block;}
+.chat-timestamp{font-size:9px;color:rgba(255,255,255,.6);margin-top:4px;text-align:right;display:block;}
 .chat-bubble.admin .chat-timestamp{color:var(--muted);}
 .chat-input-bar{padding:12px;border-top:1px solid var(--border);background:#0a1018;display:flex;gap:8px;align-items:center;}
 .chat-input-field{flex:1;background:#111b27;border:1px solid var(--border);border-radius:20px;padding:10px 15px;color:#fff;font-size:12px;outline:none;}
-.chat-input-field:focus{border-color: rgba(56,189,248,0.5);}
+.chat-input-field:focus{border-color:rgba(56,189,248,.5);}
 .chat-send-btn{background:linear-gradient(135deg,#0284c7,#38bdf8);border:0;border-radius:50%;width:40px;height:40px;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 15px rgba(56,189,248,.3);}
 .loading-overlay{position:fixed;inset:0;background:rgba(5,8,12,.85);z-index:3000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
 .loading-overlay.active{display:flex;}
 .loading-spinner{width:44px;height:44px;border:3px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;}
 .loading-text{font-size:12px;font-weight:800;color:var(--cyan);letter-spacing:.5px;}
+.env-banner{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#7c2d12;color:#fff;font-size:10px;font-weight:800;text-align:center;padding:6px 10px;letter-spacing:.4px;z-index:5000;display:none;}
+.env-banner.show{display:block;}
 </style>
 </head>
 <body>
+
+<div class="env-banner" id="envBanner">⚠ NOT RUNNING INSIDE TELEGRAM — API CALLS WILL FAIL</div>
 
 <div class="app">
     <main class="page-view active" id="page-home">
@@ -171,16 +172,16 @@ input,textarea{font:inherit;}
             </div>
         </div>
         <div class="action-controls">
-            <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()">LOADING...</button>
+            <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()" aria-label="Start mining">LOADING...</button>
             <div class="interactive-grid">
-                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);" id="boosterTile">
+                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);" id="boosterTile" aria-label="Boost mining">
                     <div class="action-tile-icon">🚀</div>
                     <div>
                         <div class="action-tile-title" style="color:var(--yellow);">Boost Mining</div>
                         <div class="action-tile-sub" id="boosterSubText">+250 FDX & +4 Hours</div>
                     </div>
                 </button>
-                <button class="action-tile" onclick="showToast('Coming Soon!')">
+                <button class="action-tile" onclick="showToast('Coming Soon!')" aria-label="Lucky box">
                     <div class="action-tile-icon">🎁</div>
                     <div>
                         <div class="action-tile-title">Lucky Box</div>
@@ -206,19 +207,19 @@ input,textarea{font:inherit;}
         <div class="task-card">
             <div class="task-row">
                 <div class="task-left"><div class="task-icon" style="color:#0088cc;">📢</div><div><div class="task-name">Join Telegram</div><div class="task-reward">Reward: +100 FDX</div></div></div>
-                <button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')">JOIN</button>
+                <button id="taskBtn_telegram" class="task-button" onclick="handleTaskAction('telegram')" aria-label="Join Telegram">JOIN</button>
             </div>
         </div>
         <div class="task-card">
             <div class="task-row">
-                <div class="task-left"><div class="task-icon" style="color:#fff; background:#000;">𝕏</div><div><div class="task-name">Follow on X</div><div class="task-reward">Reward: +100 FDX</div></div></div>
-                <button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')">FOLLOW</button>
+                <div class="task-left"><div class="task-icon" style="color:#fff;background:#000;">𝕏</div><div><div class="task-name">Follow on X</div><div class="task-reward">Reward: +100 FDX</div></div></div>
+                <button id="taskBtn_x" class="task-button" onclick="handleTaskAction('x')" aria-label="Follow on X">FOLLOW</button>
             </div>
         </div>
         <div class="task-card">
             <div class="task-row">
                 <div class="task-left"><div class="task-icon" style="color:#ff0000;">▶️</div><div><div class="task-name">Subscribe on YouTube</div><div class="task-reward">Reward: +100 FDX</div></div></div>
-                <button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')">SUBSCRIBE</button>
+                <button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')" aria-label="Subscribe on YouTube">SUBSCRIBE</button>
             </div>
         </div>
     </main>
@@ -226,11 +227,11 @@ input,textarea{font:inherit;}
     <main class="page-view" id="page-friends">
         <div class="full-page-header">👥 REFERRAL NETWORK</div>
         <div class="full-page-sub">Invite friends and earn instant rewards.</div>
-        <div class="task-card" style="background: linear-gradient(145deg, #0a1018, #0d1520); border-color: rgba(56,189,248,0.3);">
-            <div class="task-row" style="border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-                <div class="task-left"><div class="task-icon" style="background: rgba(56,189,248, 0.1); border-color: rgba(56,189,248, 0.3); color: var(--cyan);">🏆</div><div><div class="task-name">Referral Milestones</div><div class="task-reward" style="color: var(--cyan);">Unlock bonus rewards!</div></div></div>
+        <div class="task-card" style="background:linear-gradient(145deg,#0a1018,#0d1520);border-color:rgba(56,189,248,.3);">
+            <div class="task-row" style="border-bottom:1px solid var(--border);padding-bottom:10px;">
+                <div class="task-left"><div class="task-icon" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--cyan);">🏆</div><div><div class="task-name">Referral Milestones</div><div class="task-reward" style="color:var(--cyan);">Unlock bonus rewards!</div></div></div>
             </div>
-            <div id="milestoneList" style="padding: 0 16px 16px 16px;"><div style="text-align:center; padding:20px; font-size:11px; color:var(--muted);">Loading...</div></div>
+            <div id="milestoneList" style="padding:0 16px 16px 16px;"><div style="text-align:center;padding:20px;font-size:11px;color:var(--muted);">Loading...</div></div>
         </div>
         <div class="referral-info-card">
             <div class="referral-info-icon">💎</div>
@@ -255,22 +256,22 @@ input,textarea{font:inherit;}
     </main>
 
     <main class="page-view" id="page-wallet">
-        <div class="wallet-main-card" style="border-color: rgba(56,189,248,0.3);">
-            <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
-            <div class="wallet-balance-title" style="color: var(--cyan);">ALLOCATION PENDING</div>
-            <div style="font-size: 11px; color: var(--muted); margin-top: 8px; line-height: 1.5;">
+        <div class="wallet-main-card" style="border-color:rgba(56,189,248,.3);">
+            <div style="font-size:40px;margin-bottom:10px;">📦</div>
+            <div class="wallet-balance-title" style="color:var(--cyan);">ALLOCATION PENDING</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;">
                 Your mining balance is accumulating safely on the Home tab. Wallet syncing and distribution will become available soon.
             </div>
         </div>
-        <div class="task-card" style="border-color: rgba(250,204,21,0.3); margin-bottom: 20px;">
+        <div class="task-card" style="border-color:rgba(250,204,21,.3);margin-bottom:20px;">
             <div class="task-row">
-                <div class="task-left"><div class="task-icon" style="background: rgba(250,204,21, 0.1); border-color: rgba(250,204,21,0.3); color: var(--yellow);">💸</div><div><div class="task-name">Withdraw</div><div class="task-reward" style="color: var(--muted);">Coming Soon</div></div></div>
-                <button class="task-button" style="background: #111b27; border-color: #223247; color: var(--muted);" disabled>LOCKED</button>
+                <div class="task-left"><div class="task-icon" style="background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.3);color:var(--yellow);">💸</div><div><div class="task-name">Withdraw</div><div class="task-reward" style="color:var(--muted);">Coming Soon</div></div></div>
+                <button class="task-button" style="background:#111b27;border-color:#223247;color:var(--muted);" disabled>LOCKED</button>
             </div>
         </div>
-        <div style="margin-top: 25px; margin-bottom: 20px;">
-            <div style="font-size: 14px; font-weight: 900; color: var(--cyan); margin-bottom: 10px;">🔗 Connect TON Wallet</div>
-            <div style="font-size: 11px; color: var(--muted); margin-bottom: 15px; line-height: 1.5;">Connect your TON wallet to prepare for future FDX token distribution and transfers.</div>
+        <div style="margin-top:25px;margin-bottom:20px;">
+            <div style="font-size:14px;font-weight:900;color:var(--cyan);margin-bottom:10px;">🔗 Connect TON Wallet</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:15px;line-height:1.5;">Connect your TON wallet to prepare for future FDX token distribution and transfers.</div>
             <div id="ton-connect" class="ton-connect-container"></div>
         </div>
     </main>
@@ -283,19 +284,19 @@ input,textarea{font:inherit;}
             <div class="profile-username" id="profileUsername">@loading</div>
             <div class="profile-id" id="profileId">ID: ...</div>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://t.me/fidexa_Network', '_blank')">
+        <div class="profile-menu-item" onclick="window.open('https://t.me/fidexa_Network','_blank')">
             <div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Join Telegram Channel</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://x.com/Fidexa_Network', '_blank')">
+        <div class="profile-menu-item" onclick="window.open('https://x.com/Fidexa_Network','_blank')">
             <div class="profile-menu-left"><span class="profile-menu-icon">𝕏</span><span class="profile-menu-title">Follow on X</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://youtube.com/@Fidexa_Network', '_blank')">
+        <div class="profile-menu-item" onclick="window.open('https://youtube.com/@Fidexa_Network','_blank')">
             <div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Subscribe on YouTube</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="openSupportChat()" style="margin-top: 15px;">
+        <div class="profile-menu-item" onclick="openSupportChat()" style="margin-top:15px;">
             <div class="profile-menu-left"><span class="profile-menu-icon">💬</span><span class="profile-menu-title">Chat Support</span></div><span class="profile-menu-arrow">›</span>
         </div>
-        <div class="profile-menu-item" onclick="openDeleteModal()" style="border-color: rgba(248,113,113,0.3);">
+        <div class="profile-menu-item" onclick="openDeleteModal()" style="border-color:rgba(248,113,113,.3);">
             <div class="profile-menu-left"><span class="profile-menu-icon">⚠️</span><span class="profile-menu-title" style="color:var(--red);">Delete Account</span></div><span class="profile-menu-arrow" style="color:var(--red);">›</span>
         </div>
     </main>
@@ -323,27 +324,27 @@ input,textarea{font:inherit;}
 <div class="modal-overlay" id="supportModal">
     <div class="chat-sheet-box">
         <div class="chat-sheet-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="width:35px; height:35px; border-radius:50%; background:linear-gradient(135deg,#0284c7,#38bdf8); display:flex; align-items:center; justify-content:center; font-size:16px;">💬</div>
-                <div><div class="chat-sheet-title">FIDEXA Support</div><div style="font-size:10px; color:var(--muted); font-weight:700;">Our team typically replies within 24 hours.</div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:35px;height:35px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:16px;">💬</div>
+                <div><div class="chat-sheet-title">FIDEXA Support</div><div style="font-size:10px;color:var(--muted);font-weight:700;">Our team typically replies within 24 hours.</div></div>
             </div>
-            <button class="prompt-btn-cancel" style="padding:6px 10px; font-size:12px;" onclick="closeSupportChat()">✕</button>
+            <button class="prompt-btn-cancel" style="padding:6px 10px;font-size:12px;" onclick="closeSupportChat()">✕</button>
         </div>
         <div class="chat-messages-container" id="chatMessages"></div>
         <div class="chat-input-bar">
             <input type="text" class="chat-input-field" id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-            <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+            <button class="chat-send-btn" onclick="sendChatMessage()" aria-label="Send message">➤</button>
         </div>
     </div>
 </div>
 
 <div class="modal-overlay" id="deleteModal">
-    <div class="prompt-box" style="border-color: rgba(248,113,113,0.5);">
-        <div class="prompt-title" style="color: var(--red);">⚠️ DELETE ACCOUNT</div>
+    <div class="prompt-box" style="border-color:rgba(248,113,113,.5);">
+        <div class="prompt-title" style="color:var(--red);">⚠️ DELETE ACCOUNT</div>
         <div class="prompt-desc">Are you absolutely sure? This will permanently delete your mining progress, balance, referrals, task history, and chat messages. This action <strong>cannot</strong> be undone.</div>
         <div class="prompt-actions">
             <button class="prompt-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <button class="prompt-btn-confirm" style="background: linear-gradient(135deg, #dc2626, #ef4444);" onclick="confirmDeleteAccount()">Delete</button>
+            <button class="prompt-btn-confirm" style="background:linear-gradient(135deg,#dc2626,#ef4444);" onclick="confirmDeleteAccount()">Delete</button>
         </div>
     </div>
 </div>
@@ -360,13 +361,20 @@ input,textarea{font:inherit;}
    CONFIG & STATE
 ========================================================= */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+const TASK_JOIN_KEY = "fdx_task_joined_v1";
+const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
+
 let currentUserId = 'demo_user';
 let currentUserName = 'Fidexa User';
 let currentUserHandle = '@fidexa_user';
 let currentTelegramInitData = '';
+let telegramStartParam = '';
 let isSelfReferral = false;
 let isProcessing = false;
+let isSyncing = false;
 let supportPollingTimer = null;
+let serverTimeOffsetMs = 0;
+let envBannerShown = false;
 
 let appState = {
     totalBalance: 0,
@@ -379,7 +387,11 @@ let appState = {
     tonWalletAddress: null,
     kycPaid: false,
     milestonesClaimed: {},
-    claimedTasks: { telegram: { joined: false, claimed: false }, x: { joined: false, claimed: false }, youtube: { joined: false, claimed: false } },
+    claimedTasks: {
+        telegram: { joined: false, claimed: false },
+        x: { joined: false, claimed: false },
+        youtube: { joined: false, claimed: false }
+    },
     friends: []
 };
 
@@ -389,8 +401,7 @@ let appState = {
 function initializeTelegramUser() {
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
-        webApp.ready();
-        webApp.expand();
+        try { webApp.ready(); webApp.expand(); } catch (e) {}
         currentTelegramInitData = webApp.initData || '';
         if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
             const tgUser = webApp.initDataUnsafe.user;
@@ -398,55 +409,102 @@ function initializeTelegramUser() {
             currentUserName = (tgUser.first_name || '') + (tgUser.last_name ? ' ' + tgUser.last_name : '');
             currentUserHandle = tgUser.username ? '@' + tgUser.username : 'No username';
         }
-        const startParam = webApp.initDataUnsafe?.start_param || '';
-        if (startParam === `ref_${currentUserId}`) isSelfReferral = true;
+        telegramStartParam = webApp.initDataUnsafe?.start_param || '';
+        if (!telegramStartParam) {
+            try {
+                const url = new URL(window.location.href);
+                telegramStartParam = url.searchParams.get('tgWebAppStartParam') || '';
+            } catch (e) {}
+        }
+        if (telegramStartParam === `ref_${currentUserId}`) isSelfReferral = true;
     }
+
     const nameEl = document.getElementById('profileName');
     const handleEl = document.getElementById('profileUsername');
     const idEl = document.getElementById('profileId');
     if (nameEl) nameEl.textContent = currentUserName || 'Fidexa User';
     if (handleEl) handleEl.textContent = currentUserHandle;
     if (idEl) idEl.textContent = 'ID: ' + currentUserId;
+
+    if (!currentTelegramInitData) showEnvBanner();
+}
+function showEnvBanner() {
+    if (envBannerShown) return;
+    envBannerShown = true;
+    const b = document.getElementById('envBanner');
+    if (b) b.classList.add('show');
 }
 initializeTelegramUser();
 
 /* =========================================================
    UI HELPERS
 ========================================================= */
-function formatNumber(value) {
-    return Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function formatNumber(v) {
+    return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add('show');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 function showLoading(text) {
+    const o = document.getElementById('loadingOverlay');
+    if (!o) return;
     document.getElementById('loadingText').textContent = text || 'Loading...';
-    document.getElementById('loadingOverlay').classList.add('active');
+    o.classList.add('active');
 }
 function hideLoading() {
-    document.getElementById('loadingOverlay').classList.remove('active');
+    const o = document.getElementById('loadingOverlay');
+    if (o) o.classList.remove('active');
+}
+function escapeHtml(s) {
+    return String(s || '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function switchTab(tabName, btnElement) {
-    document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const target = document.getElementById(`page-${tabName}`);
     if (target) target.classList.add('active');
     if (btnElement) btnElement.classList.add('active');
     if (tabName === 'tasks') renderTasks();
-    if (tabName === 'friends') renderFriends();
+    if (tabName === 'friends') { renderFriends(); loadReferralData(); }
     if (tabName === 'wallet') initTonConnect();
+}
+
+/* =========================================================
+   TASK JOIN PERSISTENCE (localStorage, matches 24h server reset)
+========================================================= */
+function getTaskJoinMap() {
+    try {
+        const raw = localStorage.getItem(TASK_JOIN_KEY);
+        const map = raw ? JSON.parse(raw) : {};
+        const now = Date.now();
+        const clean = {};
+        for (const k of Object.keys(map)) {
+            if (typeof map[k] === 'number' && (now - map[k]) < TASK_JOIN_TTL_MS) clean[k] = map[k];
+        }
+        return clean;
+    } catch { return {}; }
+}
+function markTaskJoined(type) {
+    const map = getTaskJoinMap();
+    map[type] = Date.now();
+    try { localStorage.setItem(TASK_JOIN_KEY, JSON.stringify(map)); } catch {}
 }
 
 /* =========================================================
    API HELPER
 ========================================================= */
 async function apiCall(path, options = {}) {
-    if (!currentTelegramInitData) throw new Error("Telegram authentication is not available. Please reopen the app.");
+    if (!currentTelegramInitData) {
+        showEnvBanner();
+        throw new Error("Telegram authentication is not available. Please reopen the app inside Telegram.");
+    }
     const headers = {
         ...(options.headers || {}),
         'X-Telegram-Init-Data': currentTelegramInitData,
@@ -460,6 +518,12 @@ async function apiCall(path, options = {}) {
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined
     });
 
+    const serverDateHeader = response.headers.get('date');
+    if (serverDateHeader) {
+        const serverMs = Date.parse(serverDateHeader);
+        if (!Number.isNaN(serverMs)) serverTimeOffsetMs = serverMs - Date.now();
+    }
+
     let data = null;
     try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON (${response.status})`); }
     if (!response.ok || data?.success === false) {
@@ -468,18 +532,35 @@ async function apiCall(path, options = {}) {
     return data;
 }
 
+function serverNow() { return Date.now() + serverTimeOffsetMs; }
+
 /* =========================================================
-   LOAD STATE FROM BACKEND
+   LOAD STATE
 ========================================================= */
+function mergeTasks(serverTasks) {
+    const local = getTaskJoinMap();
+    const merged = {};
+    ['telegram', 'x', 'youtube'].forEach(k => {
+        const server = (serverTasks && serverTasks[k]) || {};
+        merged[k] = {
+            joined: Boolean(server.joined || local[k]),
+            claimed: Boolean(server.claimed)
+        };
+        if (merged[k].claimed) delete local[k];
+    });
+    try { localStorage.setItem(TASK_JOIN_KEY, JSON.stringify(local)); } catch {}
+    return merged;
+}
+
 async function loadState(showLoader) {
     if (showLoader) showLoading('Syncing your account...');
     try {
-        const url = new URL(window.location.href);
-        const startParam = url.searchParams.get('tgWebAppStartParam') || '';
-        const refParam = startParam.startsWith('ref_') ? `?ref=${startParam}` : '';
-        
+        const refParam = telegramStartParam && telegramStartParam.startsWith('ref_') && !isSelfReferral
+            ? `?ref=${encodeURIComponent(telegramStartParam)}`
+            : '';
+
         const data = await apiCall(`/api/me${refParam}`);
-        const u = data.user;
+        const u = data.user || {};
         appState.totalBalance = Number(u.totalBalance) || 0;
         appState.totalMined = Number(u.totalMined) || 0;
         appState.miningState = u.miningState || 'IDLE';
@@ -490,13 +571,13 @@ async function loadState(showLoader) {
         appState.tonWalletAddress = u.tonWalletAddress || null;
         appState.kycPaid = Boolean(u.kycPaid);
         appState.milestonesClaimed = u.milestonesClaimed || {};
-        appState.claimedTasks = u.claimedTasks || appState.claimedTasks;
+        appState.claimedTasks = mergeTasks(u.claimedTasks);
         updateAllUI();
         renderTasks();
         renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        showToast(error.message || "Failed to sync. Please reload.");
+        if (showLoader) showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
     }
@@ -508,14 +589,13 @@ async function loadState(showLoader) {
 function getRemainingSeconds() {
     if (appState.miningState === 'IDLE') return 14400;
     if (appState.miningState === 'READY_TO_CLAIM') return 0;
-    const remaining = Math.floor((appState.miningEndAt - Date.now()) / 1000);
-    return Math.max(0, remaining);
+    return Math.max(0, Math.floor((appState.miningEndAt - serverNow()) / 1000));
 }
-function formatTimer(seconds) {
-    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${h}:${m}:${s}`;
+function formatTimer(s) {
+    const h = Math.floor(s / 3600).toString().padStart(2, '0');
+    const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${sec}`;
 }
 function updateAllUI() {
     const balEl = document.getElementById('balanceDisplay');
@@ -527,42 +607,36 @@ function updateAllUI() {
     const button = document.getElementById('miningToggleBtn');
     const boosterTile = document.getElementById('boosterTile');
     const boosterSubText = document.getElementById('boosterSubText');
-    
+
     if (balEl) balEl.textContent = formatNumber(appState.totalBalance);
     if (timerEl) timerEl.textContent = formatTimer(getRemainingSeconds());
     if (sessEl) sessEl.textContent = `${formatNumber(appState.sessionAccumulated)} FDX`;
     if (totalMinedEl) totalMinedEl.textContent = `${formatNumber(appState.totalMined)} FDX`;
 
-    const totalDuration = (appState.miningEndAt > appState.miningStartedAt && appState.miningStartedAt > 0) 
-        ? (appState.miningEndAt - appState.miningStartedAt) / 3600000 
-        : 4;
-    const elapsed = appState.miningState === 'ACTIVE' 
-        ? (totalDuration * 3600 - getRemainingSeconds()) 
+    const totalDuration = (appState.miningEndAt > appState.miningStartedAt && appState.miningStartedAt > 0)
+        ? (appState.miningEndAt - appState.miningStartedAt) / 3600000 : 4;
+    const elapsed = appState.miningState === 'ACTIVE'
+        ? (totalDuration * 3600 - getRemainingSeconds())
         : (appState.miningState === 'READY_TO_CLAIM' ? totalDuration * 3600 : 0);
     if (hoursEl) hoursEl.textContent = `${Math.min(Math.floor(totalDuration), Math.floor(elapsed / 3600))} / ${Math.floor(totalDuration)}`;
 
+    if (!button) return;
+    button.style.pointerEvents = 'auto';
+
     if (appState.miningState === 'IDLE') {
         if (pill) pill.textContent = 'READY TO MINE';
-        if (button) {
-            button.textContent = 'START MINING (4 HOURS)';
-            button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
-            button.style.pointerEvents = 'auto';
-        }
+        button.textContent = 'START MINING (4 HOURS)';
+        button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
     } else if (appState.miningState === 'ACTIVE') {
         const boosted = appState.boosterChancesLeft < 2;
         if (pill) pill.textContent = boosted ? `BOOSTED (${2 - appState.boosterChancesLeft}/2)` : 'ACTIVE MINING';
-        if (button) {
-            button.textContent = 'MINING IN PROGRESS';
-            button.style.background = 'rgba(56,189,248,.2)';
-            button.style.pointerEvents = 'none';
-        }
+        button.textContent = 'MINING IN PROGRESS';
+        button.style.background = 'rgba(56,189,248,.2)';
+        button.style.pointerEvents = 'none';
     } else if (appState.miningState === 'READY_TO_CLAIM') {
         if (pill) pill.textContent = 'SESSION ENDED';
-        if (button) {
-            button.textContent = 'CLAIM REWARD';
-            button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
-            button.style.pointerEvents = 'auto';
-        }
+        button.textContent = 'CLAIM REWARD';
+        button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
     }
 
     if (boosterTile && boosterSubText) {
@@ -585,54 +659,37 @@ async function handleMiningAction() {
     if (isProcessing) return;
     isProcessing = true;
     const button = document.getElementById('miningToggleBtn');
-    const originalText = button ? button.textContent : '';
+    if (button) button.style.pointerEvents = 'none';
 
-    if (appState.miningState === 'IDLE') {
-        if (button) { button.textContent = 'STARTING...'; button.style.pointerEvents = 'none'; }
-        try {
+    try {
+        if (appState.miningState === 'IDLE') {
+            if (button) button.textContent = 'STARTING...';
             showLoading('Starting mining...');
             await apiCall('/api/mining/start', { method: 'POST', body: {} });
             await loadState(false);
             showToast('Mining cycle started!');
-        } catch (error) {
-            showToast(error.message || 'Failed to start mining.');
-            await loadState(false);
-        } finally {
-            hideLoading();
-            if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
-            isProcessing = false;
-        }
-    } else if (appState.miningState === 'READY_TO_CLAIM') {
-        if (button) { button.textContent = 'CLAIMING...'; button.style.pointerEvents = 'none'; }
-        try {
+        } else if (appState.miningState === 'READY_TO_CLAIM') {
+            if (button) button.textContent = 'CLAIMING...';
             showLoading('Requesting ad token...');
             const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
-            
-            // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
-            // In production: window.Monetag.showRewarded({ ... onReward: () => claimWithToken(tokenRes.adToken) })
+
+            // ⚠️ TODO: replace this simulated delay with the real Monetag SDK rewarded-ad callback
             hideLoading();
             showLoading('Showing ad...');
-            setTimeout(async () => {
-                try {
-                    const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
-                    await loadState(false);
-                    showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
-                } catch (err) {
-                    showToast(err.message || 'Claim failed.');
-                    await loadState(false);
-                } finally {
-                    hideLoading();
-                    if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
-                    isProcessing = false;
-                }
-            }, 1500);
-        } catch (error) {
-            hideLoading();
-            showToast(error.message || 'Failed to claim.');
+            await new Promise(r => setTimeout(r, 1500));
+
+            const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
             await loadState(false);
-            if (button) { button.textContent = originalText; button.style.pointerEvents = 'auto'; }
-            isProcessing = false;
+            showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
         }
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Action failed.');
+        try { await loadState(false); } catch (e) {}
+    } finally {
+        hideLoading();
+        updateAllUI();
+        isProcessing = false;
     }
 }
 
@@ -656,27 +713,21 @@ async function confirmWatchBoosterAd() {
     try {
         showLoading('Requesting ad token...');
         const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
-        
-        // ⚠️ REPLACE THIS SET_TIMEOUT WITH MONETAG SDK LATER
+
+        // ⚠️ TODO: replace this simulated delay with the real Monetag SDK rewarded-ad callback
         hideLoading();
         showLoading('Showing ad...');
-        setTimeout(async () => {
-            try {
-                const boostRes = await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
-                await loadState(false);
-                showToast('Booster Applied! +250 FDX and +4 Hours!');
-            } catch (err) {
-                showToast(err.message || 'Booster failed.');
-                await loadState(false);
-            } finally {
-                hideLoading();
-                if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
-                isProcessing = false;
-            }
-        }, 1500);
+        await new Promise(r => setTimeout(r, 1500));
+
+        await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
+        await loadState(false);
+        showToast('Booster Applied! +250 FDX and +4 Hours!');
     } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Booster failed.');
+        try { await loadState(false); } catch (e) {}
+    } finally {
         hideLoading();
-        showToast(error.message || 'Failed to load ad.');
         if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
         isProcessing = false;
     }
@@ -716,25 +767,28 @@ async function handleTaskAction(type) {
         else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
         else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
 
-        if (!appState.claimedTasks[type]) appState.claimedTasks[type] = {};
+        markTaskJoined(type);
+        if (!appState.claimedTasks[type]) appState.claimedTasks[type] = { joined: false, claimed: false };
         appState.claimedTasks[type].joined = true;
         renderTasks();
         showToast('Complete the action, then click CLAIM.');
         setTimeout(renderTasks, 10000);
-    } else {
-        isProcessing = true;
-        try {
-            showLoading('Verifying task...');
-            const res = await apiCall('/api/tasks/claim', { method: 'POST', body: { task: type } });
-            await loadState(false);
-            showToast(`+${res.reward} FDX added!`);
-        } catch (error) {
-            showToast(error.message || 'Task claim failed.');
-            await loadState(false);
-        } finally {
-            hideLoading();
-            isProcessing = false;
-        }
+        return;
+    }
+
+    isProcessing = true;
+    try {
+        showLoading('Verifying task...');
+        const res = await apiCall('/api/tasks/claim', { method: 'POST', body: { task: type } });
+        await loadState(false);
+        showToast(`+${res.reward} FDX added!`);
+    } catch (error) {
+        console.error(error);
+        showToast(error.message || 'Task claim failed.');
+        try { await loadState(false); } catch (e) {}
+    } finally {
+        hideLoading();
+        isProcessing = false;
     }
 }
 
@@ -744,7 +798,9 @@ async function handleTaskAction(type) {
 function copyReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
     const link = `https://t.me/FIDEXANetworkBot?startapp=ref_${currentUserId}`;
-    navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!')).catch(() => showToast('Could not copy link.'));
+    navigator.clipboard.writeText(link)
+        .then(() => showToast('Referral link copied!'))
+        .catch(() => showToast('Could not copy link.'));
 }
 function shareReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
@@ -783,20 +839,22 @@ function renderFriends() {
         if (friends.length === 0) {
             listEl.innerHTML = '<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>';
         } else {
-            listEl.innerHTML = friends.map(f => `
+            listEl.innerHTML = friends.map(f => {
+                const safeId = escapeHtml(f.referredId);
+                const isActive = Boolean(f.active);
+                return `
                 <div class="friend-row-item">
                     <div class="friend-left">
                         <div class="friend-avatar">👤</div>
                         <div>
-                            <div class="friend-name">User ${f.referredId}</div>
-                            <div class="friend-status ${f.active ? 'active' : 'inactive'}">${f.active ? 'ACTIVE · +100 FDX Earned' : 'INACTIVE'}</div>
+                            <div class="friend-name">User ${safeId}</div>
+                            <div class="friend-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'ACTIVE · +100 FDX Earned' : 'INACTIVE'}</div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
     }
-
     renderMilestones(friends.length);
 }
 
@@ -835,8 +893,9 @@ async function claimMilestone(req) {
         await loadState(false);
         showToast(`Milestone reached! +${res.reward} FDX added.`);
     } catch (error) {
+        console.error(error);
         showToast(error.message || 'Milestone claim failed.');
-        await loadState(false);
+        try { await loadState(false); } catch (e) {}
     } finally {
         hideLoading();
         isProcessing = false;
@@ -844,15 +903,15 @@ async function claimMilestone(req) {
 }
 
 /* =========================================================
-   TON CONNECT
+   TON CONNECT (manifest still placeholder — update YOUR_DOMAIN_HERE when airdrop nears)
 ========================================================= */
 let tonConnectInitialized = false;
+let tonConnectUI = null;
 function initTonConnect() {
     if (tonConnectInitialized) return;
-    tonConnectInitialized = true;
     try {
         const manifestUrl = 'https://YOUR_DOMAIN_HERE/tonconnect-manifest.json';
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: manifestUrl,
             buttonRootId: 'ton-connect'
         });
@@ -866,7 +925,10 @@ function initTonConnect() {
                 } catch (e) { console.warn("Wallet sync failed:", e); }
             }
         });
-    } catch (e) { console.warn("TON Connect failed to load.", e); }
+        tonConnectInitialized = true;
+    } catch (e) {
+        console.warn("TON Connect failed to load. Will retry.", e);
+    }
 }
 
 /* =========================================================
@@ -890,9 +952,6 @@ async function fetchSupportMessages() {
         renderSupportMessages(data.messages || []);
     } catch (e) { console.warn("Chat fetch failed:", e); }
 }
-function escapeHtml(str) {
-    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
 function renderSupportMessages(messages) {
     const container = document.getElementById('chatMessages');
     if (!container) return;
@@ -902,7 +961,8 @@ function renderSupportMessages(messages) {
     }
     container.innerHTML = messages.map(msg => {
         const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return `<div class="chat-bubble-wrap ${msg.sender}"><div class="chat-bubble ${msg.sender}">${escapeHtml(msg.text)}<span class="chat-timestamp">${time}</span></div></div>`;
+        const sender = msg.sender === 'admin' ? 'admin' : 'user';
+        return `<div class="chat-bubble-wrap ${sender}"><div class="chat-bubble ${sender}">${escapeHtml(msg.text)}<span class="chat-timestamp">${time}</span></div></div>`;
     }).join('');
     container.scrollTop = container.scrollHeight;
 }
@@ -927,24 +987,24 @@ async function confirmDeleteAccount() {
     try {
         showLoading('Deleting account...');
         await apiCall('/api/account/delete', { method: 'POST', body: {} });
-        localStorage.clear();
+        try { localStorage.removeItem(TASK_JOIN_KEY); } catch {}
         showToast('Account deleted. Reloading...');
         setTimeout(() => window.location.reload(), 1500);
     } catch (e) {
         hideLoading();
-        showToast("Deletion failed. Try again.");
+        showToast(e.message || "Deletion failed. Try again.");
     }
 }
 
 /* =========================================================
-   TIMER (Local ticker, syncs with backend)
+   TIMER (local ticker, syncs with backend once per expiry)
 ========================================================= */
 setInterval(() => {
     if (appState.miningState === 'ACTIVE') {
         const remaining = getRemainingSeconds();
         const timerEl = document.getElementById('timerDisplay');
         if (timerEl) timerEl.textContent = formatTimer(remaining);
-        
+
         const totalDuration = (appState.miningEndAt - appState.miningStartedAt) / 3600000;
         const elapsedHours = Math.floor((totalDuration * 3600 - remaining) / 3600);
         const sessEl = document.getElementById('sessionAccumulated');
@@ -952,13 +1012,23 @@ setInterval(() => {
         const hoursEl = document.getElementById('completedHours');
         if (hoursEl) hoursEl.textContent = `${Math.min(Math.floor(totalDuration), elapsedHours)} / ${Math.floor(totalDuration)}`;
 
-        if (remaining <= 0) {
+        if (remaining <= 0 && !isSyncing) {
+            isSyncing = true;
             appState.miningState = 'READY_TO_CLAIM';
             updateAllUI();
-            loadState(false); // Re-sync with backend
+            loadState(false).finally(() => { isSyncing = false; });
         }
     }
 }, 1000);
+
+/* =========================================================
+   RESUME SYNC (Mini App returning to foreground)
+========================================================= */
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && currentTelegramInitData) {
+        loadState(false).catch(() => {});
+    }
+});
 
 /* =========================================================
    BOOT
