@@ -749,7 +749,8 @@ async function handleMiningAction() {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Action failed.');
-        try { await loadState(false); } catch (e) {}
+        // fire-and-forget resync — do NOT await, so finally runs immediately
+        loadState(false).catch(() => {});
     } finally {
         hideLoading();
         updateAllUI();
@@ -791,7 +792,8 @@ async function confirmWatchBoosterAd() {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Booster failed.');
-        try { await loadState(false); } catch (e) {}
+        // fire-and-forget resync — do NOT await
+        loadState(false).catch(() => {});
     } finally {
         hideLoading();
         if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
@@ -851,7 +853,7 @@ async function handleTaskAction(type) {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Task claim failed.');
-        try { await loadState(false); } catch (e) {}
+        loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
@@ -961,7 +963,7 @@ async function claimMilestone(req) {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Milestone claim failed.');
-        try { await loadState(false); } catch (e) {}
+        loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
