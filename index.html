@@ -8,7 +8,6 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
-<script src="https://w.tads.me/widget.js"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
@@ -176,11 +175,11 @@ input,textarea{font:inherit;}
         <div class="action-controls">
             <button class="start-mining-btn" id="miningToggleBtn" onclick="handleMiningAction()" aria-label="Start mining">LOADING...</button>
             <div class="interactive-grid">
-                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(250,204,21,.5);" id="boosterTile" aria-label="Boost mining">
+                <button class="action-tile" onclick="openBoosterPrompt()" style="border-color:rgba(136,153,166,.3);opacity:.7;" id="boosterTile" aria-label="Boost mining">
                     <div class="action-tile-icon">🚀</div>
                     <div>
-                        <div class="action-tile-title" style="color:var(--yellow);">Boost Mining</div>
-                        <div class="action-tile-sub" id="boosterSubText">+200 FDX (5/5)</div>
+                        <div class="action-tile-title" style="color:var(--muted);">Boost Mining</div>
+                        <div class="action-tile-sub" id="boosterSubText">Coming Soon</div>
                     </div>
                 </button>
                 <button class="action-tile" onclick="showToast('Coming Soon!')" aria-label="Lucky box">
@@ -265,16 +264,17 @@ input,textarea{font:inherit;}
                 Your mining balance is accumulating safely on the Home tab. Wallet syncing and distribution will become available soon.
             </div>
         </div>
-        <div class="task-card" style="border-color:rgba(250,204,21,.3);margin-bottom:20px;">
+        <div class="task-card" style="border-color:rgba(250,204,21,.3);margin-bottom:14px;">
             <div class="task-row">
                 <div class="task-left"><div class="task-icon" style="background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.3);color:var(--yellow);">💸</div><div><div class="task-name">Withdraw</div><div class="task-reward" style="color:var(--muted);">Coming Soon</div></div></div>
                 <button class="task-button" style="background:#111b27;border-color:#223247;color:var(--muted);" disabled>LOCKED</button>
             </div>
         </div>
-        <div style="margin-top:25px;margin-bottom:20px;">
-            <div style="font-size:14px;font-weight:900;color:var(--cyan);margin-bottom:10px;">🔗 Connect TON Wallet</div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:15px;line-height:1.5;">Connect your TON wallet to prepare for future FDX token distribution and transfers.</div>
-            <div id="ton-connect" class="ton-connect-container"></div>
+        <div class="task-card" style="border-color:rgba(56,189,248,.3);margin-bottom:20px;">
+            <div class="task-row">
+                <div class="task-left"><div class="task-icon" style="background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--cyan);">🔗</div><div><div class="task-name">Connect TON Wallet</div><div class="task-reward" style="color:var(--muted);">Coming Soon</div></div></div>
+                <button class="task-button" style="background:#111b27;border-color:#223247;color:var(--muted);" disabled>LOCKED</button>
+            </div>
         </div>
     </main>
 
@@ -311,17 +311,6 @@ input,textarea{font:inherit;}
     <button class="nav-item" onclick="switchTab('wallet',this)"><span class="nav-icon">👛</span>Wallet</button>
     <button class="nav-item" onclick="switchTab('profile',this)"><span class="nav-icon">👤</span>Profile</button>
 </nav>
-
-<div class="modal-overlay" id="boosterPromptModal">
-    <div class="prompt-box">
-        <div class="prompt-title">⚡ MINING BOOSTER</div>
-        <div class="prompt-desc">Watch an advertisement to instantly receive <strong>+200 FDX</strong>.</div>
-        <div class="prompt-actions">
-            <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Cancel</button>
-            <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()" id="boosterConfirmBtn">Watch Ad</button>
-        </div>
-    </div>
-</div>
 
 <div class="modal-overlay" id="supportModal">
     <div class="chat-sheet-box">
@@ -363,7 +352,6 @@ input,textarea{font:inherit;}
    CONFIG & STATE
 ========================================================= */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
-const TADS_WIDGET_ID = 12546;
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -484,7 +472,6 @@ function switchTab(tabName, btnElement) {
     if (app) app.scrollTop = 0;
     if (tabName === 'tasks') renderTasks();
     if (tabName === 'friends') { renderFriends(); loadReferralData(); }
-    if (tabName === 'wallet') initTonConnect();
 }
 
 /* =========================================================
@@ -544,61 +531,6 @@ async function apiCall(path, options = {}) {
 }
 
 function serverNow() { return Date.now() + serverTimeOffsetMs; }
-
-/* =========================================================
-   TADS REWARDED AD WRAPPER
-========================================================= */
-function showRewardedAd() {
-    return new Promise((resolve, reject) => {
-        if (!window.tads || typeof window.tads.init !== 'function') {
-            return reject(new Error("Ad service not loaded. Please reload the app."));
-        }
-
-        let settled = false;
-        const timeoutId = setTimeout(() => {
-            if (!settled) { settled = true; reject(new Error("Ad timed out. Please try again.")); }
-        }, 180000);
-
-        const onShowRewardCallback = (adId) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeoutId);
-            resolve(adId || true);
-        };
-
-        const onAdsNotFound = () => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeoutId);
-            reject(new Error("No ads available right now. Please try again later."));
-        };
-
-        try {
-            const adController = window.tads.init({
-                widgetId: TADS_WIDGET_ID,
-                type: 'fullscreen',
-                debug: false,
-                onShowReward: onShowRewardCallback,
-                onAdsNotFound: onAdsNotFound
-            });
-
-            const showResult = adController.showAd();
-            if (showResult && typeof showResult.catch === 'function') {
-                showResult.catch((err) => {
-                    if (settled) return;
-                    settled = true;
-                    clearTimeout(timeoutId);
-                    reject(new Error(err?.message || "Failed to show ad."));
-                });
-            }
-        } catch (e) {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeoutId);
-            reject(e);
-        }
-    });
-}
 
 /* =========================================================
    LOAD STATE
@@ -672,8 +604,6 @@ function updateAllUI() {
     const hoursEl = document.getElementById('completedHours');
     const pill = document.getElementById('systemPill');
     const button = document.getElementById('miningToggleBtn');
-    const boosterTile = document.getElementById('boosterTile');
-    const boosterSubText = document.getElementById('boosterSubText');
 
     if (balEl) balEl.textContent = formatNumber(appState.totalBalance);
     if (timerEl) timerEl.textContent = formatTimer(getRemainingSeconds());
@@ -695,8 +625,7 @@ function updateAllUI() {
         button.textContent = 'START MINING (4 HOURS)';
         button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
     } else if (appState.miningState === 'ACTIVE') {
-        const used = 5 - appState.boosterChancesLeft;
-        if (pill) pill.textContent = used > 0 ? `BOOSTED (${used}/5)` : 'ACTIVE MINING';
+        if (pill) pill.textContent = 'ACTIVE MINING';
         button.textContent = 'MINING IN PROGRESS';
         button.style.background = 'rgba(56,189,248,.2)';
         button.style.pointerEvents = 'none';
@@ -704,18 +633,6 @@ function updateAllUI() {
         if (pill) pill.textContent = 'SESSION ENDED';
         button.textContent = 'CLAIM REWARD';
         button.style.background = 'linear-gradient(90deg,#facc15,#f59e0b)';
-    }
-
-    if (boosterTile && boosterSubText) {
-        if (appState.boosterChancesLeft <= 0) {
-            boosterTile.style.opacity = '0.5';
-            boosterTile.style.pointerEvents = 'none';
-            boosterSubText.textContent = 'Limit Reached (0/5)';
-        } else {
-            boosterTile.style.opacity = '1';
-            boosterTile.style.pointerEvents = 'auto';
-            boosterSubText.textContent = `+200 FDX (${appState.boosterChancesLeft}/5)`;
-        }
     }
 }
 
@@ -737,15 +654,8 @@ async function handleMiningAction() {
             showToast('Mining cycle started!');
         } else if (appState.miningState === 'READY_TO_CLAIM') {
             if (button) button.textContent = 'CLAIMING...';
-
-            showLoading('Preparing ad...');
-            const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
-
-            hideLoading();
-            await showRewardedAd();
-
             showLoading('Claiming reward...');
-            const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
+            const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: '' } });
             await loadState(false);
             showToast(`Successfully claimed ${formatNumber(claimRes.reward)} FDX!`);
         }
@@ -761,42 +671,10 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER
+   BOOSTER (Coming Soon)
 ========================================================= */
 function openBoosterPrompt() {
-    if (appState.boosterChancesLeft <= 0) { showToast('No booster chances left this session. Resets when mining ends.'); return; }
-    if (appState.miningState !== 'ACTIVE') { showToast('Start mining first.'); return; }
-    document.getElementById('boosterPromptModal').classList.add('active');
-}
-function closeBoosterPrompt() { document.getElementById('boosterPromptModal').classList.remove('active'); }
-
-async function confirmWatchBoosterAd() {
-    if (isProcessing) return;
-    isProcessing = true;
-    closeBoosterPrompt();
-    const confirmBtn = document.getElementById('boosterConfirmBtn');
-    if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'LOADING...'; }
-
-    try {
-        showLoading('Preparing ad...');
-        const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
-
-        hideLoading();
-        await showRewardedAd();
-
-        showLoading('Applying booster...');
-        await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
-        await loadState(false);
-        showToast('Booster Applied! +200 FDX');
-    } catch (error) {
-        console.error(error);
-        showToast(error.message || 'Booster failed.');
-        loadState(false).catch(() => {});
-    } finally {
-        hideLoading();
-        if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = 'Watch Ad'; }
-        isProcessing = false;
-    }
+    showToast('Mining Boost coming soon!');
 }
 
 /* =========================================================
@@ -1052,35 +930,6 @@ async function claimMilestone(req) {
 }
 
 /* =========================================================
-   TON CONNECT
-========================================================= */
-let tonConnectInitialized = false;
-let tonConnectUI = null;
-function initTonConnect() {
-    if (tonConnectInitialized) return;
-    try {
-        const manifestUrl = 'https://YOUR_DOMAIN_HERE/tonconnect-manifest.json';
-        tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: manifestUrl,
-            buttonRootId: 'ton-connect'
-        });
-        tonConnectUI.onStatusChange(async wallet => {
-            if (wallet && wallet.account) {
-                const address = wallet.account.address.toString();
-                showToast('Wallet Connected!');
-                try {
-                    await apiCall('/api/user/connect-wallet', { method: 'POST', body: { walletAddress: address } });
-                    await loadState(false);
-                } catch (e) { console.warn("Wallet sync failed:", e); }
-            }
-        });
-        tonConnectInitialized = true;
-    } catch (e) {
-        console.warn("TON Connect failed to load. Will retry.", e);
-    }
-}
-
-/* =========================================================
    CHAT SUPPORT
 ========================================================= */
 async function openSupportChat() {
@@ -1186,7 +1035,6 @@ window.addEventListener('DOMContentLoaded', () => {
     showLoading('Connecting to Fidexa...');
     loadState(true).then(() => {
         loadReferralData();
-        initTonConnect();
         startTaskCountdown();
     });
 });
