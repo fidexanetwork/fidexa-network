@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -911,14 +910,14 @@ async function handleTaskAction(type) {
 ========================================================= */
 function copyReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
-    const link = `https://t.me/FIDEXANetworkBot?startapp=ref_${currentUserId}`;
+    const link = `https://t.me/FIDEXANetworkBot?start=ref_${currentUserId}`;
     navigator.clipboard.writeText(link)
         .then(() => showToast('Referral link copied!'))
         .catch(() => showToast('Could not copy link.'));
 }
 function shareReferralLink() {
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
-    const refLink = `https://t.me/FIDEXANetworkBot?startapp=ref_${currentUserId}`;
+    const refLink = `https://t.me/FIDEXANetworkBot?start=ref_${currentUserId}`;
     const shareText = encodeURIComponent("Join Fidexa Network and start mining FDX with me!");
     if (window.Telegram?.WebApp?.openTelegramLink) {
         window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${shareText}`);
