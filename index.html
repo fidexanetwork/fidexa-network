@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05080c">
 <title>Fidexa Network</title>
 
@@ -13,15 +13,15 @@
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{min-height:100%;background:var(--bg);}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);}
 body{font-family:Arial,Helvetica,sans-serif;color:var(--text);-webkit-tap-highlight-color:transparent;}
 button{font:inherit;cursor:pointer;}
 button:active{transform:scale(.98);}
 input,textarea{font:inherit;}
-.app{max-width:480px;min-height:100vh;margin:auto;padding-bottom:95px;position:relative;}
-.page-view{display:none;padding:24px 20px;min-height:calc(100vh - 95px);animation:fadeIn .2s ease-in-out;}
+.app{max-width:480px;height:100vh;height:100dvh;margin:auto;padding-bottom:95px;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+.page-view{display:none;padding:24px 20px;animation:fadeIn .15s ease-out;}
 .page-view.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .balance-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid #1b2636;border-radius:18px;padding:18px;position:relative;margin-bottom:18px;}
 .balance-label{font-size:10px;color:var(--muted);letter-spacing:.8px;font-weight:700;}
 .balance-row{display:flex;align-items:baseline;gap:8px;margin-top:6px;}
@@ -404,6 +404,11 @@ function initializeTelegramUser() {
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
         try { webApp.ready(); webApp.expand(); } catch (e) {}
+        try {
+            if (typeof webApp.disableVerticalSwipes === 'function') {
+                webApp.disableVerticalSwipes();
+            }
+        } catch (e) {}
         currentTelegramInitData = webApp.initData || '';
         if (webApp.initDataUnsafe && webApp.initDataUnsafe.user) {
             const tgUser = webApp.initDataUnsafe.user;
@@ -473,6 +478,9 @@ function switchTab(tabName, btnElement) {
     const target = document.getElementById(`page-${tabName}`);
     if (target) target.classList.add('active');
     if (btnElement) btnElement.classList.add('active');
+    // Scroll to top of the app container on tab switch
+    const app = document.querySelector('.app');
+    if (app) app.scrollTop = 0;
     if (tabName === 'tasks') renderTasks();
     if (tabName === 'friends') { renderFriends(); loadReferralData(); }
     if (tabName === 'wallet') initTonConnect();
@@ -537,10 +545,7 @@ async function apiCall(path, options = {}) {
 function serverNow() { return Date.now() + serverTimeOffsetMs; }
 
 /* =========================================================
-   ⚡ TADS REWARDED AD WRAPPER
-   Wraps TADS's callback-based API into a Promise so we can
-   await it in the mining/boost flows.
-   Resolves ONLY when onShowReward fires (user watched full ad).
+   TADS REWARDED AD WRAPPER
 ========================================================= */
 function showRewardedAd() {
     return new Promise((resolve, reject) => {
@@ -551,7 +556,7 @@ function showRewardedAd() {
         let settled = false;
         const timeoutId = setTimeout(() => {
             if (!settled) { settled = true; reject(new Error("Ad timed out. Please try again.")); }
-        }, 180000); // 3 minutes
+        }, 180000);
 
         const onShowRewardCallback = (adId) => {
             if (settled) return;
@@ -576,7 +581,6 @@ function showRewardedAd() {
                 onAdsNotFound: onAdsNotFound
             });
 
-            // NOTE: for fullscreen, do NOT call loadAd() — showAd() fetches + opens the overlay.
             const showResult = adController.showAd();
             if (showResult && typeof showResult.catch === 'function') {
                 showResult.catch((err) => {
@@ -732,15 +736,12 @@ async function handleMiningAction() {
         } else if (appState.miningState === 'READY_TO_CLAIM') {
             if (button) button.textContent = 'CLAIMING...';
 
-            // 1. Get one-time token from backend
             showLoading('Preparing ad...');
             const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'MINING_CLAIM' } });
 
-            // 2. Show TADS rewarded ad — resolves only on onShowReward
             hideLoading();
             await showRewardedAd();
 
-            // 3. Ad watched — submit token to claim reward
             showLoading('Claiming reward...');
             const claimRes = await apiCall('/api/mining/claim', { method: 'POST', body: { adToken: tokenRes.adToken } });
             await loadState(false);
@@ -749,7 +750,6 @@ async function handleMiningAction() {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Action failed.');
-        // fire-and-forget resync — do NOT await, so finally runs immediately
         loadState(false).catch(() => {});
     } finally {
         hideLoading();
@@ -776,15 +776,12 @@ async function confirmWatchBoosterAd() {
     if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'LOADING...'; }
 
     try {
-        // 1. Get one-time token from backend
         showLoading('Preparing ad...');
         const tokenRes = await apiCall('/api/ad/request-token', { method: 'POST', body: { adType: 'BOOST' } });
 
-        // 2. Show TADS rewarded ad — resolves only on onShowReward
         hideLoading();
         await showRewardedAd();
 
-        // 3. Ad watched — submit token to apply booster
         showLoading('Applying booster...');
         await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
         await loadState(false);
@@ -792,7 +789,6 @@ async function confirmWatchBoosterAd() {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Booster failed.');
-        // fire-and-forget resync — do NOT await
         loadState(false).catch(() => {});
     } finally {
         hideLoading();
@@ -971,7 +967,7 @@ async function claimMilestone(req) {
 }
 
 /* =========================================================
-   TON CONNECT (manifest still placeholder — update YOUR_DOMAIN_HERE when airdrop nears)
+   TON CONNECT (placeholder manifest — update when airdrop nears)
 ========================================================= */
 let tonConnectInitialized = false;
 let tonConnectUI = null;
