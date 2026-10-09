@@ -8,7 +8,7 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
-<script src="https://w.tads.me/widget.js"></script>
+<script src="https://richinfo.co/richpartners/telegram/js/tg-ob.js"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
@@ -363,7 +363,8 @@ input,textarea{font:inherit;}
    CONFIG & STATE
 ========================================================= */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
-const TADS_WIDGET_ID = 12546;
+const RICHADS_PUB_ID = "792361";
+const RICHADS_APP_ID = "1396";
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -379,6 +380,7 @@ let supportPollingTimer = null;
 let serverTimeOffsetMs = 0;
 let envBannerShown = false;
 let taskCountdownTimer = null;
+let richadsController = null;
 
 let appState = {
     totalBalance: 0,
@@ -444,6 +446,27 @@ function showEnvBanner() {
     if (b) b.classList.add('show');
 }
 initializeTelegramUser();
+
+/* =========================================================
+   INIT RICHADS CONTROLLER
+========================================================= */
+function initRichAds() {
+    try {
+        if (typeof window.TelegramAdsController === 'undefined') {
+            console.warn('RichAds library not loaded');
+            return;
+        }
+        richadsController = new window.TelegramAdsController();
+        richadsController.initialize({
+            pubId: RICHADS_PUB_ID,
+            appId: RICHADS_APP_ID,
+            debug: false  // set to true for test ads, false for real ads
+        });
+        console.log('RichAds initialized');
+    } catch (e) {
+        console.error('RichAds init failed:', e);
+    }
+}
 
 /* =========================================================
    UI HELPERS
@@ -546,11 +569,13 @@ async function apiCall(path, options = {}) {
 function serverNow() { return Date.now() + serverTimeOffsetMs; }
 
 /* =========================================================
-   TADS REWARDED AD WRAPPER
+   RICHADS FULL-SCREEN VIDEO WRAPPER
+   Wraps RichAds's promise-based API into our standard flow.
+   Resolves ONLY when the ad completes (user watched / closed after viewing).
 ========================================================= */
 function showRewardedAd() {
     return new Promise((resolve, reject) => {
-        if (!window.tads || typeof window.tads.init !== 'function') {
+        if (!richadsController) {
             return reject(new Error("Ad service not loaded. Please reload the app."));
         }
 
@@ -559,38 +584,22 @@ function showRewardedAd() {
             if (!settled) { settled = true; reject(new Error("Ad timed out. Please try again.")); }
         }, 180000);
 
-        const onShowRewardCallback = (adId) => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeoutId);
-            resolve(adId || true);
-        };
-
-        const onAdsNotFound = () => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeoutId);
-            reject(new Error("No ads available right now. Please try again later."));
-        };
-
         try {
-            const adController = window.tads.init({
-                widgetId: TADS_WIDGET_ID,
-                type: 'fullscreen',
-                debug: false,
-                onShowReward: onShowRewardCallback,
-                onAdsNotFound: onAdsNotFound
-            });
-
-            const showResult = adController.showAd();
-            if (showResult && typeof showResult.catch === 'function') {
-                showResult.catch((err) => {
+            richadsController.triggerInterstitialVideo()
+                .then((result) => {
                     if (settled) return;
                     settled = true;
                     clearTimeout(timeoutId);
-                    reject(new Error(err?.message || "Failed to show ad."));
+                    console.log('RichAds ad result:', result);
+                    resolve(result || true);
+                })
+                .catch((err) => {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timeoutId);
+                    console.log('RichAds ad error:', err);
+                    reject(new Error(err?.message || "No ads available right now. Please try again later."));
                 });
-            }
         } catch (e) {
             if (settled) return;
             settled = true;
@@ -1148,6 +1157,7 @@ document.addEventListener('visibilitychange', () => {
 ========================================================= */
 window.addEventListener('DOMContentLoaded', () => {
     showLoading('Connecting to Fidexa...');
+    initRichAds();
     loadState(true).then(() => {
         loadReferralData();
         initTonConnect();
