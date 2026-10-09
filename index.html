@@ -63,6 +63,7 @@ input,textarea{font:inherit;}
 .task-button{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:var(--cyan);border-radius:11px;padding:10px 15px;font-size:12px;font-weight:900;white-space:nowrap;transition:all .25s;min-width:96px;}
 .task-button.claim{background:linear-gradient(90deg,#facc15,#f59e0b);border:0;color:#05080c;box-shadow:0 4px 15px rgba(250,204,21,.35);}
 .task-button.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);opacity:.8;}
+.task-button.locked{background:#111b27;border:1px solid #223247;color:var(--muted);cursor:not-allowed;}
 .task-button:disabled{cursor:default;}
 .friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
 .friend-stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:16px;padding:15px 8px;text-align:center;}
@@ -179,7 +180,7 @@ input,textarea{font:inherit;}
                     <div class="action-tile-icon">🚀</div>
                     <div>
                         <div class="action-tile-title" style="color:var(--yellow);">Boost Mining</div>
-                        <div class="action-tile-sub" id="boosterSubText">+250 FDX & +4 Hours</div>
+                        <div class="action-tile-sub" id="boosterSubText">+200 FDX (5/5)</div>
                     </div>
                 </button>
                 <button class="action-tile" onclick="showToast('Coming Soon!')" aria-label="Lucky box">
@@ -314,7 +315,7 @@ input,textarea{font:inherit;}
 <div class="modal-overlay" id="boosterPromptModal">
     <div class="prompt-box">
         <div class="prompt-title">⚡ MINING BOOSTER</div>
-        <div class="prompt-desc">Watch an advertisement to instantly receive <strong>+250 FDX</strong> and add <strong>+4 Hours</strong> to your current mining timer.</div>
+        <div class="prompt-desc">Watch an advertisement to instantly receive <strong>+200 FDX</strong>.</div>
         <div class="prompt-actions">
             <button class="prompt-btn-cancel" onclick="closeBoosterPrompt()">Cancel</button>
             <button class="prompt-btn-confirm" onclick="confirmWatchBoosterAd()" id="boosterConfirmBtn">Watch Ad</button>
@@ -385,7 +386,7 @@ let appState = {
     miningStartedAt: 0,
     miningEndAt: 0,
     sessionAccumulated: 0,
-    boosterChancesLeft: 2,
+    boosterChancesLeft: 5,
     tonWalletAddress: null,
     kycPaid: false,
     milestonesClaimed: {},
@@ -478,7 +479,6 @@ function switchTab(tabName, btnElement) {
     const target = document.getElementById(`page-${tabName}`);
     if (target) target.classList.add('active');
     if (btnElement) btnElement.classList.add('active');
-    // Scroll to top of the app container on tab switch
     const app = document.querySelector('.app');
     if (app) app.scrollTop = 0;
     if (tabName === 'tasks') renderTasks();
@@ -487,7 +487,7 @@ function switchTab(tabName, btnElement) {
 }
 
 /* =========================================================
-   TASK JOIN PERSISTENCE (localStorage, matches 24h server reset)
+   TASK JOIN PERSISTENCE
 ========================================================= */
 function getTaskJoinMap() {
     try {
@@ -632,7 +632,8 @@ async function loadState(showLoader) {
         appState.miningStartedAt = Number(u.miningStartedAt) || 0;
         appState.miningEndAt = Number(u.miningEndAt) || 0;
         appState.sessionAccumulated = Number(u.sessionAccumulated) || 0;
-        appState.boosterChancesLeft = Number(u.boosterChancesLeft) || 0;
+        appState.boosterChancesLeft = Number(u.boosterChancesLeft);
+        if (!Number.isFinite(appState.boosterChancesLeft)) appState.boosterChancesLeft = 5;
         appState.tonWalletAddress = u.tonWalletAddress || null;
         appState.kycPaid = Boolean(u.kycPaid);
         appState.milestonesClaimed = u.milestonesClaimed || {};
@@ -693,8 +694,8 @@ function updateAllUI() {
         button.textContent = 'START MINING (4 HOURS)';
         button.style.background = 'linear-gradient(90deg,#0284c7,#38bdf8)';
     } else if (appState.miningState === 'ACTIVE') {
-        const boosted = appState.boosterChancesLeft < 2;
-        if (pill) pill.textContent = boosted ? `BOOSTED (${2 - appState.boosterChancesLeft}/2)` : 'ACTIVE MINING';
+        const used = 5 - appState.boosterChancesLeft;
+        if (pill) pill.textContent = used > 0 ? `BOOSTED (${used}/5)` : 'ACTIVE MINING';
         button.textContent = 'MINING IN PROGRESS';
         button.style.background = 'rgba(56,189,248,.2)';
         button.style.pointerEvents = 'none';
@@ -708,11 +709,11 @@ function updateAllUI() {
         if (appState.boosterChancesLeft <= 0) {
             boosterTile.style.opacity = '0.5';
             boosterTile.style.pointerEvents = 'none';
-            boosterSubText.textContent = 'Limit Reached (0/2)';
+            boosterSubText.textContent = 'Limit Reached (0/5)';
         } else {
             boosterTile.style.opacity = '1';
             boosterTile.style.pointerEvents = 'auto';
-            boosterSubText.textContent = `+250 FDX & +4 Hours (${appState.boosterChancesLeft}/2)`;
+            boosterSubText.textContent = `+200 FDX (${appState.boosterChancesLeft}/5)`;
         }
     }
 }
@@ -762,7 +763,7 @@ async function handleMiningAction() {
    BOOSTER
 ========================================================= */
 function openBoosterPrompt() {
-    if (appState.boosterChancesLeft <= 0) { showToast('No booster chances left. Resets in 12 hours.'); return; }
+    if (appState.boosterChancesLeft <= 0) { showToast('No booster chances left this session. Resets when mining ends.'); return; }
     if (appState.miningState !== 'ACTIVE') { showToast('Start mining first.'); return; }
     document.getElementById('boosterPromptModal').classList.add('active');
 }
@@ -785,7 +786,7 @@ async function confirmWatchBoosterAd() {
         showLoading('Applying booster...');
         await apiCall('/api/mining/boost', { method: 'POST', body: { adToken: tokenRes.adToken } });
         await loadState(false);
-        showToast('Booster Applied! +250 FDX and +4 Hours!');
+        showToast('Booster Applied! +200 FDX');
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Booster failed.');
@@ -798,16 +799,32 @@ async function confirmWatchBoosterAd() {
 }
 
 /* =========================================================
-   TASKS
+   TASKS — X and YouTube show as LOCKED
 ========================================================= */
 function renderTasks() {
     const tasks = appState.claimedTasks || {};
     ['telegram', 'x', 'youtube'].forEach(type => {
         const btn = document.getElementById(`taskBtn_${type}`);
         if (!btn) return;
+
+        // X and YouTube are locked until verification is available
+        if (type === 'x' || type === 'youtube') {
+            btn.className = 'task-button locked';
+            btn.textContent = 'LOCKED';
+            btn.disabled = true;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            return;
+        }
+
         const t = tasks[type] || { joined: false, claimed: false };
         btn.className = 'task-button';
         btn.disabled = false;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+
         if (t.claimed) {
             btn.textContent = 'CLAIMED';
             btn.classList.add('claimed');
@@ -816,21 +833,24 @@ function renderTasks() {
             btn.textContent = 'CLAIM';
             btn.classList.add('claim');
         } else {
-            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
+            btn.textContent = 'JOIN';
         }
     });
 }
 
 async function handleTaskAction(type) {
+    // X and YouTube are hard-locked
+    if (type === 'x' || type === 'youtube') {
+        showToast('This task is coming soon.');
+        return;
+    }
+
     if (isProcessing) return;
     const t = (appState.claimedTasks || {})[type] || { joined: false, claimed: false };
     if (t.claimed) { showToast('Task already claimed. Resets in 24 hours.'); return; }
 
     if (!t.joined) {
-        if (type === 'telegram') window.open('https://t.me/fidexa_Network', '_blank');
-        else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
-        else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
-
+        window.open('https://t.me/fidexa_Network', '_blank');
         markTaskJoined(type);
         if (!appState.claimedTasks[type]) appState.claimedTasks[type] = { joined: false, claimed: false };
         appState.claimedTasks[type].joined = true;
@@ -1061,7 +1081,7 @@ async function confirmDeleteAccount() {
 }
 
 /* =========================================================
-   TIMER (local ticker, syncs with backend once per expiry)
+   TIMER
 ========================================================= */
 setInterval(() => {
     if (appState.miningState === 'ACTIVE') {
@@ -1086,7 +1106,7 @@ setInterval(() => {
 }, 1000);
 
 /* =========================================================
-   RESUME SYNC (Mini App returning to foreground)
+   RESUME SYNC
 ========================================================= */
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && currentTelegramInitData) {
