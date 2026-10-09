@@ -378,6 +378,7 @@ let isSyncing = false;
 let supportPollingTimer = null;
 let serverTimeOffsetMs = 0;
 let envBannerShown = false;
+let taskCountdownTimer = null;
 
 let appState = {
     totalBalance: 0,
@@ -799,25 +800,13 @@ async function confirmWatchBoosterAd() {
 }
 
 /* =========================================================
-   TASKS — X and YouTube show as LOCKED
+   TASKS
 ========================================================= */
 function renderTasks() {
     const tasks = appState.claimedTasks || {};
     ['telegram', 'x', 'youtube'].forEach(type => {
         const btn = document.getElementById(`taskBtn_${type}`);
         if (!btn) return;
-
-        // X and YouTube are locked until verification is available
-        if (type === 'x' || type === 'youtube') {
-            btn.className = 'task-button locked';
-            btn.textContent = 'LOCKED';
-            btn.disabled = true;
-            btn.style.background = '';
-            btn.style.borderColor = '';
-            btn.style.color = '';
-            return;
-        }
-
         const t = tasks[type] || { joined: false, claimed: false };
         btn.className = 'task-button';
         btn.disabled = false;
@@ -829,41 +818,81 @@ function renderTasks() {
             btn.textContent = 'CLAIMED';
             btn.classList.add('claimed');
             btn.disabled = true;
-        } else if (t.joined) {
+            return;
+        }
+
+        if (t.joined) {
+            if (type === 'x' || type === 'youtube') {
+                const joinMap = getTaskJoinMap();
+                const joinedAt = joinMap[type] || 0;
+                const elapsed = Date.now() - joinedAt;
+                const remaining = Math.max(0, 25000 - elapsed);
+                if (remaining > 0) {
+                    btn.textContent = `WAIT ${Math.ceil(remaining / 1000)}s`;
+                    btn.classList.add('locked');
+                    btn.disabled = true;
+                    return;
+                }
+            }
             btn.textContent = 'CLAIM';
             btn.classList.add('claim');
         } else {
-            btn.textContent = 'JOIN';
+            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
         }
     });
 }
 
-async function handleTaskAction(type) {
-    // X and YouTube are hard-locked
-    if (type === 'x' || type === 'youtube') {
-        showToast('This task is coming soon.');
-        return;
-    }
+function startTaskCountdown() {
+    if (taskCountdownTimer) return;
+    taskCountdownTimer = setInterval(() => {
+        const tasksPage = document.getElementById('page-tasks');
+        if (!tasksPage || !tasksPage.classList.contains('active')) return;
+        renderTasks();
+    }, 1000);
+}
 
+async function handleTaskAction(type) {
     if (isProcessing) return;
     const t = (appState.claimedTasks || {})[type] || { joined: false, claimed: false };
     if (t.claimed) { showToast('Task already claimed. Resets in 24 hours.'); return; }
 
     if (!t.joined) {
-        window.open('https://t.me/fidexa_Network', '_blank');
+        if (type === 'telegram') window.open('https://t.me/fidexa_Network', '_blank');
+        else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
+        else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
+
         markTaskJoined(type);
         if (!appState.claimedTasks[type]) appState.claimedTasks[type] = { joined: false, claimed: false };
         appState.claimedTasks[type].joined = true;
         renderTasks();
-        showToast('Complete the action, then click CLAIM.');
+        if (type === 'x' || type === 'youtube') {
+            showToast('Follow the account, then wait 25s and tap CLAIM.');
+        } else {
+            showToast('Complete the action, then click CLAIM.');
+        }
         setTimeout(renderTasks, 10000);
         return;
+    }
+
+    if (type === 'x' || type === 'youtube') {
+        const joinMap = getTaskJoinMap();
+        const joinedAt = joinMap[type] || 0;
+        const elapsed = Date.now() - joinedAt;
+        if (!joinedAt || elapsed < 25000) {
+            const waitSec = Math.max(1, Math.ceil((25000 - elapsed) / 1000));
+            showToast(`Please wait ${waitSec}s more before claiming.`);
+            return;
+        }
     }
 
     isProcessing = true;
     try {
         showLoading('Verifying task...');
-        const res = await apiCall('/api/tasks/claim', { method: 'POST', body: { task: type } });
+        const joinedAt = (getTaskJoinMap()[type]) || 0;
+        const res = await apiCall('/api/tasks/claim', {
+            method: 'POST',
+            body: { task: type, joinedAt }
+        });
         await loadState(false);
         showToast(`+${res.reward} FDX added!`);
     } catch (error) {
@@ -987,7 +1016,7 @@ async function claimMilestone(req) {
 }
 
 /* =========================================================
-   TON CONNECT (placeholder manifest — update when airdrop nears)
+   TON CONNECT
 ========================================================= */
 let tonConnectInitialized = false;
 let tonConnectUI = null;
@@ -1122,6 +1151,7 @@ window.addEventListener('DOMContentLoaded', () => {
     loadState(true).then(() => {
         loadReferralData();
         initTonConnect();
+        startTaskCountdown();
     });
 });
 </script>
