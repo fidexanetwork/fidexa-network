@@ -313,16 +313,16 @@ input,textarea{font:inherit;}
             <div class="profile-username" id="profileUsername">@loading</div>
             <div class="profile-id" id="profileId">ID: ...</div>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://t.me/fidexa_Network','_blank')">
+        <div class="profile-menu-item" onclick="openExternalUrl('https://t.me/fidexa_Network')">
             <div class="profile-menu-left"><span class="profile-menu-icon">📢</span><span class="profile-menu-title">Join Telegram Channel</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://x.com/Fidexa_Network','_blank')">
+        <div class="profile-menu-item" onclick="openExternalUrl('https://x.com/Fidexa_Network')">
             <div class="profile-menu-left"><span class="profile-menu-icon">𝕏</span><span class="profile-menu-title">Follow on X</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://youtube.com/@Fidexa_Network','_blank')">
+        <div class="profile-menu-item" onclick="openExternalUrl('https://youtube.com/@Fidexa_Network')">
             <div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Subscribe on YouTube</span></div><span class="profile-menu-arrow">↗</span>
         </div>
-        <div class="profile-menu-item" onclick="window.open('https://facebook.com/FidexaNetwork','_blank')">
+        <div class="profile-menu-item" onclick="openExternalUrl('https://facebook.com/FidexaNetwork')">
             <div class="profile-menu-left"><span class="profile-menu-icon">📘</span><span class="profile-menu-title">Follow on Facebook</span></div><span class="profile-menu-arrow">↗</span>
         </div>
         <div class="profile-menu-item" onclick="openSupportChat()" style="margin-top:15px;">
@@ -380,7 +380,6 @@ input,textarea{font:inherit;}
 <script>
 /* =========================================================
    ⚙️ MAINTENANCE MODE
-   Set MAINTENANCE_MODE = false on launch day to open to everyone.
 ========================================================= */
 const MAINTENANCE_MODE = true;
 const MAINTENANCE_WHITELIST = ['6771764389', '7960802097'];
@@ -507,6 +506,18 @@ function showToast(msg) {
     t.classList.add('show');
     clearTimeout(t._timer);
     t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function openExternalUrl(url) {
+    try {
+        if (window.Telegram?.WebApp?.openLink) {
+            window.Telegram.WebApp.openLink(url, { try_instant_view: false });
+        } else {
+            window.open(url, '_blank');
+        }
+    } catch (e) {
+        console.error('openExternalUrl failed:', e);
+        try { window.open(url, '_blank'); } catch (e2) {}
+    }
 }
 function showLoading(text) {
     if (maintenanceBlocked) return;
@@ -806,10 +817,16 @@ async function handleTaskAction(type) {
     if (t.claimed) { showToast('Task already claimed. Resets in 24 hours.'); return; }
 
     if (!t.joined) {
-        if (type === 'telegram') window.open('https://t.me/fidexa_Network', '_blank');
-        else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
-        else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
-        else if (type === 'facebook') window.open('https://facebook.com/FidexaNetwork', '_blank');
+        if (type === 'telegram') {
+            if (window.Telegram?.WebApp?.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink('https://t.me/fidexa_Network');
+            } else {
+                openExternalUrl('https://t.me/fidexa_Network');
+            }
+        }
+        else if (type === 'x') openExternalUrl('https://x.com/Fidexa_Network');
+        else if (type === 'youtube') openExternalUrl('https://youtube.com/@Fidexa_Network');
+        else if (type === 'facebook') openExternalUrl('https://facebook.com/FidexaNetwork');
 
         markTaskJoined(type);
         if (!appState.claimedTasks[type]) appState.claimedTasks[type] = { joined: false, claimed: false };
