@@ -244,6 +244,12 @@ input,textarea{font:inherit;}
                 <button id="taskBtn_youtube" class="task-button" onclick="handleTaskAction('youtube')" aria-label="Subscribe on YouTube">SUBSCRIBE</button>
             </div>
         </div>
+        <div class="task-card">
+            <div class="task-row">
+                <div class="task-left"><div class="task-icon" style="color:#1877f2;background:#0a1018;">📘</div><div><div class="task-name">Follow on Facebook</div><div class="task-reward">Reward: +100 FDX</div></div></div>
+                <button id="taskBtn_facebook" class="task-button" onclick="handleTaskAction('facebook')" aria-label="Follow on Facebook">FOLLOW</button>
+            </div>
+        </div>
     </main>
 
     <main class="page-view" id="page-friends">
@@ -315,6 +321,9 @@ input,textarea{font:inherit;}
         </div>
         <div class="profile-menu-item" onclick="window.open('https://youtube.com/@Fidexa_Network','_blank')">
             <div class="profile-menu-left"><span class="profile-menu-icon">▶️</span><span class="profile-menu-title">Subscribe on YouTube</span></div><span class="profile-menu-arrow">↗</span>
+        </div>
+        <div class="profile-menu-item" onclick="window.open('https://facebook.com/FidexaNetwork','_blank')">
+            <div class="profile-menu-left"><span class="profile-menu-icon">📘</span><span class="profile-menu-title">Follow on Facebook</span></div><span class="profile-menu-arrow">↗</span>
         </div>
         <div class="profile-menu-item" onclick="openSupportChat()" style="margin-top:15px;">
             <div class="profile-menu-left"><span class="profile-menu-icon">💬</span><span class="profile-menu-title">Chat Support</span></div><span class="profile-menu-arrow">›</span>
@@ -411,7 +420,8 @@ let appState = {
     claimedTasks: {
         telegram: { joined: false, claimed: false },
         x: { joined: false, claimed: false },
-        youtube: { joined: false, claimed: false }
+        youtube: { joined: false, claimed: false },
+        facebook: { joined: false, claimed: false }
     },
     friends: []
 };
@@ -464,8 +474,6 @@ initializeTelegramUser();
 
 /* =========================================================
    MAINTENANCE CHECK
-   Runs immediately after user init. If blocked, shows the lock
-   screen and freezes the entire app.
 ========================================================= */
 function checkMaintenance() {
     if (!MAINTENANCE_MODE) return false;
@@ -596,7 +604,7 @@ function serverNow() { return Date.now() + serverTimeOffsetMs; }
 function mergeTasks(serverTasks) {
     const local = getTaskJoinMap();
     const merged = {};
-    ['telegram', 'x', 'youtube'].forEach(k => {
+    ['telegram', 'x', 'youtube', 'facebook'].forEach(k => {
         const server = (serverTasks && serverTasks[k]) || {};
         merged[k] = {
             joined: Boolean(server.joined || local[k]),
@@ -743,7 +751,7 @@ function openBoosterPrompt() {
 function renderTasks() {
     if (maintenanceBlocked) return;
     const tasks = appState.claimedTasks || {};
-    ['telegram', 'x', 'youtube'].forEach(type => {
+    ['telegram', 'x', 'youtube', 'facebook'].forEach(type => {
         const btn = document.getElementById(`taskBtn_${type}`);
         if (!btn) return;
         const t = tasks[type] || { joined: false, claimed: false };
@@ -761,7 +769,7 @@ function renderTasks() {
         }
 
         if (t.joined) {
-            if (type === 'x' || type === 'youtube') {
+            if (type === 'x' || type === 'youtube' || type === 'facebook') {
                 const joinMap = getTaskJoinMap();
                 const joinedAt = joinMap[type] || 0;
                 const elapsed = Date.now() - joinedAt;
@@ -776,7 +784,7 @@ function renderTasks() {
             btn.textContent = 'CLAIM';
             btn.classList.add('claim');
         } else {
-            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : 'JOIN');
+            btn.textContent = type === 'x' ? 'FOLLOW' : (type === 'youtube' ? 'SUBSCRIBE' : (type === 'facebook' ? 'FOLLOW' : 'JOIN'));
         }
     });
 }
@@ -801,12 +809,13 @@ async function handleTaskAction(type) {
         if (type === 'telegram') window.open('https://t.me/fidexa_Network', '_blank');
         else if (type === 'x') window.open('https://x.com/Fidexa_Network', '_blank');
         else if (type === 'youtube') window.open('https://youtube.com/@Fidexa_Network', '_blank');
+        else if (type === 'facebook') window.open('https://facebook.com/FidexaNetwork', '_blank');
 
         markTaskJoined(type);
         if (!appState.claimedTasks[type]) appState.claimedTasks[type] = { joined: false, claimed: false };
         appState.claimedTasks[type].joined = true;
         renderTasks();
-        if (type === 'x' || type === 'youtube') {
+        if (type === 'x' || type === 'youtube' || type === 'facebook') {
             showToast('Follow the account, then wait 25s and tap CLAIM.');
         } else {
             showToast('Complete the action, then click CLAIM.');
@@ -815,7 +824,7 @@ async function handleTaskAction(type) {
         return;
     }
 
-    if (type === 'x' || type === 'youtube') {
+    if (type === 'x' || type === 'youtube' || type === 'facebook') {
         const joinMap = getTaskJoinMap();
         const joinedAt = joinMap[type] || 0;
         const elapsed = Date.now() - joinedAt;
