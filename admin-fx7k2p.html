@@ -60,6 +60,7 @@ input,textarea,select{font:inherit;}
 .badge.active{background:rgba(74,222,128,.12);color:var(--green);border:1px solid rgba(74,222,128,.3);}
 .badge.kyc{background:rgba(56,189,248,.15);color:var(--cyan);border:1px solid rgba(56,189,248,.3);}
 .badge.nokyc{background:rgba(136,153,166,.1);color:var(--muted);border:1px solid rgba(136,153,166,.3);}
+.badge.mining{background:rgba(250,204,21,.12);color:var(--yellow);border:1px solid rgba(250,204,21,.3);}
 .pagination{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px;}
 .page-btn{background:#111b27;border:1px solid #223247;border-radius:10px;padding:9px 14px;color:var(--muted);font-size:12px;font-weight:800;}
 .page-btn:disabled{opacity:.4;cursor:not-allowed;}
@@ -119,8 +120,6 @@ input,textarea,select{font:inherit;}
 .loader{padding:40px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
 .loader-spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(56,189,248,.2);border-top-color:var(--cyan);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px;}
 .empty{padding:40px 20px;text-align:center;font-size:12px;color:var(--muted);font-weight:700;}
-
-/* AIRDROP SPECIFIC STYLES */
 .airdrop-calc-box{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;}
 .calc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(27,38,54,.5);}
 .calc-row:last-child{border-bottom:0;}
@@ -185,6 +184,11 @@ input,textarea,select{font:inherit;}
 <div class="view" id="view-users">
 <div class="search-bar">
 <input id="userSearch" class="search-input" type="text" placeholder="Search by ID or @username…" onkeydown="if(event.key==='Enter') loadUsers(1);">
+<select id="activityFilter" class="search-input" style="flex:0 0 auto; width:auto;" onchange="loadUsers(1)">
+    <option value="all">All Activity</option>
+    <option value="active">🟢 Mining Now</option>
+    <option value="inactive">⚫ Inactive</option>
+</select>
 <select id="kycFilter" class="search-input" style="flex:0 0 auto; width:auto;" onchange="loadUsers(1)">
     <option value="all">All Users</option>
     <option value="paid">KYC Paid</option>
@@ -297,7 +301,7 @@ let initData = "";
 let adminInfo = null;
 let currentUsersPage = 1;
 let currentChatUserId = null;
-let currentAirdropData = []; // Stores the generated airdrop list
+let currentAirdropData = [];
 
 /* ================ HELPERS ================ */
 function el(id){ return document.getElementById(id); }
@@ -409,6 +413,8 @@ async function loadDashboard(){
     const s = res.stats;
     grid.innerHTML = `
       <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value cyan">${s.totalUsers}</div><div class="stat-foot">+${s.newUsers7d} in last 7d</div></div>
+      <div class="stat-card"><div class="stat-label">Active Now</div><div class="stat-value green">${s.activeUsers || 0}</div><div class="stat-foot">mining right now</div></div>
+      <div class="stat-card"><div class="stat-label">Inactive</div><div class="stat-value" style="color:var(--muted);">${s.inactiveUsers || 0}</div><div class="stat-foot">not mining</div></div>
       <div class="stat-card"><div class="stat-label">Total FDX</div><div class="stat-value yellow">${fmt(s.totalBalance)}</div><div class="stat-foot">across wallets</div></div>
       <div class="stat-card"><div class="stat-label">KYC Paid Users</div><div class="stat-value green">${s.kycPaidUsers || 0}</div><div class="stat-foot">wallets connected</div></div>
       <div class="stat-card"><div class="stat-label">Total TON Collected</div><div class="stat-value purple">${fmt(s.totalTonCollected || 0)}</div><div class="stat-foot">from KYC fees</div></div>
@@ -430,8 +436,9 @@ async function loadUsers(page){
   list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Loading…</div></div>';
   const search = el('userSearch').value.trim();
   const kycFilter = el('kycFilter').value;
+  const activityFilter = el('activityFilter').value;
   try{
-    const res = await api(`/api/admin/users?page=${page}&limit=30&search=${encodeURIComponent(search)}&kyc=${kycFilter}`);
+    const res = await api(`/api/admin/users?page=${page}&limit=30&search=${encodeURIComponent(search)}&kyc=${kycFilter}&activity=${activityFilter}`);
     const users = res.users || [];
     if(!users.length){
       list.innerHTML = '<div class="empty">No users found.</div>';
@@ -444,7 +451,7 @@ async function loadUsers(page){
           <div class="user-name">${esc(u.username||('User '+u.id))}
             ${u.banned?'<span class="badge banned">BANNED</span>':''}
             ${u.kyc_paid?'<span class="badge kyc">KYC PAID</span>':'<span class="badge nokyc">NO KYC</span>'}
-            ${u.hasMined?'<span class="badge active">ACTIVE</span>':''}
+            ${u.isActive?'<span class="badge active">🟢 MINING NOW</span>':''}
           </div>
           <div class="user-meta">ID: ${u.id} · Joined ${timeAgo(u.createdAt)}</div>
         </div>
@@ -468,14 +475,14 @@ async function openUserDetail(id){
   try{
     const res = await api('/api/admin/users/' + id);
     const u = res.user;
-    
+
     const hasWallet = u.ton_wallet_address && u.ton_wallet_address.length > 0;
-    const walletDisplay = hasWallet 
+    const walletDisplay = hasWallet
         ? `<div style="color:var(--cyan); font-size:12px; word-break:break-all; font-weight:800; margin-top:4px;">${esc(u.ton_wallet_address)}</div>
            <div style="font-size:10px; color:var(--green); font-weight:700; margin-top:4px;">✅ Wallet Connected</div>`
         : `<div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:4px;">❌ Not Connected</div>`;
 
-    const kycDisplay = u.kyc_paid 
+    const kycDisplay = u.kyc_paid
         ? `<div style="color:var(--green); font-weight:800;">✅ PAID (0.5 TON)</div>`
         : `<div style="color:var(--red); font-weight:800;">❌ UNPAID</div>`;
 
