@@ -294,7 +294,6 @@ input,textarea,select{font:inherit;}
 <script>
 /* ================ CONFIG ================ */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
-const ADMIN_USERNAME = "safeguy0620";
 
 /* ================ STATE ================ */
 let initData = "";
@@ -361,14 +360,7 @@ async function boot(){
     return;
   }
 
-  const tgUser = (tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
-  const actualUsername = String(tgUser.username || "").toLowerCase().trim();
-  const requiredUsername = String(ADMIN_USERNAME).toLowerCase().trim();
-  if(actualUsername !== requiredUsername){
-    el('deniedReason').textContent = 'You are not authorized to view this page.';
-    hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
-    return;
-  }
+  // ✅ No username check here. The backend /api/admin/me enforces who is an admin.
 
   try{
     const res = await api('/api/admin/me');
@@ -380,7 +372,7 @@ async function boot(){
     loadUnreadBadge();
     loadWithdrawBadge();
   }catch(err){
-    el('deniedReason').textContent = err.message || 'You are not authorized to view this page.';
+    el('deniedReason').textContent = 'You are not authorized to view this page.';
     hide('loadingScreen'); el('deniedScreen').classList.remove('hidden');
   }
 }
