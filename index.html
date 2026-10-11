@@ -7,7 +7,6 @@
 <title>Fidexa Network</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
 
 <style>
 :root{--bg:#05080c;--panel:#0a1018;--border:#1b2636;--text:#f1f5f9;--muted:#8899a6;--cyan:#38bdf8;--blue:#0284c7;--yellow:#facc15;--red:#f87171;--green:#4ade80;}
@@ -79,7 +78,9 @@ input,textarea{font:inherit;}
 .friend-avatar{width:38px;height:38px;border-radius:50%;background:#111b27;border:1px solid #223247;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
 .friend-name{font-size:13px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .friend-status{font-size:9px;font-weight:900;margin-top:4px;}
-.friend-status.active{color:var(--green);}
+.friend-status.pending{color:var(--yellow);}
+.friend-status.active{color:var(--cyan);}
+.friend-status.earned{color:var(--green);}
 .friend-empty-state{padding:30px 18px;text-align:center;}
 .friend-empty-icon{font-size:32px;margin-bottom:10px;}
 .friend-empty-title{font-size:15px;font-weight:900;color:#fff;}
@@ -89,9 +90,13 @@ input,textarea{font:inherit;}
 .referral-info-title{font-size:12px;font-weight:900;color:var(--cyan);letter-spacing:.4px;margin-bottom:5px;}
 .referral-info-text{font-size:11px;color:var(--muted);line-height:1.5;font-weight:600;}
 .referral-info-text strong{color:var(--yellow);font-weight:900;}
+.pending-rewards-banner{display:none;align-items:center;gap:12px;background:linear-gradient(145deg,rgba(250,204,21,.08),rgba(250,204,21,.02));border:1px solid rgba(250,204,21,.3);border-radius:16px;padding:14px 16px;margin-bottom:16px;}
+.pending-rewards-banner.show{display:flex;}
+.pending-rewards-icon{font-size:22px;flex-shrink:0;}
+.pending-rewards-amount{font-size:16px;font-weight:900;color:var(--yellow);}
+.pending-rewards-text{font-size:10px;color:var(--muted);font-weight:700;margin-top:3px;}
 .wallet-main-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);}
 .wallet-balance-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;}
-.ton-connect-container{display:flex;justify-content:center;margin-top:10px;}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
 .nav-item{background:none;border:0;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;}
 .nav-icon{font-size:18px;}
@@ -259,13 +264,20 @@ input,textarea{font:inherit;}
             <div class="referral-info-icon">💎</div>
             <div>
                 <div class="referral-info-title">EARN +100 FDX PER FRIEND</div>
-                <div class="referral-info-text">Invite a friend. Once they start mining, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
+                <div class="referral-info-text">Invite a friend. Once they complete their <strong>first mining cycle and claim</strong>, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
+            </div>
+        </div>
+        <div class="pending-rewards-banner" id="pendingRewardsBanner">
+            <div class="pending-rewards-icon">⏳</div>
+            <div style="flex:1;min-width:0;">
+                <div class="pending-rewards-amount" id="pendingRewardsAmount">+0 FDX</div>
+                <div class="pending-rewards-text" id="pendingRewardsText">Waiting for friends to complete their first cycle.</div>
             </div>
         </div>
         <div class="friends-stats-grid">
             <div class="friend-stat-card"><div class="friend-stat-value" id="totalFriendsCount">0</div><div class="friend-stat-label">Invited</div></div>
-            <div class="friend-stat-card"><div class="friend-stat-value" id="activeFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Active</div></div>
-            <div class="friend-stat-card"><div class="friend-stat-value" id="inactiveFriendsCount">0</div><div class="friend-stat-label">Inactive</div></div>
+            <div class="friend-stat-card"><div class="friend-stat-value" id="pendingFriendsCount" style="color:var(--yellow);">0</div><div class="friend-stat-label">Pending</div></div>
+            <div class="friend-stat-card"><div class="friend-stat-value" id="earnedFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Earned</div></div>
         </div>
         <div class="friend-list-card">
             <div class="friend-list-header"><div class="friend-list-title">My Invited Members</div><div class="friend-list-count" id="friendListCount">0 MEMBERS</div></div>
@@ -371,6 +383,7 @@ input,textarea{font:inherit;}
 <script>
 /* =========================================================
    ⚙️ MAINTENANCE MODE
+   Set to false when ready to launch.
 ========================================================= */
 const MAINTENANCE_MODE = true;
 const MAINTENANCE_WHITELIST = ['6771764389', '7960802097'];
@@ -499,7 +512,6 @@ function showToast(msg) {
 }
 
 function openExternalUrl(url) {
-    // Telegram URLs → openTelegramLink
     if (url.includes('t.me/') || url.startsWith('tg://')) {
         if (window.Telegram?.WebApp?.openTelegramLink) {
             try {
@@ -510,7 +522,6 @@ function openExternalUrl(url) {
             }
         }
     }
-    // Everything else → openLink (opens in Telegram in-app browser)
     if (window.Telegram?.WebApp?.openLink) {
         try {
             window.Telegram.WebApp.openLink(url, { try_instant_view: false });
@@ -519,7 +530,6 @@ function openExternalUrl(url) {
             console.warn('openLink failed:', e);
         }
     }
-    // Fallback
     try { window.open(url, '_blank'); } catch (e) {}
 }
 
@@ -548,6 +558,7 @@ function switchTab(tabName, btnElement) {
     if (btnElement) btnElement.classList.add('active');
     const app = document.querySelector('.app');
     if (app) app.scrollTop = 0;
+    if (tabName === 'home') updateAllUI();
     if (tabName === 'tasks') renderTasks();
     if (tabName === 'friends') { renderFriends(); loadReferralData(); }
 }
@@ -574,8 +585,18 @@ function markTaskJoined(type) {
 }
 
 /* =========================================================
-   API HELPER
+   API HELPER (with timeout)
 ========================================================= */
+async function fetchWithTimeout(url, opts, ms = 10000) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    try {
+        return await fetch(url, { ...opts, signal: ctrl.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 async function apiCall(path, options = {}) {
     if (maintenanceBlocked) {
         throw new Error("App is in maintenance mode.");
@@ -591,11 +612,19 @@ async function apiCall(path, options = {}) {
     };
     if (options.body !== undefined) headers['Content-Type'] = 'application/json';
 
-    const response = await fetch(`${API_BASE}${path}`, {
-        method: options.method || 'GET',
-        headers,
-        body: options.body !== undefined ? JSON.stringify(options.body) : undefined
-    });
+    let response;
+    try {
+        response = await fetchWithTimeout(`${API_BASE}${path}`, {
+            method: options.method || 'GET',
+            headers,
+            body: options.body !== undefined ? JSON.stringify(options.body) : undefined
+        }, 10000);
+    } catch (e) {
+        if (e.name === 'AbortError') {
+            throw new Error('Server took too long. Check your connection and try again.');
+        }
+        throw e;
+    }
 
     const serverDateHeader = response.headers.get('date');
     if (serverDateHeader) {
@@ -633,6 +662,8 @@ function mergeTasks(serverTasks) {
 
 async function loadState(showLoader) {
     if (maintenanceBlocked) return;
+    if (isSyncing) return;
+    isSyncing = true;
     if (showLoader) showLoading('Syncing your account...');
     try {
         const refParam = telegramStartParam && telegramStartParam.startsWith('ref_') && !isSelfReferral
@@ -661,6 +692,7 @@ async function loadState(showLoader) {
         if (showLoader) showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
+        isSyncing = false;
     }
 }
 
@@ -834,7 +866,6 @@ async function handleTaskAction(type) {
         } else {
             showToast('Complete the action, then click CLAIM.');
         }
-        setTimeout(renderTasks, 10000);
         return;
     }
 
@@ -938,41 +969,61 @@ async function loadReferralData() {
 function renderFriends() {
     if (maintenanceBlocked) return;
     const friends = appState.friends || [];
-    const totalEl = document.getElementById('totalFriendsCount');
-    const activeEl = document.getElementById('activeFriendsCount');
-    const inactiveEl = document.getElementById('inactiveFriendsCount');
-    const countEl = document.getElementById('friendListCount');
-    const listEl = document.getElementById('friendsList');
+    const total   = friends.length;
+    const pending = friends.filter(f => (f.status || 'pending') === 'pending').length;
+    const earned  = friends.filter(f => f.status === 'earned').length;
 
-    const activeCount = friends.filter(f => f.active).length;
-    const inactiveCount = friends.length - activeCount;
+    const totalEl   = document.getElementById('totalFriendsCount');
+    const pendEl    = document.getElementById('pendingFriendsCount');
+    const earnedEl  = document.getElementById('earnedFriendsCount');
+    const countEl   = document.getElementById('friendListCount');
+    if (totalEl)  totalEl.textContent  = String(total);
+    if (pendEl)   pendEl.textContent   = String(pending);
+    if (earnedEl) earnedEl.textContent = String(earned);
+    if (countEl)  countEl.textContent  = `${total} MEMBER${total === 1 ? '' : 'S'}`;
 
-    if (totalEl) totalEl.textContent = String(friends.length);
-    if (activeEl) activeEl.textContent = String(activeCount);
-    if (inactiveEl) inactiveEl.textContent = String(inactiveCount);
-    if (countEl) countEl.textContent = `${friends.length} MEMBER${friends.length === 1 ? '' : 'S'}`;
-
-    if (listEl) {
-        if (friends.length === 0) {
-            listEl.innerHTML = '<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>';
+    const banner = document.getElementById('pendingRewardsBanner');
+    if (banner) {
+        if (pending > 0) {
+            banner.classList.add('show');
+            const amt = document.getElementById('pendingRewardsAmount');
+            const txt = document.getElementById('pendingRewardsText');
+            if (amt) amt.textContent = `+${pending * 100} FDX`;
+            if (txt) txt.textContent = `${pending} friend${pending === 1 ? '' : 's'} still need to complete their first mining cycle.`;
         } else {
-            listEl.innerHTML = friends.map(f => {
-                const safeId = escapeHtml(f.referredId);
-                const isActive = Boolean(f.active);
-                return `
-                <div class="friend-row-item">
-                    <div class="friend-left">
-                        <div class="friend-avatar">👤</div>
-                        <div>
-                            <div class="friend-name">User ${safeId}</div>
-                            <div class="friend-status ${isActive ? 'active' : 'inactive'}">${isActive ? 'ACTIVE · +100 FDX Earned' : 'INACTIVE'}</div>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
+            banner.classList.remove('show');
         }
     }
-    renderMilestones(friends.length);
+
+    const listEl = document.getElementById('friendsList');
+    if (!listEl) { renderMilestones(total); return; }
+
+    if (total === 0) {
+        listEl.innerHTML = '<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>';
+    } else {
+        const statusMap = {
+            pending: { cls: 'pending', label: 'PENDING · +100 FDX' },
+            active:  { cls: 'active',  label: 'MINING NOW · Reward pending' },
+            earned:  { cls: 'earned',  label: 'COMPLETED · +100 FDX Earned' },
+        };
+        listEl.innerHTML = friends.map(f => {
+            const safeId = escapeHtml(f.referredId);
+            const status = f.status || (f.active ? 'active' : 'pending');
+            const cfg = statusMap[status] || statusMap.pending;
+            return `
+            <div class="friend-row-item">
+                <div class="friend-left">
+                    <div class="friend-avatar">👤</div>
+                    <div>
+                        <div class="friend-name">User ${safeId}</div>
+                        <div class="friend-status ${cfg.cls}">${cfg.label}</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    renderMilestones(total);
 }
 
 function renderMilestones(currentCount) {
@@ -1108,10 +1159,9 @@ setInterval(() => {
         if (hoursEl) hoursEl.textContent = `${Math.min(Math.floor(totalDuration), elapsedHours)} / ${Math.floor(totalDuration)}`;
 
         if (remaining <= 0 && !isSyncing) {
-            isSyncing = true;
             appState.miningState = 'READY_TO_CLAIM';
             updateAllUI();
-            loadState(false).finally(() => { isSyncing = false; });
+            loadState(false).catch(() => {});
         }
     }
 }, 1000);
