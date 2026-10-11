@@ -170,11 +170,11 @@ input,textarea{font:inherit;}
 <body>
 
 <div class="maintenance-lock" id="maintenanceLock">
-    <div class="maintenance-icon">🚀</div>
+    <div class="maintenance-icon">🛠️</div>
     <div class="maintenance-title">FIDEXA NETWORK</div>
-    <div class="maintenance-sub">We're putting the final touches on the app.<br>Mining launches in just a few days.</div>
-    <div class="maintenance-pill">LAUNCHING SOON</div>
-    <div class="maintenance-note">Follow our channel to be the first to know when we go live.</div>
+    <div class="maintenance-sub">We're upgrading Fidexa.<br>The app will be back shortly.</div>
+    <div class="maintenance-pill">MAINTENANCE IN PROGRESS</div>
+    <div class="maintenance-note">Thank you for your patience. Stay tuned to our channel for updates.</div>
     <div class="maintenance-channel">
         <a href="https://t.me/fidexa_Network" target="_blank">📢 Join @fidexa_Network</a>
     </div>
@@ -384,10 +384,12 @@ input,textarea{font:inherit;}
 <script>
 /* =========================================================
    ⚙️ MAINTENANCE MODE
-   Set to false when ready to launch.
+   — Client-side gate removed. Server now controls access.
+   — The maintenance screen is only shown when the server
+     returns { maintenance: true } on an API call.
 ========================================================= */
-const MAINTENANCE_MODE = true;
-const MAINTENANCE_WHITELIST = ['6771764389', '7960802097'];
+const MAINTENANCE_MODE = false;   // never blocks on the client
+const MAINTENANCE_WHITELIST = []; // handled server-side now
 let maintenanceBlocked = false;
 
 /* =========================================================
@@ -476,15 +478,11 @@ function showEnvBanner() {
 initializeTelegramUser();
 
 /* =========================================================
-   MAINTENANCE CHECK
+   SERVER-DRIVEN MAINTENANCE SCREEN
+   Only triggered when backend returns { maintenance: true }
 ========================================================= */
-function checkMaintenance() {
-    if (!MAINTENANCE_MODE) return false;
-    if (MAINTENANCE_WHITELIST.includes(String(currentUserId))) return false;
-    return true;
-}
-
-if (checkMaintenance()) {
+function showMaintenanceLock() {
+    if (maintenanceBlocked) return;
     maintenanceBlocked = true;
     const lock = document.getElementById('maintenanceLock');
     const appEl = document.querySelector('.app');
@@ -493,7 +491,6 @@ if (checkMaintenance()) {
     if (appEl) appEl.style.display = 'none';
     if (navEl) navEl.style.display = 'none';
     document.body.style.overflow = 'hidden';
-    console.log('Maintenance mode — access blocked for user:', currentUserId);
 }
 
 /* =========================================================
@@ -635,6 +632,14 @@ async function apiCall(path, options = {}) {
 
     let data = null;
     try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON (${response.status})`); }
+
+    // 🚧 Server-driven maintenance: show the lock screen
+    if (data?.maintenance === true) {
+        hideLoading();
+        showMaintenanceLock();
+        throw new Error(data?.error || "Fidexa is under maintenance.");
+    }
+
     if (!response.ok || data?.success === false) {
         throw new Error(data?.error || data?.message || `Request failed (${response.status})`);
     }
@@ -690,7 +695,7 @@ async function loadState(showLoader) {
         renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        if (showLoader) showToast(error.message || "Failed to sync. Please reload.");
+        if (showLoader && !maintenanceBlocked) showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
         isSyncing = false;
@@ -777,11 +782,11 @@ async function handleMiningAction() {
         }
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Action failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Action failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
-        updateAllUI();
+        if (!maintenanceBlocked) updateAllUI();
         isProcessing = false;
     }
 }
@@ -841,6 +846,7 @@ function startTaskCountdown() {
     if (maintenanceBlocked) return;
     if (taskCountdownTimer) return;
     taskCountdownTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         const tasksPage = document.getElementById('page-tasks');
         if (!tasksPage || !tasksPage.classList.contains('active')) return;
         renderTasks();
@@ -893,8 +899,8 @@ async function handleTaskAction(type) {
         showToast(`+${res.reward} FDX added!`);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Task claim failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Task claim failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
@@ -1065,8 +1071,8 @@ async function claimMilestone(req) {
         showToast(`Milestone reached! +${res.reward} FDX added.`);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Milestone claim failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Milestone claim failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
@@ -1082,6 +1088,7 @@ async function openSupportChat() {
     await fetchSupportMessages();
     if (supportPollingTimer) clearInterval(supportPollingTimer);
     supportPollingTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         if (document.getElementById('supportModal').classList.contains('active')) fetchSupportMessages();
     }, 8000);
 }
@@ -1181,12 +1188,9 @@ document.addEventListener('visibilitychange', () => {
    BOOT
 ========================================================= */
 window.addEventListener('DOMContentLoaded', () => {
-    if (maintenanceBlocked) {
-        console.log('Maintenance mode active — skipping boot for user:', currentUserId);
-        return;
-    }
     showLoading('Connecting to Fidexa...');
     loadState(true).then(() => {
+        if (maintenanceBlocked) return;
         loadReferralData();
         startTaskCountdown();
     });
