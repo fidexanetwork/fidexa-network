@@ -63,7 +63,7 @@ input,textarea{font:inherit;}
 .task-button.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);opacity:.8;}
 .task-button.locked{background:#111b27;border:1px solid #223247;color:var(--muted);cursor:not-allowed;}
 .task-button:disabled{cursor:default;}
-.friends-stats-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
 .friend-stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:16px;padding:15px 8px;text-align:center;}
 .friend-stat-value{font-size:22px;font-weight:900;color:#fff;}
 .friend-stat-label{font-size:9px;color:var(--muted);font-weight:900;margin-top:5px;text-transform:uppercase;letter-spacing:.4px;}
@@ -79,6 +79,7 @@ input,textarea{font:inherit;}
 .friend-name{font-size:13px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .friend-status{font-size:9px;font-weight:900;margin-top:4px;}
 .friend-status.pending{color:var(--yellow);}
+.friend-status.active{color:var(--cyan);}
 .friend-status.earned{color:var(--green);}
 .friend-empty-state{padding:30px 18px;text-align:center;}
 .friend-empty-icon{font-size:32px;margin-bottom:10px;}
@@ -168,11 +169,11 @@ input,textarea{font:inherit;}
 <body>
 
 <div class="maintenance-lock" id="maintenanceLock">
-    <div class="maintenance-icon">🚀</div>
+    <div class="maintenance-icon">🛠️</div>
     <div class="maintenance-title">FIDEXA NETWORK</div>
-    <div class="maintenance-sub">We're putting the final touches on the app.<br>Mining launches in just a few days.</div>
-    <div class="maintenance-pill">LAUNCHING SOON</div>
-    <div class="maintenance-note">Follow our channel to be the first to know when we go live.</div>
+    <div class="maintenance-sub">We're upgrading Fidexa.<br>The app will be back shortly.</div>
+    <div class="maintenance-pill">MAINTENANCE IN PROGRESS</div>
+    <div class="maintenance-note">Thank you for your patience. Stay tuned to our channel for updates.</div>
     <div class="maintenance-channel">
         <a href="https://t.me/fidexa_Network" target="_blank">📢 Join @fidexa_Network</a>
     </div>
@@ -273,8 +274,9 @@ input,textarea{font:inherit;}
                 <div class="pending-rewards-text" id="pendingRewardsText">Waiting for friends to complete their first cycle.</div>
             </div>
         </div>
-        <div class="friends-stats-grid-2">
+        <div class="friends-stats-grid">
             <div class="friend-stat-card"><div class="friend-stat-value" id="totalFriendsCount">0</div><div class="friend-stat-label">Invited</div></div>
+            <div class="friend-stat-card"><div class="friend-stat-value" id="pendingFriendsCount" style="color:var(--yellow);">0</div><div class="friend-stat-label">Pending</div></div>
             <div class="friend-stat-card"><div class="friend-stat-value" id="earnedFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Earned</div></div>
         </div>
         <div class="friend-list-card">
@@ -381,10 +383,12 @@ input,textarea{font:inherit;}
 <script>
 /* =========================================================
    ⚙️ MAINTENANCE MODE
-   Set to false when ready to launch.
+   — Client-side gate removed. Server now controls access.
+   — The maintenance screen is only shown when the server
+     returns { maintenance: true } on an API call.
 ========================================================= */
-const MAINTENANCE_MODE = true;
-const MAINTENANCE_WHITELIST = ['6771764389', '7960802097'];
+const MAINTENANCE_MODE = false;   // never blocks on the client
+const MAINTENANCE_WHITELIST = []; // handled server-side now
 let maintenanceBlocked = false;
 
 /* =========================================================
@@ -473,15 +477,11 @@ function showEnvBanner() {
 initializeTelegramUser();
 
 /* =========================================================
-   MAINTENANCE CHECK
+   SERVER-DRIVEN MAINTENANCE SCREEN
+   Only triggered when backend returns { maintenance: true }
 ========================================================= */
-function checkMaintenance() {
-    if (!MAINTENANCE_MODE) return false;
-    if (MAINTENANCE_WHITELIST.includes(String(currentUserId))) return false;
-    return true;
-}
-
-if (checkMaintenance()) {
+function showMaintenanceLock() {
+    if (maintenanceBlocked) return;
     maintenanceBlocked = true;
     const lock = document.getElementById('maintenanceLock');
     const appEl = document.querySelector('.app');
@@ -490,7 +490,6 @@ if (checkMaintenance()) {
     if (appEl) appEl.style.display = 'none';
     if (navEl) navEl.style.display = 'none';
     document.body.style.overflow = 'hidden';
-    console.log('Maintenance mode — access blocked for user:', currentUserId);
 }
 
 /* =========================================================
@@ -632,6 +631,14 @@ async function apiCall(path, options = {}) {
 
     let data = null;
     try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON (${response.status})`); }
+
+    // 🚧 Server-driven maintenance: show the lock screen
+    if (data?.maintenance === true) {
+        hideLoading();
+        showMaintenanceLock();
+        throw new Error(data?.error || "Fidexa is under maintenance.");
+    }
+
     if (!response.ok || data?.success === false) {
         throw new Error(data?.error || data?.message || `Request failed (${response.status})`);
     }
@@ -687,7 +694,7 @@ async function loadState(showLoader) {
         renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        if (showLoader) showToast(error.message || "Failed to sync. Please reload.");
+        if (showLoader && !maintenanceBlocked) showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
         isSyncing = false;
@@ -774,11 +781,11 @@ async function handleMiningAction() {
         }
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Action failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Action failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
-        updateAllUI();
+        if (!maintenanceBlocked) updateAllUI();
         isProcessing = false;
     }
 }
@@ -838,6 +845,7 @@ function startTaskCountdown() {
     if (maintenanceBlocked) return;
     if (taskCountdownTimer) return;
     taskCountdownTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         const tasksPage = document.getElementById('page-tasks');
         if (!tasksPage || !tasksPage.classList.contains('active')) return;
         renderTasks();
@@ -890,8 +898,8 @@ async function handleTaskAction(type) {
         showToast(`+${res.reward} FDX added!`);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Task claim failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Task claim failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
@@ -971,10 +979,12 @@ function renderFriends() {
     const pending = friends.filter(f => (f.status || 'pending') === 'pending').length;
     const earned  = friends.filter(f => f.status === 'earned').length;
 
-    const totalEl  = document.getElementById('totalFriendsCount');
-    const earnedEl = document.getElementById('earnedFriendsCount');
-    const countEl  = document.getElementById('friendListCount');
+    const totalEl   = document.getElementById('totalFriendsCount');
+    const pendEl    = document.getElementById('pendingFriendsCount');
+    const earnedEl  = document.getElementById('earnedFriendsCount');
+    const countEl   = document.getElementById('friendListCount');
     if (totalEl)  totalEl.textContent  = String(total);
+    if (pendEl)   pendEl.textContent   = String(pending);
     if (earnedEl) earnedEl.textContent = String(earned);
     if (countEl)  countEl.textContent  = `${total} MEMBER${total === 1 ? '' : 'S'}`;
 
@@ -999,11 +1009,12 @@ function renderFriends() {
     } else {
         const statusMap = {
             pending: { cls: 'pending', label: 'PENDING · +100 FDX' },
+            active:  { cls: 'active',  label: 'MINING NOW · Reward pending' },
             earned:  { cls: 'earned',  label: 'COMPLETED · +100 FDX Earned' },
         };
         listEl.innerHTML = friends.map(f => {
             const safeId = escapeHtml(f.referredId);
-            const status = f.status || 'pending';
+            const status = f.status || (f.active ? 'active' : 'pending');
             const cfg = statusMap[status] || statusMap.pending;
             return `
             <div class="friend-row-item">
@@ -1059,8 +1070,8 @@ async function claimMilestone(req) {
         showToast(`Milestone reached! +${res.reward} FDX added.`);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Milestone claim failed.');
-        loadState(false).catch(() => {});
+        if (!maintenanceBlocked) showToast(error.message || 'Milestone claim failed.');
+        if (!maintenanceBlocked) loadState(false).catch(() => {});
     } finally {
         hideLoading();
         isProcessing = false;
@@ -1076,6 +1087,7 @@ async function openSupportChat() {
     await fetchSupportMessages();
     if (supportPollingTimer) clearInterval(supportPollingTimer);
     supportPollingTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         if (document.getElementById('supportModal').classList.contains('active')) fetchSupportMessages();
     }, 8000);
 }
@@ -1175,12 +1187,9 @@ document.addEventListener('visibilitychange', () => {
    BOOT
 ========================================================= */
 window.addEventListener('DOMContentLoaded', () => {
-    if (maintenanceBlocked) {
-        console.log('Maintenance mode active — skipping boot for user:', currentUserId);
-        return;
-    }
     showLoading('Connecting to Fidexa...');
     loadState(true).then(() => {
+        if (maintenanceBlocked) return;
         loadReferralData();
         startTaskCountdown();
     });
