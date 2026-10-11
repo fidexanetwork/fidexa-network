@@ -132,6 +132,15 @@ input,textarea,select{font:inherit;}
 .airdrop-user-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#0a111a;border:1px solid #1a2838;border-radius:10px;margin-bottom:6px;font-size:11px;font-weight:700;}
 .airdrop-user-row div{color:var(--muted);}
 .airdrop-user-row strong{color:#fff;}
+.flag-card{border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.flag-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;}
+.flag-title{font-size:12px;font-weight:900;}
+.flag-severity{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;}
+.flag-desc{font-size:11px;color:var(--muted);font-weight:700;line-height:1.4;margin-bottom:6px;}
+.flag-actions{display:flex;gap:6px;margin-top:8px;}
+.flag-action-btn{padding:6px 12px;border-radius:8px;font-size:10px;font-weight:900;letter-spacing:.3px;}
+.flag-action-btn.view{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.35);color:var(--cyan);}
+.flag-action-btn.dismiss{background:rgba(136,153,166,.08);border:1px solid rgba(136,153,166,.25);color:var(--muted);}
 </style>
 </head>
 <body>
@@ -164,6 +173,7 @@ input,textarea,select{font:inherit;}
 <div class="tabs">
 <button class="tab active" data-tab="dashboard" onclick="switchView('dashboard',this)">📊 Dashboard</button>
 <button class="tab" data-tab="users" onclick="switchView('users',this)">👥 Users</button>
+<button class="tab" data-tab="suspicious" onclick="switchView('suspicious',this)">🚨 Suspicious</button>
 <button class="tab" data-tab="chats" onclick="switchView('chats',this)">💬 Chats <span id="unreadBadge" class="tab-badge" style="display:none;">0</span></button>
 <button class="tab" data-tab="withdrawals" onclick="switchView('withdrawals',this)">💸 Withdrawals <span id="withdrawBadge" class="tab-badge" style="display:none;">0</span></button>
 <button class="tab" data-tab="airdrop" onclick="switchView('airdrop',this)">💎 Airdrop</button>
@@ -201,6 +211,20 @@ input,textarea,select{font:inherit;}
 <button class="page-btn" id="prevPageBtn" onclick="loadUsers(currentUsersPage-1)">← Prev</button>
 <div class="page-info" id="pageInfo">Page 1</div>
 <button class="page-btn" id="nextPageBtn" onclick="loadUsers(currentUsersPage+1)">Next →</button>
+</div>
+</div>
+
+<!-- SUSPICIOUS -->
+<div class="view" id="view-suspicious">
+<div class="broadcast-info" style="margin-bottom:14px;padding:12px;background:rgba(56,189,248,.05);border:1px solid rgba(56,189,248,.2);border-radius:10px;">
+  ⚠️ These are patterns, not proof. Review each case in the Users tab before banning or adjusting. False positives are common — a burst of real invites from a Telegram group looks identical to alt-farming.
+</div>
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+  <button class="page-btn" onclick="loadSuspicious()" style="flex:1;">🔄 RESCAN</button>
+  <button class="page-btn" onclick="dismissAllFlags()" style="flex:1;">✓ DISMISS ALL</button>
+</div>
+<div id="suspiciousList">
+  <div class="loader"><div class="loader-spinner"></div><div>Scanning for suspicious activity…</div></div>
 </div>
 </div>
 
@@ -301,6 +325,7 @@ let adminInfo = null;
 let currentUsersPage = 1;
 let currentChatUserId = null;
 let currentAirdropData = [];
+let dismissedFlags = loadDismissedFlags();
 
 /* ================ HELPERS ================ */
 function el(id){ return document.getElementById(id); }
@@ -323,6 +348,51 @@ function timeAgo(iso){
   if(s<86400) return Math.floor(s/3600)+'h';
   if(s<604800) return Math.floor(s/86400)+'d';
   return new Date(iso).toLocaleDateString([], {day:'2-digit',month:'short'});
+}
+
+/* ================ DISMISSED FLAGS (localStorage) ================ */
+function loadDismissedFlags(){
+  try{
+    const raw = localStorage.getItem('fdx_dismissed_flags');
+    if(!raw) return [];
+    const arr = JSON.parse(raw);
+    // Keep only flags dismissed in the last 7 days
+    const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return arr.filter(f => f.dismissedAt > cutoff);
+  } catch { return []; }
+}
+function saveDismissedFlags(){
+  try{ localStorage.setItem('fdx_dismissed_flags', JSON.stringify(dismissedFlags)); } catch {}
+}
+function flagKey(f){
+  // Unique identifier for a flag so we can dedupe
+  if(f.type === 'MASS_REGISTRATION') return `MASS_REGISTRATION_${f.minute}`;
+  if(f.userId) return `${f.type}_${f.userId}`;
+  return `${f.type}_${JSON.stringify(f).slice(0, 40)}`;
+}
+function isDismissed(f){
+  const key = flagKey(f);
+  return dismissedFlags.some(d => d.key === key);
+}
+function dismissFlag(f){
+  const key = flagKey(f);
+  if(!dismissedFlags.some(d => d.key === key)){
+    dismissedFlags.push({ key, dismissedAt: Date.now() });
+    saveDismissedFlags();
+  }
+}
+function dismissAllFlags(){
+  if(!confirm('Dismiss all current flags? They won\'t reappear for 7 days.')) return;
+  const cards = document.querySelectorAll('#suspiciousList .flag-card');
+  cards.forEach(card => {
+    const key = card.getAttribute('data-flag-key');
+    if(key && !dismissedFlags.some(d => d.key === key)){
+      dismissedFlags.push({ key, dismissedAt: Date.now() });
+    }
+  });
+  saveDismissedFlags();
+  loadSuspicious();
+  showToast('All flags dismissed.');
 }
 
 /* ================ API ================ */
@@ -360,8 +430,6 @@ async function boot(){
     return;
   }
 
-  // ✅ No username check here. The backend /api/admin/me enforces who is an admin.
-
   try{
     const res = await api('/api/admin/me');
     adminInfo = res.admin;
@@ -390,6 +458,7 @@ function switchView(name, btn){
   if(btn) btn.classList.add('active');
   if(name==='dashboard') loadDashboard();
   if(name==='users') loadUsers(1);
+  if(name==='suspicious') loadSuspicious();
   if(name==='chats') loadChats();
   if(name==='withdrawals') loadWithdrawals();
   if(name==='airdrop') loadAirdropStats();
@@ -553,6 +622,78 @@ async function markKycPaid(userId) {
         showToast('User marked as KYC Paid.');
         openUserDetail(userId);
     } catch(err) { showToast('Error: ' + err.message); }
+}
+
+/* ================ SUSPICIOUS ================ */
+async function loadSuspicious(){
+  const list = el('suspiciousList');
+  list.innerHTML = '<div class="loader"><div class="loader-spinner"></div><div>Scanning…</div></div>';
+  try{
+    const res = await api('/api/admin/suspicious');
+    const flags = (res.flags || []).filter(f => !isDismissed(f));
+
+    if(!flags.length){
+      list.innerHTML = '<div class="empty">No suspicious patterns detected. 🎉</div>';
+      return;
+    }
+
+    const sevStyles = {
+      high:   { bg:'rgba(248,113,113,.08)', border:'rgba(248,113,113,.4)', color:'var(--red)' },
+      medium: { bg:'rgba(250,204,21,.06)',  border:'rgba(250,204,21,.35)', color:'var(--yellow)' },
+      low:    { bg:'rgba(136,153,166,.06)', border:'rgba(136,153,166,.3)', color:'var(--muted)' },
+    };
+    const typeIcons = {
+      MASS_REGISTRATION:      '👥 Mass Registration',
+      IMPOSSIBLE_CLAIM_SPEED: '⚡ Impossible Claim Speed',
+      REFERRAL_VELOCITY:      '🔗 Referral Velocity',
+    };
+
+    list.innerHTML = flags.map((f, idx) => {
+      const c = sevStyles[f.severity] || sevStyles.low;
+      const label = typeIcons[f.type] || f.type;
+      const key = flagKey(f);
+      const target = f.userId ? ` · User ${esc(f.userId)}` : '';
+      const meta = f.userIds
+        ? ` · ${f.userIds.length} IDs: ${f.userIds.slice(0,5).map(esc).join(', ')}${f.userIds.length > 5 ? '…' : ''}`
+        : '';
+      const viewBtn = f.userId
+        ? `<button class="flag-action-btn view" onclick="dismissFlagAt(${idx}); openUserDetail('${f.userId}')">VIEW USER</button>`
+        : '';
+      return `
+        <div class="flag-card" data-flag-key="${esc(key)}" style="background:${c.bg};border:1px solid ${c.border};">
+          <div class="flag-header">
+            <div class="flag-title" style="color:${c.color};">${label}${target}</div>
+            <div class="flag-severity" style="color:${c.color};">${f.severity}</div>
+          </div>
+          <div class="flag-desc">${esc(f.description)}${meta}</div>
+          <div class="flag-actions">
+            ${viewBtn}
+            <button class="flag-action-btn dismiss" onclick="dismissFlagAt(${idx})">DISMISS</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Cache current flags for dismissal by index
+    window._currentSuspiciousFlags = flags;
+
+  }catch(err){
+    list.innerHTML = `<div class="empty">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+function dismissFlagAt(idx){
+  const flags = window._currentSuspiciousFlags || [];
+  const f = flags[idx];
+  if(!f) return;
+  dismissFlag(f);
+  // Remove the card from DOM without a full reload
+  const list = el('suspiciousList');
+  const card = list.querySelector(`[data-flag-key="${CSS.escape(flagKey(f))}"]`);
+  if(card) card.remove();
+  if(!list.querySelector('.flag-card')){
+    list.innerHTML = '<div class="empty">No suspicious patterns detected. 🎉</div>';
+  }
 }
 
 /* ================ CHATS ================ */
