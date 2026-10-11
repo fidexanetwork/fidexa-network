@@ -389,7 +389,8 @@ input,textarea{font:inherit;}
 /* =========================================================
    CONFIG & STATE
 ========================================================= */
-const API_BASE = "https://lsfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
+/* ✅ CORRECTED — project ref is lsmfjxtsitxzcrxleqeu (20 chars) */
+const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
 const REFERRAL_POLL_MS = 20000;
@@ -1059,7 +1060,6 @@ function renderFriends() {
         }).join('');
     }
 
-    // Milestones now count EARNED referrals (matches backend logic)
     renderMilestones(earnedCount);
 }
 
