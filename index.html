@@ -392,7 +392,7 @@ input,textarea{font:inherit;}
 const API_BASE = "https://lsfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
-const REFERRAL_POLL_MS = 20000;   // live refresh of active/inactive every 20s while on Friends tab
+const REFERRAL_POLL_MS = 20000;
 
 let currentUserId = 'demo_user';
 let currentUserName = 'Fidexa User';
@@ -770,7 +770,7 @@ async function handleMiningAction() {
 }
 
 /* =========================================================
-   BOOSTER (Coming Soon)
+   BOOSTER
 ========================================================= */
 function openBoosterPrompt() {
     showToast('Mining Boost coming soon!');
@@ -882,15 +882,10 @@ async function handleTaskAction(type) {
 }
 
 /* =========================================================
-   FRIENDS / REFERRALS (updated: Invited / Active / Inactive)
+   FRIENDS / REFERRALS
 ========================================================= */
-
-/* Determine per-friend live status from backend response.
-   Backend returns: { status: "pending"|"active"|"earned", active: bool, rewardCredited: bool } */
 function classifyFriend(f) {
     const status = f.status || (f.active ? 'active' : (f.rewardCredited ? 'earned' : 'pending'));
-    // Active = has mined (currently mining OR already earned the referral reward)
-    // Inactive = joined but never mined
     const isActive = status === 'active' || status === 'earned';
     return {
         key: status,
@@ -1003,10 +998,9 @@ function renderFriends() {
     if (inactiveEl) inactiveEl.textContent = String(inactiveCount);
     if (countEl) countEl.textContent = `${total} MEMBER${total === 1 ? '' : 'S'}`;
 
-    // Pending banner — only truly inactive friends still owe you a reward
     const banner = document.getElementById('pendingRewardsBanner');
     if (banner) {
-        const stillPending = inactiveCount;   // joined but never mined → no bonus yet
+        const stillPending = inactiveCount;
         if (stillPending > 0) {
             banner.classList.add('show');
             const amt = document.getElementById('pendingRewardsAmount');
@@ -1019,12 +1013,11 @@ function renderFriends() {
     }
 
     const listEl = document.getElementById('friendsList');
-    if (!listEl) { renderMilestones(total); return; }
+    if (!listEl) { renderMilestones(earnedCount); return; }
 
     if (total === 0) {
         listEl.innerHTML = '<div class="friend-empty-state"><div class="friend-empty-icon">👥</div><div class="friend-empty-title">No Invited Members</div><div class="friend-empty-text">Your invited members will appear here.</div></div>';
     } else {
-        // Sort: mining now → earned → inactive
         const sorted = [...friends].sort((a, b) => {
             const rank = (f) => {
                 const c = classifyFriend(f);
@@ -1066,10 +1059,10 @@ function renderFriends() {
         }).join('');
     }
 
-    renderMilestones(total);
+    // Milestones now count EARNED referrals (matches backend logic)
+    renderMilestones(earnedCount);
 }
 
-/* Milestones are based on TOTAL invites (matches backend rule). */
 function renderMilestones(currentCount) {
     const container = document.getElementById('milestoneList');
     if (!container) return;
@@ -1127,7 +1120,6 @@ async function claimMilestone(req) {
             body: { milestoneReq: req }
         });
 
-        // Optimistically mark locally to prevent double-tap
         appState.milestonesClaimed[req] = true;
         renderFriends();
 
