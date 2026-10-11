@@ -63,7 +63,7 @@ input,textarea{font:inherit;}
 .task-button.claimed{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.4);color:var(--green);opacity:.8;}
 .task-button.locked{background:#111b27;border:1px solid #223247;color:var(--muted);cursor:not-allowed;}
 .task-button:disabled{cursor:default;}
-.friends-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.friends-stats-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
 .friend-stat-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:16px;padding:15px 8px;text-align:center;}
 .friend-stat-value{font-size:22px;font-weight:900;color:#fff;}
 .friend-stat-label{font-size:9px;color:var(--muted);font-weight:900;margin-top:5px;text-transform:uppercase;letter-spacing:.4px;}
@@ -79,7 +79,6 @@ input,textarea{font:inherit;}
 .friend-name{font-size:13px;font-weight:900;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .friend-status{font-size:9px;font-weight:900;margin-top:4px;}
 .friend-status.pending{color:var(--yellow);}
-.friend-status.active{color:var(--cyan);}
 .friend-status.earned{color:var(--green);}
 .friend-empty-state{padding:30px 18px;text-align:center;}
 .friend-empty-icon{font-size:32px;margin-bottom:10px;}
@@ -274,9 +273,8 @@ input,textarea{font:inherit;}
                 <div class="pending-rewards-text" id="pendingRewardsText">Waiting for friends to complete their first cycle.</div>
             </div>
         </div>
-        <div class="friends-stats-grid">
+        <div class="friends-stats-grid-2">
             <div class="friend-stat-card"><div class="friend-stat-value" id="totalFriendsCount">0</div><div class="friend-stat-label">Invited</div></div>
-            <div class="friend-stat-card"><div class="friend-stat-value" id="pendingFriendsCount" style="color:var(--yellow);">0</div><div class="friend-stat-label">Pending</div></div>
             <div class="friend-stat-card"><div class="friend-stat-value" id="earnedFriendsCount" style="color:var(--green);">0</div><div class="friend-stat-label">Earned</div></div>
         </div>
         <div class="friend-list-card">
@@ -973,12 +971,10 @@ function renderFriends() {
     const pending = friends.filter(f => (f.status || 'pending') === 'pending').length;
     const earned  = friends.filter(f => f.status === 'earned').length;
 
-    const totalEl   = document.getElementById('totalFriendsCount');
-    const pendEl    = document.getElementById('pendingFriendsCount');
-    const earnedEl  = document.getElementById('earnedFriendsCount');
-    const countEl   = document.getElementById('friendListCount');
+    const totalEl  = document.getElementById('totalFriendsCount');
+    const earnedEl = document.getElementById('earnedFriendsCount');
+    const countEl  = document.getElementById('friendListCount');
     if (totalEl)  totalEl.textContent  = String(total);
-    if (pendEl)   pendEl.textContent   = String(pending);
     if (earnedEl) earnedEl.textContent = String(earned);
     if (countEl)  countEl.textContent  = `${total} MEMBER${total === 1 ? '' : 'S'}`;
 
@@ -1003,12 +999,11 @@ function renderFriends() {
     } else {
         const statusMap = {
             pending: { cls: 'pending', label: 'PENDING · +100 FDX' },
-            active:  { cls: 'active',  label: 'MINING NOW · Reward pending' },
             earned:  { cls: 'earned',  label: 'COMPLETED · +100 FDX Earned' },
         };
         listEl.innerHTML = friends.map(f => {
             const safeId = escapeHtml(f.referredId);
-            const status = f.status || (f.active ? 'active' : 'pending');
+            const status = f.status || 'pending';
             const cfg = statusMap[status] || statusMap.pending;
             return `
             <div class="friend-row-item">
