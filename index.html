@@ -186,7 +186,7 @@ input,textarea{font:inherit;}
 
 <div class="env-banner" id="envBanner">⚠ NOT RUNNING INSIDE TELEGRAM — API CALLS WILL FAIL</div>
 
-<div class="app">
+<div class="app" id="appRoot" style="display:none;">
     <main class="page-view active" id="page-home">
         <div class="balance-card">
             <div class="balance-dot"></div>
@@ -366,7 +366,7 @@ input,textarea{font:inherit;}
     </main>
 </div>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" id="bottomNavRoot" style="display:none;">
     <button class="nav-item active" onclick="switchTab('home',this)"><span class="nav-icon">🏠</span>Home</button>
     <button class="nav-item" onclick="switchTab('tasks',this)"><span class="nav-icon">📋</span>Tasks</button>
     <button class="nav-item" onclick="switchTab('friends',this)"><span class="nav-icon">👥</span>Friends</button>
@@ -411,12 +411,11 @@ input,textarea{font:inherit;}
 
 <script>
 /* =========================================================
-   ⚙️ MAINTENANCE MODE
-   - Set MAINTENANCE_MODE = true to lock the app immediately.
-   - Or leave false; the server can still trigger it by
-     returning { maintenance: true } on any API call.
+   🔒 MAINTENANCE LOCK — set to TRUE to lock users out
+   - Users will see ONLY the maintenance screen.
+   - The app, nav, and all actions are hidden.
 ========================================================= */
-const MAINTENANCE_MODE = false;
+const MAINTENANCE_MODE = true;
 let maintenanceBlocked = false;
 
 /* =========================================================
@@ -467,18 +466,24 @@ function showMaintenanceLock() {
     if (maintenanceBlocked) return;
     maintenanceBlocked = true;
     const lock = document.getElementById('maintenanceLock');
-    const appEl = document.querySelector('.app');
-    const navEl = document.querySelector('.bottom-nav');
+    const appEl = document.getElementById('appRoot');
+    const navEl = document.getElementById('bottomNavRoot');
+    const loadingEl = document.getElementById('loadingOverlay');
     if (lock) lock.classList.add('show');
     if (appEl) appEl.style.display = 'none';
     if (navEl) navEl.style.display = 'none';
+    if (loadingEl) loadingEl.classList.remove('active');
     document.body.style.overflow = 'hidden';
 }
 
+/* Immediately lock on load — this runs BEFORE anything else */
+showMaintenanceLock();
+
 /* =========================================================
-   INIT TELEGRAM USER
+   INIT TELEGRAM USER (skipped when locked)
 ========================================================= */
 function initializeTelegramUser() {
+    if (maintenanceBlocked) return;
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
         try { webApp.ready(); webApp.expand(); } catch (e) {}
@@ -518,13 +523,6 @@ function showEnvBanner() {
     envBannerShown = true;
     const b = document.getElementById('envBanner');
     if (b) b.classList.add('show');
-}
-
-/* Client-side maintenance check — runs before anything else */
-if (MAINTENANCE_MODE) {
-    showMaintenanceLock();
-} else {
-    initializeTelegramUser();
 }
 
 /* =========================================================
@@ -608,7 +606,7 @@ function markTaskJoined(type) {
 }
 
 /* =========================================================
-   API HELPER (with server-driven maintenance check)
+   API HELPER
 ========================================================= */
 async function fetchWithTimeout(url, opts, ms = 10000) {
     const ctrl = new AbortController();
@@ -656,7 +654,6 @@ async function apiCall(path, options = {}) {
     let data = null;
     try { data = await response.json(); } catch (e) { throw new Error(`Invalid JSON (${response.status})`); }
 
-    /* Server-driven maintenance: if server returns { maintenance: true }, lock the app */
     if (data?.maintenance === true) {
         hideLoading();
         showMaintenanceLock();
@@ -762,6 +759,7 @@ function formatTimer(s) {
     return `${h}:${m}:${sec}`;
 }
 function updateAllUI() {
+    if (maintenanceBlocked) return;
     const balEl = document.getElementById('balanceDisplay');
     const timerEl = document.getElementById('timerDisplay');
     const sessEl = document.getElementById('sessionAccumulated');
@@ -1286,7 +1284,7 @@ async function confirmDeleteAccount() {
 }
 
 /* =========================================================
-   TIMER
+   TIMER (inert while locked)
 ========================================================= */
 setInterval(() => {
     if (maintenanceBlocked) return;
@@ -1311,7 +1309,7 @@ setInterval(() => {
 }, 1000);
 
 /* =========================================================
-   RESUME SYNC
+   RESUME SYNC (inert while locked)
 ========================================================= */
 document.addEventListener('visibilitychange', () => {
     if (maintenanceBlocked) return;
@@ -1328,10 +1326,11 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* =========================================================
-   BOOT
+   BOOT — nothing runs while locked
 ========================================================= */
 window.addEventListener('DOMContentLoaded', () => {
     if (maintenanceBlocked) return;
+    initializeTelegramUser();
     showLoading('Connecting to Fidexa...');
     loadState(true).then(() => {
         if (maintenanceBlocked) return;
