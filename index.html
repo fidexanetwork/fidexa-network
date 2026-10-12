@@ -92,11 +92,6 @@ input,textarea{font:inherit;}
 .referral-info-title{font-size:12px;font-weight:900;color:var(--cyan);letter-spacing:.4px;margin-bottom:5px;}
 .referral-info-text{font-size:11px;color:var(--muted);line-height:1.5;font-weight:600;}
 .referral-info-text strong{color:var(--yellow);font-weight:900;}
-.pending-rewards-banner{display:none;align-items:center;gap:12px;background:linear-gradient(145deg,rgba(250,204,21,.08),rgba(250,204,21,.02));border:1px solid rgba(250,204,21,.3);border-radius:16px;padding:14px 16px;margin-bottom:16px;}
-.pending-rewards-banner.show{display:flex;}
-.pending-rewards-icon{font-size:22px;flex-shrink:0;}
-.pending-rewards-amount{font-size:16px;font-weight:900;color:var(--yellow);}
-.pending-rewards-text{font-size:10px;color:var(--muted);font-weight:700;margin-top:3px;}
 .wallet-main-card{background:linear-gradient(145deg,#0d1520,#080d14);border:1px solid var(--border);border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(0,0,0,.4);}
 .wallet-balance-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#070b10;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100;}
@@ -247,15 +242,7 @@ input,textarea{font:inherit;}
             <div class="referral-info-icon">💎</div>
             <div>
                 <div class="referral-info-title">EARN +100 FDX PER ACTIVE FRIEND</div>
-                <div class="referral-info-text">Invite a friend. Once they complete their <strong>first mining cycle and claim</strong>, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
-            </div>
-        </div>
-
-        <div class="pending-rewards-banner" id="pendingRewardsBanner">
-            <div class="pending-rewards-icon">⏳</div>
-            <div style="flex:1;min-width:0;">
-                <div class="pending-rewards-amount" id="pendingRewardsAmount">+0 FDX</div>
-                <div class="pending-rewards-text" id="pendingRewardsText">Waiting for friends to become active.</div>
+                <div class="referral-info-text">Invite a friend. The moment they tap <strong>START MINING</strong> for the first time, you instantly receive <strong>+100 FDX</strong> added to your balance.</div>
             </div>
         </div>
 
@@ -389,7 +376,6 @@ input,textarea{font:inherit;}
 /* =========================================================
    CONFIG & STATE
 ========================================================= */
-/* ✅ CORRECTED — project ref is lsmfjxtsitxzcrxleqeu (20 chars) */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
 const TASK_JOIN_KEY = "fdx_task_joined_v1";
 const TASK_JOIN_TTL_MS = 24 * 60 * 60 * 1000;
@@ -884,16 +870,12 @@ async function handleTaskAction(type) {
 
 /* =========================================================
    FRIENDS / REFERRALS
+   Active = mining RIGHT NOW. Earned = reward already paid.
 ========================================================= */
 function classifyFriend(f) {
-    const status = f.status || (f.active ? 'active' : (f.rewardCredited ? 'earned' : 'pending'));
-    const isActive = status === 'active' || status === 'earned';
-    return {
-        key: status,
-        isActive,
-        isEarned: status === 'earned' || Boolean(f.rewardCredited),
-        isMiningNow: status === 'active' || Boolean(f.active)
-    };
+    const isMiningNow = Boolean(f.active);
+    const rewardEarned = Boolean(f.rewardCredited);
+    return { isMiningNow, rewardEarned };
 }
 
 function copyReferralLink() {
@@ -979,14 +961,12 @@ function renderFriends() {
     let activeCount = 0;
     let inactiveCount = 0;
     let earnedCount = 0;
-    let miningNowCount = 0;
 
     friends.forEach(f => {
         const c = classifyFriend(f);
-        if (c.isActive) activeCount++;
+        if (c.isMiningNow) activeCount++;
         else inactiveCount++;
-        if (c.isEarned) earnedCount++;
-        if (c.isMiningNow) miningNowCount++;
+        if (c.rewardEarned) earnedCount++;
     });
 
     const totalEl = document.getElementById('totalFriendsCount');
@@ -999,20 +979,6 @@ function renderFriends() {
     if (inactiveEl) inactiveEl.textContent = String(inactiveCount);
     if (countEl) countEl.textContent = `${total} MEMBER${total === 1 ? '' : 'S'}`;
 
-    const banner = document.getElementById('pendingRewardsBanner');
-    if (banner) {
-        const stillPending = inactiveCount;
-        if (stillPending > 0) {
-            banner.classList.add('show');
-            const amt = document.getElementById('pendingRewardsAmount');
-            const txt = document.getElementById('pendingRewardsText');
-            if (amt) amt.textContent = `+${stillPending * 100} FDX`;
-            if (txt) txt.textContent = `${stillPending} inactive friend${stillPending === 1 ? '' : 's'} — no reward until they complete their first cycle.`;
-        } else {
-            banner.classList.remove('show');
-        }
-    }
-
     const listEl = document.getElementById('friendsList');
     if (!listEl) { renderMilestones(earnedCount); return; }
 
@@ -1023,7 +989,7 @@ function renderFriends() {
             const rank = (f) => {
                 const c = classifyFriend(f);
                 if (c.isMiningNow) return 0;
-                if (c.isEarned) return 1;
+                if (c.rewardEarned) return 1;
                 return 2;
             };
             return rank(a) - rank(b);
@@ -1034,17 +1000,20 @@ function renderFriends() {
             const c = classifyFriend(f);
 
             let badgeClass = 'pending';
-            let badgeText = '⚪ INACTIVE · No mining yet';
+            let badgeText = '';
             let avatarClass = '';
 
             if (c.isMiningNow) {
                 badgeClass = 'active';
                 badgeText = '🟢 ACTIVE · Mining now';
                 avatarClass = 'active-glow';
-            } else if (c.isEarned) {
+            } else if (c.rewardEarned) {
                 badgeClass = 'earned';
-                badgeText = '✅ ACTIVE · Reward earned (+100 FDX)';
+                badgeText = '⚪ INACTIVE · Reward earned (+100 FDX)';
                 avatarClass = 'earned-glow';
+            } else {
+                badgeClass = 'pending';
+                badgeText = '⚪ INACTIVE · No mining yet';
             }
 
             return `
