@@ -661,7 +661,8 @@ async function loadState(showLoader) {
         renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        if (showLoader) showToast(error.message || "Failed to sync. Please reload.");
+        /* ✅ FIX: always show toast on sync error so stale buttons are visible */
+        showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
         isSyncing = false;
@@ -748,7 +749,9 @@ async function handleMiningAction() {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Action failed.');
-        loadState(false).catch(() => {});
+        /* ✅ FIX: force a re-sync so button state matches server */
+        await loadState(false).catch(() => {});
+        updateAllUI();
     } finally {
         hideLoading();
         updateAllUI();
@@ -861,7 +864,9 @@ async function handleTaskAction(type) {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Task claim failed.');
-        loadState(false).catch(() => {});
+        /* ✅ FIX: force re-sync + re-render so the button reflects real server state */
+        await loadState(false).catch(() => {});
+        renderTasks();
     } finally {
         hideLoading();
         isProcessing = false;
@@ -1098,7 +1103,9 @@ async function claimMilestone(req) {
     } catch (error) {
         console.error(error);
         showToast(error.message || 'Milestone claim failed.');
-        loadState(false).catch(() => {});
+        /* ✅ FIX: force re-sync + re-render */
+        await loadState(false).catch(() => {});
+        renderFriends();
     } finally {
         hideLoading();
         isProcessing = false;
