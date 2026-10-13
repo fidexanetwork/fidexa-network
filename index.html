@@ -151,13 +151,41 @@ input,textarea{font:inherit;}
 .loading-text{font-size:12px;font-weight:800;color:var(--cyan);letter-spacing:.5px;}
 .env-banner{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(480px,100%);background:#7c2d12;color:#fff;font-size:10px;font-weight:800;text-align:center;padding:6px 10px;letter-spacing:.4px;z-index:5000;display:none;}
 .env-banner.show{display:block;}
+
+/* =========================================================
+   MAINTENANCE LOCK
+========================================================= */
+.maintenance-lock{position:fixed;inset:0;background:linear-gradient(180deg,#05080c 0%,#0a1018 100%);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
+.maintenance-lock.show{display:flex;}
+.maintenance-icon{font-size:72px;margin-bottom:24px;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(1.05);}}
+.maintenance-title{font-size:26px;font-weight:900;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;}
+.maintenance-sub{font-size:14px;color:var(--text);line-height:1.6;max-width:340px;margin-bottom:28px;font-weight:600;}
+.maintenance-pill{font-size:12px;color:var(--cyan);font-weight:900;letter-spacing:1px;padding:12px 28px;border:1px solid rgba(56,189,248,.5);border-radius:24px;background:rgba(56,189,248,.1);margin-bottom:16px;}
+.maintenance-note{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:40px;max-width:280px;line-height:1.5;}
+.maintenance-channel{position:absolute;bottom:30px;left:0;right:0;text-align:center;}
+.maintenance-channel a{color:var(--cyan);text-decoration:none;font-weight:800;font-size:13px;padding:10px 20px;border:1px solid rgba(56,189,248,.3);border-radius:20px;background:rgba(56,189,248,.05);display:inline-block;}
 </style>
 </head>
 <body>
 
+<!-- =========================================================
+     MAINTENANCE LOCK OVERLAY
+========================================================= -->
+<div class="maintenance-lock" id="maintenanceLock">
+    <div class="maintenance-icon">🛠️</div>
+    <div class="maintenance-title">FIDEXA NETWORK</div>
+    <div class="maintenance-sub">We're upgrading Fidexa.<br>The app will be back shortly.</div>
+    <div class="maintenance-pill">MAINTENANCE IN PROGRESS</div>
+    <div class="maintenance-note">Thank you for your patience. Stay tuned to our channel for updates.</div>
+    <div class="maintenance-channel">
+        <a href="https://t.me/fidexa_Network" target="_blank">📢 Join @fidexa_Network</a>
+    </div>
+</div>
+
 <div class="env-banner" id="envBanner">⚠ NOT RUNNING INSIDE TELEGRAM — API CALLS WILL FAIL</div>
 
-<div class="app">
+<div class="app" id="appRoot" style="display:none;">
     <main class="page-view active" id="page-home">
         <div class="balance-card">
             <div class="balance-dot"></div>
@@ -329,7 +357,7 @@ input,textarea{font:inherit;}
     </main>
 </div>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" id="bottomNavRoot" style="display:none;">
     <button class="nav-item active" onclick="switchTab('home',this)"><span class="nav-icon">🏠</span>Home</button>
     <button class="nav-item" onclick="switchTab('tasks',this)"><span class="nav-icon">📋</span>Tasks</button>
     <button class="nav-item" onclick="switchTab('friends',this)"><span class="nav-icon">👥</span>Friends</button>
@@ -374,6 +402,14 @@ input,textarea{font:inherit;}
 
 <script>
 /* =========================================================
+   🔒 MAINTENANCE MODE TOGGLE
+   true  = locked (users see maintenance screen)
+   false = unlocked (app works normally)
+========================================================= */
+const MAINTENANCE_MODE = true;
+let maintenanceBlocked = false;
+
+/* =========================================================
    CONFIG & STATE
 ========================================================= */
 const API_BASE = "https://lsmfjxtsitxzcrxleqeu.supabase.co/functions/v1/fidexa-api";
@@ -415,9 +451,38 @@ let appState = {
 };
 
 /* =========================================================
+   MAINTENANCE LOCK — engage immediately if enabled
+========================================================= */
+function showMaintenanceLock() {
+    if (maintenanceBlocked) return;
+    maintenanceBlocked = true;
+    const lock = document.getElementById('maintenanceLock');
+    const appEl = document.getElementById('appRoot');
+    const navEl = document.getElementById('bottomNavRoot');
+    const loadingEl = document.getElementById('loadingOverlay');
+    if (lock) lock.classList.add('show');
+    if (appEl) appEl.style.display = 'none';
+    if (navEl) navEl.style.display = 'none';
+    if (loadingEl) loadingEl.classList.remove('active');
+    document.body.style.overflow = 'hidden';
+}
+
+/* Boot decision: locked vs normal */
+if (MAINTENANCE_MODE) {
+    showMaintenanceLock();
+} else {
+    // Reveal app + nav for normal mode
+    const appEl = document.getElementById('appRoot');
+    const navEl = document.getElementById('bottomNavRoot');
+    if (appEl) appEl.style.display = '';
+    if (navEl) navEl.style.display = '';
+}
+
+/* =========================================================
    INIT TELEGRAM USER
 ========================================================= */
 function initializeTelegramUser() {
+    if (maintenanceBlocked) return;
     if (window.Telegram && window.Telegram.WebApp) {
         const webApp = window.Telegram.WebApp;
         try { webApp.ready(); webApp.expand(); } catch (e) {}
@@ -458,7 +523,7 @@ function showEnvBanner() {
     const b = document.getElementById('envBanner');
     if (b) b.classList.add('show');
 }
-initializeTelegramUser();
+if (!MAINTENANCE_MODE) initializeTelegramUser();
 
 /* =========================================================
    UI HELPERS
@@ -467,6 +532,7 @@ function formatNumber(v) {
     return Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 function showToast(msg) {
+    if (maintenanceBlocked) return;
     const t = document.getElementById('toast');
     if (!t) return;
     t.textContent = msg;
@@ -488,6 +554,7 @@ function openExternalUrl(url) {
 }
 
 function showLoading(text) {
+    if (maintenanceBlocked) return;
     const o = document.getElementById('loadingOverlay');
     if (!o) return;
     document.getElementById('loadingText').textContent = text || 'Loading...';
@@ -503,6 +570,7 @@ function escapeHtml(s) {
         .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function switchTab(tabName, btnElement) {
+    if (maintenanceBlocked) return;
     document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const target = document.getElementById(`page-${tabName}`);
@@ -551,6 +619,7 @@ async function fetchWithTimeout(url, opts, ms = 10000) {
 }
 
 async function apiCall(path, options = {}) {
+    if (maintenanceBlocked) throw new Error("App is in maintenance mode.");
     if (!currentTelegramInitData) {
         showEnvBanner();
         throw new Error("Telegram authentication is not available. Please reopen the app inside Telegram.");
@@ -634,6 +703,7 @@ function normalizeClaimedMap(raw) {
 }
 
 async function loadState(showLoader) {
+    if (maintenanceBlocked) return;
     if (isSyncing) return;
     isSyncing = true;
     if (showLoader) showLoading('Syncing your account...');
@@ -661,8 +731,7 @@ async function loadState(showLoader) {
         renderFriends();
     } catch (error) {
         console.error("Load state error:", error);
-        /* ✅ FIX: always show toast on sync error so stale buttons are visible */
-        showToast(error.message || "Failed to sync. Please reload.");
+        if (!maintenanceBlocked) showToast(error.message || "Failed to sync. Please reload.");
     } finally {
         if (showLoader) hideLoading();
         isSyncing = false;
@@ -684,6 +753,7 @@ function formatTimer(s) {
     return `${h}:${m}:${sec}`;
 }
 function updateAllUI() {
+    if (maintenanceBlocked) return;
     const balEl = document.getElementById('balanceDisplay');
     const timerEl = document.getElementById('timerDisplay');
     const sessEl = document.getElementById('sessionAccumulated');
@@ -727,6 +797,7 @@ function updateAllUI() {
    MINING ACTIONS
 ========================================================= */
 async function handleMiningAction() {
+    if (maintenanceBlocked) return;
     if (isProcessing) return;
     isProcessing = true;
     const button = document.getElementById('miningToggleBtn');
@@ -748,13 +819,12 @@ async function handleMiningAction() {
         }
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Action failed.');
-        /* ✅ FIX: force a re-sync so button state matches server */
-        await loadState(false).catch(() => {});
-        updateAllUI();
+        if (!maintenanceBlocked) showToast(error.message || 'Action failed.');
+        if (!maintenanceBlocked) await loadState(false).catch(() => {});
+        if (!maintenanceBlocked) updateAllUI();
     } finally {
         hideLoading();
-        updateAllUI();
+        if (!maintenanceBlocked) updateAllUI();
         isProcessing = false;
     }
 }
@@ -763,6 +833,7 @@ async function handleMiningAction() {
    BOOSTER
 ========================================================= */
 function openBoosterPrompt() {
+    if (maintenanceBlocked) return;
     showToast('Mining Boost coming soon!');
 }
 
@@ -770,6 +841,7 @@ function openBoosterPrompt() {
    TASKS
 ========================================================= */
 function renderTasks() {
+    if (maintenanceBlocked) return;
     const tasks = appState.claimedTasks || {};
     ['telegram', 'x', 'youtube'].forEach(type => {
         const btn = document.getElementById(`taskBtn_${type}`);
@@ -810,8 +882,10 @@ function renderTasks() {
 }
 
 function startTaskCountdown() {
+    if (maintenanceBlocked) return;
     if (taskCountdownTimer) return;
     taskCountdownTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         const tasksPage = document.getElementById('page-tasks');
         if (!tasksPage || !tasksPage.classList.contains('active')) return;
         renderTasks();
@@ -819,6 +893,7 @@ function startTaskCountdown() {
 }
 
 async function handleTaskAction(type) {
+    if (maintenanceBlocked) return;
     if (isProcessing) return;
     const t = (appState.claimedTasks || {})[type] || { joined: false, claimed: false };
     if (t.claimed) { showToast('Task already claimed. Resets in 24 hours.'); return; }
@@ -863,10 +938,9 @@ async function handleTaskAction(type) {
         showToast(`+${res.reward} FDX added!`);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Task claim failed.');
-        /* ✅ FIX: force re-sync + re-render so the button reflects real server state */
-        await loadState(false).catch(() => {});
-        renderTasks();
+        if (!maintenanceBlocked) showToast(error.message || 'Task claim failed.');
+        if (!maintenanceBlocked) await loadState(false).catch(() => {});
+        if (!maintenanceBlocked) renderTasks();
     } finally {
         hideLoading();
         isProcessing = false;
@@ -884,6 +958,7 @@ function classifyFriend(f) {
 }
 
 function copyReferralLink() {
+    if (maintenanceBlocked) return;
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
     const link = `https://t.me/FIDEXANetworkBot?start=ref_${currentUserId}`;
 
@@ -919,6 +994,7 @@ function legacyCopy(text) {
 }
 
 function shareReferralLink() {
+    if (maintenanceBlocked) return;
     if (isSelfReferral) { showToast('Self-referral is not allowed.'); return; }
     const refLink = `https://t.me/FIDEXANetworkBot?start=ref_${currentUserId}`;
     const shareText = encodeURIComponent("Join Fidexa Network and start mining FDX with me!");
@@ -928,6 +1004,7 @@ function shareReferralLink() {
 }
 
 async function loadReferralData() {
+    if (maintenanceBlocked) return;
     try {
         const res = await apiCall('/api/referrals');
         const list = res.referrals
@@ -940,13 +1017,15 @@ async function loadReferralData() {
         renderFriends();
     } catch (e) {
         console.warn("Referral load failed:", e);
-        showToast('Could not load referrals: ' + (e.message || 'unknown error'));
+        if (!maintenanceBlocked) showToast('Could not load referrals: ' + (e.message || 'unknown error'));
     }
 }
 
 function startReferralPolling() {
+    if (maintenanceBlocked) return;
     stopReferralPolling();
     referralsPollTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         const friendsPage = document.getElementById('page-friends');
         if (!friendsPage || !friendsPage.classList.contains('active')) {
             stopReferralPolling();
@@ -960,6 +1039,7 @@ function stopReferralPolling() {
 }
 
 function renderFriends() {
+    if (maintenanceBlocked) return;
     const friends = appState.friends || [];
     const total = friends.length;
 
@@ -1038,6 +1118,7 @@ function renderFriends() {
 }
 
 function renderMilestones(currentCount) {
+    if (maintenanceBlocked) return;
     const container = document.getElementById('milestoneList');
     if (!container) return;
 
@@ -1077,6 +1158,7 @@ function renderMilestones(currentCount) {
 }
 
 async function claimMilestone(req) {
+    if (maintenanceBlocked) return;
     if (isProcessing) {
         showToast('Please wait for the current action to finish…');
         return;
@@ -1102,10 +1184,9 @@ async function claimMilestone(req) {
         await loadState(false);
     } catch (error) {
         console.error(error);
-        showToast(error.message || 'Milestone claim failed.');
-        /* ✅ FIX: force re-sync + re-render */
-        await loadState(false).catch(() => {});
-        renderFriends();
+        if (!maintenanceBlocked) showToast(error.message || 'Milestone claim failed.');
+        if (!maintenanceBlocked) await loadState(false).catch(() => {});
+        if (!maintenanceBlocked) renderFriends();
     } finally {
         hideLoading();
         isProcessing = false;
@@ -1116,10 +1197,12 @@ async function claimMilestone(req) {
    CHAT SUPPORT
 ========================================================= */
 async function openSupportChat() {
+    if (maintenanceBlocked) return;
     document.getElementById('supportModal').classList.add('active');
     await fetchSupportMessages();
     if (supportPollingTimer) clearInterval(supportPollingTimer);
     supportPollingTimer = setInterval(() => {
+        if (maintenanceBlocked) return;
         if (document.getElementById('supportModal').classList.contains('active')) fetchSupportMessages();
     }, 8000);
 }
@@ -1128,6 +1211,7 @@ function closeSupportChat() {
     if (supportPollingTimer) { clearInterval(supportPollingTimer); supportPollingTimer = null; }
 }
 async function fetchSupportMessages() {
+    if (maintenanceBlocked) return;
     try {
         const data = await apiCall('/api/support/messages');
         renderSupportMessages(data.messages || []);
@@ -1148,6 +1232,7 @@ function renderSupportMessages(messages) {
     container.scrollTop = container.scrollHeight;
 }
 async function sendChatMessage() {
+    if (maintenanceBlocked) return;
     const input = document.getElementById('chatInput');
     const text = input.value.trim();
     if (!text) return;
@@ -1161,9 +1246,10 @@ async function sendChatMessage() {
 /* =========================================================
    ACCOUNT DELETION
 ========================================================= */
-function openDeleteModal() { document.getElementById('deleteModal').classList.add('active'); }
+function openDeleteModal() { if (maintenanceBlocked) return; document.getElementById('deleteModal').classList.add('active'); }
 function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
 async function confirmDeleteAccount() {
+    if (maintenanceBlocked) return;
     closeDeleteModal();
     try {
         showLoading('Deleting account...');
@@ -1178,9 +1264,10 @@ async function confirmDeleteAccount() {
 }
 
 /* =========================================================
-   TIMER
+   TIMER (inert while locked)
 ========================================================= */
 setInterval(() => {
+    if (maintenanceBlocked) return;
     if (appState.miningState === 'ACTIVE') {
         const remaining = getRemainingSeconds();
         const timerEl = document.getElementById('timerDisplay');
@@ -1202,9 +1289,10 @@ setInterval(() => {
 }, 1000);
 
 /* =========================================================
-   RESUME SYNC
+   RESUME SYNC (inert while locked)
 ========================================================= */
 document.addEventListener('visibilitychange', () => {
+    if (maintenanceBlocked) return;
     if (document.visibilityState === 'visible' && currentTelegramInitData) {
         loadState(false).catch(() => {});
         const friendsPage = document.getElementById('page-friends');
@@ -1218,11 +1306,14 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* =========================================================
-   BOOT
+   BOOT — nothing runs while locked
 ========================================================= */
 window.addEventListener('DOMContentLoaded', () => {
+    if (maintenanceBlocked) return;
+    initializeTelegramUser();
     showLoading('Connecting to Fidexa...');
     loadState(true).then(() => {
+        if (maintenanceBlocked) return;
         loadReferralData();
         startTaskCountdown();
     });
